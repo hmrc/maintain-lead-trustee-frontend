@@ -31,7 +31,7 @@ import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
-import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
+import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView, MaxedOutTrusteesView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,6 +46,7 @@ class AddATrusteeController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        addAnotherView: AddATrusteeView,
                                        yesNoView: AddATrusteeYesNoView,
+                                       completeView: MaxedOutTrusteesView,
                                        val appConfig: FrontendAppConfig,
                                        trustStoreConnector: TrustStoreConnector
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController
@@ -66,13 +67,22 @@ class AddATrusteeController @Inject()(
 
           val trustees = new AddATrusteeViewHelper(all).rows
 
-          Ok(addAnotherView(
-            form = addAnotherForm,
-            inProgressTrustees = trustees.inProgress,
-            completeTrustees = trustees.complete,
-            isLeadTrusteeDefined = all.lead.isDefined,
-            heading = all.addToHeading
-          ))
+          if (all.trustees.size < 25) {
+            Ok(addAnotherView(
+              form = addAnotherForm,
+              inProgressTrustees = trustees.inProgress,
+              completeTrustees = trustees.complete,
+              isLeadTrusteeDefined = all.lead.isDefined,
+              heading = all.addToHeading
+            ))
+          } else {
+            Ok(completeView(
+              inProgressTrustees = trustees.inProgress,
+              completeTrustees = trustees.complete,
+              isLeadTrusteeDefined = all.lead.isDefined,
+              heading = all.addToHeading
+            ))
+          }
       }
   }
 
@@ -128,6 +138,16 @@ class AddATrusteeController @Inject()(
               }
           }
         )
+      }
+  }
+
+  def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+    implicit request =>
+
+      for {
+        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.utr)
+      } yield {
+        Redirect(appConfig.maintainATrustOverview)
       }
   }
 }

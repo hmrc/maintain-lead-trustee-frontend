@@ -195,6 +195,8 @@ addATrustee.error.required = Select yes if you want to add a new trustee
 addATrustee.lead-trustee.required = You need to add or nominate a lead trustee
 addATrustee.p1 = You can
 addATrustee.p1.a = change the lead trustee
+addATrustee.maxedOut = You cannot add another trustee as you have entered a maximum of 25.
+addATrustee.maxedOut.paragraph = You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.
 
 removeATrustee.title = Are you sure you want to remove {0}?
 removeATrustee.heading = Are you sure you want to remove {0}?

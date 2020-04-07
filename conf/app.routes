@@ -31,6 +31,7 @@ GET        /agent-not-authorised                                            cont
 GET        /add                                                             controllers.AddATrusteeController.onPageLoad()
 POST       /add                                                             controllers.AddATrusteeController.submitOne()
 POST       /add-another                                                     controllers.AddATrusteeController.submitAnother()
+POST       /complete                                                        controllers.AddATrusteeController.submitComplete()
 
 GET        /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onPageLoad(index : Int)
 POST       /trustee/:index/remove                                           controllers.trustee.RemoveTrusteeController.onSubmit(index : Int)

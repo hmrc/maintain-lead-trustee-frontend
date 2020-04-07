@@ -36,8 +36,9 @@ import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.AddATrusteeViewHelper
 import viewmodels.addAnother.AddRow
-import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView}
+import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView, MaxedOutTrusteesView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,6 +47,7 @@ class AddATrusteeControllerSpec extends SpecBase {
   lazy val getRoute : String = controllers.routes.AddATrusteeController.onPageLoad().url
   lazy val submitAnotherRoute : String = controllers.routes.AddATrusteeController.submitAnother().url
   lazy val submitYesNoRoute : String = controllers.routes.AddATrusteeController.submitOne().url
+  lazy val submitCompleteRoute : String = controllers.routes.AddATrusteeController.submitComplete().url
 
   val mockStoreConnector : TrustStoreConnector = mock[TrustStoreConnector]
 
@@ -433,6 +435,66 @@ class AddATrusteeControllerSpec extends SpecBase {
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
       uaCaptor.getValue.data mustBe Json.obj()
+    }
+
+    "maxed out trustees" must {
+
+      val trustees = Trustees(
+        List.fill(25)(trustee)
+      )
+
+      val fakeService = new FakeService(trustees)
+
+      val trusteeRows = new AddATrusteeViewHelper(AllTrustees(leadTrusteeIndividual, trustees.trustees)).rows
+
+      "return OK and the correct view for a GET" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeService)
+        )).build()
+
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[MaxedOutTrusteesView]
+
+        status(result) mustEqual OK
+
+        val content = contentAsString(result)
+
+        content mustEqual
+          view(trusteeRows.inProgress, trusteeRows.complete, isLeadTrusteeDefined = true, "The trust has 26 trustees")(fakeRequest, messages).toString
+        content must include("You cannot add another trustee as you have entered a maximum of 25.")
+        content must include("You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.")
+
+        application.stop()
+
+      }
+
+      "redirect to add to page and set beneficiaries to complete when user clicks continue" in {
+
+        val fakeService = new FakeService(trustees)
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeService),
+          bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
+        )).build()
+
+        val request = FakeRequest(POST, submitCompleteRoute)
+
+        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200)))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+        application.stop()
+
+      }
+
     }
 
   }
