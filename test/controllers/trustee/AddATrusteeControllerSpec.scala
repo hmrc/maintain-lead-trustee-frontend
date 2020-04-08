@@ -465,7 +465,7 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         content mustEqual
           view(trusteeRows.inProgress, trusteeRows.complete, isLeadTrusteeDefined = true, "The trust has 26 trustees")(fakeRequest, messages).toString
-        content must include("You cannot add another trustee as you have entered a maximum of 25.")
+        content must include("You cannot add another trustee as you have entered a maximum of 26.")
         content must include("You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.")
 
         application.stop()
