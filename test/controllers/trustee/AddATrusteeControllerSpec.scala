@@ -369,7 +369,6 @@ class AddATrusteeControllerSpec extends SpecBase {
         application.stop()
       }
 
-
       "return a Bad Request and errors when invalid data is submitted" in {
 
         val fakeService = new FakeService(trustees)
@@ -435,7 +434,7 @@ class AddATrusteeControllerSpec extends SpecBase {
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
       uaCaptor.getValue.data mustBe Json.obj()
-      
+
     }
 
     "maxed out trustees" must {
