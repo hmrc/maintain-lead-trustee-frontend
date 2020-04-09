@@ -309,6 +309,7 @@ class AddATrusteeControllerSpec extends SpecBase {
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/individual-declaration"
 
         application.stop()
+        
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
