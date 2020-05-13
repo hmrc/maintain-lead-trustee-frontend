@@ -42,11 +42,15 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   private def getTrusteesUrl(utr: String) = s"/trusts/$utr/transformed/trustees"
 
-  private def removeTrusteeUrl(utr: String) = s"/trusts/$utr/trustees/remove"
+  private def removeTrusteeUrl(utr: String) = s"/trusts/trustees/$utr/remove"
 
-  private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/promote-trustee/$utr/$index"
+  private def promoteTrusteeUrl(utr: String, index: Int) = s"/trusts/trustees/promote/$utr/$index"
 
-  private def amendTrusteeUrl(utr: String, index: Int) = s"/trusts/amend-trustee/$utr/$index"
+  private def amendTrusteeUrl(utr: String, index: Int) = s"/trusts/trustees/amend/$utr/$index"
+
+  private def amendLeadTrusteeUrl(utr: String) = s"/trusts/trustees/amend-lead/$utr"
+
+  private def addTrusteeUrl(utr: String) = s"/trusts/trustees/add/$utr"
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
 
@@ -67,6 +71,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
   "TrustConnector amendLeadTrustee" must {
     "Be fine when request is successful" in {
+      val utr = "1000000007"
       val application = applicationBuilder()
         .configure(
           Seq(
@@ -78,11 +83,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts/amend-lead-trustee/UTRUTRUTR"))
+        post(urlEqualTo(amendLeadTrusteeUrl(utr)))
           .willReturn(ok)
       )
 
-      val result = connector.amendLeadTrustee("UTRUTRUTR", arbitraryLeadTrusteeIndividual.arbitrary.sample.get)
+      val result = connector.amendLeadTrustee(utr, arbitraryLeadTrusteeIndividual.arbitrary.sample.get)
       result.futureValue.status mustBe (OK)
 
       application.stop()
@@ -90,6 +95,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   }
 
   "TrustConnector addTrustee" must {
+    val utr = "1000000007"
     "Return Ok when the request is successful" in {
       val application = applicationBuilder()
         .configure(
@@ -102,11 +108,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+        post(urlEqualTo(addTrusteeUrl(utr)))
           .willReturn(ok)
       )
 
-      val result = connector.addTrustee("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+      val result = connector.addTrustee(utr, arbitraryTrusteeIndividual.arbitrary.sample.get)
       result.futureValue.status mustBe (OK)
 
       application.stop()
@@ -124,11 +130,11 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts/add-trustee/UTRUTRUTR"))
+        post(urlEqualTo(addTrusteeUrl(utr)))
           .willReturn(badRequest)
       )
 
-      val result = connector.addTrustee("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
+      val result = connector.addTrustee(utr, arbitraryTrusteeIndividual.arbitrary.sample.get)
 
       result.map(response => response.status mustBe BAD_REQUEST)
 
@@ -490,7 +496,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(s"/trusts/amend-trustee/$utr/$index"))
+        post(urlEqualTo(amendTrusteeUrl(utr, index)))
           .willReturn(ok)
       )
 
@@ -513,7 +519,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val connector = application.injector.instanceOf[TrustConnector]
 
       server.stubFor(
-        post(urlEqualTo(s"/trusts/amend-trustee/$utr/$index"))
+        post(urlEqualTo(amendTrusteeUrl(utr, index)))
           .willReturn(badRequest)
       )
 
