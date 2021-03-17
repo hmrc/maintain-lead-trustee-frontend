@@ -17,7 +17,7 @@
 package mapping.extractors.trustee
 
 import mapping.extractors.Extractor
-import models.Constant.GB
+import models.Constants.GB
 import models.{Address, IndividualOrBusiness, NonUkAddress, UkAddress, UserAnswers}
 import pages.QuestionPage
 import pages.trustee.IndividualOrBusinessPage

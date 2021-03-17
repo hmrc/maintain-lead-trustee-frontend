@@ -17,7 +17,7 @@
 package mapping.extractors.leadtrustee
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.leadtrustee.IndividualOrBusinessPage

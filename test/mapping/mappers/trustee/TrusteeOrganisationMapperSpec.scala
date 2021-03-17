@@ -17,7 +17,7 @@
 package mapping.mappers.trustee
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import models._
 import pages.trustee.WhenAddedPage
 import pages.trustee.organisation._

@@ -17,7 +17,7 @@
 package mapping.mappers.leadtrustee
 
 import mapping.mappers.Mapper
-import models.Constant.GB
+import models.Constants.GB
 import models.{Address, NonUkAddress, UkAddress}
 import pages.QuestionPage
 import play.api.libs.json.{JsSuccess, Reads}

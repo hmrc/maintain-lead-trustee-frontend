@@ -17,7 +17,7 @@
 package mapping.extractors.leadtrustee
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import models.{LeadTrusteeOrganisation, NonUkAddress, UkAddress}
 import pages.leadtrustee.organisation._
 

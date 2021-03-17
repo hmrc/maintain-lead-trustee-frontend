@@ -22,6 +22,7 @@ import controllers.leadtrustee.organisation.{routes => ltoRts}
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.leadtrustee._
+import models.Constants.DEFAULT_ID
 import models._
 import models.requests.DataRequest
 import play.api.Logging
@@ -77,16 +78,19 @@ class ReplacingLeadTrusteeController @Inject()(
               val radioOptions = generateRadioOptions(trustees)
               Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), radioOptions)))
             },
-            value => {
-              val index = value.toInt
-              trustees(index) match {
-                case trustee: TrusteeIndividual =>
-                  val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
-                case trustee: TrusteeOrganisation =>
-                  val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
-              }
+            {
+              case DEFAULT_ID =>
+                Future.successful(Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()))
+              case value =>
+                val index = value.toInt
+                trustees(index) match {
+                  case trustee: TrusteeIndividual =>
+                    val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                    populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
+                  case trustee: TrusteeOrganisation =>
+                    val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                    populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
+                }
             }
           )
       } recoverWith {
@@ -95,7 +99,7 @@ class ReplacingLeadTrusteeController @Inject()(
   }
 
   private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] = {
-    trustees
+    val trusteeOptions = trustees
       .zipWithIndex
       .filter(_._1 match {
         case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(false)
@@ -108,6 +112,11 @@ class ReplacingLeadTrusteeController @Inject()(
         }
         RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
       }
+      .sortBy(_.messageKey)
+
+    val defaultOption = RadioOption(s"$messageKeyPrefix.$DEFAULT_ID", DEFAULT_ID, s"$messageKeyPrefix.add-new")
+
+    trusteeOptions :+ defaultOption
   }
 
   private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {

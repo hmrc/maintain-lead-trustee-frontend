@@ -17,7 +17,7 @@
 package mapping.mappers.leadtrustee
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import models._
 import pages.leadtrustee.organisation._
 

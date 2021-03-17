@@ -17,7 +17,7 @@
 package mapping.extractors.leadtrustee
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import models.IndividualOrBusiness.Business
 import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
 import pages.leadtrustee.IndividualOrBusinessPage

@@ -17,7 +17,7 @@
 package mapping.extractors.trustee
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.trustee.IndividualOrBusinessPage

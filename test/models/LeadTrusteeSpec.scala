@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import models.Constant.GB
+import models.Constants.GB
 import play.api.libs.json.{JsString, Json, __}
 
 import java.time.LocalDate

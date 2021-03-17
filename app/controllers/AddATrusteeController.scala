@@ -22,8 +22,7 @@ import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
-import models.{AddATrustee, AllTrustees, Enumerable}
+import models.{AddATrustee, AllTrustees}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,27 +33,26 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView, MaxedOutTrusteesView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddATrusteeController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     repository: PlaybackRepository,
-                                     trust: TrustService,
-                                     standardActionSets: StandardActionSets,
-                                     addAnotherFormProvider: AddATrusteeFormProvider,
-                                     yesNoFormProvider: YesNoFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     addAnotherView: AddATrusteeView,
-                                     yesNoView: AddATrusteeYesNoView,
-                                     completeView: MaxedOutTrusteesView,
-                                     val appConfig: FrontendAppConfig,
-                                     trustStoreConnector: TrustStoreConnector,
-                                     errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging
-  with I18nSupport
-  with Enumerable.Implicits {
+                                       override val messagesApi: MessagesApi,
+                                       repository: PlaybackRepository,
+                                       trust: TrustService,
+                                       standardActionSets: StandardActionSets,
+                                       addAnotherFormProvider: AddATrusteeFormProvider,
+                                       yesNoFormProvider: YesNoFormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       addAnotherView: AddATrusteeView,
+                                       yesNoView: AddATrusteeYesNoView,
+                                       completeView: MaxedOutTrusteesView,
+                                       val appConfig: FrontendAppConfig,
+                                       trustStoreConnector: TrustStoreConnector,
+                                       errorHandler: ErrorHandler
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging with I18nSupport {
 
-  val addAnotherForm : Form[AddATrustee] = addAnotherFormProvider()
+  val addAnotherForm: Form[AddATrustee] = addAnotherFormProvider()
 
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 

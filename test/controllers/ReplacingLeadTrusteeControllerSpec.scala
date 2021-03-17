@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
+import models.Constants.DEFAULT_ID
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -72,6 +73,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
       ???
   }
 
+  private val defaultOption = RadioOption(s"$messageKeyPrefix.$DEFAULT_ID", DEFAULT_ID, s"$messageKeyPrefix.add-new")
+
   "ReplacingLeadTrustee controller" must {
 
     "return OK and the correct view for a GET" when {
@@ -100,8 +103,9 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
         val trustees = Trustees(List(indTrustee, orgTrustee))
 
         val expectedRadioOptions = List(
+          RadioOption(s"$messageKeyPrefix.1", "1", "Amazon"),
           RadioOption(s"$messageKeyPrefix.0", "0", "Joe Bloggs"),
-          RadioOption(s"$messageKeyPrefix.1", "1", "Amazon")
+          defaultOption
         )
 
         val fakeService = new FakeService(trustees)
@@ -154,7 +158,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
           val expectedRadioOptions = List(
             RadioOption(s"$messageKeyPrefix.0", "0", "Joe Bloggs"),
-            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
+            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe"),
+            defaultOption
           )
 
           val fakeService = new FakeService(trustees)
@@ -204,7 +209,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
           val trustees = Trustees(List(indTrustee1, indTrustee2))
 
           val expectedRadioOptions = List(
-            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
+            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe"),
+            defaultOption
           )
 
           val fakeService = new FakeService(trustees)
@@ -297,6 +303,30 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
         application.stop()
       }
+
+      "default" in {
+
+        val fakeService = new FakeService(Trustees(Nil))
+
+        val mockPlaybackRepository = mock[PlaybackRepository]
+
+        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", DEFAULT_ID))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url
+
+        application.stop()
+      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" when {
@@ -321,7 +351,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "John Smith", Nil)(request, messages).toString
+          view(boundForm, "John Smith", List(defaultOption))(request, messages).toString
 
         application.stop()
       }
@@ -354,7 +384,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "Amazon", Nil)(request, messages).toString
+          view(boundForm, "Amazon", List(defaultOption))(request, messages).toString
 
         application.stop()
       }
@@ -380,7 +410,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "the lead trustee", Nil)(request, messages).toString
+          view(boundForm, "the lead trustee", List(defaultOption))(request, messages).toString
 
         application.stop()
       }

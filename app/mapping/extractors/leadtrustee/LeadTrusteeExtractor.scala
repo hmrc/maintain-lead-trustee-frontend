@@ -17,7 +17,7 @@
 package mapping.extractors.leadtrustee
 
 import mapping.extractors.Extractor
-import models.Constant.GB
+import models.Constants.GB
 import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, IndividualOrBusiness, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.leadtrustee.IndividualOrBusinessPage
 import pages.{EmptyPage, QuestionPage}
