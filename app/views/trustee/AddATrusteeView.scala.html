@@ -23,15 +23,18 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_],
+@(
+    form: Form[_],
     inProgressTrustees: Seq[AddRow],
     completeTrustees: Seq[AddRow],
     isLeadTrusteeDefined: Boolean,
-    heading: String)(implicit request: Request[_], messages: Messages)
+    heading: String,
+    canLeadTrusteeBeReplaced: Boolean
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}$heading"
-    ) {
+) {
 
     @formHelper(action = AddATrusteeController.submitAnother(), 'autoComplete -> "off") {
 
@@ -47,7 +50,9 @@
             @components.inset_text("addATrustee.lead-trustee.required", "addATrustee")
         }
 
-        <p>@messages("addATrustee.p1") <a href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
+        @if(canLeadTrusteeBeReplaced) {
+            <p>@messages("addATrustee.p1") <a href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
+        }
 
         @components.input_radio(
             field = form("value"),

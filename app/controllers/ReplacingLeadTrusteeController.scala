@@ -19,18 +19,17 @@ package controllers
 import controllers.actions.StandardActionSets
 import controllers.leadtrustee.individual.{routes => ltiRts}
 import controllers.leadtrustee.organisation.{routes => ltoRts}
+import controllers.trustee.TrusteeFilterer
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.leadtrustee._
 import models._
 import models.requests.DataRequest
-import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc._
 import repositories.PlaybackRepository
 import services.TrustService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.RadioOption
 import views.html.ReplacingLeadTrusteeView
 
@@ -49,7 +48,7 @@ class ReplacingLeadTrusteeController @Inject()(
                                                 errorHandler: ErrorHandler,
                                                 individualTrusteeToLeadTrusteeExtractor: IndividualTrusteeToLeadTrusteeExtractor,
                                                 organisationTrusteeToLeadTrusteeExtractor: OrganisationTrusteeToLeadTrusteeExtractor
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                              )(implicit ec: ExecutionContext) extends TrusteeFilterer {
 
   private val messageKeyPrefix: String = "replacingLeadTrustee"
 
@@ -95,19 +94,13 @@ class ReplacingLeadTrusteeController @Inject()(
   }
 
   private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] = {
-    trustees
-      .zipWithIndex
-      .filter(_._1 match {
-        case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(false)
-        case _: TrusteeOrganisation => true
-      })
-      .map { x =>
-        val name = x._1 match {
-          case trustee: TrusteeIndividual => trustee.name.displayName
-          case trustee: TrusteeOrganisation => trustee.name
-        }
-        RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
+    filterOutMentallyIncapableTrustees(trustees).map { x =>
+      val name = x._1 match {
+        case trustee: TrusteeIndividual => trustee.name.displayName
+        case trustee: TrusteeOrganisation => trustee.name
       }
+      RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
+    }
   }
 
   private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {

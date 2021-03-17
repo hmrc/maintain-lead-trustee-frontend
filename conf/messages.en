@@ -146,7 +146,6 @@ trusteeType.trustee = Trustee
 
 addATrustee.title = Add a trustee
 addATrustee.heading = Add a trustee
-addATrustee.singular.heading = Add a trustee
 addATrustee.count.heading = The trust has {0} trustees
 addATrustee.additional-content = Do you want to add a new trustee?
 addATrustee.add-them-now = Yes, I want to add them now

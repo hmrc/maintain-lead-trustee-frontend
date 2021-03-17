@@ -142,7 +142,6 @@ trusteeType.trustee=Ymddiriedolwr
 
 addATrustee.title=Ychwanegu ymddiriedolwr
 addATrustee.heading=Ychwanegu ymddiriedolwr
-addATrustee.singular.heading=Ychwanegu ymddiriedolwr
 addATrustee.count.heading=Mae gan yr ymddiriedolaeth {0} ymddiriedolwr
 addATrustee.additional-content=A ydych am ychwanegu ymddiriedolwr newydd?
 addATrustee.add-them-now=Iawn, rwyf am ei ychwanegu nawr

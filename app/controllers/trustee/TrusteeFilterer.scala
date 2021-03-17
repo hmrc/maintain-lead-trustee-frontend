@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package controllers.trustee
 
-import play.api.i18n.{Messages, MessagesProvider}
+import models.{Trustee, TrusteeIndividual, TrusteeOrganisation}
+import play.api.Logging
+import play.api.i18n.I18nSupport
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-case class AllTrustees(lead: Option[LeadTrustee], trustees: List[Trustee]) {
+trait TrusteeFilterer extends FrontendBaseController with I18nSupport with Logging {
 
-  val size: Int = lead.size + trustees.size
-
-  def addToHeading(implicit mp: MessagesProvider): String = size match {
-    case x if x > 1 => Messages("addATrustee.count.heading", x)
-    case _ => Messages("addATrustee.heading")
+  def filterOutMentallyIncapableTrustees(trustees: List[Trustee]): List[(Trustee, Int)] = {
+    trustees
+      .zipWithIndex
+      .filter(_._1 match {
+        case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(false)
+        case _: TrusteeOrganisation => true
+      })
   }
 }

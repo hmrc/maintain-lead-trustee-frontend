@@ -19,42 +19,39 @@ package controllers
 import config.FrontendAppConfig
 import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
+import controllers.trustee.TrusteeFilterer
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
-import models.{AddATrustee, AllTrustees, Enumerable}
-import play.api.Logging
+import models.{AddATrustee, AllTrustees, Trustee}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddATrusteeViewHelper
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView, MaxedOutTrusteesView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddATrusteeController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     repository: PlaybackRepository,
-                                     trust: TrustService,
-                                     standardActionSets: StandardActionSets,
-                                     addAnotherFormProvider: AddATrusteeFormProvider,
-                                     yesNoFormProvider: YesNoFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     addAnotherView: AddATrusteeView,
-                                     yesNoView: AddATrusteeYesNoView,
-                                     completeView: MaxedOutTrusteesView,
-                                     val appConfig: FrontendAppConfig,
-                                     trustStoreConnector: TrustStoreConnector,
-                                     errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging
-  with I18nSupport
-  with Enumerable.Implicits {
+                                       override val messagesApi: MessagesApi,
+                                       repository: PlaybackRepository,
+                                       trust: TrustService,
+                                       standardActionSets: StandardActionSets,
+                                       addAnotherFormProvider: AddATrusteeFormProvider,
+                                       yesNoFormProvider: YesNoFormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       addAnotherView: AddATrusteeView,
+                                       yesNoView: AddATrusteeYesNoView,
+                                       completeView: MaxedOutTrusteesView,
+                                       val appConfig: FrontendAppConfig,
+                                       trustStoreConnector: TrustStoreConnector,
+                                       errorHandler: ErrorHandler
+                                     )(implicit ec: ExecutionContext) extends TrusteeFilterer {
 
-  val addAnotherForm : Form[AddATrustee] = addAnotherFormProvider()
+  val addAnotherForm: Form[AddATrustee] = addAnotherFormProvider()
 
   val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
@@ -64,24 +61,25 @@ class AddATrusteeController @Inject()(
       trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(None, Nil) =>
           Ok(yesNoView(yesNoForm))
-        case all: AllTrustees =>
+        case allTrustees: AllTrustees =>
 
-          val trustees = new AddATrusteeViewHelper(all).rows
+          val trustees = new AddATrusteeViewHelper(allTrustees).rows
 
-          if (all.size < 26) {
+          if (allTrustees.size < 26) {
             Ok(addAnotherView(
               form = addAnotherForm,
               inProgressTrustees = trustees.inProgress,
               completeTrustees = trustees.complete,
-              isLeadTrusteeDefined = all.lead.isDefined,
-              heading = all.addToHeading
+              isLeadTrusteeDefined = allTrustees.lead.isDefined,
+              heading = allTrustees.addToHeading,
+              canLeadTrusteeBeReplaced = canLeadTrusteeBeReplaced(allTrustees.trustees)
             ))
           } else {
             Ok(completeView(
               inProgressTrustees = trustees.inProgress,
               completeTrustees = trustees.complete,
-              isLeadTrusteeDefined = all.lead.isDefined,
-              heading = all.addToHeading
+              isLeadTrusteeDefined = allTrustees.lead.isDefined,
+              heading = allTrustees.addToHeading
             ))
           }
       } recoverWith {
@@ -113,19 +111,20 @@ class AddATrusteeController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trust.getAllTrustees(request.userAnswers.identifier).flatMap { trustees =>
+      trust.getAllTrustees(request.userAnswers.identifier).flatMap { allTrustees =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val rows = new AddATrusteeViewHelper(trustees).rows
+            val rows = new AddATrusteeViewHelper(allTrustees).rows
 
             Future.successful(BadRequest(
               addAnotherView(
-                formWithErrors,
-                rows.inProgress,
-                rows.complete,
-                isLeadTrusteeDefined = trustees.lead.isDefined,
-                trustees.addToHeading
+                form = formWithErrors,
+                inProgressTrustees = rows.inProgress,
+                completeTrustees = rows.complete,
+                isLeadTrusteeDefined = allTrustees.lead.isDefined,
+                heading = allTrustees.addToHeading,
+                canLeadTrusteeBeReplaced = canLeadTrusteeBeReplaced(allTrustees.trustees)
               )
             ))
           },
@@ -162,5 +161,9 @@ class AddATrusteeController @Inject()(
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }
+  }
+
+  private def canLeadTrusteeBeReplaced(trustees: List[Trustee]): Boolean = {
+    filterOutMentallyIncapableTrustees(trustees).nonEmpty
   }
 }

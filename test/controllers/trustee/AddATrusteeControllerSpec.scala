@@ -28,6 +28,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual.NamePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -50,19 +51,19 @@ class AddATrusteeControllerSpec extends SpecBase {
 
   val mockStoreConnector : TrustStoreConnector = mock[TrustStoreConnector]
 
-  val addTrusteeForm = new AddATrusteeFormProvider()()
-  val yesNoForm = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
+  val addTrusteeForm: Form[AddATrustee] = new AddATrusteeFormProvider()()
+  val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
 
   val trusteeRows = List(
     AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/0/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")),
     AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/1/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove"))
   )
 
-  val leadAndTrusteeRows = List(
-    AddRow(name = "Lead First Last", typeLabel = "Lead Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/lead-trustee/details",removeLabel =  None, removeUrl = None),
-    AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/0/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")),
-    AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/1/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove"))
+  val leadRow = List(
+    AddRow(name = "Lead First Last", typeLabel = "Lead Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/lead-trustee/details", removeLabel =  None, removeUrl = None)
   )
+
+  val leadAndTrusteeRows: List[AddRow] = leadRow ++ trusteeRows
 
   private val leadTrusteeIndividual = Some(LeadTrusteeIndividual(
     name = Name(
@@ -87,24 +88,24 @@ class AddATrusteeControllerSpec extends SpecBase {
     provisional = true
   )
 
-  val trustees = Trustees(List(trustee, trustee))
-
+  val trustees: Trustees = Trustees(List(trustee, trustee))
 
   class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = leadTrusteeIndividual) extends TrustService {
 
     override def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
-      Future.successful(leadTrustee)
+      ???
 
     override def getAllTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
       Future.successful(AllTrustees(leadTrustee, data.trustees))
 
-    override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = Future.successful(data)
+    override def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
+      ???
 
     override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
       Future.successful(trustee)
 
-    override def removeTrustee(utr: String, trustee: RemoveTrustee)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(200, ""))
+    override def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      ???
 
   }
 
@@ -116,9 +117,9 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(Trustees(Nil))
 
-        val application = applicationBuilder(userAnswers = None).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -134,9 +135,8 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddATrustee.values.head.toString))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddATrustee.values.head.toString))
 
         val result = route(application, request).value
 
@@ -154,9 +154,9 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(Trustees(Nil), None)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -176,13 +176,12 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(Trustees(Nil))
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitYesNoRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, submitYesNoRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
@@ -197,13 +196,12 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(trustees)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitYesNoRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        val request = FakeRequest(POST, submitYesNoRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = yesNoForm.bind(Map("value" -> "invalid value"))
 
@@ -222,39 +220,81 @@ class AddATrusteeControllerSpec extends SpecBase {
 
     "there are trustees" must {
 
-      "return OK and the correct view for a GET" in {
+      "return OK and the correct view for a GET" when {
 
-        val fakeService = new FakeService(trustees, None)
+        "no mentally capable trustees" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+          val mentallyIncapableTrustee = trustee.copy(mentalCapacityYesNo = Some(false))
 
-        val request = FakeRequest(GET, getRoute)
+          val fakeService = new FakeService(Trustees(List(mentallyIncapableTrustee, mentallyIncapableTrustee)))
 
-        val result = route(application, request).value
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .build()
 
-        val view = application.injector.instanceOf[AddATrusteeView]
+          val request = FakeRequest(GET, getRoute)
 
-        status(result) mustEqual OK
+          val result = route(application, request).value
 
-        contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(request, messages).toString
+          val view = application.injector.instanceOf[AddATrusteeView]
 
-        application.stop()
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(
+              form = addTrusteeForm,
+              inProgressTrustees = Nil,
+              completeTrustees = leadAndTrusteeRows,
+              isLeadTrusteeDefined = true,
+              heading = "The trust has 3 trustees",
+              canLeadTrusteeBeReplaced = false
+            )(request, messages).toString
+
+          application.stop()
+        }
+
+        "mentally capable trustees" in {
+
+          val mentallyCapableTrustee = trustee.copy(mentalCapacityYesNo = Some(true))
+
+          val fakeService = new FakeService(Trustees(List(mentallyCapableTrustee, mentallyCapableTrustee)))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .build()
+
+          val request = FakeRequest(GET, getRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddATrusteeView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(
+              form = addTrusteeForm,
+              inProgressTrustees = Nil,
+              completeTrustees = leadAndTrusteeRows,
+              isLeadTrusteeDefined = true,
+              heading = "The trust has 3 trustees",
+              canLeadTrusteeBeReplaced = true
+            )(request, messages).toString
+
+          application.stop()
+        }
       }
 
       "redirect to the 'add trustee' journey when the user elects to add a trustee" in {
 
         val fakeService = new FakeService(trustees)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).
+          overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddATrustee.YesNow.toString))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddATrustee.YesNow.toString))
 
         val result = route(application, request).value
 
@@ -269,14 +309,14 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(trustees)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService),
-          bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind(classOf[TrustService]).toInstance(fakeService),
+            bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
+          ).build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddATrustee.NoComplete.toString))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddATrustee.NoComplete.toString))
 
         when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
@@ -293,13 +333,12 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(trustees)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddATrustee.YesLater.toString))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddATrustee.YesLater.toString))
 
         val result = route(application, request).value
 
@@ -314,13 +353,12 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(trustees, None)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = addTrusteeForm.bind(Map("value" -> "invalid value"))
 
@@ -332,11 +370,77 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         contentAsString(result) mustEqual
           view(
-            boundForm,
-            Nil,
-            trusteeRows,
+            form = boundForm,
+            inProgressTrustees = Nil,
+            completeTrustees = trusteeRows,
             isLeadTrusteeDefined = false,
-            heading = "The trust has 2 trustees"
+            heading = "The trust has 2 trustees",
+            canLeadTrusteeBeReplaced = true
+          )(request, messages).toString
+
+        application.stop()
+      }
+
+    }
+
+    "there is a lead trustee and no trustees" must {
+
+      "return OK and the correct view for a GET" in {
+
+        val fakeService = new FakeService(Trustees(Nil))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(GET, getRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[AddATrusteeView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(
+            form = addTrusteeForm,
+            inProgressTrustees = Nil,
+            completeTrustees = leadRow,
+            isLeadTrusteeDefined = true,
+            heading = "Add a trustee",
+            canLeadTrusteeBeReplaced = false
+          )(request, messages).toString
+
+        application.stop()
+      }
+
+      "return a Bad Request and errors when invalid data is submitted" in {
+
+        val fakeService = new FakeService(Trustees(Nil))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
+
+        val boundForm = addTrusteeForm.bind(Map("value" -> "invalid value"))
+
+        val view = application.injector.instanceOf[AddATrusteeView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(
+            form = boundForm,
+            inProgressTrustees = Nil,
+            completeTrustees = leadRow,
+            isLeadTrusteeDefined = true,
+            heading = "Add a trustee",
+            canLeadTrusteeBeReplaced = false
           )(request, messages).toString
 
         application.stop()
@@ -350,9 +454,9 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         val fakeService = new FakeService(trustees)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -363,23 +467,28 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "The trust has 3 trustees")(request, messages).toString
+          view(
+            form = addTrusteeForm,
+            inProgressTrustees = Nil,
+            completeTrustees = leadAndTrusteeRows,
+            isLeadTrusteeDefined = true,
+            heading = "The trust has 3 trustees",
+            canLeadTrusteeBeReplaced = true
+          )(request, messages).toString
 
         application.stop()
       }
-
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
         val fakeService = new FakeService(trustees)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = addTrusteeForm.bind(Map("value" -> "invalid value"))
 
@@ -391,11 +500,12 @@ class AddATrusteeControllerSpec extends SpecBase {
 
         contentAsString(result) mustEqual
           view(
-            boundForm,
-            Nil,
-            leadAndTrusteeRows,
+            form = boundForm,
+            inProgressTrustees = Nil,
+            completeTrustees = leadAndTrusteeRows,
             isLeadTrusteeDefined = true,
-            heading = "The trust has 3 trustees"
+            heading = "The trust has 3 trustees",
+            canLeadTrusteeBeReplaced = true
           )(request, messages).toString
 
         application.stop()
@@ -413,12 +523,9 @@ class AddATrusteeControllerSpec extends SpecBase {
 
       reset(playbackRepository)
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers),
-          affinityGroup = Agent
-        ).overrides(
-          bind[TrustService].toInstance(mockTrustService)
-        ).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .build()
 
       when(mockTrustService.getAllTrustees(any())(any(), any())).thenReturn(Future.successful(AllTrustees(None, Nil)))
       when(playbackRepository.set(any())).thenReturn(Future.successful(true))
@@ -450,9 +557,9 @@ class AddATrusteeControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-        bind(classOf[TrustService]).toInstance(fakeService)
-      )).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+        .build()
 
       val request = FakeRequest(GET, getRoute)
 
@@ -477,10 +584,11 @@ class AddATrusteeControllerSpec extends SpecBase {
 
       val fakeService = new FakeService(trustees)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-        bind(classOf[TrustService]).toInstance(fakeService),
-        bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
-      )).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind(classOf[TrustService]).toInstance(fakeService),
+          bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
+        ).build()
 
       val request = FakeRequest(POST, submitCompleteRoute)
 
