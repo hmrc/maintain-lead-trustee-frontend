@@ -17,31 +17,35 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions.StandardActionSets
-import controllers.leadtrustee.actions.NameRequiredAction
+import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import forms.DateOfBirthFormProvider
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.DateOfBirthPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.DateOfBirthView
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfBirthController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        playbackRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        formProvider: DateOfBirthFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: DateOfBirthView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                       override val messagesApi: MessagesApi,
+                                       playbackRepository: PlaybackRepository,
+                                       navigator: Navigator,
+                                       standardActionSets: StandardActionSets,
+                                       nameAction: NameRequiredAction,
+                                       formProvider: DateOfBirthFormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       view: DateOfBirthView
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withConfig("leadtrustee.individual.dateOfBirth")
+  private def form(implicit request: LeadTrusteeNameRequest[_]): Form[LocalDate] =
+    formProvider.withConfig("leadtrustee.individual.dateOfBirth", request.userAnswers.is5mldEnabled)
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
