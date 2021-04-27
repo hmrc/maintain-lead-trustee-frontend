@@ -71,7 +71,7 @@ class NationalInsuranceNumberController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
             matchingResponse <- service.matchLeadTrustee(updatedAnswers)
-            _              <- playbackRepository.set(updatedAnswers)
+            _ <- playbackRepository.set(updatedAnswers)
           } yield matchingResponse match {
             case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
               Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))

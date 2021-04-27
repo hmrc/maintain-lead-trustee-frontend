@@ -16,13 +16,20 @@
 
 package models
 
+import config.FrontendAppConfig
 import play.api.libs.json.{Format, Json}
+
+import java.time.LocalDate
 
 case class IdMatchRequest(id: String,
                           nino: String,
                           surname: String,
                           forename: String,
-                          birthDate: String)
+                          birthDate: String) {
+
+  val dob: LocalDate = LocalDate.parse(birthDate)
+  def isDobAcceptable(implicit config: FrontendAppConfig): Boolean = !dob.isBefore(config.minLeadTrusteeDob)
+}
 
 object IdMatchRequest {
   implicit val formats: Format[IdMatchRequest] = Json.format[IdMatchRequest]
