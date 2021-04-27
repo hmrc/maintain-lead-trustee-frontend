@@ -27,8 +27,8 @@ case class IdMatchRequest(id: String,
                           forename: String,
                           birthDate: String) {
 
-  val dob: LocalDate = LocalDate.parse(birthDate)
-  def isDobAcceptable(implicit config: FrontendAppConfig): Boolean = !dob.isBefore(config.minLeadTrusteeDob)
+  def isBirthDateAcceptable(implicit config: FrontendAppConfig): Boolean =
+    !LocalDate.parse(birthDate).isBefore(config.minLeadTrusteeDob)
 }
 
 object IdMatchRequest {

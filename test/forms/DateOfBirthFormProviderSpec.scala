@@ -82,7 +82,7 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
         behave like dateFieldWithMin(form, "value",
           min = min,
-          FormError("value", "leadtrustee.individual.dateOfBirth.error.past", List("day", "month", "year"))
+          FormError("value", "leadtrustee.individual.dateOfBirth.matching.error.past", List("day", "month", "year"))
         )
 
       }

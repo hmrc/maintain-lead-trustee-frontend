@@ -43,7 +43,7 @@ class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckCon
       }
 
       body match {
-        case Some(idMatchRequest) if idMatchRequest.isDobAcceptable =>
+        case Some(idMatchRequest) if idMatchRequest.isBirthDateAcceptable =>
           connector.matchLeadTrustee(idMatchRequest) map {
             case SuccessfulOrUnsuccessfulMatchResponse(_, true) => SuccessfulMatchResponse
             case SuccessfulOrUnsuccessfulMatchResponse(_, false) | NinoNotFoundResponse => UnsuccessfulMatchResponse
