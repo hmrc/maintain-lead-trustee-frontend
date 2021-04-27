@@ -21,35 +21,33 @@ import controllers.leadtrustee.actions.NameRequiredAction
 import forms.NationalInsuranceNumberFormProvider
 import handlers.ErrorHandler
 import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
-
-import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.individual.NationalInsuranceNumberPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustsIndividualCheckService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NationalInsuranceNumberController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        playbackRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        service: TrustsIndividualCheckService,
-                                        formProvider: NationalInsuranceNumberFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        errorHandler: ErrorHandler,
-                                        view: NationalInsuranceNumberView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   override val messagesApi: MessagesApi,
+                                                   playbackRepository: PlaybackRepository,
+                                                   navigator: Navigator,
+                                                   standardActionSets: StandardActionSets,
+                                                   nameAction: NameRequiredAction,
+                                                   service: TrustsIndividualCheckService,
+                                                   formProvider: NationalInsuranceNumberFormProvider,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   errorHandler: ErrorHandler,
+                                                   view: NationalInsuranceNumberView
+                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.nationalInsuranceNumber")
+  private val form: Form[String] = formProvider.withPrefix("leadtrustee.individual.nationalInsuranceNumber")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
@@ -87,4 +85,3 @@ class NationalInsuranceNumberController @Inject()(
       )
   }
 }
-

@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.{IdMatchRequest, IdMatchResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
@@ -25,15 +26,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TrustsIndividualCheckConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
-  private val trustsIndividualCheckUrl: String = s"${config.trustsIndividualCheckUrl}/trusts-individual-check"
+  private val baseUrl: String = s"${config.trustsIndividualCheckUrl}/trusts-individual-check"
 
   def matchLeadTrustee(body: IdMatchRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IdMatchResponse] = {
-    val url: String = s"$trustsIndividualCheckUrl/individual-check"
+    val url: String = s"$baseUrl/individual-check"
     http.POST[IdMatchRequest, IdMatchResponse](url, body)
   }
 
   def failedAttempts(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
-    val url: String = s"${config.trustsIndividualCheckUrl}/trusts-individual-check/$id/failed-attempts"
+    val url: String = s"$baseUrl/$id/failed-attempts"
     http.GET[Int](url)
   }
 }
