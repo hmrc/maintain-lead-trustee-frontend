@@ -25,12 +25,13 @@ import play.api.data.FormError
 class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
   "DateOfBirthFormProviderSpec" when {
-    "4MLD" must {
+
+    "not lead trustee matching" must {
 
       val min = LocalDate.of(1500, 1, 1)
       val max = LocalDate.now(ZoneOffset.UTC)
 
-      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", false)
+      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", matchingLeadTrustee = false)
 
       ".value" should {
 
@@ -56,12 +57,12 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
       }
     }
 
-    "5MLD" must {
+    "lead trustee matching" must {
 
       val min = LocalDate.of(1900, 1, 1)
       val max = LocalDate.now(ZoneOffset.UTC)
 
-      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", true)
+      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", matchingLeadTrustee = true)
 
       ".value" should {
 
@@ -81,7 +82,7 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
         behave like dateFieldWithMin(form, "value",
           min = min,
-          FormError("value", "leadtrustee.individual.dateOfBirth.error.past", List("day", "month", "year"))
+          FormError("value", "leadtrustee.individual.dateOfBirth.matching.error.past", List("day", "month", "year"))
         )
 
       }

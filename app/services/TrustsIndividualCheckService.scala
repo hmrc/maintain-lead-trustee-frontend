@@ -16,6 +16,7 @@
 
 package services
 
+import config.FrontendAppConfig
 import connectors.TrustsIndividualCheckConnector
 import models._
 import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage, TrusteesDateOfBirthPage}
@@ -25,7 +26,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckConnector) extends Logging {
+class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckConnector)
+                                            (implicit config: FrontendAppConfig) extends Logging {
 
   def matchLeadTrustee(userAnswers: UserAnswers)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustsIndividualCheckServiceResponse] = {
@@ -37,18 +39,21 @@ class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckCon
         name <- userAnswers.get(NamePage)
         dob <- userAnswers.get(TrusteesDateOfBirthPage)
       } yield {
-        IdMatchRequest(id, nino, name.firstName.capitalize, name.lastName.capitalize, dob.toString)
+        IdMatchRequest(id, nino.toUpperCase, name.firstName.capitalize, name.lastName.capitalize, dob.toString)
       }
 
       body match {
-        case Some(idMatchRequest) =>
+        case Some(idMatchRequest) if idMatchRequest.isBirthDateAcceptable =>
           connector.matchLeadTrustee(idMatchRequest) map {
             case SuccessfulOrUnsuccessfulMatchResponse(_, true) => SuccessfulMatchResponse
-            case SuccessfulOrUnsuccessfulMatchResponse(_, false) => UnsuccessfulMatchResponse
+            case SuccessfulOrUnsuccessfulMatchResponse(_, false) | NinoNotFoundResponse => UnsuccessfulMatchResponse
             case AttemptLimitExceededResponse => LockedMatchResponse
             case ServiceUnavailableResponse => ServiceUnavailableErrorResponse
             case _ => MatchingErrorResponse
           }
+        case Some(_) =>
+          logger.error(s"[matchLeadTrustee] date of birth is before ${config.minLeadTrusteeDob}")
+          Future.successful(IssueBuildingPayloadResponse)
         case _ =>
           logger.error(s"[matchLeadTrustee] Unable to build request body.")
           Future.successful(IssueBuildingPayloadResponse)

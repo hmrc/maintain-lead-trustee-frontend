@@ -22,7 +22,6 @@ import models.FeatureResponse
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.http.Status
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
 import scala.concurrent.Await

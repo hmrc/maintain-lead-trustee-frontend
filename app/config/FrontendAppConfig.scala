@@ -67,7 +67,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
   lazy val timeoutLength: String = configuration.get[String]("timeout.length")
 
-  // TRUS-3881
   private def getInt(path: String): Int = configuration.get[Int](path)
 
   private def getDate(entry: String): LocalDate =
@@ -81,8 +80,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val minLeadTrusteeDob: LocalDate = getDate("minLeadTrusteeDob")
 
   lazy val trustsIndividualCheckUrl: String = configuration.get[Service]("microservice.services.trusts-individual-check").baseUrl
-
-  // TRUS-3881: update end
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang(ENGLISH),

@@ -21,7 +21,7 @@ import controllers.actions.StandardActionSets
 import handlers.ErrorHandler
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustsIndividualCheckService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.MatchingFailedView

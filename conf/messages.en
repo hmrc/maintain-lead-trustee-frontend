@@ -204,6 +204,7 @@ leadtrustee.individual.dateOfBirth.error.required = Date of birth must include a
 leadtrustee.individual.dateOfBirth.error.invalid = Enter a real date of birth
 leadtrustee.individual.dateOfBirth.error.future = Date of birth must be today or in the past
 leadtrustee.individual.dateOfBirth.error.past = Date of birth must be after 31 December 1499
+leadtrustee.individual.dateOfBirth.matching.error.past = Date of birth must be after 31 December 1899
 
 leadtrustee.individual.countryOfNationalityInTheUkYesNo.title = Does the lead trustee have UK nationality?
 leadtrustee.individual.countryOfNationalityInTheUkYesNo.heading = Does {0} have UK nationality?
