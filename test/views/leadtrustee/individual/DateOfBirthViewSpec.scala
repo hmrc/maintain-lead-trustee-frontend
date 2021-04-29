@@ -28,20 +28,42 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "leadtrustee.individual.dateOfBirth"
 
-  //  TODO: need separate test cases for 4MLD and 5MLD
-  val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual")
+  val form: Form[LocalDate] = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual")
 
-  "DateOfBirthView view" must {
+  val name = "Lead Trustee"
 
-    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+  "DateOfBirthView" when {
 
-    val view = application.injector.instanceOf[DateOfBirthView]
+    "not read-only" must {
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, "LeadTrusteeName")(fakeRequest, messages)
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "LeadTrusteeName")
+      val view = application.injector.instanceOf[DateOfBirthView]
 
-    behave like pageWithBackLink(applyView(form))
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, name, readOnly = false)(fakeRequest, messages)
+
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+
+      behave like pageWithBackLink(applyView(form))
+
+      behave like pageWithoutReadOnlyInput(applyView(form))
+    }
+
+    "read-only" must {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val view = application.injector.instanceOf[DateOfBirthView]
+
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, name, readOnly = true)(fakeRequest, messages)
+
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+
+      behave like pageWithBackLink(applyView(form))
+
+      behave like pageWithReadOnlyInput(applyView(form))
+    }
   }
 }

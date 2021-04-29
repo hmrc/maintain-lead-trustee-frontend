@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import controllers.leadtrustee.actions.NameRequiredAction
+import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import forms.YesNoFormProvider
 import navigation.Navigator
 import pages.leadtrustee.individual.UkCitizenPage
@@ -44,6 +44,9 @@ class UkCitizenController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.ukCitizen")
 
+  private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
+    request.userAnswers.isLeadTrusteeMatched
+
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
@@ -52,7 +55,7 @@ class UkCitizenController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
@@ -60,7 +63,7 @@ class UkCitizenController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
 
         value =>
           for {

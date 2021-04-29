@@ -19,8 +19,7 @@ package controllers.leadtrustee.individual
 import controllers.actions._
 import forms.IndividualNameFormProvider
 import models.Name
-
-import javax.inject.Inject
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.leadtrustee.individual.NamePage
 import play.api.data.Form
@@ -30,6 +29,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.NameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
@@ -44,6 +44,9 @@ class NameController @Inject()(
 
   private val form: Form[Name] = formProvider.withPrefix("leadtrustee.individual.name")
 
+  private def isLeadTrusteeMatched(implicit request: DataRequest[_]) =
+    request.userAnswers.isLeadTrusteeMatched
+
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
 
@@ -52,7 +55,7 @@ class NameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, isLeadTrusteeMatched))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -60,7 +63,7 @@ class NameController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, isLeadTrusteeMatched))),
 
         value =>
           for {

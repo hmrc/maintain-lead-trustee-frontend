@@ -30,17 +30,38 @@ class UkCitizenViewSpec extends YesNoViewBehaviours {
 
   val name = "Lead Trustee"
 
-  "UkCitizen view" must {
+  "UkCitizenView" when {
 
-    val view = viewFor[UkCitizenView](Some(emptyUserAnswers))
+    "not read-only" must {
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      val view = viewFor[UkCitizenView](Some(emptyUserAnswers))
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, name, readOnly = false)(fakeRequest, messages)
 
-    behave like pageWithBackLink(applyView(form))
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
+      behave like pageWithBackLink(applyView(form))
+
+      behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
+
+      behave like pageWithoutDisabledInput(applyView(form))
+    }
+
+    "read-only" must {
+
+      val view = viewFor[UkCitizenView](Some(emptyUserAnswers))
+
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, name, readOnly = true)(fakeRequest, messages)
+
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+
+      behave like pageWithBackLink(applyView(form))
+
+      behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
+
+      behave like pageWithDisabledInput(applyView(form))
+    }
   }
 }

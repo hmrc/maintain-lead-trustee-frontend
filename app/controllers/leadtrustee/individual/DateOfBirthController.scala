@@ -47,6 +47,9 @@ class DateOfBirthController @Inject()(
   private def form(implicit request: LeadTrusteeNameRequest[_]): Form[LocalDate] =
     formProvider.withConfig("leadtrustee.individual.dateOfBirth", request.userAnswers.is5mldEnabled)
 
+  private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
+    request.userAnswers.isLeadTrusteeMatched
+
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
@@ -55,7 +58,7 @@ class DateOfBirthController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
@@ -63,7 +66,7 @@ class DateOfBirthController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
 
         value =>
           for {

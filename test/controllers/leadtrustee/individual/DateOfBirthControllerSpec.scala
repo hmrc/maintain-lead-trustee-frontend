@@ -18,12 +18,13 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.DateOfBirthFormProvider
+import models.BpMatchStatus.FullyMatched
 import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{DateOfBirthPage, NamePage}
+import pages.leadtrustee.individual.{BpMatchStatusPage, DateOfBirthPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
@@ -76,7 +77,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, name.displayName)(getRequest, messages).toString
+          view(form, name.displayName, readOnly = false)(getRequest, messages).toString
 
         application.stop()
       }
@@ -96,7 +97,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(validAnswer), name.displayName)(getRequest, messages).toString
+          view(form.fill(validAnswer), name.displayName, readOnly = false)(getRequest, messages).toString
 
         application.stop()
       }
@@ -136,7 +137,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, name.displayName)(request, messages).toString
+          view(boundForm, name.displayName, readOnly = false)(request, messages).toString
 
         application.stop()
       }
@@ -185,7 +186,26 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, name.displayName)(getRequest, messages).toString
+          view(form, name.displayName, readOnly = false)(getRequest, messages).toString
+
+        application.stop()
+      }
+
+      "return OK and the correct view for a GET when lead trustee matched" in {
+
+        val userAnswers = baseAnswers
+          .set(BpMatchStatusPage, FullyMatched).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        val result = route(application, getRequest).value
+
+        val view = application.injector.instanceOf[DateOfBirthView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, name.displayName, readOnly = true)(getRequest, messages).toString
 
         application.stop()
       }
@@ -204,7 +224,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(validAnswer), name.displayName)(getRequest, messages).toString
+          view(form.fill(validAnswer), name.displayName, readOnly = false)(getRequest, messages).toString
 
         application.stop()
       }
@@ -244,7 +264,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, name.displayName)(request, messages).toString
+          view(boundForm, name.displayName, readOnly = false)(request, messages).toString
 
         application.stop()
       }

@@ -69,7 +69,28 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(request, messages).toString
+        view(form, name.displayName, readOnly = false)(request, messages).toString
+
+      application.stop()
+    }
+
+    "return OK and the correct view for a GET when lead trustee matched" in {
+
+      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+        .set(BpMatchStatusPage, FullyMatched).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[NationalInsuranceNumberView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, name.displayName, readOnly = true)(request, messages).toString
 
       application.stop()
     }
@@ -89,7 +110,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), name.displayName)(request, messages).toString
+        view(form.fill("answer"), name.displayName, readOnly = false)(request, messages).toString
 
       application.stop()
     }
@@ -313,7 +334,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        view(boundForm, name.displayName, readOnly = false)(request, messages).toString
 
       application.stop()
     }

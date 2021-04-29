@@ -27,19 +27,42 @@ class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.nationalInsuranceNumber"
 
-  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual")
+  val form: Form[String] = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual")
 
-  "NationalInsuranceNumberView view" must {
+  val name = "Lead Trustee"
 
-    val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
+  "NationalInsuranceNumberView" when {
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, "Lead Trustee")(fakeRequest, messages)
+    "not read-only" must {
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
+      val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
 
-    behave like pageWithBackLink(applyView(form))
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, name, readOnly = false)(fakeRequest, messages)
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.NationalInsuranceNumberController.onSubmit().url)
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+
+      behave like pageWithBackLink(applyView(form))
+
+      behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.NationalInsuranceNumberController.onSubmit().url)
+
+      behave like pageWithoutReadOnlyInput(applyView(form))
+    }
+
+    "read-only" must {
+
+      val view = viewFor[NationalInsuranceNumberView](Some(emptyUserAnswers))
+
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, name, readOnly = true)(fakeRequest, messages)
+
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+
+      behave like pageWithBackLink(applyView(form))
+
+      behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.NationalInsuranceNumberController.onSubmit().url)
+
+      behave like pageWithReadOnlyInput(applyView(form))
+    }
   }
 }

@@ -21,11 +21,11 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String, readOnly: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("leadtrustee.individual.nationalInsuranceNumber.title")}"
-    ) {
+) {
 
     @formHelper(action = NationalInsuranceNumberController.onSubmit(), 'autoComplete -> "off") {
 
@@ -37,7 +37,8 @@
             field = form("value"),
             label = messages("leadtrustee.individual.nationalInsuranceNumber.heading", name),
             headingIsLabel = true,
-            hint = Some(messages("leadtrustee.individual.nationalInsuranceNumber.hint"))
+            hint = Some(messages("leadtrustee.individual.nationalInsuranceNumber.hint")),
+            readOnly = readOnly
         )
 
         @components.submit_button()

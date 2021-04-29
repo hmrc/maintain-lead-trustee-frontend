@@ -17,7 +17,7 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import controllers.leadtrustee.actions.NameRequiredAction
+import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import forms.NationalInsuranceNumberFormProvider
 import handlers.ErrorHandler
 import models.BpMatchStatus.FullyMatched
@@ -51,6 +51,9 @@ class NationalInsuranceNumberController @Inject()(
 
   private val form: Form[String] = formProvider.withPrefix("leadtrustee.individual.nationalInsuranceNumber")
 
+  private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
+    request.userAnswers.isLeadTrusteeMatched
+
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
@@ -59,7 +62,7 @@ class NationalInsuranceNumberController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
@@ -67,7 +70,7 @@ class NationalInsuranceNumberController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
 
         value =>
           for {

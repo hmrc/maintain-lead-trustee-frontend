@@ -78,6 +78,14 @@ trait ViewSpecBase extends SpecBase {
     assert(element.attr(attribute) == attributeValue)
   }
 
+  def assertElementHasAttribute(element: Element, attribute: String): Assertion = {
+    assert(element.hasAttr(attribute))
+  }
+
+  def assertElementDoesNotHaveAttribute(element: Element, attribute: String): Assertion = {
+    assert(!element.hasAttr(attribute))
+  }
+
   def assertRenderedById(doc: Document, id: String) = {
     assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
   }

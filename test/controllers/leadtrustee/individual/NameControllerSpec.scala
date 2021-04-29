@@ -16,16 +16,16 @@
 
 package controllers.leadtrustee.individual
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.IndividualNameFormProvider
+import models.BpMatchStatus.FullyMatched
 import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.NamePage
+import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -40,12 +40,14 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new IndividualNameFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.name")
+  val form: Form[Name] = formProvider.withPrefix("leadtrustee.individual.name")
 
-  lazy val nameRoute = routes.NameController.onPageLoad().url
+  lazy val nameRoute: String = routes.NameController.onPageLoad().url
 
-  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, Name("value 1", None, "value 2")).success.value
+  val name: Name = Name("Lead", None, "Trustee")
+
+  val userAnswers: UserAnswers = emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "Name Controller" must {
 
@@ -62,7 +64,28 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, readOnly = false)(request, messages).toString
+
+      application.stop()
+    }
+
+    "return OK and the correct view for a GET when lead trustee matched" in {
+
+      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+        .set(BpMatchStatusPage, FullyMatched).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, nameRoute)
+
+      val view = application.injector.instanceOf[NameView]
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, readOnly = true)(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +103,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Name("value 1", None, "value 2")))(request, messages).toString
+        view(form.fill(name), readOnly = false)(request, messages).toString
 
       application.stop()
     }
@@ -129,7 +152,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(request, messages).toString
+        view(boundForm, readOnly = false)(request, messages).toString
 
        application.stop()
     }
