@@ -27,7 +27,8 @@ import java.time.LocalDate
 class LeadTrusteeIndividualMapper extends LeadTrusteeMapper[LeadTrusteeIndividual] {
 
   override val reads: Reads[LeadTrusteeIndividual] = (
-    NamePage.path.read[Name] and
+    BpMatchStatusPage.path.readNullable[BpMatchStatus] and
+      NamePage.path.read[Name] and
       DateOfBirthPage.path.read[LocalDate] and
       TelephoneNumberPage.path.read[String] and
       EmailAddressYesNoPage.path.read[Boolean].flatMap[Option[String]] {

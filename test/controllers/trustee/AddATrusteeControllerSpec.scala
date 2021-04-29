@@ -83,6 +83,7 @@ class AddATrusteeControllerSpec extends SpecBase {
   ) +: trusteeRows
 
   private val leadTrusteeIndividual = Some(LeadTrusteeIndividual(
+    bpMatchStatus = None,
     name = Name(
       firstName = "Lead First",
       middleName = None,

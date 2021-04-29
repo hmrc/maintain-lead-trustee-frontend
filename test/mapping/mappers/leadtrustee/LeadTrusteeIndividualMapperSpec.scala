@@ -17,6 +17,7 @@
 package mapping.mappers.leadtrustee
 
 import base.SpecBase
+import models.BpMatchStatus.FullyMatched
 import models.Constants.GB
 import models._
 import pages.leadtrustee.individual._
@@ -38,6 +39,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
   private val mapper: LeadTrusteeIndividualMapper = new LeadTrusteeIndividualMapper()
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
+    .set(BpMatchStatusPage, FullyMatched).success.value
     .set(NamePage, name).success.value
     .set(DateOfBirthPage, dateOfBirth).success.value
 
@@ -60,6 +62,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
           val result = mapper.map(userAnswers).get
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = dateOfBirth,
             phoneNumber = phone,
@@ -81,6 +84,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
           val result = mapper.map(userAnswers).get
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = dateOfBirth,
             phoneNumber = phone,
@@ -105,6 +109,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
             val result = mapper.map(userAnswers).get
 
             result mustBe LeadTrusteeIndividual(
+              bpMatchStatus = Some(FullyMatched),
               name = name,
               dateOfBirth = dateOfBirth,
               phoneNumber = phone,
@@ -128,6 +133,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
             val result = mapper.map(userAnswers).get
 
             result mustBe LeadTrusteeIndividual(
+              bpMatchStatus = Some(FullyMatched),
               name = name,
               dateOfBirth = dateOfBirth,
               phoneNumber = phone,
@@ -153,6 +159,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
           val result = mapper.map(userAnswers).get
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = dateOfBirth,
             phoneNumber = phone,
@@ -179,6 +186,7 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
           val result = mapper.map(userAnswers).get
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = dateOfBirth,
             phoneNumber = phone,

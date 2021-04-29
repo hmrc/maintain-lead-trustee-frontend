@@ -384,6 +384,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val index = 0
 
       val newLeadTrustee = LeadTrusteeIndividual(
+        bpMatchStatus = None,
         name = Name(
           firstName = "Lead First",
           middleName = None,
@@ -424,6 +425,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val index = 0
 
       val newLeadTrustee = LeadTrusteeIndividual(
+        bpMatchStatus = None,
         name = Name(
           firstName = "Lead First",
           middleName = None,

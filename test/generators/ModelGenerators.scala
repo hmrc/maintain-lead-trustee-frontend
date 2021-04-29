@@ -16,8 +16,9 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, ZoneOffset}
+import models.BpMatchStatus._
 
+import java.time.{Instant, LocalDate, ZoneOffset}
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -120,13 +121,14 @@ trait ModelGenerators {
   implicit lazy val arbitraryLeadTrusteeIndividual: Arbitrary[LeadTrusteeIndividual] = {
     Arbitrary {
       for {
+        bpMatchStatus <- arbitrary[Option[BpMatchStatus]]
         name <- arbitrary[Name]
         dob <- datesBetween(LocalDate.of(1916, 1, 1), LocalDate.of(2010, 12, 31))
         phone <- arbitrary[String]
         email <- arbitrary[Option[String]]
         id <- arbitrary[IndividualIdentification]
         address <- arbitrary[Address]
-      } yield LeadTrusteeIndividual(name, dob, phone, email, id, address)
+      } yield LeadTrusteeIndividual(bpMatchStatus, name, dob, phone, email, id, address)
     }
   }
 
@@ -163,5 +165,11 @@ trait ModelGenerators {
     Arbitrary {
       Gen.const(LocalDate.of(2010, 10, 10))
     }
+
+  implicit lazy val arbitraryBpMatchStatus: Arbitrary[BpMatchStatus] = {
+    Arbitrary {
+      Gen.oneOf(Seq(FullyMatched, Unmatched, NoMatchAttempted, FailedToMatch))
+    }
+  }
 
 }
