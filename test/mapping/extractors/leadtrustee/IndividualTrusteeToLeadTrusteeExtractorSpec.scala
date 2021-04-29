@@ -123,7 +123,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           result.get(IndividualOrBusinessPage).get mustBe Individual
           result.get(NamePage).get mustBe name
           result.get(DateOfBirthPage).get mustBe date
-          result.get(UkCitizenPage) mustBe None
+          result.get(UkCitizenPage).get mustBe false
           result.get(NationalInsuranceNumberPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(LiveInTheUkYesNoPage).get mustBe false
@@ -152,7 +152,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           result.get(IndividualOrBusinessPage).get mustBe Individual
           result.get(NamePage).get mustBe name
           result.get(DateOfBirthPage) mustBe None
-          result.get(UkCitizenPage) mustBe None
+          result.get(UkCitizenPage).get mustBe false
           result.get(NationalInsuranceNumberPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(LiveInTheUkYesNoPage) mustBe None
@@ -190,7 +190,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           result.get(DateOfBirthPage) mustBe None
           result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
           result.get(CountryOfNationalityPage) mustBe None
-          result.get(UkCitizenPage) mustBe None
+          result.get(UkCitizenPage).get mustBe false
           result.get(NationalInsuranceNumberPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
@@ -225,7 +225,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           result.get(DateOfBirthPage) mustBe None
           result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
           result.get(CountryOfNationalityPage).get mustBe GB
-          result.get(UkCitizenPage) mustBe None
+          result.get(UkCitizenPage).get mustBe false
           result.get(NationalInsuranceNumberPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
@@ -260,7 +260,7 @@ class IndividualTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
           result.get(DateOfBirthPage) mustBe None
           result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
           result.get(CountryOfNationalityPage).get mustBe country
-          result.get(UkCitizenPage) mustBe None
+          result.get(UkCitizenPage).get mustBe false
           result.get(NationalInsuranceNumberPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
