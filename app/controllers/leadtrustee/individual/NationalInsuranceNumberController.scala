@@ -20,9 +20,10 @@ import controllers.actions._
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.NationalInsuranceNumberFormProvider
 import handlers.ErrorHandler
+import models.BpMatchStatus.FullyMatched
 import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
 import navigation.Navigator
-import pages.leadtrustee.individual.NationalInsuranceNumberPage
+import pages.leadtrustee.individual.{BpMatchStatusPage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,6 +34,7 @@ import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 class NationalInsuranceNumberController @Inject()(
                                                    override val messagesApi: MessagesApi,
@@ -71,10 +73,17 @@ class NationalInsuranceNumberController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
             matchingResponse <- service.matchLeadTrustee(updatedAnswers)
-            _ <- playbackRepository.set(updatedAnswers)
+            updatedAnswersWithMatched <- Future.fromTry {
+              if (matchingResponse == SuccessfulMatchResponse) {
+                updatedAnswers.set(BpMatchStatusPage, FullyMatched)
+              } else {
+                Success(updatedAnswers)
+              }
+            }
+            _ <- playbackRepository.set(updatedAnswersWithMatched)
           } yield matchingResponse match {
             case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
-              Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
+              Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswersWithMatched))
             case UnsuccessfulMatchResponse =>
               Redirect(routes.MatchingFailedController.onPageLoad())
             case LockedMatchResponse =>

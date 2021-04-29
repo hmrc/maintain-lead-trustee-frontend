@@ -18,12 +18,16 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import forms.NationalInsuranceNumberFormProvider
-import models.{IssueBuildingPayloadResponse, LockedMatchResponse, Name, ServiceNotIn5mldModeResponse, ServiceUnavailableErrorResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
+import models.BpMatchStatus.FullyMatched
+import models.{IssueBuildingPayloadResponse, LockedMatchResponse, Name, ServiceNotIn5mldModeResponse, ServiceUnavailableErrorResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage}
+import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage, NationalInsuranceNumberPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,18 +36,23 @@ import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
-class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
+class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  val form = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual.nationalInsuranceNumber")
+  val form: Form[String] = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual.nationalInsuranceNumber")
 
-  val name = Name("Lead", None, "Trustee")
+  val name: Name = Name("Lead", None, "Trustee")
 
   val nino = "JH123456C"
 
-  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
+  lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad().url
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
+
+  override def beforeEach(): Unit = {
+    reset(playbackRepository)
+    when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+  }
 
   "NationalInsuranceNumber Controller" must {
 
@@ -113,6 +122,10 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
         application.stop()
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(BpMatchStatusPage) mustBe None
       }
 
       "in 5mld mode and SuccessfulMatchResponse" in {
@@ -141,6 +154,10 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
         application.stop()
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(BpMatchStatusPage).get mustBe FullyMatched
       }
 
     }
@@ -176,6 +193,10 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
           routes.MatchingFailedController.onPageLoad().url
 
         application.stop()
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(BpMatchStatusPage) mustBe None
       }
     }
 
@@ -206,6 +227,10 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
           routes.MatchingLockedController.onPageLoad().url
 
         application.stop()
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(BpMatchStatusPage) mustBe None
       }
     }
 
@@ -234,6 +259,10 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual INTERNAL_SERVER_ERROR
 
         application.stop()
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(BpMatchStatusPage) mustBe None
       }
 
       "ServiceUnavailableErrorResponse" in {
@@ -259,6 +288,10 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual INTERNAL_SERVER_ERROR
 
         application.stop()
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(BpMatchStatusPage) mustBe None
       }
 
     }
