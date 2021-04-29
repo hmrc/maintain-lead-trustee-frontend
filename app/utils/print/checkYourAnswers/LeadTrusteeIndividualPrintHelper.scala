@@ -18,7 +18,6 @@ package utils.print.checkYourAnswers
 
 import com.google.inject.Inject
 import controllers.leadtrustee.individual.routes._
-import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
 import pages.leadtrustee.individual._
 import play.api.i18n.Messages
@@ -33,7 +32,7 @@ class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowCo
 
     val prefix: String = "leadtrustee.individual"
 
-    val isLeadTrusteeMatched = userAnswers.get(BpMatchStatusPage).contains(FullyMatched) && userAnswers.is5mldEnabled
+    val isLeadTrusteeMatched = userAnswers.isLeadTrusteeMatched
 
     def answerRows: Seq[AnswerRow] = Seq(
       bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url, canEdit = !isLeadTrusteeMatched, isVerified = isLeadTrusteeMatched),

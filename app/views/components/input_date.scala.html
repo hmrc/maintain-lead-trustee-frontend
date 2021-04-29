@@ -23,7 +23,8 @@
     legendClass: String = "",
     hint: Option[String] = None,
     link : Option[Link] = None,
-    headingIsLegend: Boolean = false
+    headingIsLegend: Boolean = false,
+    readOnly: Boolean = false
 )(implicit messages: Messages)
 
 <div class="form-group @if(field("day").hasErrors || field("month").hasErrors || field("year").hasErrors || field.hasErrors){form-group-error}">
@@ -49,7 +50,7 @@
             @List("day", "month", "year").map { part =>
               <div class="form-control-wrapper form-group form-group-@part">
                 <label class="form-label" for="@field(part).id">@messages(s"date.$part")</label>
-                <input class="form-control @if(field(part).hasErrors || field.error.exists(_.args.contains(part))){form-control-error}" id="@field(part).id" name="@field(part).name" type="text" value="@field(part).value" inputmode="numeric" />
+                <input class="form-control @if(field(part).hasErrors || field.error.exists(_.args.contains(part))){form-control-error}" id="@field(part).id" name="@field(part).name" type="text" value="@field(part).value" inputmode="numeric" @if(readOnly){readonly} />
               </div>
             }
         </div>

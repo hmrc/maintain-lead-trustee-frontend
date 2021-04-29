@@ -15,11 +15,12 @@
  *@
 
 @(
-        field: Field,
-        label: String,
-        hint: Option[String] = None,
-        legendClass: Option[String] = None,
-        legendAsHeading: Boolean = true
+    field: Field,
+    label: String,
+    hint: Option[String] = None,
+    legendClass: Option[String] = None,
+    legendAsHeading: Boolean = true,
+    readOnly: Boolean = false
 )(implicit messages: Messages)
 
 
@@ -46,14 +47,14 @@
         }
 
         <div class="multiple-choice">
-            <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"} />
+            <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"}else if(readOnly){disabled} />
             <label class="block-label selection-button-radio" for="@{field.id}-yes">
                 @messages("site.yes")
             </label>
         </div>
 
         <div class="multiple-choice">
-            <input id="@{field.id}-no" type="radio" name="@{field.id}" value="false" @if(field.value.contains("false")){checked="checked"} />
+            <input id="@{field.id}-no" type="radio" name="@{field.id}" value="false" @if(field.value.contains("false")){checked="checked"}else if(readOnly){disabled} />
             <label class="block-label selection-button-radio" for="@{field.id}-no">
                 @messages("site.no")
             </label>
@@ -61,4 +62,3 @@
 
     </fieldset>
 </div>
-
