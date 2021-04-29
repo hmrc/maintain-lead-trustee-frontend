@@ -18,6 +18,7 @@ package utils.print.checkYourAnswers
 
 import com.google.inject.Inject
 import controllers.leadtrustee.individual.routes._
+import models.BpMatchStatus.FullyMatched
 import models.UserAnswers
 import pages.leadtrustee.individual._
 import play.api.i18n.Messages
@@ -32,13 +33,15 @@ class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowCo
 
     val prefix: String = "leadtrustee.individual"
 
+    val isLeadTrusteeMatched = userAnswers.get(BpMatchStatusPage).contains(FullyMatched) && userAnswers.is5mldEnabled
+
     def answerRows: Seq[AnswerRow] = Seq(
-      bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url),
-      bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad().url),
+      bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url, canEdit = !isLeadTrusteeMatched, isVerified = isLeadTrusteeMatched),
+      bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad().url, canEdit = !isLeadTrusteeMatched, isVerified = isLeadTrusteeMatched),
       bound.yesNoQuestion(CountryOfNationalityInTheUkYesNoPage, s"$prefix.countryOfNationalityInTheUkYesNo", CountryOfNationalityInTheUkYesNoController.onPageLoad().url),
       bound.countryQuestion(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, s"$prefix.countryOfNationality", CountryOfNationalityController.onPageLoad().url),
-      bound.yesNoQuestion(UkCitizenPage, s"$prefix.ukCitizen", UkCitizenController.onPageLoad().url),
-      bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad().url),
+      bound.yesNoQuestion(UkCitizenPage, s"$prefix.ukCitizen", UkCitizenController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
+      bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad().url, canEdit = !isLeadTrusteeMatched, isVerified = isLeadTrusteeMatched),
       bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", PassportOrIdCardController.onPageLoad().url),
       bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad().url),
       bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad().url),
