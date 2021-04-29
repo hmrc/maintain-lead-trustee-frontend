@@ -16,7 +16,7 @@
 
 package views.leadtrustee.individual
 
-import forms.UkCitizenFormProvider
+import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -26,7 +26,7 @@ class UkCitizenViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.ukCitizen"
 
-  val form = new UkCitizenFormProvider()("leadtrustee.individual")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   val name = "Lead Trustee"
 

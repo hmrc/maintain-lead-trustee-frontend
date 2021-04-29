@@ -17,13 +17,14 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.UkCitizenFormProvider
-import models.Name
+import forms.YesNoFormProvider
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.leadtrustee.individual.{NamePage, UkCitizenPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -37,16 +38,15 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new UkCitizenFormProvider()
-  val form = formProvider("leadtrustee.individual")
+  val formProvider = new YesNoFormProvider()
+  val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.ukCitizen")
 
-  val name = Name("Lead", None, "Trustee")
+  val name: Name = Name("Lead", None, "Trustee")
 
-  lazy val ukCitizenRoute = routes.UkCitizenController.onPageLoad().url
+  lazy val ukCitizenRoute: String = routes.UkCitizenController.onPageLoad().url
 
-  override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name)
-    .success.value
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "UkCitizen Controller" must {
 
