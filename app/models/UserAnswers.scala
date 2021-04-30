@@ -17,7 +17,7 @@
 package models
 
 import models.BpMatchStatus.FullyMatched
-import pages.leadtrustee.individual.BpMatchStatusPage
+import pages.leadtrustee.individual.{BpMatchStatusPage, NationalInsuranceNumberPage}
 
 import java.time.{LocalDate, LocalDateTime}
 import play.api.libs.json._
@@ -35,7 +35,9 @@ final case class UserAnswers(internalId: String,
                              isTaxable: Boolean = true,
                              isUnderlyingData5mld: Boolean = false) {
 
-  def isLeadTrusteeMatched: Boolean = this.get(BpMatchStatusPage).contains(FullyMatched) && is5mldEnabled
+  def isLeadTrusteeMatched: Boolean = {
+    this.get(BpMatchStatusPage).contains(FullyMatched) && this.get(NationalInsuranceNumberPage).isDefined && is5mldEnabled
+  }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {

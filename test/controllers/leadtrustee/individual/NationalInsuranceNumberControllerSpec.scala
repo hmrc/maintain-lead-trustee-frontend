@@ -74,45 +74,51 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
       application.stop()
     }
 
-    "return OK and the correct view for a GET when lead trustee matched" in {
+    "populate the view correctly on a GET" when {
+      "question has previously been answered" when {
 
-      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
-        .set(BpMatchStatusPage, FullyMatched).success.value
+        "lead trustee not matched" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberPage, nino).success.value
 
-      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val result = route(application, request).value
+          val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
-      val view = application.injector.instanceOf[NationalInsuranceNumberView]
+          val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
-      status(result) mustEqual OK
+          val result = route(application, request).value
 
-      contentAsString(result) mustEqual
-        view(form, name.displayName, readOnly = true)(request, messages).toString
+          status(result) mustEqual OK
 
-      application.stop()
-    }
+          contentAsString(result) mustEqual
+            view(form.fill(nino), name.displayName, readOnly = false)(request, messages).toString
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+          application.stop()
+        }
 
-      val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberPage, "answer").success.value
+        "lead trustee matched" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+            .set(NationalInsuranceNumberPage, nino).success.value
+            .set(BpMatchStatusPage, FullyMatched).success.value
 
-      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[NationalInsuranceNumberView]
+          val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
-      val result = route(application, request).value
+          val result = route(application, request).value
 
-      status(result) mustEqual OK
+          val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
-      contentAsString(result) mustEqual
-        view(form.fill("answer"), name.displayName, readOnly = false)(request, messages).toString
+          status(result) mustEqual OK
 
-      application.stop()
+          contentAsString(result) mustEqual
+            view(form.fill(nino), name.displayName, readOnly = true)(request, messages).toString
+
+          application.stop()
+        }
+      }
     }
 
     "redirect to the next page when valid data is submitted" when {

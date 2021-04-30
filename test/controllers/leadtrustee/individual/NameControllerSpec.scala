@@ -24,7 +24,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage}
+import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -46,7 +46,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
   val name: Name = Name("Lead", None, "Trustee")
 
-  val userAnswers: UserAnswers = emptyUserAnswers
+  val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
 
   "Name Controller" must {
@@ -69,43 +69,49 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "return OK and the correct view for a GET when lead trustee matched" in {
+    "populate the view correctly on a GET" when {
+      "question has previously been answered" when {
 
-      val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
-        .set(BpMatchStatusPage, FullyMatched).success.value
+        "lead trustee not matched" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val request = FakeRequest(GET, nameRoute)
+          val request = FakeRequest(GET, nameRoute)
 
-      val view = application.injector.instanceOf[NameView]
+          val view = application.injector.instanceOf[NameView]
 
-      val result = route(application, request).value
+          val result = route(application, request).value
 
-      status(result) mustEqual OK
+          status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, readOnly = true)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form.fill(name), readOnly = false)(request, messages).toString
 
-      application.stop()
-    }
+          application.stop()
+        }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+        "lead trustee matched" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val userAnswers = baseAnswers.copy(is5mldEnabled = true)
+            .set(NationalInsuranceNumberPage, "nino").success.value
+            .set(BpMatchStatusPage, FullyMatched).success.value
 
-      val request = FakeRequest(GET, nameRoute)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[NameView]
+          val request = FakeRequest(GET, nameRoute)
 
-      val result = route(application, request).value
+          val view = application.injector.instanceOf[NameView]
 
-      status(result) mustEqual OK
+          val result = route(application, request).value
 
-      contentAsString(result) mustEqual
-        view(form.fill(name), readOnly = false)(request, messages).toString
+          status(result) mustEqual OK
 
-      application.stop()
+          contentAsString(result) mustEqual
+            view(form.fill(name), readOnly = true)(request, messages).toString
+
+          application.stop()
+        }
+      }
     }
 
     "redirect to the next page when valid data is submitted" in {

@@ -16,30 +16,70 @@
 
 package models
 
-import java.time.LocalDate
-
-import org.scalatest.{FreeSpec, MustMatchers}
+import base.SpecBase
+import generators.ModelGenerators
+import models.BpMatchStatus.FullyMatched
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.leadtrustee.individual.{BpMatchStatusPage, NationalInsuranceNumberPage}
 import play.api.libs.json.{JsPath, Json}
 
+import java.time.LocalDate
 import scala.util.Success
 
-class UserAnswersSpec extends FreeSpec with MustMatchers {
-  "delete data removes data from the Json Object" in {
-    val json = Json.obj(
-      "field" -> Json.obj(
-        "innerfield" -> "value"
-      )
-    )
+class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators {
 
-    val ua = new UserAnswers(
-      "ID",
-      "UTRUTRUTR",
-      LocalDate.of(1999, 10, 20),
-      json
-    )
+  "UserAnswers" when {
 
-    ua.deleteAtPath(JsPath \ "field" \ "innerfield") mustBe Success(ua.copy(data = Json.obj(
-      "field" -> Json.obj()
-    )))
+    ".deleteAtPath" must {
+      "delete data removes data from the Json Object" in {
+        val json = Json.obj(
+          "field" -> Json.obj(
+            "innerfield" -> "value"
+          )
+        )
+
+        val ua = new UserAnswers(
+          "ID",
+          "UTRUTRUTR",
+          LocalDate.of(1999, 10, 20),
+          json
+        )
+
+        ua.deleteAtPath(JsPath \ "field" \ "innerfield") mustBe Success(ua.copy(data = Json.obj(
+          "field" -> Json.obj()
+        )))
+      }
+    }
+
+    ".isLeadTrusteeMatched" must {
+
+      "return true" when {
+        "5mld enabled and lead trustee fully matched with a NINO" in {
+
+          val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+            .set(BpMatchStatusPage, FullyMatched).success.value
+            .set(NationalInsuranceNumberPage, "nino").success.value
+
+          userAnswers.isLeadTrusteeMatched mustEqual true
+        }
+      }
+
+      "return false" when {
+        "any of these false: 5mld enabled; fully matched; has nino" in {
+
+          val gen = arbitrary[(Boolean, BpMatchStatus, Option[String])]
+
+          forAll(gen.suchThat(x => !(x._1 && x._2 == FullyMatched && x._3.isDefined))) {
+            x =>
+              val userAnswers = emptyUserAnswers.copy(is5mldEnabled = x._1)
+                .set(BpMatchStatusPage, x._2).success.value
+                .set(NationalInsuranceNumberPage, x._3).success.value
+
+              userAnswers.isLeadTrusteeMatched mustEqual false
+          }
+        }
+      }
+    }
   }
 }
