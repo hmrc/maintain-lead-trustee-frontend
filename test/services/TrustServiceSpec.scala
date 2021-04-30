@@ -18,6 +18,7 @@ package services
 
 import java.time.LocalDate
 import connectors.TrustConnector
+import models.BpMatchStatus.FullyMatched
 import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees, UkAddress}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -51,6 +52,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       val trustees = List(trusteeInd)
 
       val leadTrusteeIndividual = LeadTrusteeIndividual(
+        bpMatchStatus = Some(FullyMatched),
         name = Name(
           firstName = "First",
           middleName = None,

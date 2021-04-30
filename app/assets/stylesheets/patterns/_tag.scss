@@ -25,16 +25,7 @@
   text-transform: uppercase;
 }
 
-.govuk-tag.completed {
+.govuk-tag.verified {
   color: white;
   background-color: $blue;
-}
-
-.govuk-tag.progress {
-  color: black;
-  background-color: transparent;
-}
-
-.govuk-tag--inactive {
-  background-color: $grey-1;
 }

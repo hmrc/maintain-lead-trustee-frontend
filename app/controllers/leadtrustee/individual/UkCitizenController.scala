@@ -17,18 +17,18 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import controllers.leadtrustee.actions.NameRequiredAction
-import forms.UkCitizenFormProvider
-
-import javax.inject.Inject
+import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredAction}
+import forms.YesNoFormProvider
 import navigation.Navigator
 import pages.leadtrustee.individual.UkCitizenPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.UkCitizenView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkCitizenController @Inject()(
@@ -37,12 +37,15 @@ class UkCitizenController @Inject()(
                                      navigator: Navigator,
                                      standardActionSets: StandardActionSets,
                                      nameAction: NameRequiredAction,
-                                     formProvider: UkCitizenFormProvider,
+                                     formProvider: YesNoFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: UkCitizenView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider("leadtrustee.individual")
+  private val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.ukCitizen")
+
+  private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
+    request.userAnswers.isLeadTrusteeMatched
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
@@ -52,7 +55,7 @@ class UkCitizenController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
@@ -60,7 +63,7 @@ class UkCitizenController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
 
         value =>
           for {

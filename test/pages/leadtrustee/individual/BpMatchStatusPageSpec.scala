@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package viewmodels
+package pages.leadtrustee.individual
 
-import play.twirl.api.Html
+import models.BpMatchStatus
+import pages.behaviours.PageBehaviours
 
-case class AnswerRow(label: Html, answer: Html, changeUrl: String, canEdit: Boolean = true, isVerified: Boolean = false)
+class BpMatchStatusPageSpec extends PageBehaviours {
+
+  "MatchedYesNoPage" must {
+
+    beRetrievable[BpMatchStatus](BpMatchStatusPage)
+
+    beSettable[BpMatchStatus](BpMatchStatusPage)
+
+    beRemovable[BpMatchStatus](BpMatchStatusPage)
+  }
+}

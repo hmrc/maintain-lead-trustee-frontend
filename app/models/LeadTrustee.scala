@@ -43,7 +43,8 @@ object LeadTrustee {
   }
 }
 
-case class LeadTrusteeIndividual(name: Name,
+case class LeadTrusteeIndividual(bpMatchStatus: Option[BpMatchStatus],
+                                 name: Name,
                                  dateOfBirth: LocalDate,
                                  phoneNumber: String,
                                  email: Option[String] = None,
@@ -54,7 +55,8 @@ case class LeadTrusteeIndividual(name: Name,
 
 object LeadTrusteeIndividual {
   implicit val reads: Reads[LeadTrusteeIndividual] = (
-    (__ \ 'name).read[Name] and
+    (__ \ 'bpMatchStatus).readNullable[BpMatchStatus] and
+      (__ \ 'name).read[Name] and
       (__ \ 'dateOfBirth).read[LocalDate] and
       (__ \ 'phoneNumber).read[String] and
       (__ \ 'email).readNullable[String] and
@@ -65,7 +67,8 @@ object LeadTrusteeIndividual {
     )(LeadTrusteeIndividual.apply _)
 
   implicit val writes: Writes[LeadTrusteeIndividual] = (
-    (__ \ 'name).write[Name] and
+    (__ \ 'bpMatchStatus).writeNullable[BpMatchStatus] and
+      (__ \ 'name).write[Name] and
       (__ \ 'dateOfBirth).write[LocalDate] and
       (__ \ 'phoneNumber).write[String] and
       (__ \ 'email).writeNullable[String] and

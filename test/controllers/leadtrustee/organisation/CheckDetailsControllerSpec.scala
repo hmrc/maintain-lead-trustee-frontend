@@ -92,6 +92,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
           val mockTrustsConnector = mock[TrustConnector]
 
           val leadTrustee = LeadTrusteeIndividual(
+            bpMatchStatus = None,
             name = Name("Joe", None, "Bloggs"),
             dateOfBirth = LocalDate.parse("2000-01-01"),
             phoneNumber = "tel",

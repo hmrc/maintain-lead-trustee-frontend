@@ -21,11 +21,11 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String, readOnly: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("leadtrustee.individual.ukCitizen.title")}"
-    ) {
+) {
 
     @formHelper(action = UkCitizenController.onSubmit(), 'autoComplete -> "off") {
 
@@ -35,7 +35,8 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("leadtrustee.individual.ukCitizen.heading", name)
+            label = messages("leadtrustee.individual.ukCitizen.heading", name),
+            readOnly = readOnly
         )
 
         @components.submit_button()

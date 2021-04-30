@@ -18,15 +18,18 @@ package controllers.leadtrustee.individual
 
 import controllers.actions._
 import forms.IndividualNameFormProvider
-import javax.inject.Inject
+import models.Name
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.leadtrustee.individual.NamePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.NameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
@@ -37,9 +40,12 @@ class NameController @Inject()(
                                 formProvider: IndividualNameFormProvider,
                                 val controllerComponents: MessagesControllerComponents,
                                 view: NameView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.name")
+  private val form: Form[Name] = formProvider.withPrefix("leadtrustee.individual.name")
+
+  private def isLeadTrusteeMatched(implicit request: DataRequest[_]) =
+    request.userAnswers.isLeadTrusteeMatched
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
@@ -49,7 +55,7 @@ class NameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, isLeadTrusteeMatched))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -57,7 +63,7 @@ class NameController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, isLeadTrusteeMatched))),
 
         value =>
           for {

@@ -45,6 +45,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
   private val ukAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
 
   private val leadTrustee = LeadTrusteeIndividual(
+    bpMatchStatus = None,
     name = Name("Joe", None, "Bloggs"),
     dateOfBirth = LocalDate.parse("2000-01-01"),
     phoneNumber = "tel",

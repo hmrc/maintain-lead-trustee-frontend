@@ -17,6 +17,7 @@
 package mapping.extractors.leadtrustee
 
 import base.SpecBase
+import models.BpMatchStatus.FullyMatched
 import models.Constants.GB
 import models.IndividualOrBusiness.Individual
 import models._
@@ -52,6 +53,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           val identification = NationalInsuranceNumber(nino)
 
           val trustee = LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = date,
             phoneNumber = phone,
@@ -63,6 +65,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           val result = extractor.extract(baseAnswers, trustee).get
 
           result.get(IndividualOrBusinessPage).get mustBe Individual
+          result.get(BpMatchStatusPage).get mustBe FullyMatched
           result.get(NamePage).get mustBe name
           result.get(DateOfBirthPage).get mustBe date
           result.get(UkCitizenPage).get mustBe true
@@ -80,6 +83,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
         "trustee has a passport/ID card, non-UK address and email" in {
 
           val trustee = LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = date,
             phoneNumber = phone,
@@ -91,6 +95,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           val result = extractor.extract(baseAnswers, trustee).get
 
           result.get(IndividualOrBusinessPage).get mustBe Individual
+          result.get(BpMatchStatusPage).get mustBe FullyMatched
           result.get(NamePage).get mustBe name
           result.get(DateOfBirthPage).get mustBe date
           result.get(UkCitizenPage).get mustBe false
@@ -115,6 +120,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           val identification = NationalInsuranceNumber(nino)
 
           val trustee = LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = date,
             phoneNumber = phone,
@@ -128,6 +134,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           val result = extractor.extract(baseAnswers, trustee).get
 
           result.get(IndividualOrBusinessPage).get mustBe Individual
+          result.get(BpMatchStatusPage).get mustBe FullyMatched
           result.get(NamePage).get mustBe name
           result.get(DateOfBirthPage).get mustBe date
           result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
@@ -151,6 +158,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           val combined = CombinedPassportOrIdCard("country", "number", date)
 
           val trustee = LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = date,
             phoneNumber = phone,
@@ -164,6 +172,7 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
           val result = extractor.extract(baseAnswers, trustee).get
 
           result.get(IndividualOrBusinessPage).get mustBe Individual
+          result.get(BpMatchStatusPage).get mustBe FullyMatched
           result.get(NamePage).get mustBe name
           result.get(DateOfBirthPage).get mustBe date
           result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false

@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
+import models.BpMatchStatus.FullyMatched
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -46,6 +47,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
 
   private val leadTrusteeIndividual = LeadTrusteeIndividual(
+    bpMatchStatus = Some(FullyMatched),
     name = Name(firstName = "John", middleName = Some("Jonathan"), lastName = "Smith"),
     dateOfBirth = date,
     phoneNumber = "+446565657",

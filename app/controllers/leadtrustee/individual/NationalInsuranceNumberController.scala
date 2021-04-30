@@ -17,12 +17,13 @@
 package controllers.leadtrustee.individual
 
 import controllers.actions._
-import controllers.leadtrustee.actions.NameRequiredAction
+import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import forms.NationalInsuranceNumberFormProvider
 import handlers.ErrorHandler
+import models.BpMatchStatus.FullyMatched
 import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
 import navigation.Navigator
-import pages.leadtrustee.individual.NationalInsuranceNumberPage
+import pages.leadtrustee.individual.{BpMatchStatusPage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,6 +34,7 @@ import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 class NationalInsuranceNumberController @Inject()(
                                                    override val messagesApi: MessagesApi,
@@ -49,6 +51,9 @@ class NationalInsuranceNumberController @Inject()(
 
   private val form: Form[String] = formProvider.withPrefix("leadtrustee.individual.nationalInsuranceNumber")
 
+  private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
+    request.userAnswers.isLeadTrusteeMatched
+
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
 
@@ -57,7 +62,7 @@ class NationalInsuranceNumberController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName))
+      Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
@@ -65,16 +70,23 @@ class NationalInsuranceNumberController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
             matchingResponse <- service.matchLeadTrustee(updatedAnswers)
-            _ <- playbackRepository.set(updatedAnswers)
+            updatedAnswersWithMatched <- Future.fromTry {
+              if (matchingResponse == SuccessfulMatchResponse) {
+                updatedAnswers.set(BpMatchStatusPage, FullyMatched)
+              } else {
+                Success(updatedAnswers)
+              }
+            }
+            _ <- playbackRepository.set(updatedAnswersWithMatched)
           } yield matchingResponse match {
             case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
-              Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
+              Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswersWithMatched))
             case UnsuccessfulMatchResponse =>
               Redirect(routes.MatchingFailedController.onPageLoad())
             case LockedMatchResponse =>

@@ -21,11 +21,11 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], readOnly: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("leadtrustee.individual.name.title")}"
-    ) {
+) {
 
     @formHelper(action = NameController.onSubmit(), 'autoComplete -> "on") {
 
@@ -42,19 +42,22 @@
             @components.input_text(
                 field = form("firstName"),
                 label = messages("leadtrustee.individual.name.firstName"),
-                autocomplete = Some("given-name")
+                autocomplete = Some("given-name"),
+                readOnly = readOnly
             )
 
             @components.input_text(
                 field = form("middleName"),
                 label = messages("leadtrustee.individual.name.middleName"),
-                autocomplete = Some("additional-name")
+                autocomplete = Some("additional-name"),
+                readOnly = readOnly
             )
 
             @components.input_text(
                 field = form("lastName"),
                 label = messages("leadtrustee.individual.name.lastName"),
-                autocomplete = Some("family-name")
+                autocomplete = Some("family-name"),
+                readOnly = readOnly
             )
 
         </fieldset>

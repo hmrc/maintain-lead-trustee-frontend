@@ -90,7 +90,8 @@ trait LeadTrusteeExtractor extends Extractor {
         .set(ninoYesNoPage, false)
         .flatMap(_.set(passportOrIdCardDetailsPage, c))
     } getOrElse {
-      Success(answers)
+      answers
+        .set(ninoYesNoPage, false)
     }
   }
 

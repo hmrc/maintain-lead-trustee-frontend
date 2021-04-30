@@ -17,6 +17,7 @@
 package models
 
 import base.SpecBase
+import models.BpMatchStatus.FullyMatched
 import models.Constants.GB
 import play.api.libs.json.{JsString, Json, __}
 
@@ -51,6 +52,7 @@ class LeadTrusteeSpec extends SpecBase {
           val jsonStr =
             s"""
                |{
+               |  "bpMatchStatus": "01",
                |  "name": {
                |    "firstName": "$firstName",
                |    "lastName": "$lastName"
@@ -72,6 +74,7 @@ class LeadTrusteeSpec extends SpecBase {
           val result = json.as[LeadTrustee]
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = LocalDate.parse(dateOfBirth),
             phoneNumber = tel,
@@ -91,6 +94,7 @@ class LeadTrusteeSpec extends SpecBase {
           val jsonStr =
             s"""
                |{
+               |  "bpMatchStatus": "01",
                |  "name": {
                |    "firstName": "$firstName",
                |    "lastName": "$lastName"
@@ -117,6 +121,7 @@ class LeadTrusteeSpec extends SpecBase {
           val result = json.as[LeadTrustee]
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = LocalDate.parse(dateOfBirth),
             phoneNumber = tel,
@@ -136,6 +141,7 @@ class LeadTrusteeSpec extends SpecBase {
           val jsonStr =
             s"""
                |{
+               |  "bpMatchStatus": "01",
                |  "name": {
                |    "firstName": "$firstName",
                |    "lastName": "$lastName"
@@ -159,6 +165,7 @@ class LeadTrusteeSpec extends SpecBase {
           val result = json.as[LeadTrustee]
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = LocalDate.parse(dateOfBirth),
             phoneNumber = tel,
@@ -180,6 +187,7 @@ class LeadTrusteeSpec extends SpecBase {
           val jsonStr =
             s"""
                |{
+               |  "bpMatchStatus": "01",
                |  "name": {
                |    "firstName": "$firstName",
                |    "lastName": "$lastName"
@@ -208,6 +216,7 @@ class LeadTrusteeSpec extends SpecBase {
           val result = json.as[LeadTrustee]
 
           result mustBe LeadTrusteeIndividual(
+            bpMatchStatus = Some(FullyMatched),
             name = name,
             dateOfBirth = LocalDate.parse(dateOfBirth),
             phoneNumber = tel,

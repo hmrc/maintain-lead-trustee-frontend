@@ -28,27 +28,56 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
 
   val messageKeyPrefix = "leadtrustee.individual.name"
 
-  override val form = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[Name] = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
 
-  "NameView" must {
+  "NameView" when {
 
-    val view = viewFor[NameView](Some(emptyUserAnswers))
+    "not read-only" must {
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+      val view = viewFor[NameView](Some(emptyUserAnswers))
+
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, readOnly = false)(fakeRequest, messages)
 
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+      behave like normalPage(applyView(form), messageKeyPrefix)
 
-    behave like pageWithBackLink(applyView(form))
+      behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithTextFields(
-      form,
-      applyView,
-      messageKeyPrefix,
-      None,
-      routes.NameController.onSubmit().url,
-      "firstName", "lastName"
-    )
+      behave like pageWithTextFields(
+        form,
+        applyView,
+        messageKeyPrefix,
+        None,
+        routes.NameController.onSubmit().url,
+        "firstName", "lastName"
+      )
+
+      behave like pageWithoutReadOnlyInput(applyView(form))
+    }
+
+    "read-only" must {
+
+      val view = viewFor[NameView](Some(emptyUserAnswers))
+
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, readOnly = true)(fakeRequest, messages)
+
+
+      behave like normalPage(applyView(form), messageKeyPrefix)
+
+      behave like pageWithBackLink(applyView(form))
+
+      behave like pageWithTextFields(
+        form,
+        applyView,
+        messageKeyPrefix,
+        None,
+        routes.NameController.onSubmit().url,
+        "firstName", "lastName"
+      )
+
+      behave like pageWithReadOnlyInput(applyView(form))
+    }
   }
 }

@@ -17,13 +17,15 @@
 package controllers.leadtrustee.individual
 
 import base.SpecBase
-import forms.UkCitizenFormProvider
-import models.Name
+import forms.YesNoFormProvider
+import models.BpMatchStatus.FullyMatched
+import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{NamePage, UkCitizenPage}
+import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage, NationalInsuranceNumberPage, UkCitizenPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -37,16 +39,15 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new UkCitizenFormProvider()
-  val form = formProvider("leadtrustee.individual")
+  val formProvider = new YesNoFormProvider()
+  val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.ukCitizen")
 
-  val name = Name("Lead", None, "Trustee")
+  val name: Name = Name("Lead", None, "Trustee")
 
-  lazy val ukCitizenRoute = routes.UkCitizenController.onPageLoad().url
+  lazy val ukCitizenRoute: String = routes.UkCitizenController.onPageLoad().url
 
-  override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name)
-    .success.value
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "UkCitizen Controller" must {
 
@@ -63,29 +64,57 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(request, messages).toString
+        view(form, name.displayName, readOnly = false)(request, messages).toString
 
       application.stop()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+    "populate the view correctly on a GET" when {
+      "question has previously been answered" when {
 
-      val userAnswers = emptyUserAnswers.set(UkCitizenPage, true).success.value
+        "lead trustee not matched" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val userAnswers = emptyUserAnswers.set(UkCitizenPage, true).success.value
 
-      val request = FakeRequest(GET, ukCitizenRoute)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[UkCitizenView]
+          val request = FakeRequest(GET, ukCitizenRoute)
 
-      val result = route(application, request).value
+          val view = application.injector.instanceOf[UkCitizenView]
 
-      status(result) mustEqual OK
+          val result = route(application, request).value
 
-      contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(request, messages).toString
+          status(result) mustEqual OK
 
-      application.stop()
+          contentAsString(result) mustEqual
+            view(form.fill(true), name.displayName, readOnly = false)(request, messages).toString
+
+          application.stop()
+        }
+
+        "lead trustee matched" in {
+
+          val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+            .set(UkCitizenPage, true).success.value
+            .set(NationalInsuranceNumberPage, "nino").success.value
+            .set(BpMatchStatusPage, FullyMatched).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+          val request = FakeRequest(GET, ukCitizenRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[UkCitizenView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form.fill(true), name.displayName, readOnly = true)(request, messages).toString
+
+          application.stop()
+        }
+      }
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -131,7 +160,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        view(boundForm, name.displayName, readOnly = false)(request, messages).toString
 
       application.stop()
     }

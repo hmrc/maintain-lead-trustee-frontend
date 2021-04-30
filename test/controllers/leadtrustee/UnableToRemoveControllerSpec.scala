@@ -18,8 +18,8 @@ package controllers.leadtrustee
 
 
 import java.time.LocalDate
-
 import base.SpecBase
+import models.BpMatchStatus.FullyMatched
 import models.{CombinedPassportOrIdCard, LeadTrusteeIndividual, Name, UkAddress}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -42,6 +42,7 @@ class UnableToRemoveControllerSpec extends SpecBase   {
       val mockTrustService= mock[TrustService]
 
       val lt = LeadTrusteeIndividual(
+        bpMatchStatus = Some(FullyMatched),
         name = Name("Test", None, "Name"),
         dateOfBirth = LocalDate.parse("1983-09-24"),
         phoneNumber = "1234567890",

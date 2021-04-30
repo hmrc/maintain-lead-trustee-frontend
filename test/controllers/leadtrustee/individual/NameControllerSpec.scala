@@ -16,16 +16,16 @@
 
 package controllers.leadtrustee.individual
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.IndividualNameFormProvider
+import models.BpMatchStatus.FullyMatched
 import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.NamePage
+import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage, NationalInsuranceNumberPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -40,12 +40,14 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new IndividualNameFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.name")
+  val form: Form[Name] = formProvider.withPrefix("leadtrustee.individual.name")
 
-  lazy val nameRoute = routes.NameController.onPageLoad().url
+  lazy val nameRoute: String = routes.NameController.onPageLoad().url
 
-  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, Name("value 1", None, "value 2")).success.value
+  val name: Name = Name("Lead", None, "Trustee")
+
+  val baseAnswers: UserAnswers = emptyUserAnswers
+    .set(NamePage, name).success.value
 
   "Name Controller" must {
 
@@ -62,27 +64,54 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(request, messages).toString
+        view(form, readOnly = false)(request, messages).toString
 
       application.stop()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+    "populate the view correctly on a GET" when {
+      "question has previously been answered" when {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        "lead trustee not matched" in {
 
-      val request = FakeRequest(GET, nameRoute)
+          val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val view = application.injector.instanceOf[NameView]
+          val request = FakeRequest(GET, nameRoute)
 
-      val result = route(application, request).value
+          val view = application.injector.instanceOf[NameView]
 
-      status(result) mustEqual OK
+          val result = route(application, request).value
 
-      contentAsString(result) mustEqual
-        view(form.fill(Name("value 1", None, "value 2")))(request, messages).toString
+          status(result) mustEqual OK
 
-      application.stop()
+          contentAsString(result) mustEqual
+            view(form.fill(name), readOnly = false)(request, messages).toString
+
+          application.stop()
+        }
+
+        "lead trustee matched" in {
+
+          val userAnswers = baseAnswers.copy(is5mldEnabled = true)
+            .set(NationalInsuranceNumberPage, "nino").success.value
+            .set(BpMatchStatusPage, FullyMatched).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+          val request = FakeRequest(GET, nameRoute)
+
+          val view = application.injector.instanceOf[NameView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form.fill(name), readOnly = true)(request, messages).toString
+
+          application.stop()
+        }
+      }
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -129,7 +158,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(request, messages).toString
+        view(boundForm, readOnly = false)(request, messages).toString
 
        application.stop()
     }

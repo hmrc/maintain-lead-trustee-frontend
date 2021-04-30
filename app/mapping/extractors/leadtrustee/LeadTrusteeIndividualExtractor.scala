@@ -41,6 +41,7 @@ class LeadTrusteeIndividualExtractor extends LeadTrusteeExtractor {
 
   def extract(answers: UserAnswers, leadIndividual: LeadTrusteeIndividual): Try[UserAnswers] = {
     super.extract(answers, Individual)
+      .flatMap(_.set(BpMatchStatusPage, leadIndividual.bpMatchStatus))
       .flatMap(_.set(NamePage, leadIndividual.name))
       .flatMap(_.set(DateOfBirthPage, leadIndividual.dateOfBirth))
       .flatMap(answers => extractCountryOfNationality(leadIndividual.nationality, answers))
