@@ -46,7 +46,13 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
   private val ninoUpperCase = "AA000000A"
   private val date = "1996-02-03"
 
-  private val idMatchRequest = IdMatchRequest(id, ninoUpperCase, firstNameCapitalised, lastNameCapitalised, date)
+  private val idMatchRequest = IdMatchRequest(
+    id = id,
+    nino = ninoUpperCase,
+    surname = lastNameCapitalised,
+    forename = firstNameCapitalised,
+    birthDate = date
+  )
 
   private implicit val appConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
