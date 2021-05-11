@@ -555,7 +555,11 @@ trustee.individual.mentalCapacityYesNo.title = Does the trustee have mental capa
 trustee.individual.mentalCapacityYesNo.heading = Does {0} have mental capacity at the time of registration?
 trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel = Does {0} have mental capacity at the time of registration?
 trustee.individual.mentalCapacityYesNo.error.required = Select yes if you know the trustee has mental capacity at the time of registration
-trustee.individual.mentalCapacityYesNo.hint = A trustee does not have mental capacity if they cannot understand information and make decisions about the trust due to a mental illness, learning disability, dementia or related condition, or they cannot communicate.
+trustee.individual.mentalCapacityYesNo.p1 = A trustee does not have mental capacity if they cannot understand information about the trust due to any of the following:
+trustee.individual.mentalCapacityYesNo.bulletpoint1 = mental illness
+trustee.individual.mentalCapacityYesNo.bulletpoint2 = learning disability
+trustee.individual.mentalCapacityYesNo.bulletpoint3 = dementia or a related condition
+trustee.individual.mentalCapacityYesNo.bulletpoint4 = being unable to communicate
 
 trustee.organisation.name.heading = What is the business’s name?
 trustee.organisation.name.title = What is the business’s name?

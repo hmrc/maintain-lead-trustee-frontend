@@ -20,7 +20,9 @@
     hint: Option[String] = None,
     legendClass: Option[String] = None,
     legendAsHeading: Boolean = true,
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
+    additionalContent: Option[Html] = None
+
 )(implicit messages: Messages)
 
 
@@ -36,6 +38,10 @@
             @label
             @if(legendAsHeading){</h1>}
         </legend>
+
+        @if(additionalContent.isDefined){
+            @additionalContent
+        }
 
         @if(hint.nonEmpty){
             <div class="form-hint" id="hint-@{field.id}">@hint</div>
