@@ -31,6 +31,7 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
   val ukAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
   val country: String = "DE"
   val nonUkAddress: NonUkAddress = NonUkAddress("value 1", "value 2", None, country)
+  val nino = "AA000000A"
 
   val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
@@ -38,7 +39,7 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
     .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
     .set(CountryOfNationalityPage, country).success.value
     .set(UkCitizenPage, true).success.value
-    .set(NationalInsuranceNumberPage, "AA000000A").success.value
+    .set(NationalInsuranceNumberPage, nino).success.value
     .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("DE", "number", LocalDate.of(1996, 2, 3))).success.value
     .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
     .set(CountryOfResidencePage, country).success.value
@@ -108,6 +109,45 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
             AnswerRow(label = Html(messages("leadtrustee.individual.telephoneNumber.checkYourAnswersLabel", name.displayName)), answer = Html("tel"), changeUrl = TelephoneNumberController.onPageLoad().url)
           )
         )
+      }
+
+      "no nationality or residency" when {
+
+        "lead trustee matched" must {
+          "render rows with empty answers" in {
+
+            val helper = injector.instanceOf[LeadTrusteeIndividualPrintHelper]
+
+            val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+              .set(BpMatchStatusPage, FullyMatched).success.value
+              .set(NationalInsuranceNumberPage, nino).success.value
+
+            val result = helper.print(userAnswers, name.displayName)
+            result mustBe AnswerSection(
+              headingKey = None,
+              rows = Seq(
+                AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html(""), changeUrl = CountryOfNationalityInTheUkYesNoController.onPageLoad().url),
+                AnswerRow(label = Html(messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = NationalInsuranceNumberController.onPageLoad().url, canEdit = false, isVerified = true),
+                AnswerRow(label = Html(messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html(""), changeUrl = CountryOfResidenceInTheUkYesNoController.onPageLoad().url)
+              )
+            )
+          }
+        }
+
+        "lead trustee not matched" must {
+          "not render rows with empty answers" in {
+
+            val helper = injector.instanceOf[LeadTrusteeIndividualPrintHelper]
+
+            val userAnswers = emptyUserAnswers
+
+            val result = helper.print(userAnswers, name.displayName)
+            result mustBe AnswerSection(
+              headingKey = None,
+              rows = Seq()
+            )
+          }
+        }
       }
     }
   }

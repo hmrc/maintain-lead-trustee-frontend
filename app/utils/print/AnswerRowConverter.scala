@@ -58,6 +58,15 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
+    def yesNoQuestionAllowEmptyAnswer(query: Gettable[Boolean],
+                                      labelKey: String,
+                                      changeUrl: String,
+                                      canEdit: Boolean = true): Option[AnswerRow] = {
+      val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
+      question(query, labelKey, format, changeUrl, canEdit) orElse
+        Some(answer(labelKey, changeUrl, canEdit))
+    }
+
     def dateQuestion(query: Gettable[LocalDate],
                      labelKey: String,
                      changeUrl: String,
@@ -126,14 +135,22 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                             isVerified: Boolean = false)
                            (implicit rds: Reads[T]): Option[AnswerRow] = {
       userAnswers.get(query) map { x =>
-        AnswerRow(
-          label = HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", trusteeName)),
-          answer = format(x),
-          changeUrl = changeUrl,
-          canEdit = canEdit,
-          isVerified = isVerified
-        )
+        answer(labelKey, changeUrl, canEdit, isVerified, format(x))
       }
+    }
+
+    private def answer(labelKey: String,
+                       changeUrl: String,
+                       canEdit: Boolean,
+                       isVerified: Boolean = false,
+                       format: Html = HtmlFormat.empty): AnswerRow = {
+      AnswerRow(
+        label = HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", trusteeName)),
+        answer = format,
+        changeUrl = changeUrl,
+        canEdit = canEdit,
+        isVerified = isVerified
+      )
     }
   }
 }
