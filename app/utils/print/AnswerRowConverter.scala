@@ -62,9 +62,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                                       labelKey: String,
                                       changeUrl: String,
                                       canEdit: Boolean = true): Option[AnswerRow] = {
-      val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
-      question(query, labelKey, format, changeUrl, canEdit) orElse
-        Some(answer(labelKey, changeUrl, canEdit))
+      yesNoQuestion(query, labelKey, changeUrl, canEdit) orElse Some(answer(labelKey, changeUrl, canEdit))
     }
 
     def dateQuestion(query: Gettable[LocalDate],
