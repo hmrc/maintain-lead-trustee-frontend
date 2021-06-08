@@ -16,9 +16,9 @@
 
 package services
 
-import java.time.LocalDate
 import connectors.TrustConnector
 import models.BpMatchStatus.FullyMatched
+import models.Constants.INDIVIDUAL_TRUSTEE
 import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees, UkAddress}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -28,6 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
 
@@ -120,7 +121,8 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
       val service = new TrustServiceImpl(mockConnector)
 
-      val trustee : RemoveTrustee =  RemoveTrustee(
+      val trustee : RemoveTrustee = RemoveTrustee(
+        `type` = INDIVIDUAL_TRUSTEE,
         index = 0,
         endDate = LocalDate.now()
       )

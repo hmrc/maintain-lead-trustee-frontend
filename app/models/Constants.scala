@@ -18,4 +18,7 @@ package models
 
 object Constants {
   final val GB = "GB"
+
+  final val INDIVIDUAL_TRUSTEE = "trusteeInd"
+  final val BUSINESS_TRUSTEE = "trusteeOrg"
 }

@@ -20,12 +20,12 @@ import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 
-case class RemoveTrustee(index: Int, endDate: LocalDate)
+case class RemoveTrustee(`type`: String, index: Int, endDate: LocalDate)
 
 object RemoveTrustee {
 
   implicit val formats: Format[RemoveTrustee] = Json.format[RemoveTrustee]
 
-  def apply(index: Int): RemoveTrustee =  RemoveTrustee(index, LocalDate.now)
+  def apply(`type`: String, index: Int): RemoveTrustee =  RemoveTrustee(`type`, index, LocalDate.now)
 
 }

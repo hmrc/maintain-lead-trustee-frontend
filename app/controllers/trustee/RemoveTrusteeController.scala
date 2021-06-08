@@ -54,8 +54,8 @@ class RemoveTrusteeController @Inject()(
       trust.getTrustee(request.userAnswers.identifier, index).map {
         trustee =>
           val trusteeName = trustee match {
-            case lti:TrusteeIndividual => lti.name.displayName
-            case lto:TrusteeOrganisation => lto.name
+            case lti: TrusteeIndividual => lti.name.displayName
+            case lto: TrusteeOrganisation => lto.name
           }
         Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
       } recoverWith {
@@ -79,8 +79,8 @@ class RemoveTrusteeController @Inject()(
           trust.getTrustee(request.userAnswers.identifier, index).map {
             trustee =>
               val trusteeName = trustee match {
-                case lti:TrusteeIndividual => lti.name.displayName
-                case lto:TrusteeOrganisation => lto.name
+                case lti: TrusteeIndividual => lti.name.displayName
+                case lto: TrusteeOrganisation => lto.name
               }
               BadRequest(view(messagesPrefix, formWithErrors, index, trusteeName, formRoute(index)))
           }
@@ -92,7 +92,7 @@ class RemoveTrusteeController @Inject()(
               trustee =>
                 if (trustee.isNewlyAdded) {
                   for {
-                    _ <- trust.removeTrustee(request.userAnswers.identifier, RemoveTrustee(index))
+                    _ <- trust.removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index))
                   } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
                 } else {
                   Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))

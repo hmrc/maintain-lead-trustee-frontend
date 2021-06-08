@@ -17,12 +17,12 @@
 package connectors
 
 import java.time.LocalDate
-
 import base.SpecBase
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
+import models.Constants.INDIVIDUAL_TRUSTEE
 import models._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
@@ -74,7 +74,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       )
 
       val result = connector.amendLeadTrustee("UTRUTRUTR", arbitraryLeadTrusteeIndividual.arbitrary.sample.get)
-      result.futureValue.status mustBe (OK)
+      result.futureValue.status mustBe OK
 
       application.stop()
     }
@@ -98,7 +98,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       )
 
       val result = connector.addTrustee("UTRUTRUTR", arbitraryTrusteeIndividual.arbitrary.sample.get)
-      result.futureValue.status mustBe (OK)
+      result.futureValue.status mustBe OK
 
       application.stop()
     }
@@ -228,6 +228,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val identifier = "1000000008"
 
       val trustee = RemoveTrustee(
+        `type` = INDIVIDUAL_TRUSTEE,
         index = 0,
         endDate = LocalDate.now()
       )
@@ -249,7 +250,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val result = connector.removeTrustee(identifier, trustee)
 
-      result.futureValue.status mustBe (OK)
+      result.futureValue.status mustBe OK
 
       application.stop()
     }
@@ -259,6 +260,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       val identifier = "1000000008"
 
       val trustee = RemoveTrustee(
+        `type` = INDIVIDUAL_TRUSTEE,
         index = 0,
         endDate = LocalDate.now()
       )
@@ -414,7 +416,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val result = connector.promoteTrustee(identifier, index, newLeadTrustee)
 
-      result.futureValue.status mustBe (OK)
+      result.futureValue.status mustBe OK
 
       application.stop()
     }
@@ -485,7 +487,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
       )
 
       val result = connector.amendTrustee(identifier, index, arbitraryTrusteeIndividual.arbitrary.sample.get)
-      result.futureValue.status mustBe (OK)
+      result.futureValue.status mustBe OK
 
       application.stop()
     }

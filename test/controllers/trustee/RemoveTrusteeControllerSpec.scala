@@ -17,16 +17,20 @@
 package controllers.trustee
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
-import models.{Name, NationalInsuranceNumber, TrusteeIndividual, Trustees}
+import models.Constants.INDIVIDUAL_TRUSTEE
+import models.{Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees}
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.data.Form
 import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -34,21 +38,20 @@ import views.html.RemoveIndexView
 
 import scala.concurrent.Future
 
-class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
+class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures with BeforeAndAfterEach {
 
   val messagesPrefix = "removeATrustee"
 
   lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form = formProvider(messagesPrefix)
+  lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val formRoute = routes.RemoveTrusteeController.onSubmit(0)
+  lazy val formRoute: Call = routes.RemoveTrusteeController.onSubmit(0)
 
   lazy val content : String = "First 1 Last 1"
-  lazy val defaultContent : String = "the trustee"
 
   val mockConnector: TrustConnector = mock[TrustConnector]
 
-  def trusteeInd(id: Int, provisional : Boolean) = TrusteeIndividual(
+  def trusteeInd(id: Int, provisional: Boolean): TrusteeIndividual = TrusteeIndividual(
     name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
@@ -58,22 +61,27 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
     provisional = provisional
   )
 
-  val expectedResult = trusteeInd(2, provisional = true)
-
   val trustees = List(
     trusteeInd(1, provisional = false),
-    expectedResult,
+    trusteeInd(2, provisional = true),
     trusteeInd(3, provisional = true)
   )
+
+  override def beforeEach(): Unit = {
+    reset(mockConnector)
+
+    when(mockConnector.getTrustees(any())(any(), any()))
+      .thenReturn(Future.successful(Trustees(trustees)))
+
+    when(mockConnector.removeTrustee(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(200, "")))
+  }
 
   "RemoveTrustee Controller" when {
 
     "return OK and the correct view for a GET" in {
 
       val index = 0
-
-      when(mockConnector.getTrustees(any())(any(), any()))
-        .thenReturn(Future.successful(Trustees(trustees)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustConnector].toInstance(mockConnector))
@@ -102,9 +110,8 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
           .overrides(bind[TrustConnector].toInstance(mockConnector))
           .build()
 
-        val request =
-          FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
-            .withFormUrlEncodedBody(("value", "false"))
+        val request = FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+          .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
@@ -144,16 +151,12 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val index = 0
 
-        when(mockConnector.getTrustees(any())(any(), any()))
-          .thenReturn(Future.successful(Trustees(trustees)))
-
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustConnector].toInstance(mockConnector))
           .build()
 
-        val request =
-          FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+          .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
@@ -175,21 +178,18 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
           .overrides(bind[TrustConnector].toInstance(mockConnector))
           .build()
 
-        when(mockConnector.getTrustees(any())(any(), any()))
-          .thenReturn(Future.successful(Trustees(trustees)))
-
-        when(mockConnector.removeTrustee(any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(200, "")))
-
-        val request =
-          FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+          .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
+        val captor = ArgumentCaptor.forClass(classOf[RemoveTrustee])
+        verify(mockConnector).removeTrustee(any(), captor.capture)(any(), any())
+        captor.getValue.`type` mustBe INDIVIDUAL_TRUSTEE
 
         application.stop()
       }
@@ -199,11 +199,12 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
       val index = 0
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
 
-      val request =
-        FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -242,9 +243,8 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 

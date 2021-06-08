@@ -44,8 +44,8 @@ class WhenRemovedController @Inject()(
       trust.getTrustee(request.userAnswers.identifier, index).map {
         trustee =>
           val (trusteeName, entityStartDate) = trustee match {
-            case lti:TrusteeIndividual => (lti.name.displayName, lti.entityStart)
-            case lto:TrusteeOrganisation => (lto.name, lto.entityStart)
+            case lti: TrusteeIndividual => (lti.name.displayName, lti.entityStart)
+            case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
           }
 
           val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
@@ -60,8 +60,8 @@ class WhenRemovedController @Inject()(
       trust.getTrustee(request.userAnswers.identifier, index).flatMap {
         trustee =>
           val (trusteeName, entityStartDate) = trustee match {
-            case lti:TrusteeIndividual => (lti.name.displayName, lti.entityStart)
-            case lto:TrusteeOrganisation => (lto.name, lto.entityStart)
+            case lti: TrusteeIndividual => (lti.name.displayName, lti.entityStart)
+            case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
           }
 
           val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
@@ -72,7 +72,7 @@ class WhenRemovedController @Inject()(
             },
             value =>
               for {
-                _ <- trustService.removeTrustee(request.userAnswers.identifier, RemoveTrustee(index, value))
+                _ <- trustService.removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index, value))
               } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
           )
       }
