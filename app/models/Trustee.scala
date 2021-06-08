@@ -16,15 +16,16 @@
 
 package models
 
-import java.time.LocalDate
-
+import models.Constants._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
+import java.time.LocalDate
 
 sealed trait Trustee {
   val provisional: Boolean
   def isNewlyAdded: Boolean = provisional
+  val `type`: String
 }
 
 object Trustee {
@@ -36,8 +37,8 @@ object Trustee {
 
   implicit val reads : Reads[Trustee] = Reads { data : JsValue =>
     val allErrors: Either[Seq[(JsPath, Seq[JsonValidationError])], Trustee] = for {
-      indErrs <- (data \ "trusteeInd").validate[TrusteeIndividual].asEither.left
-      orgErrs <- (data \ "trusteeOrg").validate[TrusteeOrganisation].asEither.left
+      indErrs <- (data \ INDIVIDUAL_TRUSTEE).validate[TrusteeIndividual].asEither.left
+      orgErrs <- (data \ BUSINESS_TRUSTEE).validate[TrusteeOrganisation].asEither.left
     } yield indErrs.map(pair => (pair._1, JsonValidationError("Failed to read as TrusteeIndividual") +: pair._2)) ++
       orgErrs.map(pair => (pair._1, JsonValidationError("Failed to read as TrusteeOrganisation") +: pair._2))
 
@@ -57,7 +58,10 @@ case class TrusteeIndividual(name: Name,
                              nationality: Option[String] = None,
                              mentalCapacityYesNo: Option[Boolean] = None,
                              entityStart: LocalDate,
-                             provisional: Boolean) extends Trustee
+                             provisional: Boolean) extends Trustee {
+
+  override val `type`: String = INDIVIDUAL_TRUSTEE
+}
 
 object TrusteeIndividual {
 
@@ -101,7 +105,10 @@ case class TrusteeOrganisation(name: String,
                                identification: Option[TrustIdentificationOrgType],
                                countryOfResidence: Option[String] = None,
                                entityStart: LocalDate,
-                               provisional: Boolean) extends Trustee
+                               provisional: Boolean) extends Trustee {
+
+  override val `type`: String = BUSINESS_TRUSTEE
+}
 
 object TrusteeOrganisation {
   implicit val formats: Format[TrusteeOrganisation] = Json.format[TrusteeOrganisation]
