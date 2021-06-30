@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
-@import views.html.components.Heading
+@import views.html.components.{Heading, Link}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading
+    heading: Heading,
+    link: Link
 )
 
 @(leadTrusteeName: String)(implicit request: Request[_], messages: Messages)
@@ -31,11 +32,19 @@
 
     @heading("answerNewQuestions.heading", Some(leadTrusteeName))
 
-    @components.form_hint(Some(messages("answerNewQuestions.hint", leadTrusteeName)))
+    <p>
+        @messages("answerNewQuestions.hint", leadTrusteeName)
+    </p>
 
     @formHelper(action = controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onSubmit, 'autoComplete -> "off") {
         @submitButton(Some(messages("site.continue")))
     }
 
-    <p><a href="@controllers.routes.AddATrusteeController.onPageLoad().url">@messages("answerNewQuestions.return.link")</a></p>
+    <p>
+        @link(
+            controllers.routes.AddATrusteeController.onPageLoad().url,
+            "answerNewQuestions.return.link",
+            "answerNewQuestions.return.link"
+        )
+    </p>
 }
