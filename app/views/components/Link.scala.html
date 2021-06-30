@@ -14,9 +14,8 @@
  * limitations under the License.
  *@
 
-@(messageKey: String, id: String)(implicit messages: Messages)
+@this()
 
-<div id="inset-text--@id" class="indent">
-    @messages(messageKey)
-</div>
+@(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
+<a class="govuk-link" id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>

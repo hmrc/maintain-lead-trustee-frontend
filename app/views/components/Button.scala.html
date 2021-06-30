@@ -14,11 +14,16 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(govukButton : GovukButton)
+
 @(
-messageKey: String = "",
-inputType: String = "button"
+messageKey: String = "site.continue",
+isStartButton:Boolean = false,
 )(implicit messages: Messages)
 
-<div class="section">
-    <input type="@inputType" class="button" value="@messages(messageKey)" />
-</div>
+@govukButton(Button(
+ isStartButton = isStartButton,
+ content = Text(messages(messageKey))
+))

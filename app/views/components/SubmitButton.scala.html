@@ -14,18 +14,18 @@
  * limitations under the License.
  *@
 
-@import viewmodels.addAnother.AddRow
+@this(
+    button: GovukButton,
+)
 
-@(data: Seq[AddRow], id: String, entity : String)(implicit messages: Messages)
+@(overrideMessage: Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
 
-@if(data.nonEmpty){
-
-<div class="form-group">
- <h2 id="data-list-heading--@id">@messages(s"site.$id")</h2>
- <dl id="data-list--@id" class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
-  @for(item <- data) {
-  @components.data_list_row(item)
-  }
- </dl>
-</div>
-}
+@button(Button(
+    attributes = Map("id"->"submit"),
+    classes = s"button ${submitClass.getOrElse("")}",
+    content = if(overrideMessage.isEmpty) {
+        Text(messages("site.save.continue"))
+    } else {
+        Text(messages(overrideMessage.get))
+    }
+))

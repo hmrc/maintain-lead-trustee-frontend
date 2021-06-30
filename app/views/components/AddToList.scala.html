@@ -14,6 +14,23 @@
  * limitations under the License.
  *@
 
-@(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
+@import viewmodels.AddRow
+@import views.html.components.AddToRow
 
-<a id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>
+@this(
+ addToRow: AddToRow
+)
+
+@(data: Seq[AddRow], id: String, entity : String)(implicit messages: Messages)
+
+@if(data.nonEmpty){
+<h2 class="govuk-heading-m" id="data-list-heading--@id">@messages(s"site.$id")</h2>
+
+<div class="govuk-form-group">
+ <dl id="data-list--@id" class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
+  @for(item <- data) {
+   @addToRow(item)
+  }
+ </dl>
+</div>
+}

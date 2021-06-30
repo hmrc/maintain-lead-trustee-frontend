@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Link
+@this()
 
-@(
-    hint: Option[String] = None,
-    link: Option[Link] = None
-)(implicit messages: Messages)
+@(key: String, param: String, hiddenText: Boolean = true)(implicit messages: Messages)
 
-@if(hint.nonEmpty) {
-  <span id="form-hint" class="form-hint form-field">@hint
-  @link.map { l =>
-    <a id="link" href="@l.url" target="_blank">@l.text</a>
-  }
-  </span>
-}
+<span class="govuk-caption-l">
+ @if(hiddenText){
+  <span class="govuk-visually-hidden">@messages(s"$key.hidden")</span>
+ }
+ @messages(key, param)
+</span>

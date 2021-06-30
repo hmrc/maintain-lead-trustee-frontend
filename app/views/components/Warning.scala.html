@@ -14,8 +14,13 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-<div class="js-visible">
-  <p><a id="back-link" class="link-back" href="#">@messages("site.back")</a></p>
-</div>
+@this(govukWarningText : GovukWarningText)
+
+@(messageKeyPrefix: String)(implicit messages: Messages)
+
+@govukWarningText(WarningText(
+    iconFallbackText = messages("site.warning"),
+    content = Text(messages(s"$messageKeyPrefix.warning"))
+))

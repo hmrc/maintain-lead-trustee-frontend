@@ -14,6 +14,13 @@
  * limitations under the License.
  *@
 
-@(key: String, param: String)(implicit messages: Messages)
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-<span class="govuk-caption-xl">@messages(key, param)</span>
+@this(govukInsetText : GovukInsetText)
+
+@(messageKey: String, id: String)(implicit messages: Messages)
+
+@govukInsetText(InsetText(
+ id = Some(s"inset-text--$id"),
+ content = Text(messages(messageKey))
+))
