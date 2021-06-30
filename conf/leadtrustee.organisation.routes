@@ -1,4 +1,5 @@
 GET        /answer-new-questions                        controllers.leadtrustee.organisation.NeedToAnswerQuestionsController.onPageLoad()
+POST       /answer-new-questions                        controllers.leadtrustee.organisation.NeedToAnswerQuestionsController.onSubmit()
 
 GET        /registered-in-uk                            controllers.leadtrustee.organisation.RegisteredInUkYesNoController.onPageLoad()
 POST       /registered-in-uk                            controllers.leadtrustee.organisation.RegisteredInUkYesNoController.onSubmit()
