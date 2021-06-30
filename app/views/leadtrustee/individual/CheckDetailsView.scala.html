@@ -15,27 +15,32 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
-@import viewmodels.AnswerSection
+@import viewmodels.Section
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+@import utils.SectionFormatter.formatSections
+@import views.html.components.{Heading, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    submitButton: SubmitButton,
+    govukSummaryList: GovukSummaryList
 )
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("leadTrusteeDetails.title")
+    title = messages("leadTrusteeDetails.title"),
+    showBackLink = true
 ) {
 
     @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @heading("leadTrusteeDetails.heading")
 
-        @components.heading("leadTrusteeDetails.heading")
+        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
 
-        @components.answer_section(answerSection)
-
-        @components.submit_button()
+        @submitButton()
     }
 }

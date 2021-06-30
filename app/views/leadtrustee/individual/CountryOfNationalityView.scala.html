@@ -16,25 +16,28 @@
 
 @import controllers.leadtrustee.individual.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InputSelect, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputSelect: InputSelect,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String, countryOptions: Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("leadtrustee.individual.countryOfNationality.title")}"
+    title = s"${errorPrefix(form)}${messages("leadtrustee.individual.countryOfNationality.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = CountryOfNationalityController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.select(field = form("value"),
+        @inputSelect(field = form("value"),
             label = messages("leadtrustee.individual.countryOfNationality.heading", name),
             labelClasses = Set("heading-large"),
             labelAsHeading = true,
@@ -44,6 +47,6 @@
             selectAttribute = Set("data-non-uk-countries")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

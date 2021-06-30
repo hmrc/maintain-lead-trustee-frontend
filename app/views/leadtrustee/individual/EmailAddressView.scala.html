@@ -15,27 +15,32 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
+@import views.html.components.{ErrorSummary, InputEmail, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputEmail: InputEmail,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = s"${errorPrefix(form)}${messages("leadtrustee.individual.emailAddress.title")}") {
+@main_template(
+    title = s"${errorPrefix(form)}${messages("leadtrustee.individual.emailAddress.title")}",
+    showBackLink = true
+) {
 
     @formHelper(action = EmailAddressController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_email(
+        @inputEmail(
           field = form("value"),
           label = messages("leadtrustee.individual.emailAddress.heading", name)
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

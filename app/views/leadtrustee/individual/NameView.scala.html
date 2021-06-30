@@ -15,45 +15,49 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
+@import views.html.components.{Heading, ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], readOnly: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("leadtrustee.individual.name.title")}"
+    title = s"${errorPrefix(form)}${messages("leadtrustee.individual.name.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = NameController.onSubmit(), 'autoComplete -> "on") {
 
-        @components.back_link()
-
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         <fieldset>
 
             <legend>
-                @components.heading("leadtrustee.individual.name.heading")
+                @heading("leadtrustee.individual.name.heading")
             </legend>
 
-            @components.input_text(
+            @inputText(
                 field = form("firstName"),
                 label = messages("leadtrustee.individual.name.firstName"),
                 autocomplete = Some("given-name"),
                 readOnly = readOnly
             )
 
-            @components.input_text(
+            @inputText(
                 field = form("middleName"),
                 label = messages("leadtrustee.individual.name.middleName"),
                 autocomplete = Some("additional-name"),
                 readOnly = readOnly
             )
 
-            @components.input_text(
+            @inputText(
                 field = form("lastName"),
                 label = messages("leadtrustee.individual.name.lastName"),
                 autocomplete = Some("family-name"),
@@ -62,6 +66,6 @@
 
         </fieldset>
 
-        @components.submit_button()
+        @submitButton()
     }
 }

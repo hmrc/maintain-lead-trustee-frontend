@@ -14,23 +14,28 @@
  * limitations under the License.
  *@
 
+@import views.html.components.Heading
+
 @this(
-    main_template: MainTemplate
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    heading: Heading
 )
 
 @(leadTrusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("answerNewQuestions.title")
+    title = messages("answerNewQuestions.title"),
+    showBackLink = true
 ) {
 
-    @components.back_link()
-
-    @components.heading("answerNewQuestions.heading", Some(leadTrusteeName))
+    @heading("answerNewQuestions.heading", Some(leadTrusteeName))
 
     @components.form_hint(Some(messages("answerNewQuestions.hint", leadTrusteeName)))
 
-    @components.button_link("site.continue", controllers.leadtrustee.individual.routes.NameController.onPageLoad().url)
+    @formHelper(action = controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onSubmit, 'autoComplete -> "off") {
+        @submitButton(Some(messages("site.continue")))
+    }
 
     <p><a href="@controllers.routes.AddATrusteeController.onPageLoad().url">@messages("answerNewQuestions.return.link")</a></p>
 }
