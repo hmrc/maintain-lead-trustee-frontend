@@ -1,3 +1,5 @@
+service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+
 site.service_section=Ymddiriedolwyr
 site.sign_in=Mewngofnodi
 site.try-again=Rhowch gynnig arall arni
@@ -116,7 +118,6 @@ site.change.details=Newid manylion
 site.no=Na
 site.yes=Iawn
 site.continue=Yn eich blaen
-site.service_name=Cofrestru Ymddiriedolaeth a’i Chynnal
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.sign_out=Allgofnodi
 site.save.continue=Cadw ac yn eich blaen
