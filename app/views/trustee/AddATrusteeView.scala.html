@@ -17,7 +17,7 @@
 @import controllers.trustee.routes._
 @import models.AddATrustee
 @import viewmodels.addAnother.AddRow
-@import views.html.components.{Heading, ErrorSummary, AddToList, InputRadio, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, InputText, AddToList, InputRadio, SubmitButton}
 
 @this(
     main_template: MainTemplate,
@@ -26,6 +26,7 @@
     errorSummary: ErrorSummary,
     inputText: InputText,
     addToList: AddToList,
+    inputRadio: InputRadio,
     submitButton: SubmitButton
 )
 
@@ -41,7 +42,7 @@
 
     @formHelper(action = AddATrusteeController.submitAnother(), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, AddATrustee.options)
 
         @headingComp(heading)
 
@@ -50,7 +51,9 @@
         @addToList(completeTrustees, "complete", "trustee")
 
         @if(!isLeadTrusteeDefined) {
-            @insertText("addATrustee.lead-trustee.required", "addATrustee")
+            <div id="inset-text--addATrustee" class="indent">
+                @messages("addATrustee.lead-trustee.required")
+            </div>
         }
 
         <p>@messages("addATrustee.p1") <a href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
@@ -59,7 +62,7 @@
             field = form("value"),
             legend = messages("addATrustee.additional-content"),
             legendClass = Some("govuk-heading-m"),
-            inputs = AddATrustee.options
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, AddATrustee.options)
         )
 
         @submitButton()

@@ -15,11 +15,12 @@
  *@
 
 @import controllers.trustee.individual.routes._
-@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
+    heading: Heading,
     errorSummary: ErrorSummary,
     inputYesNo: InputYesNo,
     submitButton: SubmitButton
@@ -47,10 +48,12 @@
 
         @errorSummary(form.errors)
 
+        @heading("trustee.individual.mentalCapacityYesNo.heading", Some(name))
+
         @inputYesNo(
             field = form("value"),
             label = messages("trustee.individual.mentalCapacityYesNo.heading", name),
-            additionalContent = Some(content)
+            legendAsHeading = false
         )
 
         @submitButton()

@@ -16,14 +16,15 @@
 
 @import controllers.trustee.individual.add.routes._
 @import utils.InputOption
-@import views.html.components.{Heading, InputSelect, inputText, InputDate, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
+    errorSummary: ErrorSummary,
     inputSelect: InputSelect,
-    inputText: inputText,
+    inputText: InputText,
     inputDate: InputDate,
     submitButton: SubmitButton
 )
@@ -61,7 +62,7 @@
             legend = messages("trustee.individual.idCardDetails.expiryDate"),
             legendClass = "bold",
             hint = Some(messages("trustee.individual.idCardDetails.expiryDate.hint")),
-            headingIsLegend = false
+            legendAsHeading = false
         )
 
         @submitButton()

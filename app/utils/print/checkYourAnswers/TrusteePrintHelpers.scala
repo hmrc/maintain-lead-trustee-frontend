@@ -19,7 +19,6 @@ package utils.print.checkYourAnswers
 import models.UserAnswers
 import play.api.i18n.Messages
 import viewmodels.AnswerSection
-
 import javax.inject.Inject
 
 class TrusteePrintHelpers @Inject()(trusteeIndividualPrintHelper: TrusteeIndividualPrintHelper,
@@ -42,5 +41,4 @@ class TrusteePrintHelpers @Inject()(trusteeIndividualPrintHelper: TrusteeIndivid
   def printLeadOrganisationTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {
     leadTrusteeOrganisationPrintHelper.print(userAnswers, name)
   }
-
 }

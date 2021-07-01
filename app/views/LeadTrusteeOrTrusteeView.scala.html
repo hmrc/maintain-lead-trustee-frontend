@@ -35,14 +35,14 @@
 
     @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, TrusteeType.options)
 
         @inputRadio(
             field = form("value"),
             legend = messages("leadTrusteeOrTrustee.heading"),
-            fieldSetClass = Some("inline"),
-            inputs = TrusteeType.options.toSeq,
-            headingIsLegend = true,
+            inline = true,
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, TrusteeType.options),
+            legendAsHeading = true,
             hint = Some(messages("leadTrusteeOrTrustee.hint"))
         )
 

@@ -16,7 +16,6 @@
 
 @import config.FrontendAppConfig
 @import controllers.leadtrustee.individual.routes._
-@import viewmodels.Link
 @import views.html.components.{HeadingWithCaption, Link}
 
 @this(
@@ -28,15 +27,6 @@
 )
 
 @(name: String)(implicit request: Request[_], messages: Messages)
-
-@maintainATrustOverviewLink = @{
-    List(
-        Link(
-            text = messages("leadTrustee.individual.matching.locked.trust_overview"),
-            url = appConfig.maintainATrustOverview
-        )
-    )
-}
 
 @main_template(
     title = messages("leadTrustee.individual.matching.locked.title")

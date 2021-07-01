@@ -21,8 +21,8 @@
         @components.input_radio(
             field = form("value"),
             legend = messages("$className;format="decap"$.heading"),
-            headingIsLegend = true,
-            inputs = $className$.options.toSeq
+            labelAsHeading = true,
+            inputs = $className$.options
         )
 
         @components.submit_button()

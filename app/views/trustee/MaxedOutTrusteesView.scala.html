@@ -16,7 +16,7 @@
 
 @import controllers.trustee.routes._
 @import viewmodels.addAnother.AddRow
-@import views.html.components.{Heading, ErrorSummary, AddToList, InputText, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, AddToList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
@@ -24,7 +24,6 @@
     headingComp: Heading,
     errorSummary: ErrorSummary,
     addToList: AddToList,
-    inputText: InputText,
     submitButton: SubmitButton
 )
 
@@ -47,7 +46,9 @@
         @addToList(completeTrustees, "complete", "trustee")
 
         @if(!isLeadTrusteeDefined) {
-            @insertText("addATrustee.lead-trustee.required", "addATrustee")
+            <div id="inset-text--addATrustee" class="indent">
+                @messages("addATrustee.lead-trustee.required")
+            </div>
         }
 
         <p>@messages("addATrustee.p1") <a href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>

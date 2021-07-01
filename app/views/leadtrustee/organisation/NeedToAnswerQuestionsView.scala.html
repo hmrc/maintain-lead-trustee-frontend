@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *@
-@import views.html.components.{Heading, Link}
+@import views.html.components.{Heading, Link, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
-    link: Link
+    link: Link,
+    submitButton: SubmitButton
 )
 
 @(leadTrusteeName: String)(implicit request: Request[_], messages: Messages)
