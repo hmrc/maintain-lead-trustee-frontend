@@ -22,7 +22,7 @@
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
+    headingComp: Heading,
     errorSummary: ErrorSummary,
     inputText: InputText,
     addToList: AddToList,
@@ -43,7 +43,7 @@
 
         @errorSummary(form.errors)
 
-        @heading(heading)
+        @headingComp(heading)
 
         @addToList(inProgressTrustees, "inprogress", "trustee")
 
@@ -58,7 +58,7 @@
         @inputRadio(
             field = form("value"),
             legend = messages("addATrustee.additional-content"),
-            legendClass = Some("heading-medium"),
+            legendClass = Some("govuk-heading-m"),
             inputs = AddATrustee.options
         )
 

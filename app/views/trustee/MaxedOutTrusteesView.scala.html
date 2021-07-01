@@ -21,7 +21,7 @@
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
+    headingComp: Heading,
     errorSummary: ErrorSummary,
     addToList: AddToList,
     inputText: InputText,
@@ -40,7 +40,7 @@
 
     @formHelper(action = AddATrusteeController.submitComplete(), 'autoComplete -> "off") {
 
-        @heading(heading)
+        @headingComp(heading)
 
         @addToList(inProgressTrustees, "inprogress", "trustee")
 

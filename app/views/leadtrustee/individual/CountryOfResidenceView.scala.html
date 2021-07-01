@@ -39,12 +39,12 @@
 
         @inputSelect(field = form("value"),
             label = messages("leadtrustee.individual.countryOfResidence.heading", name),
-            labelClasses = Set("heading-large"),
+            labelClasses = Set("govuk-heading-l"),
             labelAsHeading = true,
             options = countryOptions,
             placeholder = Some(messages("site.address.country.select")),
             formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
-            selectAttribute = Set("data-non-uk-countries")
+            selectAttribute = Map("data-non-uk-countries" -> "")
         )
 
         @submitButton()

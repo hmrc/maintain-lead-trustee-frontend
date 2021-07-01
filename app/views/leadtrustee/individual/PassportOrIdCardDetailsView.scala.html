@@ -49,7 +49,7 @@
             options = countryOptions,
             placeholder = Some(messages("address.country.select")),
             formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
-            selectAttribute = Set("data-non-uk-countries")
+            selectAttribute = Map("data-non-uk-countries" -> "")
         )
 
         @inputText(
