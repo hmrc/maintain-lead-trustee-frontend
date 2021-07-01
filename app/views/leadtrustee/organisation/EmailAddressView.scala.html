@@ -15,13 +15,13 @@
  *@
 
 @import controllers.leadtrustee.organisation.routes._
-@import views.html.components.{ErrorSummary, InputText, SubmitButton}
+@import views.html.components.{ErrorSummary, InputEmail, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     errorSummary: ErrorSummary,
-    inputText: InputText,
+    inputEmail: InputEmail,
     submitButton: SubmitButton
 )
 
@@ -36,7 +36,7 @@
 
         @errorSummary(form.errors)
 
-        @inputText(
+        @inputEmail(
           field = form("value"),
           label = messages("leadtrustee.organisation.emailAddress.heading", name)
         )

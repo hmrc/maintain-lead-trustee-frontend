@@ -21,7 +21,8 @@
     label: String,
     hint: Option[String] = None,
     legendClass: Option[String] = None,
-    legendAsHeading: Boolean = true
+    legendAsHeading: Boolean = true,
+    readOnly: Boolean = false
 )(implicit messages: Messages)
 
 @govukRadios(Radios(
