@@ -15,25 +15,28 @@
  *@
 
 @import controllers.trustee.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate: InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], index: Int, trusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.whenRemoved.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.whenRemoved.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = WhenRemovedController.onSubmit(index), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("trustee.whenRemoved.heading", trusteeName),
             legendClass = "heading-large",
@@ -41,6 +44,6 @@
             hint = Some(messages("trustee.whenRemoved.hint"))
         )
 
-        @components.submit_button(Some(messages("site.continue")))
+        @submitButton(Some(messages("site.continue")))
     }
 }

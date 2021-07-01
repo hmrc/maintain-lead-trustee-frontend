@@ -16,25 +16,28 @@
 
 @import controllers.routes._
 @import models.TrusteeType
+@import views.html.components.{ErrorSummary, InputRadio, SubmitButton}
 
 @this(
-  main_template: MainTemplate,
-  formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputRadio: InputRadio,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = s"${errorPrefix(form)}${messages("leadTrusteeOrTrustee.title")}"
+    title = s"${errorPrefix(form)}${messages("leadTrusteeOrTrustee.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("leadTrusteeOrTrustee.heading"),
             fieldSetClass = Some("inline"),
@@ -43,6 +46,6 @@
             hint = Some(messages("leadTrusteeOrTrustee.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -15,20 +15,22 @@
  *@
 
 @import config.FrontendAppConfig
+@import views.html.components.Heading
 
 @this(
     mainTemplate: MainTemplate,
-    appConfig: FrontendAppConfig
+    appConfig: FrontendAppConfig,
+    headingComp: Heading
 )
 
 @(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
 @contentHeader = {
-  @components.heading(heading)
+    @headingComp(heading)
 }
 
 @mainContent = {
-  <p>@message</p>
+    <p>@message</p>
 }
 
 @mainTemplate(appConfig = appConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)

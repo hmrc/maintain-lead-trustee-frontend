@@ -16,25 +16,28 @@
 
 @import controllers.trustee.routes._
 @import models.IndividualOrBusiness
+@import views.html.components.{ErrorSummary, InputRadio, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputRadio: InputRadio,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individualOrBusiness.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individualOrBusiness.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = IndividualOrBusinessController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("trustee.individualOrBusiness.heading"),
             fieldSetClass = Some("inline"),
@@ -42,6 +45,6 @@
             headingIsLegend = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
