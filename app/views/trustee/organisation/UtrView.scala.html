@@ -15,25 +15,28 @@
  *@
 
 @import controllers.trustee.organisation.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.organisation.utr.title", name)}"
+    title = s"${errorPrefix(form)}${messages("trustee.organisation.utr.title", name)}",
+    showBackLink = true
 ) {
 
     @formHelper(action = UtrController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("trustee.organisation.utr.heading", name),
             headingIsLabel = true,
@@ -44,6 +47,6 @@
 
         <p>@messages("trustee.organisation.utr.p1") <a target="_blank" href="https://www.gov.uk/find-lost-utr-number">@messages("trustee.organisation.utr.link")</a>.</p>
 
-        @components.submit_button()
+        @submitButton()
     }
 }

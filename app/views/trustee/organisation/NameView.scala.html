@@ -15,25 +15,28 @@
  *@
 
 @import controllers.trustee.organisation.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.organisation.name.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.organisation.name.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = NameController.onSubmit(mode), 'autoComplete -> "on") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
           field = form("value"),
           label = messages("trustee.organisation.name.heading"),
           headingIsLabel = true,
@@ -41,6 +44,6 @@
           autocomplete = Some("name")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

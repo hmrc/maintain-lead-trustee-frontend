@@ -36,9 +36,11 @@
 
         @errorSummary(form.errors)
 
-        @heading("trustee.individual.ukAddress.heading", Some(name))
-
-        @ukAddress(form)
+        @ukAddress(
+            form = form,
+            legend = messages("trustee.individual.ukAddress.heading", name),
+            legendAsHeading = true
+        )
 
         @submitButton()
     }

@@ -15,25 +15,28 @@
  *@
 
 @import controllers.trustee.organisation.add.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate: InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.whenAdded.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.whenAdded.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = WhenAddedController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("trustee.whenAdded.heading", trusteeName),
             legendClass = "heading-large",
@@ -41,6 +44,6 @@
             hint = Some(messages("trustee.whenAdded.hint"))
         )
 
-        @components.submit_button(Some(messages("site.continue")))
+        @submitButton(Some(messages("site.continue")))
     }
 }
