@@ -16,27 +16,33 @@
 
 @import controllers.trustee.individual.amend.routes._
 @import utils.InputOption
+@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    errorSummary: ErrorSummary,
+    inputSelect: InputSelect,
+    inputText: InputText,
+    inputDate: InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String, countryOptions:Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.passportOrIdCardDetails.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individual.passportOrIdCardDetails.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = PassportOrIdCardDetailsController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading("trustee.individual.passportOrIdCardDetails.heading", Some(name))
 
-        @components.heading("trustee.individual.passportOrIdCardDetails.heading", Some(name))
-
-        @components.select(
+        @inputSelect(
             field = form("country"),
             label = messages("trustee.individual.passportOrIdCardDetails.country"),
             labelClasses = Set("bold"),
@@ -46,12 +52,12 @@
             selectAttribute = Set("data-non-uk-countries")
         )
 
-        @components.input_text(
+        @inputText(
             field = form("number"),
             label = messages("trustee.individual.passportOrIdCardDetails.number")
         )
 
-        @components.input_date(
+        @inputDate(
             field = form("expiryDate"),
             legend = messages("trustee.individual.passportOrIdCardDetails.expiryDate.title"),
             legendClass = "bold",
@@ -59,6 +65,6 @@
             hint = Some(messages(s"trustee.individual.passportOrIdCardDetails.expiryDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

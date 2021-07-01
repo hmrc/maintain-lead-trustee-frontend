@@ -15,10 +15,14 @@
  *@
 
 @import controllers.trustee.individual.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
@@ -35,21 +39,20 @@
 }
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.mentalCapacityYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individual.mentalCapacityYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = MentalCapacityYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("trustee.individual.mentalCapacityYesNo.heading", name),
             additionalContent = Some(content)
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
