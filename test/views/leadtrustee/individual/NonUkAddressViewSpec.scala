@@ -30,7 +30,7 @@ class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
 
   override val form = new NonUkAddressFormProvider()()
 
-  "NonUkAddressView" must {
+  "leadtrustee.individual.NonUkAddressView" must {
 
     val view = viewFor[NonUkAddressView](Some(emptyUserAnswers))
 

@@ -109,8 +109,8 @@ trait ViewBehaviours extends ViewSpecBase {
   }
 
   def pageWithHint[A](form: Form[A],
-    createView: Form[A] => HtmlFormat.Appendable,
-    expectedHintKey: String): Unit = {
+                      createView: Form[A] => HtmlFormat.Appendable,
+                      expectedHintKey: String): Unit = {
 
     "behave like a page with hint text" in {
 

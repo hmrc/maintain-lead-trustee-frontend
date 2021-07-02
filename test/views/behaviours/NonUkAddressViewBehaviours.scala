@@ -59,7 +59,7 @@ trait NonUkAddressViewBehaviours extends ViewBehaviours {
         "not render an error summary" in {
 
           val doc = asDocument(createView(form))
-          assertNotRenderedById(doc, " error-summary-title")
+          assertNotRenderedById(doc,  "error-summary-title")
         }
       }
 
@@ -82,7 +82,7 @@ trait NonUkAddressViewBehaviours extends ViewBehaviours {
           "show an error summary" in {
 
             val doc = asDocument(createView(form.withError(FormError(field._1, "error"))))
-            assertRenderedById(doc, " error-summary-title")
+            assertRenderedById(doc,  "error-summary-title")
           }
 
           s"show an error in the label for field '$field'" in {
