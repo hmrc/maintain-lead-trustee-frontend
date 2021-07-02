@@ -29,7 +29,7 @@ class EmailAddressViewSpec extends StringViewBehaviours {
 
   val form = new EmailAddressFormProvider().withPrefix(messageKeyPrefix)
 
-  "EmailAddressView view" must {
+  "leadtrustee.individual.EmailAddressView view" must {
 
     val view = viewFor[EmailAddressView](Some(emptyUserAnswers))
 

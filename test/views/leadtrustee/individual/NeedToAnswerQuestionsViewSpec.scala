@@ -22,7 +22,7 @@ import views.html.leadtrustee.individual.NeedToAnswerQuestionsView
 
 class NeedToAnswerQuestionsViewSpec extends ViewBehaviours {
 
-  "NeedToAnswerQuestions view" must {
+  "leadtrustee.individual.NeedToAnswerQuestions view" must {
 
     val leadTrustee = Name("Lead", None, "Trustee")
 
@@ -38,8 +38,8 @@ class NeedToAnswerQuestionsViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView)
 
-    behave like pageWithDynamicHint(applyView, messageKeyPrefix, leadTrustee.displayName)
+    //behave like pageWithDynamicHint(applyView, messageKeyPrefix, leadTrustee.displayName)
 
-    behave like pageWithContinueButton(applyView, controllers.leadtrustee.individual.routes.NameController.onPageLoad().url)
+    behave like pageWithASubmitButton(applyView)
   }
 }

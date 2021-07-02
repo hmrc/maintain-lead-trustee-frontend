@@ -33,7 +33,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
 
   override val form: Form[IdCard] = new IdCardDetailsFormProvider().withPrefix(messageKeyPrefix)
 
-  "IdCardDetails view" must {
+  "trustee.individual.add.IdCardDetails view" must {
 
     val view = viewFor[IdCardDetailsView](Some(emptyUserAnswers))
 

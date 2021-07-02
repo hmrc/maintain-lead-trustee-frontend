@@ -37,8 +37,9 @@
         @errorSummary(form.errors)
 
         @inputEmail(
-          field = form("value"),
-          label = messages("leadtrustee.organisation.emailAddress.heading", name)
+            field = form("value"),
+            label = messages("leadtrustee.organisation.emailAddress.heading", name),
+            labelAsHeading = true
         )
 
         @submitButton()
