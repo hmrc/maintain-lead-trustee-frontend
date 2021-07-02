@@ -63,7 +63,7 @@ class LeadTrusteeOrganisationPrintHelperSpec extends SpecBase {
           AnswerRow(label = messages("leadtrustee.organisation.nonUkAddress.checkYourAnswersLabel", name), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(NonUkAddressController.onPageLoad().url)),
           AnswerRow(label = messages("leadtrustee.organisation.emailAddressYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(EmailAddressYesNoController.onPageLoad().url)),
           AnswerRow(label = messages("leadtrustee.organisation.emailAddress.checkYourAnswersLabel", name), answer = Html("email"), changeUrl = Some(EmailAddressController.onPageLoad().url)),
-          AnswerRow(label = messages("leadtcheckYourAnswersLabel\", name.displayName))rustee.organisation.telephoneNumber.checkYourAnswersLabel", name), answer = Html("tel"), changeUrl = Some(TelephoneNumberController.onPageLoad().url))
+          AnswerRow(label = messages("leadtrustee.organisation.telephoneNumber.checkYourAnswersLabel", name), answer = Html("tel"), changeUrl = Some(TelephoneNumberController.onPageLoad().url))
         )
       )
     }
