@@ -22,8 +22,6 @@ import views.ViewUtils
 
 trait SelectCountryViewBehaviours extends QuestionViewBehaviours[String] {
 
-  val errorPrefix = "site.error"
-
   def selectCountryPage(form: Form[String],
                         createView: Form[String] => HtmlFormat.Appendable,
                         messageKeyPrefix: String,
