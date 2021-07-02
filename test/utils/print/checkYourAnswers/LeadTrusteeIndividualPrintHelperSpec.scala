@@ -62,21 +62,21 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
-            AnswerRow(label = Html(messages("leadtrustee.individual.name.checkYourAnswersLabel")), answer = Html("Lead Trustee"), changeUrl = NameController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("3 February 1996"), changeUrl = DateOfBirthController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = CountryOfNationalityInTheUkYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationality.checkYourAnswersLabel", name.displayName)), answer = Html("Germany"), changeUrl = CountryOfNationalityController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = UkCitizenController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = NationalInsuranceNumberController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("Germany<br />number<br />3 February 1996"), changeUrl = PassportOrIdCardController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = CountryOfResidenceInTheUkYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfResidence.checkYourAnswersLabel", name.displayName)), answer = Html("Germany"), changeUrl = CountryOfResidenceController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = LiveInTheUkYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = UkAddressController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = NonUkAddressController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = EmailAddressYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.emailAddress.checkYourAnswersLabel", name.displayName)), answer = Html("email"), changeUrl = EmailAddressController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.telephoneNumber.checkYourAnswersLabel", name.displayName)), answer = Html("tel"), changeUrl = TelephoneNumberController.onPageLoad().url)
+            AnswerRow(label = messages("leadtrustee.individual.name.checkYourAnswersLabel"), answer = Html("Lead Trustee"), changeUrl = Some(NameController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName), answer = Html("3 February 1996"), changeUrl = Some(DateOfBirthController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("No"), changeUrl = Some(CountryOfNationalityInTheUkYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfNationality.checkYourAnswersLabel", name.displayName), answer = Html("Germany"), changeUrl = Some(CountryOfNationalityController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(UkCitizenController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName), answer = Html("AA 00 00 00 A"), changeUrl = Some(NationalInsuranceNumberController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("Germany<br />number<br />3 February 1996"), changeUrl = Some(PassportOrIdCardController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("No"), changeUrl = Some(CountryOfResidenceInTheUkYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfResidence.checkYourAnswersLabel", name.displayName), answer = Html("Germany"), changeUrl = Some(CountryOfResidenceController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(LiveInTheUkYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(UkAddressController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(NonUkAddressController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(EmailAddressYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.emailAddress.checkYourAnswersLabel", name.displayName), answer = Html("email"), changeUrl = Some(EmailAddressController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.telephoneNumber.checkYourAnswersLabel", name.displayName), answer = Html("tel"), changeUrl = Some(TelephoneNumberController.onPageLoad().url))
           )
         )
       }
@@ -92,21 +92,21 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
-            AnswerRow(label = Html(messages("leadtrustee.individual.name.checkYourAnswersLabel")), answer = Html("Lead Trustee"), changeUrl = NameController.onPageLoad().url, canEdit = false, isVerified = true),
-            AnswerRow(label = Html(messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName)), answer = Html("3 February 1996"), changeUrl = DateOfBirthController.onPageLoad().url, canEdit = false, isVerified = true),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = CountryOfNationalityInTheUkYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationality.checkYourAnswersLabel", name.displayName)), answer = Html("Germany"), changeUrl = CountryOfNationalityController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = UkCitizenController.onPageLoad().url, canEdit = false),
-            AnswerRow(label = Html(messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = NationalInsuranceNumberController.onPageLoad().url, canEdit = false, isVerified = true),
-            AnswerRow(label = Html(messages("leadtrustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName)), answer = Html("Germany<br />number<br />3 February 1996"), changeUrl = PassportOrIdCardController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("No"), changeUrl = CountryOfResidenceInTheUkYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.countryOfResidence.checkYourAnswersLabel", name.displayName)), answer = Html("Germany"), changeUrl = CountryOfResidenceController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = LiveInTheUkYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = UkAddressController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = NonUkAddressController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = EmailAddressYesNoController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.emailAddress.checkYourAnswersLabel", name.displayName)), answer = Html("email"), changeUrl = EmailAddressController.onPageLoad().url),
-            AnswerRow(label = Html(messages("leadtrustee.individual.telephoneNumber.checkYourAnswersLabel", name.displayName)), answer = Html("tel"), changeUrl = TelephoneNumberController.onPageLoad().url)
+            AnswerRow(label = messages("leadtrustee.individual.name.checkYourAnswersLabel"), answer = Html("Lead Trustee"), changeUrl = Some(NameController.onPageLoad().url), canEdit = false, isVerified = true),
+            AnswerRow(label = messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName), answer = Html("3 February 1996"), changeUrl = Some(DateOfBirthController.onPageLoad().url), canEdit = false, isVerified = true),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("No"), changeUrl = Some(CountryOfNationalityInTheUkYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfNationality.checkYourAnswersLabel", name.displayName), answer = Html("Germany"), changeUrl = Some(CountryOfNationalityController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(UkCitizenController.onPageLoad().url), canEdit = false),
+            AnswerRow(label = messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName), answer = Html("AA 00 00 00 A"), changeUrl = Some(NationalInsuranceNumberController.onPageLoad().url), canEdit = false, isVerified = true),
+            AnswerRow(label = messages("leadtrustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("Germany<br />number<br />3 February 1996"), changeUrl = Some(PassportOrIdCardController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("No"), changeUrl = Some(CountryOfResidenceInTheUkYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.countryOfResidence.checkYourAnswersLabel", name.displayName), answer = Html("Germany"), changeUrl = Some(CountryOfResidenceController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(LiveInTheUkYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(UkAddressController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(NonUkAddressController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.emailAddressYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(EmailAddressYesNoController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.emailAddress.checkYourAnswersLabel", name.displayName), answer = Html("email"), changeUrl = Some(EmailAddressController.onPageLoad().url)),
+            AnswerRow(label = messages("leadtrustee.individual.telephoneNumber.checkYourAnswersLabel", name.displayName), answer = Html("tel"), changeUrl = Some(TelephoneNumberController.onPageLoad().url))
           )
         )
       }
@@ -126,9 +126,9 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
             result mustBe AnswerSection(
               headingKey = None,
               rows = Seq(
-                AnswerRow(label = Html(messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html(""), changeUrl = CountryOfNationalityInTheUkYesNoController.onPageLoad().url),
-                AnswerRow(label = Html(messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName)), answer = Html("AA 00 00 00 A"), changeUrl = NationalInsuranceNumberController.onPageLoad().url, canEdit = false, isVerified = true),
-                AnswerRow(label = Html(messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html(""), changeUrl = CountryOfResidenceInTheUkYesNoController.onPageLoad().url)
+                AnswerRow(label = messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html(""), changeUrl = Some(CountryOfNationalityInTheUkYesNoController.onPageLoad().url)),
+                AnswerRow(label = messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName), answer = Html("AA 00 00 00 A"), changeUrl = Some(NationalInsuranceNumberController.onPageLoad().url), canEdit = false, isVerified = true),
+                AnswerRow(label = messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html(""), changeUrl = Some(CountryOfResidenceInTheUkYesNoController.onPageLoad().url))
               )
             )
           }

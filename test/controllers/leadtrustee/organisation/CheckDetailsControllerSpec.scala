@@ -83,7 +83,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(request, messages).toString
+          view(Seq(answerSection))(request, messages).toString
       }
 
       "return INTERNAL_SERVER_ERROR" when {
@@ -154,7 +154,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(request, messages).toString
+          view(Seq(answerSection))(request, messages).toString
       }
     }
 
