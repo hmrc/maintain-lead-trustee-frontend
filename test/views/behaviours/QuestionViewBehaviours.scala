@@ -145,7 +145,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
             val doc = asDocument(createView(form.withError(FormError(field._1, "error"))))
             val errorSpan = doc.getElementsByClass("error-message").first
-            errorSpan.parent.getElementsByClass("form-label").attr("for") mustBe field._1
+            errorSpan.parent.getElementsByClass("govuk-label").attr("for") mustBe field._1
           }
 
           s"contains a label and optional hint text for the field '$field'" in {

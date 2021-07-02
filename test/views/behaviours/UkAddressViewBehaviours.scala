@@ -84,8 +84,8 @@ trait UkAddressViewBehaviours extends ViewBehaviours {
           s"show an error in the label for field '$field'" in {
 
             val doc = asDocument(createView(form.withError(FormError(field._1, "error"))))
-            val errorSpan = doc.getElementsByClass("error-message").first
-            errorSpan.parent.getElementsByClass("form-label").attr("for") mustBe field._1
+            val errorSpan = doc.getElementsByClass("govuk-error-message").first
+            errorSpan.parent.getElementsByClass("govuk-label").attr("for") mustBe field._1
           }
         }
       }
