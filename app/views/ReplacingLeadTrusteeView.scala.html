@@ -42,7 +42,8 @@
             legend = messages("replacingLeadTrustee.heading", leadTrustee),
             inputs = mapRadioOptionsToRadioItems(form("value"), false, trustees),
             legendAsHeading = true,
-            hint = Some(messages("replacingLeadTrustee.hint", leadTrustee))
+            hint = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
+            inline = false
         )
 
         @submitButton()
