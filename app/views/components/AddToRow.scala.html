@@ -33,10 +33,17 @@
             <span class="govuk-visually-hidden">@messages("site.hidden-edit", data.name)</span>
         </a>
     </dd>
-    <dd class="hmrc-add-to-a-list__remove">
-        <a class="govuk-link" href="@data.removeUrl">
-            <span aria-hidden="true">@messages("site.delete")</span>
-            <span class="govuk-visually-hidden">@messages("site.hidden-delete", data.name)</span>
-        </a>
-    </dd>
+    @if(data.removeUrl.isDefined){
+        <dd class="hmrc-add-to-a-list__remove">
+            <a class="govuk-link" href="@data.removeUrl">
+                <span aria-hidden="true">@messages("site.delete")</span>
+                <span class="govuk-visually-hidden">@messages("site.hidden-delete", data.name)</span>
+            </a>
+        </dd>
+    } else {
+        <dd class="hmrc-add-to-a-list__remove">
+            <span aria-hidden="true">@messages("site.cannotRemove")</span>
+            <span class="govuk-visually-hidden">@messages("site.cannotRemove-delete", data.name)</span>
+        </dd>
+    }
 </div>
