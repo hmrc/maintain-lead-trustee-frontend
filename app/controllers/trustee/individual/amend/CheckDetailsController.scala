@@ -35,7 +35,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelpers
 import views.html.trustee.individual.amend.CheckDetailsView
 import javax.inject.Inject
-import viewmodels.Section
+import viewmodels.AnswerSection
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -87,13 +87,13 @@ class CheckDetailsController @Inject()(
 
   private def renderTrustee(userAnswers: UserAnswers, index: Int, name: String)
                            (implicit request: DataRequest[AnyContent]): Result = {
-    val section: Section = printHelper.printIndividualTrustee(
+    val section: AnswerSection = printHelper.printIndividualTrustee(
       userAnswers = userAnswers,
       provisional = false,
       name = name
     )
 
-    Ok(view(Seq(section), index))
+    Ok(view(section, index))
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {

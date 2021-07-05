@@ -14,19 +14,18 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Section
+@import viewmodels.AnswerSection
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-@import utils.SectionFormatter.formatSections
-@import views.html.components.Heading
+@import views.html.components.{Heading, CheckDetailsList}
 
 
 @this(
     main_template: MainTemplate,
     heading: Heading,
-    govukSummaryList: GovukSummaryList
+    checkDetailsList: CheckDetailsList
 )
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answersSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("checkYourAnswers.title")
@@ -34,5 +33,5 @@
 
     @heading("checkYourAnswers.heading")
 
-    @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+    @checkDetailsList(answersSection = answersSection)
 }

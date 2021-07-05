@@ -33,7 +33,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelpers
-import viewmodels.Section
+import viewmodels.AnswerSection
 import views.html.leadtrustee.organisation.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -84,12 +84,12 @@ class CheckDetailsController @Inject()(
   }
 
   private def renderLeadTrustee(userAnswers: UserAnswers, name: String)(implicit request: DataRequest[AnyContent]): Result = {
-    val section: Section = printHelper.printLeadOrganisationTrustee(
+    val section: AnswerSection = printHelper.printLeadOrganisationTrustee(
       userAnswers = userAnswers,
       name = name
     )
 
-    Ok(view(Seq(section)))
+    Ok(view(section))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {

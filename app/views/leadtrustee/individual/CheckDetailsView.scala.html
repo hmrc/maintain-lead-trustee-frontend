@@ -15,20 +15,19 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
-@import viewmodels.Section
+@import viewmodels.AnswerSection
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-@import utils.SectionFormatter.formatSections
-@import views.html.components.{Heading, SubmitButton}
+@import views.html.components.{Heading, CheckDetailsList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     submitButton: SubmitButton,
-    govukSummaryList: GovukSummaryList
+    checkDetailsList: CheckDetailsList
 )
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answersSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("leadTrusteeDetails.title"),
@@ -39,7 +38,7 @@
 
         @heading("leadTrusteeDetails.heading")
 
-        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+        @checkDetailsList(answersSection = answersSection)
 
         @submitButton()
     }
