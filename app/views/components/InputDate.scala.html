@@ -50,21 +50,24 @@
             name = s"${field.id}.day",
             label = Some(messages("date.day")),
             value = field("day").value,
-            id = s"${field.id}.day"
+            id = s"${field.id}.day",
+            attributes = if(readOnly) Map("readonly" -> "readonly") else Map.empty
         ),
         InputItem(
             classes = s"govuk-input--width-2 ${addErrorClass(field.error, "month")}",
             name = s"${field.id}.month",
             label = Some(messages("date.month")),
             value = field("month").value,
-            id = s"${field.id}.month"
+            id = s"${field.id}.month",
+            attributes = if(readOnly) Map("readonly" -> "readonly") else Map.empty
         ),
         InputItem(
             classes = s"govuk-input--width-4 ${addErrorClass(field.error, "year")}",
             name = s"${field.id}.year",
             label = Some(messages("date.year")),
             value = field("year").value,
-            id = s"${field.id}.year"
+            id = s"${field.id}.year",
+            attributes = if(readOnly) Map("readonly" -> "readonly") else Map.empty
         )
     ),
     hint = hint.map(hint => Hint(content = Text(messages(hint)))),
