@@ -40,8 +40,7 @@
         label = Label(
             isPageHeading = labelAsHeading,
             classes = if(labelClass.isDefined) labelClass.get else "",
-            content = Text(label),
-            attributes = if(readOnly) Map("readonly" -> "readonly") else Map.empty
+            content = Text(label)
         ),
         autocomplete = autocomplete,
         hint = hint.map(hint => Hint(content = Text(hint))),
@@ -54,6 +53,7 @@
         prefix = prefix.map(prefix => PrefixOrSuffix(content = Text(prefix))),
         suffix = suffix.map(suffix => PrefixOrSuffix(content = Text(suffix))),
         classes = inputClass.getOrElse(""),
-        pattern = pattern
+        pattern = pattern,
+        attributes = if(readOnly) Map("readonly" -> "readonly") else Map.empty
     ).withFormField(field)
 )
