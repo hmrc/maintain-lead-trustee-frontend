@@ -47,14 +47,15 @@
             value = Some("true"),
             checked = field.value.contains("true"),
             content = Text(messages("site.yes")),
-            attributes = if(readOnly) Map("disabled" -> "disabled") else Map.empty
+            attributes = if(readOnly && field.value.contains("false")) Map("disabled" -> "disabled") else Map.empty
         ),
         RadioItem(
             id = Some(field.id + "-no"),
             value = Some("false"),
             checked = field.value.contains("false"),
             content = Text(messages("site.no")),
-            attributes = if(readOnly) Map("disabled" -> "disabled") else Map.empty
+            attributes = if(readOnly && field.value.contains("true")) Map("disabled" -> "disabled") else Map.empty
         )
     )
+
 ))

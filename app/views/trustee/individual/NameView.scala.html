@@ -37,31 +37,25 @@
 
         @errorSummary(form.errors)
 
-        <fieldset>
+        @heading("trustee.individual.name.heading")
 
-            <legend>
-                @heading("trustee.individual.name.heading")
-            </legend>
+        @inputText(
+            field = form("firstName"),
+            label = messages("trustee.individual.name.firstName"),
+            autocomplete = Some("given-name")
+        )
 
-            @inputText(
-                field = form("firstName"),
-                label = messages("trustee.individual.name.firstName"),
-                autocomplete = Some("given-name")
-            )
+        @inputText(
+            field = form("middleName"),
+            label = messages("trustee.individual.name.middleName"),
+            autocomplete = Some("additional-name")
+        )
 
-            @inputText(
-                field = form("middleName"),
-                label = messages("trustee.individual.name.middleName"),
-                autocomplete = Some("additional-name")
-            )
-
-            @inputText(
-                field = form("lastName"),
-                label = messages("trustee.individual.name.lastName"),
-                autocomplete = Some("family-name")
-            )
-
-        </fieldset>
+        @inputText(
+            field = form("lastName"),
+            label = messages("trustee.individual.name.lastName"),
+            autocomplete = Some("family-name")
+        )
 
         @submitButton()
     }
