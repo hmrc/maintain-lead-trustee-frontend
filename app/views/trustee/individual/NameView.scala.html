@@ -37,25 +37,34 @@
 
         @errorSummary(form.errors)
 
-        @heading("trustee.individual.name.heading")
+        <fieldset class="govuk-fieldset">
 
-        @inputText(
-            field = form("firstName"),
-            label = messages("trustee.individual.name.firstName"),
-            autocomplete = Some("given-name")
-        )
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                @heading("trustee.individual.name.heading")
+            </legend>
 
-        @inputText(
-            field = form("middleName"),
-            label = messages("trustee.individual.name.middleName"),
-            autocomplete = Some("additional-name")
-        )
+            @inputText(
+                field = form("firstName"),
+                label = messages("trustee.individual.name.firstName"),
+                inputClass = Some("govuk-!-width-one-half"),
+                autocomplete = Some("given-name")
+            )
 
-        @inputText(
-            field = form("lastName"),
-            label = messages("trustee.individual.name.lastName"),
-            autocomplete = Some("family-name")
-        )
+            @inputText(
+                field = form("middleName"),
+                label = messages("trustee.individual.name.middleName"),
+                inputClass = Some("govuk-!-width-one-half"),
+                autocomplete = Some("additional-name")
+            )
+
+            @inputText(
+                field = form("lastName"),
+                label = messages("trustee.individual.name.lastName"),
+                inputClass = Some("govuk-!-width-one-half"),
+                autocomplete = Some("family-name")
+            )
+
+        </fieldset>
 
         @submitButton()
     }

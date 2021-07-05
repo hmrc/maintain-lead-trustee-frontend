@@ -37,29 +37,36 @@
 
         @errorSummary(form.errors)
 
-        @heading("leadtrustee.individual.name.heading")
+        <fieldset class="govuk-fieldset">
 
-        @inputText(
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                @heading("leadtrustee.individual.name.heading")
+            </legend>
+
+            @inputText(
             field = form("firstName"),
             label = messages("leadtrustee.individual.name.firstName"),
+            inputClass = Some("govuk-!-width-one-half"),
             autocomplete = Some("given-name"),
             readOnly = readOnly
-        )
+            )
 
-        @inputText(
+            @inputText(
             field = form("middleName"),
             label = messages("leadtrustee.individual.name.middleName"),
+            inputClass = Some("govuk-!-width-one-half"),
             autocomplete = Some("additional-name"),
             readOnly = readOnly
-        )
+            )
 
-        @inputText(
+            @inputText(
             field = form("lastName"),
             label = messages("leadtrustee.individual.name.lastName"),
+            inputClass = Some("govuk-!-width-one-half"),
             autocomplete = Some("family-name"),
             readOnly = readOnly
-        )
-
+            )
+        </fieldset>
 
         @submitButton()
     }
