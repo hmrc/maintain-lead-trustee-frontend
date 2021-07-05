@@ -36,15 +36,26 @@ object SectionFormatter {
         SummaryListRow(
           key = Key(classes = "govuk-!-width-two-thirds", content = Text(messages(row.label, row.labelArg))),
           value = Value(HtmlContent(row.answer)),
-          actions = Option(Actions(items = Seq(ActionItem(href=row.changeUrl.getOrElse(""),
-            classes = s"change-link-${i}",
-            visuallyHiddenText = Some(messages(row.label, row.labelArg)),
-            content = Text(messages("site.edit")))))
-          )
+          actions = Option(Actions(items = Seq(addActionItem(row, i))))
         )
       }
     }
 
   }
 
+  private def addActionItem(row: AnswerRow, i: Int)(implicit messages: Messages): ActionItem = {
+    if (row.isVerified) {
+      ActionItem(href=row.changeUrl.getOrElse(""),
+        classes = s"change-link-${i}",
+        visuallyHiddenText = Some(messages(row.label, row.labelArg)),
+        content = Text(messages("site.edit"))
+      )
+    } else {
+      ActionItem(href="",
+        classes = s"change-link-${i}",
+        visuallyHiddenText = Some(messages(row.label, row.labelArg)),
+        content = Text(messages("site.verified"))
+      )
+    }
+  }
 }
