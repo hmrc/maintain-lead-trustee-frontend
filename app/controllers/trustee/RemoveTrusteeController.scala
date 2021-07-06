@@ -44,7 +44,7 @@ class RemoveTrusteeController @Inject()(
   private def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveTrusteeController.onSubmit(index)
 
-  private val messagesPrefix: String = "removeATrustee"
+  private val messagesPrefix: String = "removeATrusteeYesNo"
 
   private val form = formProvider.apply(messagesPrefix)
 
