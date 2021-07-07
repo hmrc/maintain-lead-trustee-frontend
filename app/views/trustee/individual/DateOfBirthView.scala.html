@@ -15,32 +15,35 @@
  *@
 
 @import controllers.trustee.individual.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate: InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.dateOfBirth.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individual.dateOfBirth.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = DateOfBirthController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("trustee.individual.dateOfBirth.heading", name),
-            legendClass = "heading-large",
-            headingIsLegend = true,
+            legendClass = "govuk-heading-l",
+            legendAsHeading = true,
             hint = Some(messages("trustee.individual.dateOfBirth.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

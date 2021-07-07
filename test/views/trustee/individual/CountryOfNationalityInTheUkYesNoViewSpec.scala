@@ -23,6 +23,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.trustee.individual.CountryOfNationalityInTheUkYesNoView
 import controllers.trustee.individual.routes
+
 class CountryOfNationalityInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.countryOfNationalityInTheUkYesNo"

@@ -15,29 +15,32 @@
  *@
 
 @import controllers.trustee.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
-  main_template: MainTemplate,
-  formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = s"${errorPrefix(form)}${messages("addATrusteeYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("addATrusteeYesNo.title")}",
+    showBackLink = true
 ) {
 
 @formHelper(action = AddATrusteeController.submitOne(), 'autoComplete -> "off") {
 
-    @components.back_link()
+    @errorSummary(form.errors)
 
-    @components.error_summary(form.errors)
-
-    @components.input_yes_no(
+    @inputYesNo(
       field = form("value"),
       label = messages("addATrusteeYesNo.heading")
     )
 
-    @components.submit_button()
+    @submitButton()
   }
 }

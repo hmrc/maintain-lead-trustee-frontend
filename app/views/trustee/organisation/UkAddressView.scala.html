@@ -15,34 +15,33 @@
  *@
 
 @import controllers.trustee.organisation.routes._
+@import views.html.components.{ErrorSummary, UkAddress, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    ukAddress: UkAddress,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.organisation.ukAddress.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.organisation.ukAddress.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = UkAddressController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @ukAddress(
+            form = form,
+            legend = messages("trustee.organisation.ukAddress.heading", name),
+            legendAsHeading = true
+        )
 
-        <fieldset>
-
-            <legend>
-                @components.heading("trustee.organisation.ukAddress.heading", Some(name))
-            </legend>
-
-            @components.uk_address(form)
-
-        </fieldset>
-
-        @components.submit_button()
+        @submitButton()
     }
 }

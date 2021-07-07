@@ -33,7 +33,7 @@ class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 
   override val form: Form[Passport] = new PassportDetailsFormProvider().withPrefix(messageKeyPrefix)
 
-  "PassportDetails view" must {
+  "trustee.individual.add.PassportDetails view" must {
 
     val view = viewFor[PassportDetailsView](Some(emptyUserAnswers))
 

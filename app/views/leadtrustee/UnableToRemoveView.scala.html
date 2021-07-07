@@ -15,20 +15,21 @@
  *@
 
 @import controllers.leadtrustee.routes._
+@import views.html.components.Heading
 
 @this(
-main_template: MainTemplate
+    main_template: MainTemplate,
+    heading: Heading
 )
 
 @(name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("unableToRemove.title")
+    title = messages("unableToRemove.title"),
+    showBackLink = true
 ) {
 
-@components.back_link()
-
-@components.heading("unableToRemove.heading")
+@heading("unableToRemove.heading")
 
 <p>@messages("unableToRemove.paragraph.1")</p>
 <ol class="govuk-list govuk-list--number">

@@ -16,34 +16,34 @@
 
 @import controllers.leadtrustee.organisation.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InternationalAddress, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    internationalAddress: InternationalAddress,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("leadtrustee.organisation.nonUkAddress.title")}"
-    ) {
+    title = s"${errorPrefix(form)}${messages("leadtrustee.organisation.nonUkAddress.title")}",
+    showBackLink = true
+) {
 
     @formHelper(action = NonUkAddressController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @internationalAddress(
+            form = form,
+            legend = messages("leadtrustee.organisation.nonUkAddress.heading", name),
+            legendAsHeading = true,
+            countryOptions = countryOptions
+        )
 
-        <fieldset>
-
-            <legend>
-                @components.heading("leadtrustee.organisation.nonUkAddress.heading", Some(name))
-            </legend>
-
-            @components.international_address(form, countryOptions)
-
-        </fieldset>
-
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -16,26 +16,30 @@
 
 @import controllers.leadtrustee.organisation.routes._
 @import viewmodels.AnswerSection
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+@import views.html.components.{Heading, CheckDetailsList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    submitButton: SubmitButton,
+    checkDetailsList: CheckDetailsList
 )
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answersSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("leadTrusteeDetails.title")
+    title = messages("leadTrusteeDetails.title"),
+    showBackLink = true
 ) {
 
     @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @heading("leadTrusteeDetails.heading")
 
-        @components.heading("leadTrusteeDetails.heading")
+        @checkDetailsList(answersSection = answersSection)
 
-        @components.answer_section(answerSection)
-
-        @components.submit_button()
+        @submitButton()
     }
 }

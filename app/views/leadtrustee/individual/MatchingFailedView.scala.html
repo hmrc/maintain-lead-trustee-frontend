@@ -15,21 +15,25 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
+@import views.html.components.{HeadingWithCaption, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    headingWithCaption: HeadingWithCaption,
+    submitButton: SubmitButton
 )
 
 @(numberOfFailedAttempts: Int, numberOfRemainingAttempts: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("leadTrustee.individual.matching.failed.title")
+    title = messages("leadTrustee.individual.matching.failed.title"),
+    showBackLink = false
 ) {
 
     @formHelper(action = MatchingFailedController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.heading_with_caption(
+        @headingWithCaption(
             messagePrefix = "leadTrustee.individual.matching.failed",
             captionParam = Some(numberOfFailedAttempts.toString)
         )
@@ -38,14 +42,14 @@
 
         <p>
             <span>@messages("leadTrustee.individual.matching.failed.paragraph2.part1")</span>
-            <span class="bold">@messages("leadTrustee.individual.matching.failed.paragraph2.remainingAttempts", numberOfRemainingAttempts)</span>
+            <span id="remaining-attempts" class="govuk-!-font-weight-bold">@messages("leadTrustee.individual.matching.failed.paragraph2.remainingAttempts", numberOfRemainingAttempts)</span>
             @numberOfRemainingAttempts match {
                 case 1 => { <span>@messages("leadTrustee.individual.matching.failed.paragraph2.part2.singular")</span> }
                 case _ => { <span>@messages("leadTrustee.individual.matching.failed.paragraph2.part2.plural")</span> }
             }
         </p>
 
-        @components.submit_button(overrideMessage = Some("site.try-again"))
+        @submitButton(overrideMessage = Some("site.try-again"))
 
     }
 }

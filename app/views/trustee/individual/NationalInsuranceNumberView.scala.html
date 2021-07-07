@@ -15,32 +15,36 @@
  *@
 
 @import controllers.trustee.individual.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.nationalInsuranceNumber.title")}"
-    ) {
+    title = s"${errorPrefix(form)}${messages("trustee.individual.nationalInsuranceNumber.title")}",
+    showBackLink = true
+) {
 
     @formHelper(action = NationalInsuranceNumberController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_nino(
+        @inputText(
             field = form("value"),
             label = messages("trustee.individual.nationalInsuranceNumber.heading", name),
-            headingIsLabel = true,
+            labelClass = Some("govuk-heading-l"),
+            labelAsHeading = true,
             hint = Some(messages("trustee.individual.nationalInsuranceNumber.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
 

@@ -37,4 +37,8 @@ class NeedToAnswerQuestionsController @Inject()(
       Ok(view(request.leadTrusteeName))
   }
 
+  def onSubmit: Action[AnyContent] = Action {
+    Redirect(controllers.leadtrustee.individual.routes.NameController.onPageLoad().url)
+  }
+
 }

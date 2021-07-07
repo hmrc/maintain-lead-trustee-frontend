@@ -15,10 +15,14 @@
  *@
 
 @import config.FrontendAppConfig
+@import views.html.components.{Heading, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    appConfig: FrontendAppConfig
+    appConfig: FrontendAppConfig,
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    submitButton: SubmitButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -27,15 +31,14 @@
     title = messages("session_expired.title"),
     timeoutEnabled = false,
     canSignOut = false
-    ) {
+) {
 
-    @components.heading("session_expired.heading")
+    @heading("session_expired.heading")
 
     <p>@messages("session_expired.guidance")</p>
     <p>@messages("session_expired.guidance.2")</p>
 
-    @components.button_link(
-                    messageKey = messages("site.sign_in"),
-                    href = appConfig.loginUrl
-                    )
+    @formHelper(action = SessionExpiredController.onSubmit, 'autoComplete -> "off") {
+        @submitButton(Some(messages("site.sign_in")))
+    }
 }

@@ -33,7 +33,7 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
   override val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
 
-  "NonUkAddressView" must {
+  "trustee.individual.NonUkAddressView" must {
 
     val view = viewFor[NonUkAddressView](Some(emptyUserAnswers))
 

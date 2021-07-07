@@ -16,33 +16,37 @@
 
 @import controllers.leadtrustee.organisation.routes._
 @import models.Mode
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], isUKRegisteredCompany: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("leadtrustee.organisation.name.title")}"
+    title = s"${errorPrefix(form)}${messages("leadtrustee.organisation.name.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = NameController.onSubmit(), 'autoComplete -> "on") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
           field = form("value"),
           label = messages("leadtrustee.organisation.name.heading"),
           hint = if(isUKRegisteredCompany) Some(messages("leadtrustee.organisation.name.hint")) else None,
-          headingIsLabel = true,
-          labelClass=Some("heading-large"),
+          labelAsHeading = true,
+          labelClass=Some("govuk-heading-l"),
+          inputClass = Some("govuk-!-width-one-half"),
           autocomplete = Some("name")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

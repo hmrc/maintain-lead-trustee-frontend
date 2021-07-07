@@ -16,34 +16,38 @@
 
 @import controllers.routes._
 @import viewmodels.RadioOption
+@import views.html.components.{ErrorSummary, InputRadio, SubmitButton}
 
 @this(
-  main_template: MainTemplate,
-  formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputRadio: InputRadio,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], leadTrustee: String, trustees: List[RadioOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = s"${errorPrefix(form)}${messages("replacingLeadTrustee.title")}"
+    title = s"${errorPrefix(form)}${messages("replacingLeadTrustee.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = ReplacingLeadTrusteeController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors, trustees)
 
-        @components.error_summary(form.errors)
-
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("replacingLeadTrustee.heading", leadTrustee),
-            inputs = trustees.toSeq,
-            headingIsLegend = true,
-            hint = Some(messages("replacingLeadTrustee.hint", leadTrustee))
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, trustees),
+            legendAsHeading = true,
+            hint = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
+            inline = false
         )
 
-        @components.submit_button()
+        @submitButton()
 
-        <p><a href="@controllers.routes.AddATrusteeController.onPageLoad().url">@messages("replacingLeadTrustee.return.link")</a></p>
+        <p><a class="govuk-link" href="@controllers.routes.AddATrusteeController.onPageLoad().url">@messages("replacingLeadTrustee.return.link")</a></p>
     }
 }

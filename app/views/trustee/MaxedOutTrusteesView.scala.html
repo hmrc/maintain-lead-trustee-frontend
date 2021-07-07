@@ -16,10 +16,15 @@
 
 @import controllers.trustee.routes._
 @import viewmodels.addAnother.AddRow
+@import views.html.components.{Heading, ErrorSummary, AddToList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    headingComp: Heading,
+    errorSummary: ErrorSummary,
+    addToList: AddToList,
+    submitButton: SubmitButton
 )
 
 @(inProgressTrustees: Seq[AddRow],
@@ -28,30 +33,32 @@
     heading: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = heading
+    title = heading,
+    showBackLink = true
 ) {
 
     @formHelper(action = AddATrusteeController.submitComplete(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @headingComp(heading)
 
-        @components.heading(heading)
+        @addToList(inProgressTrustees, "inprogress", "trustee")
 
-        @components.data_list(inProgressTrustees, "inprogress", "trustee")
-
-        @components.data_list(completeTrustees, "complete", "trustee")
+        @addToList(completeTrustees, "complete", "trustee")
 
         @if(!isLeadTrusteeDefined) {
-            @components.inset_text("addATrustee.lead-trustee.required", "addATrustee")
+            <div id="inset-text--addATrustee" class="govuk-inset-text">
+                @messages("addATrustee.lead-trustee.required")
+            </div>
         }
 
-        <p>@messages("addATrustee.p1") <a href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
+        <p>@messages("addATrustee.p1") <a class="govuk-link" href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
 
-        <ul>
-            <li class="panel-indent"><p>@messages("addATrustee.maxedOut")</p></li>
-            <li class="panel-indent"><p>@messages("addATrustee.maxedOut.paragraph")</p></li>
-        </ul>
-
-        @components.submit_button()
+        <div class="govuk-inset-text">
+            <ul class="govuk-list">
+                <li><p>@messages("addATrustee.maxedOut")</p></li>
+                <li><p>@messages("addATrustee.maxedOut.paragraph")</p></li>
+            </ul>
+        </div>
+        @submitButton()
     }
 }

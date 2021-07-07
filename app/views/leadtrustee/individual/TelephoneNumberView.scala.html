@@ -15,32 +15,35 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("leadtrustee.individual.telephoneNumber.title")}"
+    title = s"${errorPrefix(form)}${messages("leadtrustee.individual.telephoneNumber.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = TelephoneNumberController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_tele(
+        @inputText(
             field = form("value"),
             label = messages("leadtrustee.individual.telephoneNumber.heading", name),
             hint = Some(messages("site.telephone_number.hint")),
             labelAsHeading = true,
-            labelClass = Some("heading-large")
+            labelClass = Some("govuk-heading-l")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

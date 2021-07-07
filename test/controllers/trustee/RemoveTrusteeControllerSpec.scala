@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures with BeforeAndAfterEach {
 
-  val messagesPrefix = "removeATrustee"
+  val messagesPrefix = "removeATrusteeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)

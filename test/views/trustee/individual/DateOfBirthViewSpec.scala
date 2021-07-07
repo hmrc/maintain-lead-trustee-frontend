@@ -32,7 +32,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
   //  TODO: need separate test cases for 4MLD and 5MLD
   override val form: Form[LocalDate] = new DateOfBirthFormProvider(frontendAppConfig).withConfig(messageKeyPrefix)
 
-  "DateOfBirth view" must {
+  "trustee.individual.DateOfBirth view" must {
 
     val view = viewFor[DateOfBirthView](Some(emptyUserAnswers))
 

@@ -16,30 +16,23 @@
 
 @import config.FrontendAppConfig
 @import controllers.leadtrustee.individual.routes._
-@import viewmodels.Link
+@import views.html.components.{HeadingWithCaption, Link}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    appConfig: FrontendAppConfig
+    appConfig: FrontendAppConfig,
+    headingWithCaption: HeadingWithCaption,
+    link: Link
 )
 
 @(name: String)(implicit request: Request[_], messages: Messages)
-
-@maintainATrustOverviewLink = @{
-    List(
-        Link(
-            text = messages("leadTrustee.individual.matching.locked.trust_overview"),
-            url = appConfig.maintainATrustOverview
-        )
-    )
-}
 
 @main_template(
     title = messages("leadTrustee.individual.matching.locked.title")
 ) {
 
-    @components.heading_with_caption(
+    @headingWithCaption(
         messagePrefix = "leadTrustee.individual.matching.locked",
         optionalParam = Some(name)
     )
@@ -55,7 +48,7 @@
     <p>
         @messages("leadTrustee.individual.matching.locked.paragraph4", name)
 
-        @components.link(
+        @link(
             MatchingLockedController.continue().url,
             "provide-passport-or-id-details",
             messages("leadTrustee.individual.matching.locked.paragraph4.a")
@@ -63,7 +56,7 @@
     </p>
 
     <p>
-        @components.link(
+        @link(
             appConfig.maintainATrustOverview,
             "return-to-trust-overview",
             messages("leadTrustee.individual.matching.locked.trust_overview")

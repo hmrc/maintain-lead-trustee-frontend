@@ -15,41 +15,42 @@
  *@
 
 @import controllers.trustee.individual.routes._
+@import views.html.components.{Heading, ErrorSummary, BulletList, InputYesNo, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    errorSummary: ErrorSummary,
+    bulletList: BulletList,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
-@content = {
-<p>@messages("trustee.individual.mentalCapacityYesNo.p1")</p>
-
-<ul class="govuk-list trust-list--bullet">
-    <li class="inside">@messages("trustee.individual.mentalCapacityYesNo.bulletpoint1")</li>
-    <li class="inside">@messages("trustee.individual.mentalCapacityYesNo.bulletpoint2")</li>
-    <li class="inside">@messages("trustee.individual.mentalCapacityYesNo.bulletpoint3")</li>
-    <li class="inside">@messages("trustee.individual.mentalCapacityYesNo.bulletpoint4")</li>
-</ul>
-}
-
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.mentalCapacityYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individual.mentalCapacityYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = MentalCapacityYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading("trustee.individual.mentalCapacityYesNo.heading", Some(name))
 
-        @components.input_yes_no(
+        <p>@messages("trustee.individual.mentalCapacityYesNo.p1")</p>
+
+        @bulletList("trustee.individual.mentalCapacityYesNo", Seq("bulletpoint1", "bulletpoint2", "bulletpoint3", "bulletpoint4"))
+
+        @inputYesNo(
             field = form("value"),
             label = messages("trustee.individual.mentalCapacityYesNo.heading", name),
-            additionalContent = Some(content)
+            legendClass = Some("govuk-visually-hidden"),
+            legendAsHeading = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

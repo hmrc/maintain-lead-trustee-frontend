@@ -46,7 +46,7 @@ class MatchingFailedViewSpec extends ViewBehaviours {
       "show number of remaining attempts in bold" in {
         val doc = asDocument(applyView)
 
-        assertContainsText(doc, "<span class=\"bold\">1</span>")
+        assertAttributeValueForElement(doc.getElementById("remaining-attempts"), "class", "govuk-!-font-weight-bold")
       }
 
       behave like pageWithASubmitButton(applyView)
@@ -70,7 +70,7 @@ class MatchingFailedViewSpec extends ViewBehaviours {
       "show number of remaining attempts in bold" in {
         val doc = asDocument(applyView)
 
-        assertContainsText(doc, "<span class=\"bold\">2</span>")
+        assertAttributeValueForElement(doc.getElementById("remaining-attempts"), "class", "govuk-!-font-weight-bold")
       }
 
       behave like pageWithASubmitButton(applyView)

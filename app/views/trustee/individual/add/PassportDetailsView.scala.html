@@ -16,50 +16,56 @@
 
 @import controllers.trustee.individual.add.routes._
 @import utils.InputOption
+@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    errorSummary: ErrorSummary,
+    inputSelect: InputSelect,
+    inputText: InputText,
+    inputDate: InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.passportDetails.title")}"
+    title = s"${errorPrefix(form)}${messages("trustee.individual.passportDetails.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = PassportDetailsController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading("trustee.individual.passportDetails.heading", Some(name))
 
-        @components.heading("trustee.individual.passportDetails.heading", Some(name))
-
-        @components.select(
+        @inputSelect(
             field = form("country"),
             label = messages("trustee.individual.passportDetails.country"),
             labelClasses = Set("bold"),
             options = countryOptions,
             placeholder = Some(messages("address.country.select")),
             formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
-            selectAttribute = Set("data-non-uk-countries")
+            selectAttribute = Map("data-non-uk-countries" -> "")
         )
 
-        @components.input_text(
+        @inputText(
             field = form("number"),
             label = messages("trustee.individual.passportDetails.number"),
             hint = Some(messages("trustee.individual.passportDetails.number.hint"))
         )
 
-        @components.input_date(
+        @inputDate(
             field = form("expiryDate"),
             legend = messages("trustee.individual.passportDetails.expiryDate"),
             legendClass = "bold",
             hint = Some(messages("trustee.individual.passportDetails.expiryDate.hint")),
-            headingIsLegend = false
+            legendAsHeading = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -60,14 +60,14 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
-            AnswerRow(label = Html(messages("trustee.organisation.name.checkYourAnswersLabel")), answer = Html("First Last"), changeUrl = rts.NameController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = rts.UtrYesNoController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName)), answer = Html("1234567890"), changeUrl = rts.UtrController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = rts.AddressYesNoController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = rts.AddressInTheUkYesNoController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = rts.UkAddressController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = rts.NonUkAddressController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName)), answer = Html("1 January 2020"), changeUrl = addRts.WhenAddedController.onPageLoad().url)
+            AnswerRow(label = messages("trustee.organisation.name.checkYourAnswersLabel"), answer = Html("First Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName), answer = Html("1234567890"), changeUrl = Some(rts.UtrController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressInTheUkYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName), answer = Html("1 January 2020"), changeUrl = Some(addRts.WhenAddedController.onPageLoad().url))
           )
         )
       }
@@ -80,13 +80,13 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
-            AnswerRow(label = Html(messages("trustee.organisation.name.checkYourAnswersLabel")), answer = Html("First Last"), changeUrl = rts.NameController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = rts.UtrYesNoController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName)), answer = Html("1234567890"), changeUrl = rts.UtrController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = rts.AddressYesNoController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName)), answer = Html("Yes"), changeUrl = rts.AddressInTheUkYesNoController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = rts.UkAddressController.onPageLoad(mode).url),
-            AnswerRow(label = Html(messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = rts.NonUkAddressController.onPageLoad(mode).url)
+            AnswerRow(label = messages("trustee.organisation.name.checkYourAnswersLabel"), answer = Html("First Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName), answer = Html("1234567890"), changeUrl = Some(rts.UtrController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressInTheUkYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url))
           )
         )
       }

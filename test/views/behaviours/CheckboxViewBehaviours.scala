@@ -88,9 +88,8 @@ trait CheckboxViewBehaviours[A] extends ViewBehaviours {
 
       "not render an error summary" in {
         val doc = asDocument(createView(form))
-        assertNotRenderedById(doc, "error-summary-heading")
+        assertNotRenderedById(doc, "error-summary-title")
       }
-
 
       "show error in the title" in {
         val doc = asDocument(createView(form.withError(FormError(fieldKey, "error.invalid"))))
@@ -99,13 +98,13 @@ trait CheckboxViewBehaviours[A] extends ViewBehaviours {
 
       "show an error summary" in {
         val doc = asDocument(createView(form.withError(FormError(fieldKey, "error.invalid"))))
-        assertRenderedById(doc, "error-summary-heading")
+        assertRenderedById(doc, "error-summary-title")
       }
 
       "show an error associated with the value field" in {
         val doc = asDocument(createView(form.withError(FormError(fieldKey, "error.invalid"))))
-        val errorSpan = doc.getElementsByClass("error-message").first
-        errorSpan.text mustBe s"""${messages("site.error")} ${messages("error.invalid")}"""
+        val errorSpan = doc.getElementsByClass("govuk-error-message").first
+        errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages("error.invalid"))
         doc.getElementsByTag("fieldset").first.attr("aria-describedby") contains errorSpan.attr("id")
       }
     }

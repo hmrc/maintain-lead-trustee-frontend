@@ -32,7 +32,7 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val name = "Lead Trustee"
 
-  "DateOfBirthView" when {
+  "leadtrustee.individual.DateOfBirthView" when {
 
     "not read-only" must {
 

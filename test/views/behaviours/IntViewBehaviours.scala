@@ -60,14 +60,14 @@ trait IntViewBehaviours extends QuestionViewBehaviours[Int] {
         "show an error summary" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertRenderedById(doc, "error-summary-heading")
+          assertRenderedById(doc, "error-summary-title")
         }
 
         "show an error associated with the value field" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          val errorSpan = doc.getElementsByClass("error-message").first
-          errorSpan.text mustBe s"""${messages("site.error")} ${messages(errorMessage)}"""
+          val errorSpan = doc.getElementsByClass("govuk-error-message").first
+          errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages(errorMessage))
         }
 
         "show an error prefix in the browser title" in {

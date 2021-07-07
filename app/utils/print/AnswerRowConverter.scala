@@ -143,9 +143,9 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                        isVerified: Boolean = false,
                        format: Html = HtmlFormat.empty): AnswerRow = {
       AnswerRow(
-        label = HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", trusteeName)),
+        label = messages(s"$labelKey.checkYourAnswersLabel", trusteeName),
         answer = format,
-        changeUrl = changeUrl,
+        changeUrl = Some(changeUrl),
         canEdit = canEdit,
         isVerified = isVerified
       )
