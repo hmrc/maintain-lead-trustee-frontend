@@ -128,6 +128,7 @@ site.complete=Wedi cwblhau
 site.error=Gwall:
 site.cannotRemove=Peidiwch â thynnu
 site.cannotRemove-hidden=Peidiwch â thynnu {0}
+site.address.country.select=Dewiswch wlad
 checkYourAnswers.title=Gwiriwch eich atebion
 checkYourAnswers.heading=Gwiriwch eich atebion
 date.day=Diwrnod

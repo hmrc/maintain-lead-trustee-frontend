@@ -23,6 +23,7 @@ site.cannotRemove = Cannot remove
 site.cannotRemove-hidden = Cannot remove {0}
 site.try-again = Try again
 site.verified = Verified
+site.address.country.select = Select a country
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
