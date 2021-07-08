@@ -36,11 +36,15 @@
         </dd>
     } else if(row.isVerified) {
         @* Add Verified Tag *@
-        <span class="govuk-summary-list__actions">
+    <dd class="govuk-summary-list__actions">
+        <span>
             <strong class="govuk-tag verified">@messages("site.verified")</strong>
         </span>
+    </dd>
     } else {
         @* Add dummy column to extend border *@
-        <span class="govuk-summary-list__actions"></span>
+    <dd class="govuk-summary-list__actions">
+        <span></span>
+    </dd>
     }
 </div>
