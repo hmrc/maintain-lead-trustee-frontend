@@ -19,7 +19,7 @@ package services
 import connectors.TrustConnector
 import models.BpMatchStatus.FullyMatched
 import models.Constants.INDIVIDUAL_TRUSTEE
-import models.{AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees, UkAddress}
+import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -30,25 +30,63 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
-class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures {
+class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures {
 
   val mockConnector: TrustConnector = mock[TrustConnector]
+
+  val service = new TrustServiceImpl(mockConnector)
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  val trusteeInd: TrusteeIndividual = TrusteeIndividual(
+    name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    phoneNumber = None,
+    identification = Some(NationalInsuranceNumber("JS123456A")),
+    address = None,
+    entityStart = LocalDate.parse("2019-02-28"),
+    provisional = true
+  )
+
+  val trusteeOrg: TrusteeOrganisation = TrusteeOrganisation(
+    name = "Business",
+    phoneNumber = None,
+    email = None,
+    identification = None,
+    countryOfResidence = None,
+    entityStart = LocalDate.parse("2019-02-28"),
+    provisional = true
+  )
+
+  val leadTrusteeInd: LeadTrusteeIndividual = LeadTrusteeIndividual(
+    bpMatchStatus = None,
+    name = Name("Joe", None, "Bloggs"),
+    dateOfBirth = LocalDate.parse("1996-02-03"),
+    phoneNumber = "tel",
+    email = None,
+    identification = NationalInsuranceNumber("nino"),
+    address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB"),
+    countryOfResidence = None,
+    nationality = None
+  )
+
+  val leadTrusteeOrg: LeadTrusteeOrganisation = LeadTrusteeOrganisation(
+    name = "Business",
+    phoneNumber = "tel",
+    email = None,
+    utr = None,
+    address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB"),
+    countryOfResidence = None
+  )
+
+  val identifier: String = "1234567890"
 
   "Trust service" - {
 
     "get all trustees" in {
-
-      val trusteeInd = TrusteeIndividual(
-        name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-        dateOfBirth = Some(LocalDate.parse("1983-09-24")),
-        phoneNumber = None,
-        identification = Some(NationalInsuranceNumber("JS123456A")),
-        address = None,
-        entityStart = LocalDate.parse("2019-02-28"),
-        provisional = true
-      )
 
       val trustees = List(trusteeInd)
 
@@ -72,10 +110,6 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       when(mockConnector.getLeadTrustee(any())(any(), any()))
         .thenReturn(Future.successful(leadTrusteeIndividual))
 
-      val service = new TrustServiceImpl(mockConnector)
-
-      implicit val hc : HeaderCarrier = HeaderCarrier()
-
       val result = service.getAllTrustees("1234567890")
 
       whenReady(result) { r =>
@@ -89,22 +123,8 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
     "get trustees" in {
 
-      val trusteeInd = TrusteeIndividual(
-        name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
-        dateOfBirth = Some(LocalDate.parse("1983-09-24")),
-        phoneNumber = None,
-        identification = Some(NationalInsuranceNumber("JS123456A")),
-        address = None,
-        entityStart = LocalDate.parse("2019-02-28"),
-        provisional = true
-      )
-
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.successful(Trustees(List(trusteeInd))))
-
-      val service = new TrustServiceImpl(mockConnector)
-
-      implicit val hc : HeaderCarrier = HeaderCarrier()
 
       val result = service.getTrustees("1234567890")
 
@@ -157,16 +177,144 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.successful(Trustees(trustees)))
 
-      val service = new TrustServiceImpl(mockConnector)
-
-      implicit val hc : HeaderCarrier = HeaderCarrier()
-
       val result = service.getTrustee("1234567890", 1)
 
       whenReady(result) { r =>
         r mustBe expectedResult
       }
 
+    }
+
+    ".getBusinessTrusteeUtrs" - {
+
+      "must return empty list" - {
+
+        "when no businesses" in {
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(Nil)))
+
+          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, None), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there are businesses but they don't have a UTR" in {
+
+          val trustees = List(
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, None, None)))
+          )
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, None), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there is a business with a UTR but it's the same index as the one we're amending" in {
+
+          val trustees = List(
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr"), None)))
+          )
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, Some(0)), Duration.Inf)
+
+          result mustBe Nil
+        }
+      }
+
+      "must return UTRs" - {
+
+        "when businesses have UTRs and we're adding (i.e. no index)" in {
+
+          val trustees = List(
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr1"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None)))
+          )
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, None), Duration.Inf)
+
+          result mustBe List("utr1", "utr2")
+        }
+
+        "when businesses have UTRs and we're amending" in {
+
+          val trustees = List(
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr1"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None)))
+          )
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, Some(0)), Duration.Inf)
+
+          result mustBe List("utr2")
+        }
+
+        "when businesses have UTRs and we're amending a different index" in {
+
+          val trustees = List(
+            trusteeInd,
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr1"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None)))
+          )
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, Some(0)), Duration.Inf)
+
+          result mustBe List("utr1", "utr2")
+        }
+      }
+    }
+
+    ".getBusinessLeadTrusteeUtr" - {
+
+      "must return empty list" - {
+
+        "when no business lead trustee" in {
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd))
+
+          val result = Await.result(service.getBusinessLeadTrusteeUtr(identifier), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there is a business lead trustee but they don't have a UTR" in {
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg))
+
+          val result = Await.result(service.getBusinessLeadTrusteeUtr(identifier), Duration.Inf)
+
+          result mustBe Nil
+        }
+      }
+
+      "must return UTR" - {
+
+        "when business lead trustee has UTR" in {
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr"))))
+
+          val result = Await.result(service.getBusinessLeadTrusteeUtr(identifier), Duration.Inf)
+
+          result mustBe List("utr")
+        }
+      }
     }
 
   }

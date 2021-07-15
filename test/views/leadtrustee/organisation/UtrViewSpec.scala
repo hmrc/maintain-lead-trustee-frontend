@@ -28,7 +28,7 @@ class UtrViewSpec extends StringViewBehaviours {
   val messageKeyPrefix = "leadtrustee.organisation.utr"
   val name = "Business Name"
 
-  val form = new UtrFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[String] = new UtrFormProvider().apply(messageKeyPrefix, "utr", Nil)
 
   "TrusteeUtrView view" must {
 

@@ -20,21 +20,31 @@ import base.SpecBase
 import forms.UtrFormProvider
 import models.NormalMode
 import navigation.Navigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.trustee.organisation.{NamePage, UtrPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustServiceImpl
 import views.html.trustee.organisation.UtrView
+
+import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase {
 
   val formProvider = new UtrFormProvider()
-  val form = formProvider.withPrefix("trustee.organisation.utr")
+  val form: Form[String] = formProvider.apply("trustee.organisation.utr", "utr", Nil)
 
-  val onwardRoute = routes.UtrController.onPageLoad(NormalMode).url
+  val onwardRoute: String = routes.UtrController.onPageLoad(NormalMode).url
 
   val name: String = "Trustee Name"
   val fakeUtr: String = "1234567890"
+
+  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  when(mockTrustsService.getBusinessTrusteeUtrs(any(), any())(any(), any()))
+    .thenReturn(Future.successful(Nil))
 
   "Utr Controller" must {
 
@@ -43,7 +53,9 @@ class UtrControllerSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, onwardRoute)
 
@@ -65,7 +77,9 @@ class UtrControllerSpec extends SpecBase {
         .set(NamePage, name).success.value
         .set(UtrPage, fakeUtr).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, onwardRoute)
 
@@ -85,14 +99,14 @@ class UtrControllerSpec extends SpecBase {
 
       val userAnswers = emptyUserAnswers
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[Navigator].toInstance(fakeNavigator),
+          bind[TrustServiceImpl].toInstance(mockTrustsService)
+        ).build()
 
-      val request =
-        FakeRequest(POST, onwardRoute)
-          .withFormUrlEncodedBody(("value", fakeUtr))
+      val request = FakeRequest(POST, onwardRoute)
+        .withFormUrlEncodedBody(("value", fakeUtr))
 
       val result = route(application, request).value
 
@@ -108,11 +122,12 @@ class UtrControllerSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
-      val request =
-        FakeRequest(POST, onwardRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, onwardRoute)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -146,8 +161,7 @@ class UtrControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, onwardRoute)
+      val request = FakeRequest(POST, onwardRoute)
 
       val result = route(application, request).value
 
