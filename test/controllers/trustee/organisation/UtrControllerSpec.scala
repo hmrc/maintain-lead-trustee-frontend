@@ -43,7 +43,7 @@ class UtrControllerSpec extends SpecBase {
   val fakeUtr: String = "1234567890"
 
   val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
-  when(mockTrustsService.getBusinessTrusteeUtrs(any(), any())(any(), any()))
+  when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))
     .thenReturn(Future.successful(Nil))
 
   "Utr Controller" must {

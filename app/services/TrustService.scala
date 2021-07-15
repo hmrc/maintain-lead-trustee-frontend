@@ -35,9 +35,8 @@ trait TrustService {
 
   def getTrustee(identifier: String, index: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee]
 
-  def getBusinessTrusteeUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
-
-  def getBusinessLeadTrusteeUtr(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getBusinessUtrs(identifier: String, index: Option[Int] = None, amendingLead: Boolean)
+                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
 }
 
@@ -67,18 +66,23 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
     getTrustees(identifier).map(_.trustees(index))
   }
 
-  override def getBusinessTrusteeUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-    getTrustees(identifier).map(_.trustees
-      .zipWithIndex
-      .filterNot(x => index.contains(x._2))
-      .collect { case (x: TrusteeOrganisation, _) => x.identification.flatMap(_.utr) }
-      .flatten
-    )
+  override def getBusinessUtrs(identifier: String, index: Option[Int], amendingLead: Boolean)
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+    getAllTrustees(identifier).map { all =>
 
-  override def getBusinessLeadTrusteeUtr(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-    connector.getLeadTrustee(identifier) map {
-      case x: LeadTrusteeOrganisation => x.utr.map(List(_)).getOrElse(Nil)
-      case _ => Nil
+      val leadTrusteeUtr: List[String] = all.lead.fold[List[String]](Nil) {
+        case x: LeadTrusteeOrganisation if !amendingLead => x.utr.map(List(_)).getOrElse(Nil)
+        case _ => Nil
+      }
+
+      val trusteeUtrs: List[String] = all.trustees
+        .zipWithIndex
+        .filterNot(x => index.contains(x._2))
+        .collect { case (x: TrusteeOrganisation, _) => x.identification.flatMap(_.utr) }
+        .flatten
+
+      leadTrusteeUtr ++ trusteeUtrs
     }
+  }
 
 }

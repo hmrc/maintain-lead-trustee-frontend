@@ -19,16 +19,16 @@ package controllers.leadtrustee.organisation
 import base.SpecBase
 import forms.UtrFormProvider
 import navigation.Navigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.leadtrustee.organisation.{NamePage, UtrPage}
+import play.api.data.Form
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import repositories.PlaybackRepository
-import views.html.leadtrustee.organisation.UtrView
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import play.api.data.Form
-import play.api.inject.bind
 import services.TrustServiceImpl
+import views.html.leadtrustee.organisation.UtrView
 
 import scala.concurrent.Future
 
@@ -44,7 +44,7 @@ class UtrControllerSpec extends SpecBase {
   lazy val trusteeUtrRoute: String = routes.UtrController.onPageLoad().url
 
   val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
-  when(mockTrustsService.getBusinessLeadTrusteeUtr(any())(any(), any()))
+  when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))
     .thenReturn(Future.successful(Nil))
 
   "TrusteeUtr Controller" must {

@@ -58,25 +58,28 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
   private class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = Some(leadTrusteeIndividual)) extends TrustService {
 
-    override def getLeadTrustee(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
+    override def getLeadTrustee(identifier: String)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
       ???
 
-    override def getAllTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
+    override def getAllTrustees(identifier: String)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
       Future.successful(AllTrustees(leadTrustee, data.trustees))
 
-    override def getTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
+    override def getTrustees(identifier: String)
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
       ???
 
-    override def getTrustee(identifier: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
+    override def getTrustee(identifier: String, index: Int)
+                           (implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
       ???
 
-    override def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    override def removeTrustee(identifier: String, trustee: RemoveTrustee)
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
       ???
 
-    override def getBusinessTrusteeUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-      ???
-
-    override def getBusinessLeadTrusteeUtr(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getBusinessUtrs(identifier: String, index: Option[Int], amendingLead: Boolean)
+                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
       ???
 
   }

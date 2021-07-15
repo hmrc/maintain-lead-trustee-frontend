@@ -185,16 +185,19 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
 
     }
 
-    ".getBusinessTrusteeUtrs" - {
+    ".getBusinessUtrs" - {
 
       "must return empty list" - {
 
         "when no businesses" in {
 
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd))
+
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(Nil)))
 
-          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, None), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = false), Duration.Inf)
 
           result mustBe Nil
         }
@@ -205,10 +208,13 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
             trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, None, None)))
           )
 
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = None)))
+
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, None), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = false), Duration.Inf)
 
           result mustBe Nil
         }
@@ -219,10 +225,26 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
             trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr"), None)))
           )
 
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd))
+
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, Some(0)), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), amendingLead = false), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there is a lead business with a UTR but it's what we're amending" in {
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr"))))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(Nil)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = true), Duration.Inf)
 
           result mustBe Nil
         }
@@ -233,86 +255,75 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
         "when businesses have UTRs and we're adding (i.e. no index)" in {
 
           val trustees = List(
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr1"), None))),
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None)))
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr3"), None)))
           )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr1"))))
 
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, None), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = false), Duration.Inf)
 
-          result mustBe List("utr1", "utr2")
+          result mustBe List("utr1", "utr2", "utr3")
         }
 
         "when businesses have UTRs and we're amending" in {
 
           val trustees = List(
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr1"), None))),
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None)))
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr3"), None)))
           )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr1"))))
 
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, Some(0)), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), amendingLead = false), Duration.Inf)
 
-          result mustBe List("utr2")
+          result mustBe List("utr1", "utr3")
         }
 
         "when businesses have UTRs and we're amending a different index" in {
 
           val trustees = List(
             trusteeInd,
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr1"), None))),
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None)))
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr3"), None)))
           )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr1"))))
 
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessTrusteeUtrs(identifier, Some(0)), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), amendingLead = false), Duration.Inf)
 
-          result mustBe List("utr1", "utr2")
-        }
-      }
-    }
-
-    ".getBusinessLeadTrusteeUtr" - {
-
-      "must return empty list" - {
-
-        "when no business lead trustee" in {
-
-          when(mockConnector.getLeadTrustee(any())(any(), any()))
-            .thenReturn(Future.successful(leadTrusteeInd))
-
-          val result = Await.result(service.getBusinessLeadTrusteeUtr(identifier), Duration.Inf)
-
-          result mustBe Nil
+          result mustBe List("utr1", "utr2", "utr3")
         }
 
-        "when there is a business lead trustee but they don't have a UTR" in {
+        "when businesses have UTRs and we're amending the lead" in {
+
+          val trustees = List(
+            trusteeInd,
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr3"), None)))
+          )
 
           when(mockConnector.getLeadTrustee(any())(any(), any()))
-            .thenReturn(Future.successful(leadTrusteeOrg))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr1"))))
 
-          val result = Await.result(service.getBusinessLeadTrusteeUtr(identifier), Duration.Inf)
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
 
-          result mustBe Nil
-        }
-      }
+          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = true), Duration.Inf)
 
-      "must return UTR" - {
-
-        "when business lead trustee has UTR" in {
-
-          when(mockConnector.getLeadTrustee(any())(any(), any()))
-            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr"))))
-
-          val result = Await.result(service.getBusinessLeadTrusteeUtr(identifier), Duration.Inf)
-
-          result mustBe List("utr")
+          result mustBe List("utr2", "utr3")
         }
       }
     }

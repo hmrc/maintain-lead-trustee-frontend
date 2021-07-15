@@ -52,7 +52,7 @@ class UtrController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
-      trustsService.getBusinessTrusteeUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage)) map { utrs =>
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage), amendingLead = false) map { utrs =>
         val preparedForm = request.userAnswers.get(UtrPage) match {
           case None => form(utrs)
           case Some(value) => form(utrs).fill(value)
@@ -65,7 +65,7 @@ class UtrController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
-      trustsService.getBusinessTrusteeUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage)) flatMap { utrs =>
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage), amendingLead = false) flatMap { utrs =>
         form(utrs).bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
