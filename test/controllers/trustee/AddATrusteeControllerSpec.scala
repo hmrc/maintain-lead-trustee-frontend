@@ -130,7 +130,7 @@ class AddATrusteeControllerSpec extends SpecBase {
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
       ???
 
-    override def getBusinessUtrs(identifier: String, index: Option[Int], amendingLead: Boolean)
+    override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
       ???
 

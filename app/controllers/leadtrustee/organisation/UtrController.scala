@@ -20,7 +20,7 @@ import controllers.actions.StandardActionSets
 import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import forms.UtrFormProvider
 import navigation.Navigator
-import pages.leadtrustee.organisation.UtrPage
+import pages.leadtrustee.organisation.{IndexPage, UtrPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class UtrController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      trustsService.getBusinessUtrs(request.userAnswers.identifier, amendingLead = true) map { utrs =>
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage), adding = false) map { utrs =>
 
         val preparedForm = request.userAnswers.get(UtrPage) match {
           case None => form(utrs)
@@ -64,7 +64,7 @@ class UtrController @Inject()(
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      trustsService.getBusinessUtrs(request.userAnswers.identifier, amendingLead = true) flatMap { utrs =>
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage), adding = false) flatMap { utrs =>
         form(utrs).bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
