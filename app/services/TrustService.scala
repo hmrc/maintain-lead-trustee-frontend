@@ -35,7 +35,7 @@ trait TrustService {
 
   def getTrustee(identifier: String, index: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee]
 
-  def getBusinessUtrs(identifier: String, index: Option[Int] = None, amendingLead: Boolean)
+  def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
 }
@@ -66,12 +66,12 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
     getTrustees(identifier).map(_.trustees(index))
   }
 
-  override def getBusinessUtrs(identifier: String, index: Option[Int], amendingLead: Boolean)
+  override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
     getAllTrustees(identifier).map { all =>
 
       val leadTrusteeUtr: List[String] = all.lead.fold[List[String]](Nil) {
-        case x: LeadTrusteeOrganisation if !amendingLead => x.utr.map(List(_)).getOrElse(Nil)
+        case x: LeadTrusteeOrganisation if index.isDefined || adding => x.utr.map(List(_)).getOrElse(Nil)
         case _ => Nil
       }
 

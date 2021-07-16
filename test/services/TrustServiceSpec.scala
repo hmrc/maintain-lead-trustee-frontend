@@ -197,7 +197,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(Nil)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = false), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, adding = true), Duration.Inf)
 
           result mustBe Nil
         }
@@ -214,7 +214,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = false), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, adding = true), Duration.Inf)
 
           result mustBe Nil
         }
@@ -231,7 +231,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), amendingLead = false), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), adding = false), Duration.Inf)
 
           result mustBe Nil
         }
@@ -244,7 +244,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(Nil)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = true), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, adding = false), Duration.Inf)
 
           result mustBe Nil
         }
@@ -252,7 +252,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
 
       "must return UTRs" - {
 
-        "when businesses have UTRs and we're adding (i.e. no index)" in {
+        "when businesses have UTRs and we're adding a new trustee (i.e. no index)" in {
 
           val trustees = List(
             trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
@@ -265,12 +265,12 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = false), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, adding = true), Duration.Inf)
 
           result mustBe List("utr1", "utr2", "utr3")
         }
 
-        "when businesses have UTRs and we're amending" in {
+        "when businesses have UTRs and we're amending the lead trustee (i.e. no index)" in {
 
           val trustees = List(
             trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
@@ -283,7 +283,25 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), amendingLead = false), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None, adding = false), Duration.Inf)
+
+          result mustBe List("utr2", "utr3")
+        }
+
+        "when businesses have UTRs and we're amending or promoting a trustee" in {
+
+          val trustees = List(
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
+            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr3"), None)))
+          )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr1"))))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), adding = false), Duration.Inf)
 
           result mustBe List("utr1", "utr3")
         }
@@ -302,28 +320,9 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getTrustees(any())(any(), any()))
             .thenReturn(Future.successful(Trustees(trustees)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), amendingLead = false), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0), adding = false), Duration.Inf)
 
           result mustBe List("utr1", "utr2", "utr3")
-        }
-
-        "when businesses have UTRs and we're amending the lead" in {
-
-          val trustees = List(
-            trusteeInd,
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr2"), None))),
-            trusteeOrg.copy(identification = Some(TrustIdentificationOrgType(None, Some("utr3"), None)))
-          )
-
-          when(mockConnector.getLeadTrustee(any())(any(), any()))
-            .thenReturn(Future.successful(leadTrusteeOrg.copy(utr = Some("utr1"))))
-
-          when(mockConnector.getTrustees(any())(any(), any()))
-            .thenReturn(Future.successful(Trustees(trustees)))
-
-          val result = Await.result(service.getBusinessUtrs(identifier, None, amendingLead = true), Duration.Inf)
-
-          result mustBe List("utr2", "utr3")
         }
       }
     }
