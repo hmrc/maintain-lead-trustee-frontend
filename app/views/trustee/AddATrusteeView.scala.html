@@ -62,7 +62,7 @@
             field = form("value"),
             legend = messages("addATrustee.additional-content"),
             legendClass = Some("govuk-heading-m"),
-            inputs = mapRadioOptionsToRadioItems(form("value"), false, AddATrustee.options)
+            inputs = mapRadioOptionsToRadioItems(form("value"), AddATrustee.options)
         )
 
         @submitButton()
