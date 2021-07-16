@@ -51,19 +51,48 @@ trait ViewSpecBase extends SpecBase {
     assert(elements.first().html().replace("\n", "") == expectedValue)
   }
 
-  def assertPageTitleWithCaptionEqualsMessages(doc: Document,
-                                               expectedCaptionMessageKey: String,
-                                               captionParam: String,
-                                               expectedMessageKey: String,
-                                               messageKeyParam: String = "") = {
+  def assertPageTitleWithCaptionEqualsMessage(doc: Document,
+                                              expectedMessageKey: String,
+                                              captionParam: String,
+                                              args: Any*): Assertion = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
-    val actual = headers.first.text.replaceAll("\u00a0", " ")
 
-    val expectedCaption = messages(expectedCaptionMessageKey, captionParam).replaceAll("&nbsp;", " ")
-    val expectedHeading = messages(expectedMessageKey, messageKeyParam).replaceAll("&nbsp;", " ")
+    val expectedCaption = messages(s"$expectedMessageKey.caption", captionParam)
 
-    actual mustBe s"$expectedCaption $expectedHeading"
+    val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
+
+    val expected = s"$expectedCaption $expectedHeading"
+      .replaceAll("&nbsp;", " ")
+
+    val actual = headers
+      .first
+      .text
+      .replaceAll("\u00a0", " ")
+
+    actual mustBe expected
+  }
+
+  def assertPageTitleWithSectionSubheading(doc: Document,
+                                           expectedMessageKey: String,
+                                           captionParam: String,
+                                           args: Any*): Assertion = {
+    val headers = doc.getElementsByTag("h1")
+    headers.size mustBe 1
+
+    val expectedCaption = s"${messages(s"$expectedMessageKey.caption.hidden")} ${messages(s"$expectedMessageKey.caption", captionParam)}"
+
+    val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
+
+    val expected = s"$expectedCaption $expectedHeading"
+      .replaceAll("&nbsp;", " ")
+
+    val actual = headers
+      .first
+      .text
+      .replaceAll("\u00a0", " ")
+
+    actual mustBe expected
   }
 
   def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*) = {

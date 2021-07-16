@@ -40,7 +40,7 @@
         @inputRadio(
             field = form("value"),
             legend = messages("replacingLeadTrustee.heading", leadTrustee),
-            inputs = mapRadioOptionsToRadioItems(form("value"), false, trustees),
+            inputs = mapRadioOptionsToRadioItems(form("value"), trustees),
             legendAsHeading = true,
             hint = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
             inline = false

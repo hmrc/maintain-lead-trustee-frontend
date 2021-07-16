@@ -41,7 +41,7 @@
             field = form("value"),
             legend = messages("leadTrusteeOrTrustee.heading"),
             inline = true,
-            inputs = mapRadioOptionsToRadioItems(form("value"), false, TrusteeType.options),
+            inputs = mapRadioOptionsToRadioItems(form("value"), TrusteeType.options),
             legendAsHeading = true,
             hint = Some(messages("leadTrusteeOrTrustee.hint"))
         )
