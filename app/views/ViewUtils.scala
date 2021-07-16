@@ -54,8 +54,7 @@ object ViewUtils {
     error.toLowerCase.contains("date") || error.toLowerCase.contains("when")
   }
 
-  def mapRadioOptionsToRadioItems(field: Field, trackGa: Boolean,
-                                  inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =
+  def mapRadioOptionsToRadioItems(field: Field, inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =
     inputs.map(
       a => {
         RadioItem(
@@ -63,7 +62,7 @@ object ViewUtils {
           value = Some(a.value),
           checked = field.value.contains(a.value),
           content = Text(messages(a.messageKey)),
-          attributes = if (trackGa) Map[String, String]("data-journey-click" -> s"trusts-frontend:click:${a.id}") else Map.empty
+          attributes = Map.empty
         )
       }
     )

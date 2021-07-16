@@ -46,6 +46,5 @@ class MatchingLockedViewSpec extends LinkListViewBehaviours {
       messageKeyParam = name.toString,
       captionParam = ""
     )
-
   }
 }
