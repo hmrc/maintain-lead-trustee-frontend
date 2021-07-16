@@ -17,52 +17,72 @@
 package services
 
 import connectors.TrustConnector
-import javax.inject.Inject
-import models.{AllTrustees, LeadTrustee, RemoveTrustee, Trustee, Trustees}
+import models.{AllTrustees, LeadTrustee, LeadTrusteeOrganisation, RemoveTrustee, Trustee, TrusteeOrganisation, Trustees}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 trait TrustService {
 
-  def getAllTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees]
+  def getAllTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees]
 
-  def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]]
+  def getLeadTrustee(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]]
 
-  def getTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees]
+  def getTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees]
 
-  def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+  def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
 
-  def getTrustee(utr: String, index: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee]
+  def getTrustee(identifier: String, index: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee]
+
+  def getBusinessUtrs(identifier: String, index: Option[Int] = None, amendingLead: Boolean)
+                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
 }
 
-class TrustServiceImpl @Inject()(
-                            connector: TrustConnector
-                            ) extends TrustService {
+class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService {
 
-  override def getAllTrustees(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] = {
+  override def getAllTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] = {
     for {
-      lead <- getLeadTrustee(utr)
-      trustees <- getTrustees(utr)
+      lead <- getLeadTrustee(identifier)
+      trustees <- getTrustees(identifier)
     } yield {
       AllTrustees(lead, trustees.trustees)
     }
   }
 
-  override def getLeadTrustee(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
-    connector.getLeadTrustee(utr).map(Some(_))
+  override def getLeadTrustee(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
+    connector.getLeadTrustee(identifier).map(Some(_))
 
-  override def getTrustees(utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
-    connector.getTrustees(utr)
+  override def getTrustees(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustees] = {
+    connector.getTrustees(identifier)
   }
 
-  override def removeTrustee(utr: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext) = {
-    connector.removeTrustee(utr, trustee)
+  override def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse] = {
+    connector.removeTrustee(identifier, trustee)
   }
 
-  override def getTrustee(utr: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] = {
-    getTrustees(utr).map(_.trustees(index))
+  override def getTrustee(identifier: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] = {
+    getTrustees(identifier).map(_.trustees(index))
+  }
+
+  override def getBusinessUtrs(identifier: String, index: Option[Int], amendingLead: Boolean)
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+    getAllTrustees(identifier).map { all =>
+
+      val leadTrusteeUtr: List[String] = all.lead.fold[List[String]](Nil) {
+        case x: LeadTrusteeOrganisation if !amendingLead => x.utr.map(List(_)).getOrElse(Nil)
+        case _ => Nil
+      }
+
+      val trusteeUtrs: List[String] = all.trustees
+        .zipWithIndex
+        .filterNot(x => index.contains(x._2))
+        .collect { case (x: TrusteeOrganisation, _) => x.identification.flatMap(_.utr) }
+        .flatten
+
+      leadTrusteeUtr ++ trusteeUtrs
+    }
   }
 
 }

@@ -17,58 +17,65 @@
 package controllers.leadtrustee.organisation
 
 import controllers.actions.StandardActionSets
-import controllers.leadtrustee.actions.NameRequiredAction
+import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredAction}
 import forms.UtrFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.leadtrustee.organisation.UtrPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.organisation.UtrView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UtrController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        registrationsRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        formProvider: UtrFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: UtrView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                               override val messagesApi: MessagesApi,
+                               registrationsRepository: PlaybackRepository,
+                               navigator: Navigator,
+                               standardActionSets: StandardActionSets,
+                               nameAction: NameRequiredAction,
+                               formProvider: UtrFormProvider,
+                               val controllerComponents: MessagesControllerComponents,
+                               view: UtrView,
+                               trustsService: TrustService
+                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.organisation.utr")
+  private def form(utrs: List[String])(implicit request: LeadTrusteeNameRequest[AnyContent]): Form[String] =
+    formProvider.apply("leadtrustee.organisation.utr", request.userAnswers.identifier, utrs)
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(UtrPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, amendingLead = true) map { utrs =>
+
+        val preparedForm = request.userAnswers.get(UtrPage) match {
+          case None => form(utrs)
+          case Some(value) => form(utrs).fill(value)
+        }
+
+        Ok(view(preparedForm, request.leadTrusteeName))
       }
-
-      Ok(view(preparedForm, request.leadTrusteeName))
-
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, amendingLead = true) flatMap { utrs =>
+        form(utrs).bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
 
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
-            _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UtrPage, updatedAnswers))
-        }
-      )
+          value => {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
+              _ <- registrationsRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UtrPage, updatedAnswers))
+          }
+        )
+      }
   }
 }

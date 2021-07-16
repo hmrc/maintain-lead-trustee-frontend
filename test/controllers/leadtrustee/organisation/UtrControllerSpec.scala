@@ -19,27 +19,33 @@ package controllers.leadtrustee.organisation
 import base.SpecBase
 import forms.UtrFormProvider
 import navigation.Navigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.leadtrustee.organisation.{NamePage, UtrPage}
+import play.api.data.Form
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import repositories.PlaybackRepository
+import services.TrustServiceImpl
 import views.html.leadtrustee.organisation.UtrView
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import play.api.inject.bind
 
 import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase {
 
   val formProvider = new UtrFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.organisation.utr")
+  val form: Form[String] = formProvider.apply("leadtrustee.organisation.utr", "utr", Nil)
 
   val index = 0
   val fakeBusinessName = "Business name"
   val fakeUtr = "1234567890"
 
-  lazy val trusteeUtrRoute = routes.UtrController.onPageLoad().url
+  lazy val trusteeUtrRoute: String = routes.UtrController.onPageLoad().url
+
+  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))
+    .thenReturn(Future.successful(Nil))
 
   "TrusteeUtr Controller" must {
 
@@ -48,7 +54,9 @@ class UtrControllerSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(NamePage, fakeBusinessName).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, trusteeUtrRoute)
 
@@ -70,7 +78,9 @@ class UtrControllerSpec extends SpecBase {
         .set(NamePage, fakeBusinessName).success.value
         .set(UtrPage, fakeUtr).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, trusteeUtrRoute)
 
@@ -92,16 +102,14 @@ class UtrControllerSpec extends SpecBase {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(fakeNavigator)
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[Navigator].toInstance(fakeNavigator),
+          bind[TrustServiceImpl].toInstance(mockTrustsService)
+        ).build()
 
-      val request =
-        FakeRequest(POST, trusteeUtrRoute)
-          .withFormUrlEncodedBody(("value", fakeUtr))
+      val request = FakeRequest(POST, trusteeUtrRoute)
+        .withFormUrlEncodedBody(("value", fakeUtr))
 
       val result = route(application, request).value
 
@@ -117,11 +125,12 @@ class UtrControllerSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(NamePage, fakeBusinessName).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
-      val request =
-        FakeRequest(POST, trusteeUtrRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, trusteeUtrRoute)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -156,9 +165,8 @@ class UtrControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, trusteeUtrRoute)
-          .withFormUrlEncodedBody(("value", fakeUtr))
+      val request = FakeRequest(POST, trusteeUtrRoute)
+        .withFormUrlEncodedBody(("value", fakeUtr))
 
       val result = route(application, request).value
 

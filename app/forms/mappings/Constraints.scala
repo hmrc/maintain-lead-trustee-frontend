@@ -151,4 +151,15 @@ trait Constraints {
       case _ =>
         Invalid(errorKey, value)
     }
+
+  protected def uniqueUtr(trustIdentifier: String, utrs: List[String], notUniqueKey: String, sameAsTrustUtrKey: String): Constraint[String] =
+    Constraint {
+      utr =>
+        if (utr == trustIdentifier) {
+          Invalid(sameAsTrustUtrKey)
+        } else {
+          if (utrs.contains(utr)) Invalid(notUniqueKey) else Valid
+        }
+    }
+
 }
