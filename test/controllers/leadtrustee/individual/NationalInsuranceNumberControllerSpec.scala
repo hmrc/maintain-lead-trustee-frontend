@@ -19,19 +19,19 @@ package controllers.leadtrustee.individual
 import base.SpecBase
 import forms.NationalInsuranceNumberFormProvider
 import models.BpMatchStatus.FullyMatched
-import models.{IssueBuildingPayloadResponse, LockedMatchResponse, Name, ServiceNotIn5mldModeResponse, ServiceUnavailableErrorResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse, UserAnswers}
+import models._
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage, NationalInsuranceNumberPage}
+import pages.leadtrustee.individual.{BpMatchStatusPage, IndexPage, NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.TrustsIndividualCheckService
+import services.{TrustServiceImpl, TrustsIndividualCheckService}
 import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.Future
@@ -49,29 +49,66 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
+  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+
   override def beforeEach(): Unit = {
-    reset(playbackRepository)
+    reset(playbackRepository, mockTrustsService)
     when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+    when(mockTrustsService.getIndividualNinos(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(Nil))
   }
 
   "NationalInsuranceNumber Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" when {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "amending" in {
 
-      val request = FakeRequest(GET, nationalInsuranceNumberRoute)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+          .build()
 
-      val result = route(application, request).value
+        val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
-      val view = application.injector.instanceOf[NationalInsuranceNumberView]
+        val result = route(application, request).value
 
-      status(result) mustEqual OK
+        val view = application.injector.instanceOf[NationalInsuranceNumberView]
 
-      contentAsString(result) mustEqual
-        view(form, name.displayName, readOnly = false)(request, messages).toString
+        status(result) mustEqual OK
 
-      application.stop()
+        contentAsString(result) mustEqual
+          view(form, name.displayName, readOnly = false)(request, messages).toString
+
+        verify(mockTrustsService).getIndividualNinos(any(), eqTo(None), eqTo(false))(any(), any())
+
+        application.stop()
+      }
+
+      "promoting" in {
+
+        val index = 0
+
+        val userAnswers = emptyUserAnswers.set(IndexPage, index).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+          .build()
+
+        val request = FakeRequest(GET, nationalInsuranceNumberRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[NationalInsuranceNumberView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, name.displayName, readOnly = false)(request, messages).toString
+
+        verify(mockTrustsService).getIndividualNinos(any(), eqTo(Some(index)), eqTo(false))(any(), any())
+
+        application.stop()
+      }
     }
 
     "populate the view correctly on a GET" when {
@@ -81,7 +118,9 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
           val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberPage, nino).success.value
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+            .build()
 
           val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
@@ -103,7 +142,9 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
             .set(NationalInsuranceNumberPage, nino).success.value
             .set(BpMatchStatusPage, FullyMatched).success.value
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+            .build()
 
           val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
@@ -136,7 +177,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator()),
-            bind[TrustsIndividualCheckService].toInstance(mockService)
+            bind[TrustsIndividualCheckService].toInstance(mockService),
+            bind[TrustServiceImpl].toInstance(mockTrustsService)
           ).build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
@@ -168,7 +210,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator()),
-            bind[TrustsIndividualCheckService].toInstance(mockService)
+            bind[TrustsIndividualCheckService].toInstance(mockService),
+            bind[TrustServiceImpl].toInstance(mockTrustsService)
           ).build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
@@ -186,11 +229,9 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
         verify(playbackRepository).set(uaCaptor.capture)
         uaCaptor.getValue.get(BpMatchStatusPage).get mustBe FullyMatched
       }
-
     }
 
     "redirect to matching failed page" when {
-
       "UnsuccessfulMatchResponse" in {
 
         val mockService = mock[TrustsIndividualCheckService]
@@ -206,7 +247,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
-            bind[TrustsIndividualCheckService].toInstance(mockService)
+            bind[TrustsIndividualCheckService].toInstance(mockService),
+            bind[TrustServiceImpl].toInstance(mockTrustsService)
           ).build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
@@ -240,7 +282,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
-            bind[TrustsIndividualCheckService].toInstance(mockService)
+            bind[TrustsIndividualCheckService].toInstance(mockService),
+            bind[TrustServiceImpl].toInstance(mockTrustsService)
           ).build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
@@ -275,7 +318,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
-            bind[TrustsIndividualCheckService].toInstance(mockService)
+            bind[TrustsIndividualCheckService].toInstance(mockService),
+            bind[TrustServiceImpl].toInstance(mockTrustsService)
           ).build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
@@ -304,7 +348,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
-            bind[TrustsIndividualCheckService].toInstance(mockService)
+            bind[TrustsIndividualCheckService].toInstance(mockService),
+            bind[TrustServiceImpl].toInstance(mockTrustsService)
           ).build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
@@ -320,16 +365,16 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
         verify(playbackRepository).set(uaCaptor.capture)
         uaCaptor.getValue.get(BpMatchStatusPage) mustBe None
       }
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
-      val request =
-        FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -364,9 +409,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+        .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 
