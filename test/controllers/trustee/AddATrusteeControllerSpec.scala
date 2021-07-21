@@ -134,6 +134,10 @@ class AddATrusteeControllerSpec extends SpecBase {
                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
       ???
 
+    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
+                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+      ???
+
   }
 
   "AddATrustee Controller" when {

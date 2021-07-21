@@ -231,6 +231,7 @@ leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel = What is {
 leadtrustee.individual.nationalInsuranceNumber.hint = It is on their National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 leadtrustee.individual.nationalInsuranceNumber.error.required = Enter the lead trustee’s National Insurance number
 leadtrustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the lead trustee’s National Insurance number in the correct format
+leadtrustee.individual.nationalInsuranceNumber.error.notUnique = Enter a National Insurance number that has not already been used to add a trustee or lead trustee
 
 leadtrustee.individual.passportOrIdCardDetails.title = What are the lead trustee’s passport or ID card details?
 leadtrustee.individual.passportOrIdCardDetails.heading = What are {0}’s passport or ID card details?
@@ -420,6 +421,7 @@ trustee.individual.nationalInsuranceNumber.heading = What is {0}’s National In
 trustee.individual.nationalInsuranceNumber.hint = It is on their National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 trustee.individual.nationalInsuranceNumber.error.required = Enter the trustee’s National Insurance number
 trustee.individual.nationalInsuranceNumber.error.invalidFormat = Enter the trustee’s National Insurance number in the correct format
+trustee.individual.nationalInsuranceNumber.error.notUnique = Enter a National Insurance number that has not already been used to add a trustee or lead trustee
 
 trustee.individual.countryOfResidenceYesNo.title = Do you know the trustee’s country of residence?
 trustee.individual.countryOfResidenceYesNo.heading = Do you know {0}’s country of residence?

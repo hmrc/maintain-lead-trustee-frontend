@@ -17,7 +17,7 @@
 package services
 
 import connectors.TrustConnector
-import models.{AllTrustees, LeadTrustee, LeadTrusteeOrganisation, RemoveTrustee, Trustee, TrusteeOrganisation, Trustees}
+import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, TrusteeOrganisation, Trustees}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import javax.inject.Inject
@@ -37,6 +37,9 @@ trait TrustService {
 
   def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+
+  def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
 }
 
@@ -82,6 +85,24 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
         .flatten
 
       leadTrusteeUtr ++ trusteeUtrs
+    }
+  }
+
+  override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
+                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+    getAllTrustees(identifier).map { all =>
+
+      val leadTrusteeNino: List[String] = all.lead.fold[List[String]](Nil) {
+        case LeadTrusteeIndividual(_, _, _, _, _, NationalInsuranceNumber(nino), _, _, _) if index.isDefined || adding => List(nino)
+        case _ => Nil
+      }
+
+      val trusteeNinos: List[String] = all.trustees
+        .zipWithIndex
+        .filterNot(x => index.contains(x._2))
+        .collect { case (TrusteeIndividual(_, _, _, Some(NationalInsuranceNumber(nino)), _, _, _, _, _, _), _) => nino }
+
+      leadTrusteeNino ++ trusteeNinos
     }
   }
 

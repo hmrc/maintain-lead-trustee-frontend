@@ -327,6 +327,151 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
       }
     }
 
+    ".getIndividualNinos" - {
+
+      val passport = CombinedPassportOrIdCard("FR", "num", LocalDate.parse("2000-01-01"))
+
+      "must return empty list" - {
+
+        "when no individuals" in {
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(Nil)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there are individuals but they don't have a NINo" in {
+
+          val trustees = List(
+            trusteeInd.copy(identification = None),
+            trusteeInd.copy(identification = Some(passport))
+          )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd.copy(identification = passport)))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there is an individual with a NINo but it's the same index as the one we're amending" in {
+
+          val trustees = List(
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino")))
+          )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeOrg))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, Some(0), adding = false), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there is a lead individual with a NINo but it's what we're amending" in {
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd.copy(identification = NationalInsuranceNumber("nino"))))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(Nil)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = false), Duration.Inf)
+
+          result mustBe Nil
+        }
+      }
+
+      "must return NINos" - {
+
+        "when individuals have NINos and we're adding a new trustee (i.e. no index)" in {
+
+          val trustees = List(
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino2"))),
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino3")))
+          )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd.copy(identification = NationalInsuranceNumber("nino1"))))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
+
+          result mustBe List("nino1", "nino2", "nino3")
+        }
+
+        "when individuals have NINos and we're amending the lead trustee (i.e. no index)" in {
+
+          val trustees = List(
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino2"))),
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino3")))
+          )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd.copy(identification = NationalInsuranceNumber("nino1"))))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = false), Duration.Inf)
+
+          result mustBe List("nino2", "nino3")
+        }
+
+        "when individuals have NINos and we're amending or promoting a trustee" in {
+
+          val trustees = List(
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino2"))),
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino3")))
+          )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd.copy(identification = NationalInsuranceNumber("nino1"))))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, Some(0), adding = false), Duration.Inf)
+
+          result mustBe List("nino1", "nino3")
+        }
+
+        "when individuals have NINos and we're amending a different index" in {
+
+          val trustees = List(
+            trusteeOrg,
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino2"))),
+            trusteeInd.copy(identification = Some(NationalInsuranceNumber("nino3")))
+          )
+
+          when(mockConnector.getLeadTrustee(any())(any(), any()))
+            .thenReturn(Future.successful(leadTrusteeInd.copy(identification = NationalInsuranceNumber("nino1"))))
+
+          when(mockConnector.getTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(Trustees(trustees)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, Some(0), adding = false), Duration.Inf)
+
+          result mustBe List("nino1", "nino2", "nino3")
+        }
+      }
+    }
+
   }
 
 }
