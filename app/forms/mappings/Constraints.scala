@@ -16,11 +16,12 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
+import forms.mappings.Formatters.formatNino
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.emailaddress.EmailAddress
+
+import java.time.LocalDate
 
 trait Constraints {
 
@@ -160,6 +161,12 @@ trait Constraints {
         } else {
           if (utrs.contains(utr)) Invalid(notUniqueKey) else Valid
         }
+    }
+
+  protected def uniqueNino(ninos: List[String], notUniqueKey: String): Constraint[String] =
+    Constraint {
+      nino =>
+        if (ninos.map(formatNino).contains(formatNino(nino))) Invalid(notUniqueKey) else Valid
     }
 
 }

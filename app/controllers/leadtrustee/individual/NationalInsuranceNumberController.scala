@@ -50,7 +50,7 @@ class NationalInsuranceNumberController @Inject()(
                                                    trustsService: TrustService
                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[String] = formProvider.withPrefix("leadtrustee.individual.nationalInsuranceNumber")
+  private def form(ninos: List[String]): Form[String] = formProvider.apply("leadtrustee.individual.nationalInsuranceNumber", ninos)
 
   private def index(implicit request: LeadTrusteeNameRequest[AnyContent]): Option[Int] = request.userAnswers.get(IndexPage)
 
@@ -62,8 +62,8 @@ class NationalInsuranceNumberController @Inject()(
 
       trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = false) map { ninos =>
         val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
-          case None => form
-          case Some(value) => form.fill(value)
+          case None => form(ninos)
+          case Some(value) => form(ninos).fill(value)
         }
 
         Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
@@ -74,7 +74,7 @@ class NationalInsuranceNumberController @Inject()(
     implicit request =>
 
       trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = false) flatMap { ninos =>
-        form.bindFromRequest().fold(
+        form(ninos).bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
 

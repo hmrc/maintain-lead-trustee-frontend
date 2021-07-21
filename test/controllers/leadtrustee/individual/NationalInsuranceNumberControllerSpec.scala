@@ -38,7 +38,7 @@ import scala.concurrent.Future
 
 class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  val form: Form[String] = new NationalInsuranceNumberFormProvider().withPrefix("leadtrustee.individual.nationalInsuranceNumber")
+  val form: Form[String] = new NationalInsuranceNumberFormProvider().apply("leadtrustee.individual.nationalInsuranceNumber", Nil)
 
   val name: Name = Name("Lead", None, "Trustee")
 
