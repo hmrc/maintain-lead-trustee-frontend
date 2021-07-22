@@ -17,7 +17,7 @@
 package services
 
 import connectors.TrustConnector
-import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NationalInsuranceNumber, RemoveTrustee, TrustIdentificationOrgType, Trustee, TrusteeIndividual, TrusteeOrganisation, Trustees}
+import models._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import javax.inject.Inject
