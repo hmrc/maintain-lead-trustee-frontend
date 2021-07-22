@@ -40,7 +40,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
   private val messageKeyPrefix: String = "replacingLeadTrustee"
   private val form: Form[TrusteeType] = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
-  
+
   private lazy val replacingLeadTrusteeRoute: String = routes.ReplacingLeadTrusteeController.onPageLoad().url
 
   private val date: LocalDate = LocalDate.parse("2019-02-28")
@@ -80,6 +80,10 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
     override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+      ???
+
+    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
+                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
       ???
 
   }

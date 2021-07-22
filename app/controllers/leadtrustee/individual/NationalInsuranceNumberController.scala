@@ -23,12 +23,12 @@ import handlers.ErrorHandler
 import models.BpMatchStatus.FullyMatched
 import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
 import navigation.Navigator
-import pages.leadtrustee.individual.{BpMatchStatusPage, NationalInsuranceNumberPage}
+import pages.leadtrustee.individual.{BpMatchStatusPage, IndexPage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import services.TrustsIndividualCheckService
+import services.{TrustService, TrustsIndividualCheckService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
@@ -46,54 +46,61 @@ class NationalInsuranceNumberController @Inject()(
                                                    formProvider: NationalInsuranceNumberFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    errorHandler: ErrorHandler,
-                                                   view: NationalInsuranceNumberView
+                                                   view: NationalInsuranceNumberView,
+                                                   trustsService: TrustService
                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[String] = formProvider.withPrefix("leadtrustee.individual.nationalInsuranceNumber")
+  private def form(ninos: List[String]): Form[String] = formProvider.apply("leadtrustee.individual.nationalInsuranceNumber", ninos)
+
+  private def index(implicit request: LeadTrusteeNameRequest[AnyContent]): Option[Int] = request.userAnswers.get(IndexPage)
 
   private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
     request.userAnswers.isLeadTrusteeMatched
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = false) map { ninos =>
+        val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
+          case None => form(ninos)
+          case Some(value) => form(ninos).fill(value)
+        }
 
-      Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
+        Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
+      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = false) flatMap { ninos =>
+        form(ninos).bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
-            matchingResponse <- service.matchLeadTrustee(updatedAnswers)
-            updatedAnswersWithMatched <- Future.fromTry {
-              if (matchingResponse == SuccessfulMatchResponse) {
-                updatedAnswers.set(BpMatchStatusPage, FullyMatched)
-              } else {
-                Success(updatedAnswers)
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
+              matchingResponse <- service.matchLeadTrustee(updatedAnswers)
+              updatedAnswersWithMatched <- Future.fromTry {
+                if (matchingResponse == SuccessfulMatchResponse) {
+                  updatedAnswers.set(BpMatchStatusPage, FullyMatched)
+                } else {
+                  Success(updatedAnswers)
+                }
               }
+              _ <- playbackRepository.set(updatedAnswersWithMatched)
+            } yield matchingResponse match {
+              case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
+                Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswersWithMatched))
+              case UnsuccessfulMatchResponse =>
+                Redirect(routes.MatchingFailedController.onPageLoad())
+              case LockedMatchResponse =>
+                Redirect(routes.MatchingLockedController.onPageLoad())
+              case _ =>
+                InternalServerError(errorHandler.internalServerErrorTemplate)
             }
-            _ <- playbackRepository.set(updatedAnswersWithMatched)
-          } yield matchingResponse match {
-            case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
-              Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswersWithMatched))
-            case UnsuccessfulMatchResponse =>
-              Redirect(routes.MatchingFailedController.onPageLoad())
-            case LockedMatchResponse =>
-              Redirect(routes.MatchingLockedController.onPageLoad())
-            case _ =>
-              InternalServerError(errorHandler.internalServerErrorTemplate)
-          }
-      )
+        )
+      }
   }
 }
