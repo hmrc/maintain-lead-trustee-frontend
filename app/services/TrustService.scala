@@ -17,7 +17,7 @@
 package services
 
 import connectors.TrustConnector
-import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NationalInsuranceNumber, RemoveTrustee, Trustee, TrusteeIndividual, TrusteeOrganisation, Trustees}
+import models.{AllTrustees, LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, NationalInsuranceNumber, RemoveTrustee, TrustIdentificationOrgType, Trustee, TrusteeIndividual, TrusteeOrganisation, Trustees}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import javax.inject.Inject
@@ -73,18 +73,19 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
     getAllTrustees(identifier).map { all =>
 
-      val leadTrusteeUtr: List[String] = all.lead.fold[List[String]](Nil) {
-        case x: LeadTrusteeOrganisation if index.isDefined || adding => x.utr.map(List(_)).getOrElse(Nil)
-        case _ => Nil
+      val leadTrusteeUtr: Option[String] = all.lead.flatMap {
+        case x: LeadTrusteeOrganisation if index.isDefined || adding => x.utr
+        case _ => None
       }
 
       val trusteeUtrs: List[String] = all.trustees
         .zipWithIndex
         .filterNot(x => index.contains(x._2))
-        .collect { case (x: TrusteeOrganisation, _) => x.identification.flatMap(_.utr) }
-        .flatten
+        .collect {
+          case (TrusteeOrganisation(_, _, _, Some(TrustIdentificationOrgType(_, Some(utr), _)), _, _, _), _) => utr
+        }
 
-      leadTrusteeUtr ++ trusteeUtrs
+      leadTrusteeUtr.toList ++ trusteeUtrs
     }
   }
 
@@ -92,17 +93,19 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
                                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
     getAllTrustees(identifier).map { all =>
 
-      val leadTrusteeNino: List[String] = all.lead.fold[List[String]](Nil) {
-        case LeadTrusteeIndividual(_, _, _, _, _, NationalInsuranceNumber(nino), _, _, _) if index.isDefined || adding => List(nino)
-        case _ => Nil
+      val leadTrusteeNino: Option[String] = all.lead.flatMap {
+        case LeadTrusteeIndividual(_, _, _, _, _, NationalInsuranceNumber(nino), _, _, _) if index.isDefined || adding => Some(nino)
+        case _ => None
       }
 
       val trusteeNinos: List[String] = all.trustees
         .zipWithIndex
         .filterNot(x => index.contains(x._2))
-        .collect { case (TrusteeIndividual(_, _, _, Some(NationalInsuranceNumber(nino)), _, _, _, _, _, _), _) => nino }
+        .collect {
+          case (TrusteeIndividual(_, _, _, Some(NationalInsuranceNumber(nino)), _, _, _, _, _, _), _) => nino
+        }
 
-      leadTrusteeNino ++ trusteeNinos
+      leadTrusteeNino.toList ++ trusteeNinos
     }
   }
 
