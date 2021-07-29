@@ -30,6 +30,12 @@ body:not(.js-enabled) {
   }
 }
 
+// Fallback break for long names and provides padding between the name and type label (change link on mobiles)
+.hmrc-add-to-a-list__identifier__first {
+    word-break: break-all;
+    padding-right: govuk-spacing(4)
+}
+
 // ----------------
 // HMRC Add-to-list pattern - wrapping for unbreakable text
 // taken from govuk-frontend summary list
