@@ -27,6 +27,9 @@ trait Mappings extends Formatters with Constraints {
   protected def nino(errorKey: String = "error.required"): FieldMapping[String] =
     of(ninoFormatter(errorKey))
 
+  protected def utr(requiredKey: String, invalidKey: String, lengthKey: String): FieldMapping[String] =
+    of(utrFormatter(requiredKey, invalidKey, lengthKey))
+
   protected def postcode(requiredKey : String = "error.required",
                          invalidKey : String = "error.postcodeInvalid") : FieldMapping[String] =
     of(postcodeFormatter(requiredKey, invalidKey))
