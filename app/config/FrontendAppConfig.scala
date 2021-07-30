@@ -37,10 +37,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
 
   private def loadConfig(key: String) = configuration.get[String](key)
 
-  val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-
-  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl}/contact/beta-feedback?service=${contactFrontendConfig.serviceId}"
-  val betaFeedbackUnauthenticatedUrl = s"${contactFrontendConfig.baseUrl}/contact/beta-feedback-unauthenticated?service=${contactFrontendConfig.serviceId}"
+  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = loadConfig("location.canonical.list.allCY")
