@@ -34,17 +34,12 @@
                 <span class="govuk-visually-hidden">@messages("site.hidden-edit", row.label)</span>
             </a>
         </dd>
-    } else if(row.isVerified) {
-        @* Add Verified Tag *@
-    <dd class="govuk-summary-list__actions">
-        <span>
-            <strong class="govuk-tag verified">@messages("site.verified")</strong>
-        </span>
-    </dd>
     } else {
-        @* Add dummy column to extend border *@
-    <dd class="govuk-summary-list__actions">
-        <span></span>
-    </dd>
+        @* Add Verified Tag *@
+        <dd class="govuk-summary-list__actions">
+            <span>
+                <strong class="govuk-tag verified">@messages("site.verified")</strong>
+            </span>
+        </dd>
     }
 </div>

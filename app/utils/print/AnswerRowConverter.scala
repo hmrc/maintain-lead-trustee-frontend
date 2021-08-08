@@ -37,10 +37,9 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def nameQuestion(query: Gettable[Name],
                      labelKey: String,
                      changeUrl: String,
-                     canEdit: Boolean = true,
-                     isVerified: Boolean = false): Option[AnswerRow] = {
+                     canEdit: Boolean = true): Option[AnswerRow] = {
       val format = (x: Name) => HtmlFormat.escape(x.displayFullName)
-      question(query, labelKey, format, changeUrl, canEdit, isVerified)
+      question(query, labelKey, format, changeUrl, canEdit)
     }
 
     def stringQuestion(query: Gettable[String],
@@ -53,37 +52,33 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def yesNoQuestion(query: Gettable[Boolean],
                       labelKey: String,
                       changeUrl: String,
-                      canEdit: Boolean = true,
-                      isVerified: Boolean = false): Option[AnswerRow] = {
+                      canEdit: Boolean = true): Option[AnswerRow] = {
       val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
-      question(query, labelKey, format, changeUrl, canEdit, isVerified)
+      question(query, labelKey, format, changeUrl, canEdit)
     }
 
     def yesNoQuestionAllowEmptyAnswer(query: Gettable[Boolean],
                                       labelKey: String,
                                       changeUrl: String,
-                                      canEdit: Boolean = true,
-                                      isVerified: Boolean = false): Option[AnswerRow] = {
-      yesNoQuestion(query, labelKey, changeUrl, canEdit, isVerified) orElse
-        Some(answer(labelKey, changeUrl, canEdit, isVerified))
+                                      canEdit: Boolean = true): Option[AnswerRow] = {
+      yesNoQuestion(query, labelKey, changeUrl, canEdit) orElse
+        Some(answer(labelKey, changeUrl, canEdit))
     }
 
     def dateQuestion(query: Gettable[LocalDate],
                      labelKey: String,
                      changeUrl: String,
-                     canEdit: Boolean = true,
-                     isVerified: Boolean = false): Option[AnswerRow] = {
+                     canEdit: Boolean = true): Option[AnswerRow] = {
       val format = (x: LocalDate) => checkAnswersFormatters.formatDate(x)
-      question(query, labelKey, format, changeUrl, canEdit, isVerified)
+      question(query, labelKey, format, changeUrl, canEdit)
     }
 
     def ninoQuestion(query: Gettable[String],
                      labelKey: String,
                      changeUrl: String,
-                     canEdit: Boolean = true,
-                     isVerified: Boolean = false): Option[AnswerRow] = {
+                     canEdit: Boolean = true): Option[AnswerRow] = {
       val format = (x: String) => checkAnswersFormatters.formatNino(x)
-      question(query, labelKey, format, changeUrl, canEdit, isVerified)
+      question(query, labelKey, format, changeUrl, canEdit)
     }
 
     def addressQuestion[T <: Address](query: Gettable[T],
@@ -132,25 +127,22 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                             labelKey: String,
                             format: T => Html,
                             changeUrl: String,
-                            canEdit: Boolean = true,
-                            isVerified: Boolean = false)
+                            canEdit: Boolean = true)
                            (implicit rds: Reads[T]): Option[AnswerRow] = {
       userAnswers.get(query) map { x =>
-        answer(labelKey, changeUrl, canEdit, isVerified, format(x))
+        answer(labelKey, changeUrl, canEdit, format(x))
       }
     }
 
     private def answer(labelKey: String,
                        changeUrl: String,
                        canEdit: Boolean,
-                       isVerified: Boolean = false,
                        format: Html = HtmlFormat.empty): AnswerRow = {
       AnswerRow(
         label = messages(s"$labelKey.checkYourAnswersLabel", trusteeName),
         answer = format,
         changeUrl = Some(changeUrl),
-        canEdit = canEdit,
-        isVerified = isVerified
+        canEdit = canEdit
       )
     }
   }

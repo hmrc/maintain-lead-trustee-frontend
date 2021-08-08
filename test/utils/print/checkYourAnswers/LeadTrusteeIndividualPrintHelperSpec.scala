@@ -92,12 +92,12 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
-            AnswerRow(label = messages("leadtrustee.individual.name.checkYourAnswersLabel"), answer = Html("Lead Trustee"), changeUrl = Some(NameController.onPageLoad().url), canEdit = false, isVerified = true),
-            AnswerRow(label = messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName), answer = Html("3 February 1996"), changeUrl = Some(DateOfBirthController.onPageLoad().url), canEdit = false, isVerified = true),
+            AnswerRow(label = messages("leadtrustee.individual.name.checkYourAnswersLabel"), answer = Html("Lead Trustee"), changeUrl = Some(NameController.onPageLoad().url), canEdit = false),
+            AnswerRow(label = messages("leadtrustee.individual.dateOfBirth.checkYourAnswersLabel", name.displayName), answer = Html("3 February 1996"), changeUrl = Some(DateOfBirthController.onPageLoad().url), canEdit = false),
             AnswerRow(label = messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("No"), changeUrl = Some(CountryOfNationalityInTheUkYesNoController.onPageLoad().url)),
             AnswerRow(label = messages("leadtrustee.individual.countryOfNationality.checkYourAnswersLabel", name.displayName), answer = Html("Germany"), changeUrl = Some(CountryOfNationalityController.onPageLoad().url)),
-            AnswerRow(label = messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(UkCitizenController.onPageLoad().url), canEdit = false, isVerified = true),
-            AnswerRow(label = messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName), answer = Html("AA 00 00 00 A"), changeUrl = Some(NationalInsuranceNumberController.onPageLoad().url), canEdit = false, isVerified = true),
+            AnswerRow(label = messages("leadtrustee.individual.ukCitizen.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(UkCitizenController.onPageLoad().url), canEdit = false),
+            AnswerRow(label = messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName), answer = Html("AA 00 00 00 A"), changeUrl = Some(NationalInsuranceNumberController.onPageLoad().url), canEdit = false),
             AnswerRow(label = messages("leadtrustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("Germany<br />number<br />3 February 1996"), changeUrl = Some(PassportOrIdCardController.onPageLoad().url)),
             AnswerRow(label = messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("No"), changeUrl = Some(CountryOfResidenceInTheUkYesNoController.onPageLoad().url)),
             AnswerRow(label = messages("leadtrustee.individual.countryOfResidence.checkYourAnswersLabel", name.displayName), answer = Html("Germany"), changeUrl = Some(CountryOfResidenceController.onPageLoad().url)),
@@ -127,7 +127,7 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
               headingKey = None,
               rows = Seq(
                 AnswerRow(label = messages("leadtrustee.individual.countryOfNationalityInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html(""), changeUrl = Some(CountryOfNationalityInTheUkYesNoController.onPageLoad().url)),
-                AnswerRow(label = messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName), answer = Html("AA 00 00 00 A"), changeUrl = Some(NationalInsuranceNumberController.onPageLoad().url), canEdit = false, isVerified = true),
+                AnswerRow(label = messages("leadtrustee.individual.nationalInsuranceNumber.checkYourAnswersLabel", name.displayName), answer = Html("AA 00 00 00 A"), changeUrl = Some(NationalInsuranceNumberController.onPageLoad().url), canEdit = false),
                 AnswerRow(label = messages("leadtrustee.individual.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html(""), changeUrl = Some(CountryOfResidenceInTheUkYesNoController.onPageLoad().url))
               )
             )
