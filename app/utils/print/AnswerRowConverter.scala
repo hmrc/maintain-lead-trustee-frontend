@@ -53,16 +53,19 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def yesNoQuestion(query: Gettable[Boolean],
                       labelKey: String,
                       changeUrl: String,
-                      canEdit: Boolean = true): Option[AnswerRow] = {
+                      canEdit: Boolean = true,
+                      isVerified: Boolean = false): Option[AnswerRow] = {
       val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
-      question(query, labelKey, format, changeUrl, canEdit)
+      question(query, labelKey, format, changeUrl, canEdit, isVerified)
     }
 
     def yesNoQuestionAllowEmptyAnswer(query: Gettable[Boolean],
                                       labelKey: String,
                                       changeUrl: String,
-                                      canEdit: Boolean = true): Option[AnswerRow] = {
-      yesNoQuestion(query, labelKey, changeUrl, canEdit) orElse Some(answer(labelKey, changeUrl, canEdit))
+                                      canEdit: Boolean = true,
+                                      isVerified: Boolean = false): Option[AnswerRow] = {
+      yesNoQuestion(query, labelKey, changeUrl, canEdit, isVerified) orElse
+        Some(answer(labelKey, changeUrl, canEdit, isVerified))
     }
 
     def dateQuestion(query: Gettable[LocalDate],
