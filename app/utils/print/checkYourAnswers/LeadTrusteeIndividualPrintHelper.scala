@@ -39,12 +39,12 @@ class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowCo
       if (isLeadTrusteeMatched) bound.yesNoQuestionAllowEmptyAnswer else bound.yesNoQuestion
 
     def answerRows: Seq[AnswerRow] = Seq(
-      bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url, canEdit = !isLeadTrusteeMatched, isVerified = isLeadTrusteeMatched),
-      bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad().url, canEdit = !isLeadTrusteeMatched, isVerified = isLeadTrusteeMatched),
+      bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
+      bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
       inUkQuestion(CountryOfNationalityInTheUkYesNoPage, s"$prefix.countryOfNationalityInTheUkYesNo", CountryOfNationalityInTheUkYesNoController.onPageLoad().url, true),
       bound.countryQuestion(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, s"$prefix.countryOfNationality", CountryOfNationalityController.onPageLoad().url),
       bound.yesNoQuestion(UkCitizenPage, s"$prefix.ukCitizen", UkCitizenController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
-      bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad().url, canEdit = !isLeadTrusteeMatched, isVerified = isLeadTrusteeMatched),
+      bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
       bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", PassportOrIdCardController.onPageLoad().url),
       inUkQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad().url, true),
       bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad().url),
