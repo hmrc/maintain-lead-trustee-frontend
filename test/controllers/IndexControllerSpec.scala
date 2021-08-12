@@ -16,19 +16,20 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
+import models.TaskStatus.InProgress
 import models.{TrustDetails, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.FeatureFlagService
+import services.TrustsStoreService
+import uk.gov.hmrc.http.HttpResponse
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
@@ -43,13 +44,16 @@ class IndexControllerSpec extends SpecBase {
     "return OK and the correct view for a GET" in {
 
       val mockTrustConnector = mock[TrustConnector]
-      val mockFeatureFlagService = mock[FeatureFlagService]
+      val mockTrustsStoreService = mock[TrustsStoreService]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), trustTaxable = Some(isTaxable))))
 
-      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
+      when(mockTrustsStoreService.is5mldEnabled()(any(), any()))
         .thenReturn(Future.successful(is5mldEnabled))
+
+      when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       when(mockTrustConnector.isTrust5mld(any())(any(), any()))
         .thenReturn(Future.successful(isUnderlyingData5mld))
@@ -57,9 +61,8 @@ class IndexControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None)
         .overrides(
           bind[TrustConnector].toInstance(mockTrustConnector),
-          bind[FeatureFlagService].toInstance(mockFeatureFlagService)
-        )
-        .build()
+          bind[TrustsStoreService].toInstance(mockTrustsStoreService)
+        ).build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
@@ -77,6 +80,8 @@ class IndexControllerSpec extends SpecBase {
       uaCaptor.getValue.whenTrustSetup mustBe LocalDate.parse(startDate)
       uaCaptor.getValue.is5mldEnabled mustBe is5mldEnabled
       uaCaptor.getValue.isTaxable mustBe isTaxable
+
+      verify(mockTrustsStoreService).updateTaskStatus(eqTo(identifier), eqTo(InProgress))(any(), any())
 
       application.stop()
     }
