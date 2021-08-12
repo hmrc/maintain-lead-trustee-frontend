@@ -17,8 +17,9 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock.{okJson, urlEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import models.FeatureResponse
+import models.TaskStatus.Completed
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.http.Status
 import play.api.libs.json.Json
@@ -43,25 +44,14 @@ class TrustsStoreConnectorSpec extends SpecBase
           ): _*
         ).build()
 
-      val connector = application.injector.instanceOf[TrustStoreConnector]
-
-      val json = Json.parse(
-        """
-          |{
-          |  "trustees": true,
-          |  "beneficiaries": false,
-          |  "settlors": false,
-          |  "protectors": false,
-          |  "other": false
-          |}
-          |""".stripMargin)
+      val connector = application.injector.instanceOf[TrustsStoreConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts-store/maintain/tasks/trustees/123456789"))
-          .willReturn(okJson(json.toString))
+        post(urlEqualTo("/trusts-store/maintain/tasks/update-trustees/123456789"))
+          .willReturn(ok())
       )
 
-      val futureResult = connector.setTaskComplete("123456789")
+      val futureResult = connector.updateTaskStatus("123456789", Completed)
 
       whenReady(futureResult) {
         r =>
@@ -80,14 +70,14 @@ class TrustsStoreConnectorSpec extends SpecBase
           ): _*
         ).build()
 
-      val connector = application.injector.instanceOf[TrustStoreConnector]
+      val connector = application.injector.instanceOf[TrustsStoreConnector]
 
       server.stubFor(
-        post(urlEqualTo("/trusts-store/maintain/tasks/trustees/123456789"))
+        post(urlEqualTo("/trusts-store/maintain/tasks/update-trustees/123456789"))
           .willReturn(serverError())
       )
 
-      connector.setTaskComplete("123456789") map { response =>
+      connector.updateTaskStatus("123456789", Completed) map { response =>
         response.status mustBe 500
       }
 
@@ -109,7 +99,7 @@ class TrustsStoreConnectorSpec extends SpecBase
             ): _*
           ).build()
 
-        val connector = application.injector.instanceOf[TrustStoreConnector]
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         server.stubFor(
           get(urlEqualTo(url))
@@ -138,7 +128,7 @@ class TrustsStoreConnectorSpec extends SpecBase
             ): _*
           ).build()
 
-        val connector = application.injector.instanceOf[TrustStoreConnector]
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         server.stubFor(
           get(urlEqualTo(url))

@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.trustee
+package controllers
 
 import base.SpecBase
-import connectors.TrustStoreConnector
+import connectors.TrustsStoreConnector
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import models.IndividualOrBusiness.Individual
+import models.TaskStatus.Completed
 import models._
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual.NamePage
 import play.api.data.Form
@@ -42,14 +44,14 @@ import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView, MaxedOutTruste
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddATrusteeControllerSpec extends SpecBase {
+class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  lazy val getRoute : String = controllers.routes.AddATrusteeController.onPageLoad().url
-  lazy val submitAnotherRoute : String = controllers.routes.AddATrusteeController.submitAnother().url
-  lazy val submitYesNoRoute : String = controllers.routes.AddATrusteeController.submitOne().url
-  lazy val submitCompleteRoute : String = controllers.routes.AddATrusteeController.submitComplete().url
+  lazy val getRoute: String = controllers.routes.AddATrusteeController.onPageLoad().url
+  lazy val submitAnotherRoute: String = controllers.routes.AddATrusteeController.submitAnother().url
+  lazy val submitYesNoRoute: String = controllers.routes.AddATrusteeController.submitOne().url
+  lazy val submitCompleteRoute: String = controllers.routes.AddATrusteeController.submitComplete().url
 
-  val mockStoreConnector : TrustStoreConnector = mock[TrustStoreConnector]
+  val mockStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
   val addTrusteeForm = new AddATrusteeFormProvider()()
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
@@ -138,6 +140,13 @@ class AddATrusteeControllerSpec extends SpecBase {
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
       ???
 
+  }
+
+  override def beforeEach(): Unit = {
+    reset(mockStoreConnector)
+
+    when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
   }
 
   "AddATrustee Controller" when {
@@ -300,19 +309,19 @@ class AddATrusteeControllerSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
-            bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
+            bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
           ).build()
 
         val request = FakeRequest(POST, submitAnotherRoute)
           .withFormUrlEncodedBody(("value", AddATrustee.NoComplete.toString))
-
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -333,6 +342,8 @@ class AddATrusteeControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/individual-declaration"
+
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -499,18 +510,18 @@ class AddATrusteeControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
           bind(classOf[TrustService]).toInstance(fakeService),
-          bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector)
+          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
         ).build()
 
       val request = FakeRequest(POST, submitCompleteRoute)
-
-      when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+      verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
       application.stop()
 

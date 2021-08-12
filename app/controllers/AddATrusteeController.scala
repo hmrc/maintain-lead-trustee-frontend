@@ -17,11 +17,12 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.TrustStoreConnector
+import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import forms.trustee.AddATrusteeFormProvider
 import handlers.ErrorHandler
+import models.TaskStatus.Completed
 import models.{AddATrustee, AllTrustees}
 import play.api.Logging
 import play.api.data.Form
@@ -48,14 +49,14 @@ class AddATrusteeController @Inject()(
                                        yesNoView: AddATrusteeYesNoView,
                                        completeView: MaxedOutTrusteesView,
                                        val appConfig: FrontendAppConfig,
-                                       trustStoreConnector: TrustStoreConnector,
+                                       trustStoreConnector: TrustsStoreConnector,
                                        errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Logging {
 
-  val addAnotherForm: Form[AddATrustee] = addAnotherFormProvider()
+  private val addAnotherForm: Form[AddATrustee] = addAnotherFormProvider()
 
-  val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
+  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -137,11 +138,7 @@ class AddATrusteeController @Inject()(
             case AddATrustee.YesLater =>
               Future.successful(Redirect(appConfig.maintainATrustOverview))
             case AddATrustee.NoComplete =>
-              for {
-                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
-              } yield {
-                Redirect(appConfig.maintainATrustOverview)
-              }
+              submitComplete()(request)
           }
         )
       } recoverWith {
@@ -157,7 +154,7 @@ class AddATrusteeController @Inject()(
     implicit request =>
 
       for {
-        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
+        _ <- trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }
