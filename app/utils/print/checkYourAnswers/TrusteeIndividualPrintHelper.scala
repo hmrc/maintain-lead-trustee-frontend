@@ -22,7 +22,6 @@ import controllers.trustee.individual.routes._
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.trustee.individual._
 import pages.trustee.individual.add._
-import pages.trustee.individual.amend._
 import play.api.i18n.Messages
 import utils.print.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}

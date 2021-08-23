@@ -70,12 +70,13 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
           .flatMap(_.set(NationalInsuranceNumberPage, nino))
         case Some(p: Passport) => answers
           .set(NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
-          .flatMap(_.set(PassportOrIdCardDetailsPage, p.asCombined))
+          .flatMap(_.set(PassportDetailsYesNoPage, true))
+          .flatMap(_.set(PassportDetailsPage, p))
         case Some(id: IdCard) => answers
           .set(NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
-          .flatMap(_.set(PassportOrIdCardDetailsPage, id.asCombined))
+          .flatMap(_.set(PassportDetailsYesNoPage, false))
+          .flatMap(_.set(IdCardDetailsYesNoPage, true))
+          .flatMap(_.set(IdCardDetailsPage, id))
         case Some(c: CombinedPassportOrIdCard) => answers
           .set(NationalInsuranceNumberYesNoPage, false)
           .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))

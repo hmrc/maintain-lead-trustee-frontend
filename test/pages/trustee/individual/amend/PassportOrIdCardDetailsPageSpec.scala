@@ -18,6 +18,7 @@ package pages.trustee.individual.amend
 
 import models.CombinedPassportOrIdCard
 import pages.behaviours.PageBehaviours
+import pages.trustee.individual.PassportOrIdCardDetailsPage
 
 class PassportOrIdCardDetailsPageSpec extends PageBehaviours {
 

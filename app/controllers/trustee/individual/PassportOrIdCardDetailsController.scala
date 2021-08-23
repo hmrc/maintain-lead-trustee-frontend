@@ -21,7 +21,7 @@ import controllers.trustee.actions.NameRequiredAction
 import forms.CombinedPassportOrIdCardDetailsFormProvider
 import models.{CombinedPassportOrIdCard, Mode}
 import navigation.Navigator
-import pages.trustee.individual.amend.PassportOrIdCardDetailsPage
+import pages.trustee.individual.PassportOrIdCardDetailsPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

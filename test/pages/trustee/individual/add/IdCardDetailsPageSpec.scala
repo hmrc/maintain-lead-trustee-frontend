@@ -18,6 +18,7 @@ package pages.trustee.individual.add
 
 import models.IdCard
 import pages.behaviours.PageBehaviours
+import pages.trustee.individual.IdCardDetailsPage
 
 class IdCardDetailsPageSpec extends PageBehaviours {
 

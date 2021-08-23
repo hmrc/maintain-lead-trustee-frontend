@@ -24,7 +24,6 @@ import models._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual._
 import pages.trustee.individual.add._
-import pages.trustee.individual.amend._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
 

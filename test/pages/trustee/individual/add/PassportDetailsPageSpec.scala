@@ -18,6 +18,7 @@ package pages.trustee.individual.add
 
 import models.Passport
 import pages.behaviours.PageBehaviours
+import pages.trustee.individual.PassportDetailsPage
 
 class PassportDetailsPageSpec extends PageBehaviours {
 

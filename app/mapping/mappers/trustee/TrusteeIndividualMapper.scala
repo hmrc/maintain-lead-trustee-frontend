@@ -20,7 +20,6 @@ import models._
 import pages.QuestionPage
 import pages.trustee.individual._
 import pages.trustee.individual.add._
-import pages.trustee.individual.amend._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsSuccess, Reads}
 
@@ -58,8 +57,8 @@ class TrusteeIndividualMapper extends TrusteeMapper[TrusteeIndividual] {
     } yield (hasNino, hasAddress, hasPassport, hasIdCard, hasPassportOrIdCard)
 
     identification.flatMap[Option[IndividualIdentification]] {
-      case (false, true, true, false, false) => PassportDetailsPage.path.read[Passport].map(Some(_))
-      case (false, true, false, true, false) => IdCardDetailsPage.path.read[IdCard].map(Some(_))
+      case (false, true, true, false, false) => PassportDetailsPage.path.read[Passport].map(_.asCombined).map(Some(_))
+      case (false, true, false, true, false) => IdCardDetailsPage.path.read[IdCard].map(_.asCombined).map(Some(_))
       case (false, true, false, false, true) => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
       case _ => Reads(_ => JsSuccess(None))
     }

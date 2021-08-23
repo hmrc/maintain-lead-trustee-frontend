@@ -17,12 +17,12 @@
 package forms
 
 import java.time.LocalDate
-
 import forms.mappings.{Constraints, Mappings}
+
 import javax.inject.Inject
 import models.CombinedPassportOrIdCard
 import play.api.data.Form
-import play.api.data.Forms.mapping
+import play.api.data.Forms.{mapping, optional}
 
 class CombinedPassportOrIdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
   val maxLengthCountryField = 100
@@ -59,7 +59,8 @@ class CombinedPassportOrIdCardDetailsFormProvider @Inject() extends Mappings wit
           LocalDate.of(1500,1,1),
           s"$prefix.expiryDate.error.past", "day", "month", "year"
         )
-      ))
+      )),
+      "isPassport" -> optional(boolean())
     )(CombinedPassportOrIdCard.apply)(CombinedPassportOrIdCard.unapply)
   )
 }

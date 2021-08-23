@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual.add
+package pages.trustee.individual
 
-import models.IdCard
+import models.UserAnswers
 import pages.QuestionPage
-import pages.trustee.individual.basePath
 import play.api.libs.json.JsPath
 
-case object IdCardDetailsPage extends QuestionPage[IdCard] {
+import scala.util.Try
+
+case object IdCardDetailsYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "idCardDetails"
+  override def toString: String = "idCardDetailsYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) =>
+      userAnswers.remove(IdCardDetailsPage)
+    case _ =>
+      super.cleanup(value, userAnswers)
+  }
 
 }

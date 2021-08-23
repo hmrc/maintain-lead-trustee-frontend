@@ -21,7 +21,7 @@ import controllers.trustee.actions.NameRequiredAction
 import forms.PassportDetailsFormProvider
 import models.{Mode, Passport}
 import navigation.Navigator
-import pages.trustee.individual.add.PassportDetailsPage
+import pages.trustee.individual.PassportDetailsPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

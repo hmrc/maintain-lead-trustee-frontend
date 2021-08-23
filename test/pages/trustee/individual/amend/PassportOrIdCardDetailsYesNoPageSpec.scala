@@ -17,6 +17,7 @@
 package pages.trustee.individual.amend
 
 import pages.behaviours.PageBehaviours
+import pages.trustee.individual.{PassportOrIdCardDetailsPage, PassportOrIdCardDetailsYesNoPage}
 
 class PassportOrIdCardDetailsYesNoPageSpec extends PageBehaviours {
 

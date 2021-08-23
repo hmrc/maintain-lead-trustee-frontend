@@ -23,26 +23,29 @@ import play.api.libs.json.{Format, Json, Reads, Writes, __}
 sealed trait IndividualIdentification
 
 object IndividualIdentification {
-  implicit val reads: Reads[IndividualIdentification] =
-    (__ \ 'passport).read[CombinedPassportOrIdCard].widen[IndividualIdentification] orElse
-    __.read[NationalInsuranceNumber].widen[IndividualIdentification]
+  implicit val reads: Reads[IndividualIdentification] = {
+    (__ \ 'passport \ 'isPassport).readNullable[Boolean].flatMap {
+      case Some(true) => (__ \ 'passport).read[Passport].widen[IndividualIdentification]
+      case Some(false) => (__ \ 'passport).read[IdCard].widen[IndividualIdentification]
+      case None => (__ \ 'passport).read[CombinedPassportOrIdCard].widen[IndividualIdentification]
+    } orElse __.read[NationalInsuranceNumber].widen[IndividualIdentification]
+  }
 
   implicit val writes: Writes[IndividualIdentification] = Writes {
-    case ni:NationalInsuranceNumber => Json.toJson(ni)(NationalInsuranceNumber.format)
-    case p:Passport                 => Json.obj("passport" -> Json.toJson(p)(Passport.format))
-    case i:IdCard                   => Json.obj("passport" -> Json.toJson(i)(IdCard.format))
-    case c:CombinedPassportOrIdCard => Json.obj("passport" -> Json.toJson(c)(CombinedPassportOrIdCard.format))
+    case ni: NationalInsuranceNumber => Json.toJson(ni)(NationalInsuranceNumber.format)
+    case p: Passport => Json.obj("passport" -> Json.toJson(p)(Passport.format))
+    case i: IdCard => Json.obj("passport" -> Json.toJson(i)(IdCard.format))
+    case c: CombinedPassportOrIdCard => Json.obj("passport" -> Json.toJson(c)(CombinedPassportOrIdCard.format))
   }
 }
 
 case class NationalInsuranceNumber(nino: String) extends IndividualIdentification
-
 object NationalInsuranceNumber{
   implicit val format: Format[NationalInsuranceNumber] = Json.format[NationalInsuranceNumber]
 }
 
 case class Passport(countryOfIssue: String, number: String, expirationDate: LocalDate) extends IndividualIdentification {
-  def asCombined: CombinedPassportOrIdCard = CombinedPassportOrIdCard(countryOfIssue, number, expirationDate)
+  def asCombined: CombinedPassportOrIdCard = CombinedPassportOrIdCard(countryOfIssue, number, expirationDate, Some(true))
 }
 
 object Passport {
@@ -50,15 +53,17 @@ object Passport {
 }
 
 case class IdCard(countryOfIssue: String, number: String, expirationDate: LocalDate) extends IndividualIdentification {
-   def asCombined: CombinedPassportOrIdCard = CombinedPassportOrIdCard(countryOfIssue, number, expirationDate)
+  def asCombined: CombinedPassportOrIdCard = CombinedPassportOrIdCard(countryOfIssue, number, expirationDate, Some(false))
 }
 
 object IdCard {
   implicit val format: Format[IdCard] = Json.format[IdCard]
 }
 
-case class CombinedPassportOrIdCard(countryOfIssue: String, number: String, expirationDate: LocalDate) extends IndividualIdentification
-
+case class CombinedPassportOrIdCard(countryOfIssue: String,
+                                    number: String,
+                                    expirationDate: LocalDate,
+                                    isPassport: Option[Boolean] = None) extends IndividualIdentification
 object CombinedPassportOrIdCard {
   implicit val format: Format[CombinedPassportOrIdCard] = Json.format[CombinedPassportOrIdCard]
 }
