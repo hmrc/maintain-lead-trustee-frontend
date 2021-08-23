@@ -53,11 +53,11 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad(mode).url),
         bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad(mode).url),
         bound.yesNoQuestion(PassportDetailsYesNoPage, s"$prefix.passportDetailsYesNo", PassportDetailsYesNoController.onPageLoad(mode).url),
-        bound.passportDetailsQuestion(PassportDetailsPage, s"$prefix.passportDetails", PassportDetailsController.onPageLoad(mode).url),
+        bound.passportDetailsQuestion(PassportDetailsPage, ProvisionalPage, s"$prefix.passportDetails", PassportDetailsController.onPageLoad(mode).url),
         bound.yesNoQuestion(IdCardDetailsYesNoPage, s"$prefix.idCardDetailsYesNo", IdCardDetailsYesNoController.onPageLoad(mode).url),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, s"$prefix.idCardDetails", IdCardDetailsController.onPageLoad(mode).url),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, ProvisionalPage, s"$prefix.idCardDetails", IdCardDetailsController.onPageLoad(mode).url),
         bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, s"$prefix.passportOrIdCardDetailsYesNo", PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url),
-        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", PassportOrIdCardDetailsController.onPageLoad(mode).url),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, Some(ProvisionalPage), s"$prefix.passportOrIdCardDetails", PassportOrIdCardDetailsController.onPageLoad(mode).url),
         bound.yesNoQuestion(MentalCapacityYesNoPage, s"$prefix.mentalCapacityYesNo", MentalCapacityYesNoController.onPageLoad(mode).url),
         if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
       ).flatten

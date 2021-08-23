@@ -45,7 +45,7 @@ class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowCo
       bound.countryQuestion(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, s"$prefix.countryOfNationality", CountryOfNationalityController.onPageLoad().url),
       bound.yesNoQuestion(UkCitizenPage, s"$prefix.ukCitizen", UkCitizenController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
       bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
-      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", PassportOrIdCardController.onPageLoad().url),
+      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, None, s"$prefix.passportOrIdCardDetails", PassportOrIdCardController.onPageLoad().url),
       inUkQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad().url, true),
       bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad().url),
       bound.yesNoQuestion(LiveInTheUkYesNoPage, s"$prefix.liveInTheUkYesNo", LiveInTheUkYesNoController.onPageLoad().url),

@@ -23,6 +23,7 @@ site.cannotRemove = Cannot remove
 site.cannotRemove-hidden = Cannot remove {0}
 site.try-again = Try again
 site.verified = Verified
+site.number-ending = Number ending {0}
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers

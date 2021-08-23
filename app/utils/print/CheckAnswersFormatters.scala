@@ -83,23 +83,30 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
   def country(code: String)(implicit messages: Messages): Html =
     escape(countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse(""))
 
-  def formatPassportOrIdCardDetails(id: CombinedPassportOrIdCard)(implicit messages: Messages): Html = {
+  def formatPassportOrIdCardDetails(id: CombinedPassportOrIdCard, provisional: Boolean)(implicit messages: Messages): Html = {
+
+    def formatNumber(number: String): String = if (provisional) {
+      number
+    } else {
+      messages("site.number-ending", number.takeRight(4))
+    }
+
     val lines =
       Seq(
         Some(country(id.countryOfIssue)),
-        Some(escape(id.number)),
+        Some(escape(formatNumber(id.number))),
         Some(formatDate(id.expirationDate))
       ).flatten
 
     breakLines(lines)
   }
 
-  def formatPassportDetails(passport: Passport)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(passport.asCombined)
+  def formatPassportDetails(passport: Passport, provisional: Boolean)(implicit messages: Messages): Html = {
+    formatPassportOrIdCardDetails(passport.asCombined, provisional)
   }
 
-  def formatIdCardDetails(idCard: IdCard)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(idCard.asCombined)
+  def formatIdCardDetails(idCard: IdCard, provisional: Boolean)(implicit messages: Messages): Html = {
+    formatPassportOrIdCardDetails(idCard.asCombined, provisional)
   }
 
   private def breakLines(lines: Seq[Html]): Html = {

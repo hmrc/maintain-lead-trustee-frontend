@@ -90,23 +90,26 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     }
 
     def passportOrIdCardDetailsQuestion(query: Gettable[CombinedPassportOrIdCard],
+                                        provisional: Option[Gettable[Boolean]],
                                         labelKey: String,
                                         changeUrl: String): Option[AnswerRow] = {
-      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
+      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x, provisional.exists(isProvisional))
       question(query, labelKey, format, changeUrl)
     }
 
     def passportDetailsQuestion(query: Gettable[Passport],
+                                provisional: Gettable[Boolean],
                                 labelKey: String,
                                 changeUrl: String): Option[AnswerRow] = {
-      val format = (x: Passport) => checkAnswersFormatters.formatPassportDetails(x)
+      val format = (x: Passport) => checkAnswersFormatters.formatPassportDetails(x, isProvisional(provisional))
       question(query, labelKey, format, changeUrl)
     }
 
     def idCardDetailsQuestion(query: Gettable[IdCard],
+                              provisional: Gettable[Boolean],
                               labelKey: String,
                               changeUrl: String): Option[AnswerRow] = {
-      val format = (x: IdCard) => checkAnswersFormatters.formatIdCardDetails(x)
+      val format = (x: IdCard) => checkAnswersFormatters.formatIdCardDetails(x, isProvisional(provisional))
       question(query, labelKey, format, changeUrl)
     }
 
@@ -144,6 +147,10 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
         changeUrl = Some(changeUrl),
         canEdit = canEdit
       )
+    }
+
+    private def isProvisional(query: Gettable[Boolean]): Boolean = {
+      !userAnswers.get(query).contains(false)
     }
   }
 }
