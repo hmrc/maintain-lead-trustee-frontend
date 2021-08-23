@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual
+package pages.leadtrustee.individual
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object ProvisionalPage extends QuestionPage[Boolean] {
+case object ProvisionalIdDetailsPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "provisional"
+  override def toString: String = "provisionalIdDetails"
 }

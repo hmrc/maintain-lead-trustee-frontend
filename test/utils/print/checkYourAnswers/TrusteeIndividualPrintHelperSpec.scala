@@ -128,7 +128,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
           .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
           .set(MentalCapacityYesNoPage, true).success.value
-          .set(ProvisionalPage, false).success.value
+          .set(ProvisionalIdDetailsPage, false).success.value
 
         val result = helper.print(userAnswers, adding, name.displayName)
         result mustBe AnswerSection(

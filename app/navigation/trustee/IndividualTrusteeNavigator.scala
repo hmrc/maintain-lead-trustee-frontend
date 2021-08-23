@@ -154,7 +154,7 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
   }
 
   private def navigateToIdQuestions(userAnswers: UserAnswers, mode: Mode): Call = {
-    if (userAnswers.get(ProvisionalPage).contains(false)) {
+    if (userAnswers.get(ProvisionalIdDetailsPage).contains(false)) {
       rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
     } else {
       rts.PassportDetailsYesNoController.onPageLoad(mode)

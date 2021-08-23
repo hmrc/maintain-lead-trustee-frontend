@@ -51,7 +51,7 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
       .flatMap(answers => extractMentalCapacity(trustee.mentalCapacityYesNo, answers))
       .flatMap(answers => extractIdentification(trustee, answers))
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
-      .flatMap(_.set(ProvisionalPage, trustee.provisional))
+      .flatMap(answers => extractIfIdDetailsAreProvisional(trustee.identification, answers))
   }
 
   private def extractMentalCapacity(mentalCapacityYesNo: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
@@ -96,6 +96,10 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
     } else {
       Success(answers)
     }
+  }
+
+  private def extractIfIdDetailsAreProvisional(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
+    answers.set(ProvisionalIdDetailsPage, !identification.exists(_.isInstanceOf[CombinedPassportOrIdCard]))
   }
 
 }
