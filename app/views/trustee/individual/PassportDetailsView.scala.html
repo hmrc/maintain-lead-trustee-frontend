@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.trustee.individual.add.routes._
+@import controllers.trustee.individual.routes._
 @import utils.InputOption
 @import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton}
 
@@ -29,14 +29,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("trustee.individual.passportDetails.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = PassportDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = PassportDetailsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

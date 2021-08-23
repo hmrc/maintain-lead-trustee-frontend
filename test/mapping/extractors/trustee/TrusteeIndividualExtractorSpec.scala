@@ -68,6 +68,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(NonUkAddressPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
         result.get(PassportOrIdCardDetailsPage) mustBe None
+        result.get(ProvisionalPage).get mustBe true
 
       }
 
@@ -99,6 +100,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(NonUkAddressPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
         result.get(PassportOrIdCardDetailsPage).get mustBe combined
+        result.get(ProvisionalPage).get mustBe true
 
       }
 
@@ -128,6 +130,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(NonUkAddressPage).get mustBe nonUkAddress
         result.get(PassportOrIdCardDetailsYesNoPage).get mustBe false
         result.get(PassportOrIdCardDetailsPage) mustBe None
+        result.get(ProvisionalPage).get mustBe true
 
       }
 
@@ -157,6 +160,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(NonUkAddressPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
         result.get(PassportOrIdCardDetailsPage) mustBe None
+        result.get(ProvisionalPage).get mustBe true
 
       }
     }
@@ -198,6 +202,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
             result.get(PassportOrIdCardDetailsPage) mustBe None
             result.get(MentalCapacityYesNoPage) mustBe None
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has no country of residence but does have an address" in {
@@ -223,6 +228,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(LiveInTheUkYesNoPage).get mustBe true
             result.get(UkAddressPage).get mustBe ukAddress
             result.get(NonUkAddressPage) mustBe None
+            result.get(ProvisionalPage).get mustBe true
           }
         }
 
@@ -260,6 +266,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(UkAddressPage) mustBe None
             result.get(NonUkAddressPage) mustBe None
             result.get(MentalCapacityYesNoPage) mustBe None
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has no country of residence but does have an address" in {
@@ -286,6 +293,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(LiveInTheUkYesNoPage).get mustBe true
             result.get(UkAddressPage).get mustBe ukAddress
             result.get(NonUkAddressPage) mustBe None
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has a country of residence in GB" in {
@@ -307,6 +315,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(CountryOfResidenceYesNoPage).get mustBe true
             result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
             result.get(CountryOfResidencePage).get mustBe GB
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has a country of residence in Spain" in {
@@ -328,6 +337,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(CountryOfResidenceYesNoPage).get mustBe true
             result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
             result.get(CountryOfResidencePage).get mustBe "Spain"
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has a country of nationality in GB" in {
@@ -349,6 +359,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(CountryOfNationalityYesNoPage).get mustBe true
             result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
             result.get(CountryOfNationalityPage).get mustBe GB
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has a country of nationality in Spain" in {
@@ -370,6 +381,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(CountryOfNationalityYesNoPage).get mustBe true
             result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
             result.get(CountryOfNationalityPage).get mustBe "Spain"
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has a mental capacity" in {
@@ -390,6 +402,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IndexPage).get mustBe index
             result.get(NamePage).get mustBe name
             result.get(MentalCapacityYesNoPage).get mustBe true
+            result.get(ProvisionalPage).get mustBe true
           }
           
           "has an NINO" in {
@@ -412,6 +425,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(NamePage).get mustBe name
             result.get(NationalInsuranceNumberYesNoPage).get mustBe true
             result.get(NationalInsuranceNumberPage).get mustBe nino
+            result.get(ProvisionalPage).get mustBe true
           }
 
           "has a Passport or Card Details" in {
@@ -434,6 +448,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(NamePage).get mustBe name
             result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
             result.get(PassportOrIdCardDetailsPage).get mustBe combined
+            result.get(ProvisionalPage).get mustBe true
           }
 
         }
@@ -464,6 +479,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
           result.get(CountryOfNationalityPage) mustBe None
           result.get(MentalCapacityYesNoPage) mustBe None
+          result.get(ProvisionalPage).get mustBe true
         }
 
         "has a country of residence and nationality in Spain" in {
@@ -489,6 +505,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(CountryOfNationalityYesNoPage).get mustBe true
           result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
           result.get(CountryOfNationalityPage).get mustBe "Spain"
+          result.get(ProvisionalPage).get mustBe true
         }
 
         "has an address" in {
@@ -511,6 +528,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(LiveInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage) mustBe None
+          result.get(ProvisionalPage).get mustBe true
         }
 
         "has a mental capacity" in {
@@ -531,6 +549,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(IndexPage).get mustBe index
           result.get(NamePage).get mustBe name
           result.get(MentalCapacityYesNoPage).get mustBe true
+          result.get(ProvisionalPage).get mustBe true
         }
 
         "has an NINO" in {
@@ -553,6 +572,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(NamePage).get mustBe name
           result.get(NationalInsuranceNumberYesNoPage) mustBe None
           result.get(NationalInsuranceNumberPage) mustBe None
+          result.get(ProvisionalPage).get mustBe true
         }
 
         "has a Passport or Card Details" in {
@@ -575,6 +595,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(NamePage).get mustBe name
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(ProvisionalPage).get mustBe true
         }
       }
     }

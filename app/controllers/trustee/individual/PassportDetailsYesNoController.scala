@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.trustee.individual.add
+package controllers.trustee.individual
 
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.Mode
 import navigation.Navigator
 import pages.trustee.individual.add.PassportDetailsYesNoPage
 import play.api.data.Form
@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.trustee.individual.add.PassportDetailsYesNoView
+import views.html.trustee.individual.PassportDetailsYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +45,7 @@ class PassportDetailsYesNoController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.passportDetailsYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(PassportDetailsYesNoPage) match {
@@ -53,21 +53,21 @@ class PassportDetailsYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.trusteeName))
+      Ok(view(preparedForm, mode, request.trusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsYesNoPage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PassportDetailsYesNoPage, mode, updatedAnswers))
       )
   }
 }

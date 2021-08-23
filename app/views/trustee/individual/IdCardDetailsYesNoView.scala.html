@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.trustee.individual.amend.routes._
+@import controllers.trustee.individual.routes._
 @import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
@@ -25,20 +25,20 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], trusteeName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("trustee.individual.passportOrIdCardDetailsYesNo.title")}",
+    title = s"${errorPrefix(form)}${messages("trustee.individual.idCardDetailsYesNo.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = PassportOrIdCardDetailsYesNoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = IdCardDetailsYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
-            label = messages("trustee.individual.passportOrIdCardDetailsYesNo.heading", trusteeName)
+            label = messages("trustee.individual.idCardDetailsYesNo.heading", name)
         )
 
         @submitButton()

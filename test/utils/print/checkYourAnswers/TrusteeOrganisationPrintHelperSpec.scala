@@ -56,7 +56,7 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
 
         val mode = NormalMode
 
-        val result = helper.print(userAnswers, provisional = true, name.displayName)
+        val result = helper.print(userAnswers, adding = true, name.displayName)
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
@@ -76,7 +76,7 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
 
         val mode = CheckMode
 
-        val result = helper.print(userAnswers, provisional = false, name.displayName)
+        val result = helper.print(userAnswers, adding = false, name.displayName)
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(

@@ -40,7 +40,7 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
     case CountryOfNationalityPage => navigateAwayFromCountryOfNationalityPages(_, mode)
     case NationalInsuranceNumberPage => navigateAwayFromNinoPages(_, mode)
     case CountryOfResidencePage => navigateToOrBypassAddressPages(_, mode)
-    case UkAddressPage | NonUkAddressPage => _ => navigateToIdQuestions(mode)
+    case UkAddressPage | NonUkAddressPage => navigateToIdQuestions(_, mode)
     case PassportDetailsPage | IdCardDetailsPage | PassportOrIdCardDetailsPage => navigateToMentalCapacityOrWhenAddedPage(_, mode)
     case MentalCapacityYesNoPage => navigateToWhenAddedOrCheckDetails(_, mode)
     case WhenAddedPage => _ => addRts.CheckDetailsController.onPageLoad()
@@ -101,13 +101,13 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
     case PassportDetailsYesNoPage => ua => yesNoNav(
       ua = ua,
       fromPage = PassportDetailsYesNoPage,
-      yesCall = addRts.PassportDetailsController.onPageLoad(),
-      noCall = addRts.IdCardDetailsYesNoController.onPageLoad()
+      yesCall = rts.PassportDetailsController.onPageLoad(mode),
+      noCall = rts.IdCardDetailsYesNoController.onPageLoad(mode)
     )
     case IdCardDetailsYesNoPage => ua => yesNoNav(
       ua = ua,
       fromPage = IdCardDetailsYesNoPage,
-      yesCall = addRts.IdCardDetailsController.onPageLoad(),
+      yesCall = rts.IdCardDetailsController.onPageLoad(mode),
       noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
     )
   }
@@ -116,7 +116,7 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
     case PassportOrIdCardDetailsYesNoPage => ua => yesNoNav(
       ua = ua,
       fromPage = PassportOrIdCardDetailsYesNoPage,
-      yesCall = amendRts.PassportOrIdCardDetailsController.onPageLoad(),
+      yesCall = rts.PassportOrIdCardDetailsController.onPageLoad(mode),
       noCall = navigateToMentalCapacityOrWhenAddedPage(ua, mode)
     )
   }
@@ -153,11 +153,11 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
     }
   }
 
-  private def navigateToIdQuestions(mode: Mode): Call = {
-    if (mode == NormalMode) {
-      addRts.PassportDetailsYesNoController.onPageLoad()
+  private def navigateToIdQuestions(userAnswers: UserAnswers, mode: Mode): Call = {
+    if (userAnswers.get(ProvisionalPage).contains(false)) {
+      rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
     } else {
-      amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+      rts.PassportDetailsYesNoController.onPageLoad(mode)
     }
   }
 

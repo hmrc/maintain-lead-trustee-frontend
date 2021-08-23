@@ -14,34 +14,35 @@
  * limitations under the License.
  */
 
-package views.trustee.individual.add
+package views.trustee.individual
 
-import controllers.trustee.individual.add.routes
-import forms.IdCardDetailsFormProvider
-import models.{IdCard, Name}
+import controllers.trustee.individual.routes
+import forms.PassportDetailsFormProvider
+import models.{Mode, Name, NormalMode, Passport}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.behaviours.QuestionViewBehaviours
-import views.html.trustee.individual.add.IdCardDetailsView
+import views.html.trustee.individual.PassportDetailsView
 
-class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
+class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 
-  val messageKeyPrefix = "trustee.individual.idCardDetails"
+  val messageKeyPrefix = "trustee.individual.passportDetails"
   val name: Name = Name("First", Some("Middle"), "Last")
+  val mode: Mode = NormalMode
 
-  override val form: Form[IdCard] = new IdCardDetailsFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[Passport] = new PassportDetailsFormProvider().withPrefix(messageKeyPrefix)
 
-  "trustee.individual.add.IdCardDetails view" must {
+  "trustee.individual.add.PassportDetails view" must {
 
-    val view = viewFor[IdCardDetailsView](Some(emptyUserAnswers))
+    val view = viewFor[PassportDetailsView](Some(emptyUserAnswers))
 
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, name.displayName)(fakeRequest, messages)
-    
+      view.apply(form, mode, countryOptions, name.displayName)(fakeRequest, messages)
+
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
@@ -52,7 +53,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.IdCardDetailsController.onSubmit().url,
+        routes.PassportDetailsController.onSubmit(mode).url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName
