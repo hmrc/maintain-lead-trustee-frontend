@@ -98,8 +98,16 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
     }
   }
 
+  // `identification` is an instance of CombinedPassportOrIdCard => not added in session (i.e. not provisional)
+  // `identification` is an instance of Passport or IdCard => added in session (i.e. provisional)
+  // `identification` is empty or an instance of NationalInsuranceNumber => nothing to set
   private def extractIfIdDetailsAreProvisional(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
-    answers.set(ProvisionalIdDetailsPage, !identification.exists(_.isInstanceOf[CombinedPassportOrIdCard]))
+    val provisional: Option[Boolean] = identification match {
+      case Some(_: CombinedPassportOrIdCard) => Some(false)
+      case Some(_: Passport) | Some(_: IdCard) => Some(true)
+      case _ => None
+    }
+    answers.set(ProvisionalIdDetailsPage, provisional)
   }
 
 }
