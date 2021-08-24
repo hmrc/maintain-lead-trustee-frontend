@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual.add
+package pages.trustee.individual
 
-import models.Passport
+import models.CombinedPassportOrIdCard
 import pages.behaviours.PageBehaviours
-import pages.trustee.individual.PassportDetailsPage
 
-class PassportDetailsPageSpec extends PageBehaviours {
+class PassportOrIdCardDetailsPageSpec extends PageBehaviours {
 
-  "PassportDetailsPage" must {
+  "PassportOrIdCardDetailsPage" must {
 
-    beRetrievable[Passport](PassportDetailsPage)
+    beRetrievable[CombinedPassportOrIdCard](PassportOrIdCardDetailsPage)
 
-    beSettable[Passport](PassportDetailsPage)
+    beSettable[CombinedPassportOrIdCard](PassportOrIdCardDetailsPage)
 
-    beRemovable[Passport](PassportDetailsPage)
+    beRemovable[CombinedPassportOrIdCard](PassportOrIdCardDetailsPage)
   }
 }

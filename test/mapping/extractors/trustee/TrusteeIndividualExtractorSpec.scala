@@ -136,11 +136,11 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(LiveInTheUkYesNoPage).get mustBe false
         result.get(UkAddressPage) mustBe None
         result.get(NonUkAddressPage).get mustBe nonUkAddress
-        result.get(PassportDetailsYesNoPage) mustBe None
+        result.get(PassportDetailsYesNoPage).get mustBe false
         result.get(PassportDetailsPage) mustBe None
-        result.get(IdCardDetailsYesNoPage) mustBe None
+        result.get(IdCardDetailsYesNoPage).get mustBe false
         result.get(IdCardDetailsPage) mustBe None
-        result.get(PassportOrIdCardDetailsYesNoPage).get mustBe false
+        result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
         result.get(PassportOrIdCardDetailsPage) mustBe None
         result.get(ProvisionalIdDetailsPage) mustBe None
 
@@ -248,10 +248,12 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(LiveInTheUkYesNoPage).get mustBe true
             result.get(UkAddressPage).get mustBe ukAddress
             result.get(NonUkAddressPage) mustBe None
-            result.get(PassportDetailsYesNoPage) mustBe None
+            result.get(PassportDetailsYesNoPage).get mustBe false
             result.get(PassportDetailsPage) mustBe None
-            result.get(IdCardDetailsYesNoPage) mustBe None
+            result.get(IdCardDetailsYesNoPage).get mustBe false
             result.get(IdCardDetailsPage) mustBe None
+            result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+            result.get(PassportOrIdCardDetailsPage) mustBe None
             result.get(ProvisionalIdDetailsPage) mustBe None
           }
         }
@@ -321,10 +323,12 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(LiveInTheUkYesNoPage).get mustBe true
             result.get(UkAddressPage).get mustBe ukAddress
             result.get(NonUkAddressPage) mustBe None
-            result.get(PassportDetailsYesNoPage) mustBe None
+            result.get(PassportDetailsYesNoPage).get mustBe false
             result.get(PassportDetailsPage) mustBe None
-            result.get(IdCardDetailsYesNoPage) mustBe None
+            result.get(IdCardDetailsYesNoPage).get mustBe false
             result.get(IdCardDetailsPage) mustBe None
+            result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+            result.get(PassportOrIdCardDetailsPage) mustBe None
             result.get(ProvisionalIdDetailsPage) mustBe None
           }
 

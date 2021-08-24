@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual.amend
+package pages.trustee.individual
 
 import pages.behaviours.PageBehaviours
-import pages.trustee.individual.{PassportOrIdCardDetailsPage, PassportOrIdCardDetailsYesNoPage}
 
 class PassportOrIdCardDetailsYesNoPageSpec extends PageBehaviours {
 
@@ -33,9 +32,11 @@ class PassportOrIdCardDetailsYesNoPageSpec extends PageBehaviours {
       "NO selected" in {
         val userAnswers = emptyUserAnswers
           .set(PassportOrIdCardDetailsPage, arbitraryCombinedPassportOrIdCard.arbitrary.sample.get).success.value
+          .set(ProvisionalIdDetailsPage, false).success.value
           .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
         userAnswers.get(PassportOrIdCardDetailsPage) mustBe None
+        userAnswers.get(ProvisionalIdDetailsPage) mustBe None
       }
     }
   }

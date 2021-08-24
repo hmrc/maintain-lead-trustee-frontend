@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package pages.trustee.individual.add
+package pages.trustee.individual
 
 import models.IdCard
 import pages.behaviours.PageBehaviours
-import pages.trustee.individual.IdCardDetailsPage
 
 class IdCardDetailsPageSpec extends PageBehaviours {
 
