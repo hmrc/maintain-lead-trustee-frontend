@@ -58,6 +58,12 @@ class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPas
         "expiryDate",
         name.displayName
       )
+
+      behave like pageWithHiddenInput(
+        form,
+        applyView,
+        "detailsType"
+      )
     }
 
     behave like pageWithASubmitButton(applyView(form))

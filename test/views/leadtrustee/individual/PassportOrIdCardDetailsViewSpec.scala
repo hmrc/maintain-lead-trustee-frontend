@@ -61,7 +61,7 @@ class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[Passport] {
       behave like pageWithHiddenInput(
         form,
         applyView,
-        "isPassport"
+        "detailsType"
       )
     }
 

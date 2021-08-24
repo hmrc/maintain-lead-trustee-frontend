@@ -19,8 +19,9 @@ package forms
 import config.FrontendAppConfig
 import forms.mappings.{Constraints, Mappings}
 import models.CombinedPassportOrIdCard
+import models.DetailsType.DetailsType
 import play.api.data.Form
-import play.api.data.Forms.{mapping, optional}
+import play.api.data.Forms.mapping
 
 import javax.inject.Inject
 
@@ -60,7 +61,7 @@ class CombinedPassportOrIdCardDetailsFormProvider @Inject()(config: FrontendAppC
           s"$prefix.expiryDate.error.past", "day", "month", "year"
         )
       )),
-      "isPassport" -> optional(boolean())
+      "detailsType" -> enumerable[DetailsType]()
     )(CombinedPassportOrIdCard.apply)(CombinedPassportOrIdCard.unapply)
   )
 }

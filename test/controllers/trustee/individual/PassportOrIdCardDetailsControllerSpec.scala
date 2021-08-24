@@ -18,7 +18,7 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.CombinedPassportOrIdCardDetailsFormProvider
-import models.{CombinedPassportOrIdCard, Mode, Name, NormalMode, UserAnswers}
+import models.{CombinedPassportOrIdCard, DetailsType, Mode, Name, NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -110,7 +110,8 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
             "number" -> "123456",
             "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
             "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-            "expiryDate.year"  -> validData.expirationDate.getYear.toString
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString,
+            "detailsType"      -> DetailsType.Combined.toString
           )
 
       val result = route(application, request).value

@@ -130,7 +130,10 @@ class LeadTrusteeSpec extends SpecBase {
             address = NonUkAddress(addressLine, addressLine, None, country)
           )
 
-          Json.toJson(result) mustBe json
+          Json.toJson(result) mustBe json.transform(
+            __.json.update((__ \ "identification" \ "passport" \ "detailsType").json.put(Json.toJson(DetailsType.Combined))) andThen
+              __.json.pick
+          ).get
         }
       }
 
@@ -227,7 +230,10 @@ class LeadTrusteeSpec extends SpecBase {
             nationality = Some(country)
           )
 
-          Json.toJson(result) mustBe json
+          Json.toJson(result) mustBe json.transform(
+            __.json.update((__ \ "identification" \ "passport" \ "detailsType").json.put(Json.toJson(DetailsType.Combined))) andThen
+              __.json.pick
+          ).get
         }
       }
     }

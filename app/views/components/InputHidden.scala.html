@@ -21,12 +21,13 @@
 )
 
 @(
-    field: Field
+    field: Field,
+    defaultValue: Option[String] = None
 )(implicit messages: Messages)
 
 @govukInput(
     Input(
         inputType = "hidden",
-        value = field.value
+        value = field.value.orElse(defaultValue)
     ).withFormField(field)
 )

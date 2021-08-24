@@ -17,7 +17,7 @@
 package utils.print
 
 import base.SpecBase
-import models.CombinedPassportOrIdCard
+import models.{CombinedPassportOrIdCard, DetailsType}
 import play.api.i18n.{Lang, MessagesImpl}
 import play.twirl.api.Html
 
@@ -111,18 +111,16 @@ class CheckAnswersFormattersSpec extends SpecBase {
       "not mask the passport/ID card number" when {
         "details added in session" when {
 
-          val provisional = true
-
           "English" in {
 
-            val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, Some(true))
+            val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, DetailsType.Passport)
             val result = checkAnswersFormatters.formatPassportOrIdCardDetails(passportOrIdCard)(messages("en"))
             result mustBe Html("France<br />1234567890<br />3 February 1996")
           }
 
           "Welsh" in {
 
-            val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, Some(false))
+            val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, DetailsType.IdCard)
             val result = checkAnswersFormatters.formatPassportOrIdCardDetails(passportOrIdCard)(messages("cy"))
             result mustBe Html("Ffrainc<br />1234567890<br />3 Chwefror 1996")
           }

@@ -109,7 +109,8 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar {
             "expiryDate.day" -> "21",
             "expiryDate.month" -> "3",
             "expiryDate.year" -> "2079",
-            "number" -> "PASSPORTNUMBER"
+            "number" -> "PASSPORTNUMBER",
+            "detailsType" -> "combined"
           )
 
       val result = route(application, request).value

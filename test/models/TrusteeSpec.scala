@@ -199,7 +199,10 @@ class TrusteeSpec extends SpecBase {
             provisional = true
           )
 
-          Json.toJson(result) mustBe json.transform((__ \ "trusteeInd").json.pick).get
+          Json.toJson(result) mustBe json.transform(
+            __.json.update((__ \ "trusteeInd" \ "identification" \ "passport" \ "detailsType").json.put(Json.toJson(DetailsType.Combined))) andThen
+              (__ \ "trusteeInd").json.pick
+          ).get
         }
       }
 

@@ -15,6 +15,7 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
+@import models.DetailsType
 @import utils.InputOption
 @import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton, InputHidden}
 
@@ -68,7 +69,8 @@
         )
 
         @inputHidden(
-            field = form("isPassport")
+            field = form("detailsType"),
+            defaultValue = Some(DetailsType.Combined.toString)
         )
 
         @submitButton()
