@@ -16,8 +16,6 @@
 
 package controllers.leadtrustee.individual
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.CombinedPassportOrIdCardDetailsFormProvider
 import models.{CombinedPassportOrIdCard, Name}
@@ -34,13 +32,14 @@ import repositories.PlaybackRepository
 import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.PassportOrIdCardDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new CombinedPassportOrIdCardDetailsFormProvider()
+  val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
   val form = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
 
   lazy val passportDetailsRoute = routes.PassportOrIdCardController.onPageLoad().url

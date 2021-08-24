@@ -32,7 +32,7 @@ class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPas
   val name: Name = Name("First", Some("Middle"), "Last")
   val mode: Mode = NormalMode
 
-  override val form: Form[CombinedPassportOrIdCard] = new CombinedPassportOrIdCardDetailsFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[CombinedPassportOrIdCard] = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
   "PassportDetails view" must {
 

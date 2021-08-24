@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new CombinedPassportOrIdCardDetailsFormProvider()
+  val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
   val form = formProvider.withPrefix("trustee.individual.passportOrIdCardDetails")
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")

@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-package views.trustee.individual
+package views.leadtrustee.individual
 
-import controllers.trustee.individual.routes
+import controllers.leadtrustee.individual.routes
 import forms.PassportDetailsFormProvider
-import models.{Mode, Name, NormalMode, Passport}
+import models.{Name, Passport}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.behaviours.QuestionViewBehaviours
-import views.html.trustee.individual.PassportDetailsView
+import views.html.leadtrustee.individual.PassportOrIdCardDetailsView
 
-class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
+class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 
-  val messageKeyPrefix = "trustee.individual.passportDetails"
+  val messageKeyPrefix = "leadtrustee.individual.passportOrIdCardDetails"
   val name: Name = Name("First", Some("Middle"), "Last")
-  val mode: Mode = NormalMode
 
   override val form: Form[Passport] = new PassportDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
-  "trustee.individual.add.PassportDetails view" must {
+  "PassportOrIdCardDetailsView" must {
 
-    val view = viewFor[PassportDetailsView](Some(emptyUserAnswers))
+    val view = viewFor[PassportOrIdCardDetailsView](Some(emptyUserAnswers))
 
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, mode, countryOptions, name.displayName)(fakeRequest, messages)
+      view.apply(form, name.displayName, countryOptions)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
@@ -53,10 +52,16 @@ class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportDetailsController.onSubmit(mode).url,
+        routes.PassportOrIdCardController.onSubmit().url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName
+      )
+
+      behave like pageWithHiddenInput(
+        form,
+        applyView,
+        "isPassport"
       )
     }
 
