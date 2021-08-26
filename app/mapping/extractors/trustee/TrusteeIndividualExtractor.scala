@@ -51,7 +51,6 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
       .flatMap(answers => extractMentalCapacity(trustee.mentalCapacityYesNo, answers))
       .flatMap(answers => extractIdentification(trustee, answers))
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
-      .flatMap(answers => extractIfIdDetailsAreProvisional(trustee.identification, answers))
   }
 
   private def extractMentalCapacity(mentalCapacityYesNo: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
@@ -97,18 +96,6 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
     } else {
       Success(answers)
     }
-  }
-
-  // `identification` is an instance of CombinedPassportOrIdCard => not added in session (i.e. not provisional)
-  // `identification` is an instance of Passport or IdCard => added in session (i.e. provisional)
-  // `identification` is empty or an instance of NationalInsuranceNumber => nothing to set
-  private def extractIfIdDetailsAreProvisional(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
-    val provisional: Option[Boolean] = identification match {
-      case Some(_: CombinedPassportOrIdCard) => Some(false)
-      case Some(_: Passport) | Some(_: IdCard) => Some(true)
-      case _ => None
-    }
-    answers.set(ProvisionalIdDetailsPage, provisional)
   }
 
 }

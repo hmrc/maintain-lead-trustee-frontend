@@ -17,13 +17,17 @@
 package utils.print
 
 import base.SpecBase
-import models.{CombinedPassportOrIdCard, DetailsType}
+import generators.ModelGenerators
+import models.CombinedPassportOrIdCard
+import models.DetailsType.{Combined, DetailsType}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.i18n.{Lang, MessagesImpl}
 import play.twirl.api.Html
 
 import java.time.LocalDate
 
-class CheckAnswersFormattersSpec extends SpecBase {
+class CheckAnswersFormattersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators {
 
   private val checkAnswersFormatters: CheckAnswersFormatters = injector.instanceOf[CheckAnswersFormatters]
 
@@ -113,16 +117,20 @@ class CheckAnswersFormattersSpec extends SpecBase {
 
           "English" in {
 
-            val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, DetailsType.Passport)
-            val result = checkAnswersFormatters.formatPassportOrIdCardDetails(passportOrIdCard)(messages("en"))
-            result mustBe Html("France<br />1234567890<br />3 February 1996")
+            forAll(arbitrary[DetailsType].suchThat(_ != Combined)) { detailsType =>
+              val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, detailsType)
+              val result = checkAnswersFormatters.formatPassportOrIdCardDetails(passportOrIdCard)(messages("en"))
+              result mustBe Html("France<br />1234567890<br />3 February 1996")
+            }
           }
 
           "Welsh" in {
 
-            val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, DetailsType.IdCard)
-            val result = checkAnswersFormatters.formatPassportOrIdCardDetails(passportOrIdCard)(messages("cy"))
-            result mustBe Html("Ffrainc<br />1234567890<br />3 Chwefror 1996")
+            forAll(arbitrary[DetailsType].suchThat(_ != Combined)) { detailsType =>
+              val passportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", date, detailsType)
+              val result = checkAnswersFormatters.formatPassportOrIdCardDetails(passportOrIdCard)(messages("cy"))
+              result mustBe Html("Ffrainc<br />1234567890<br />3 Chwefror 1996")
+            }
           }
         }
       }

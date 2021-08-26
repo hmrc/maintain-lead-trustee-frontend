@@ -20,14 +20,16 @@ import base.SpecBase
 import forms.CombinedPassportOrIdCardDetailsFormProvider
 import models.{CombinedPassportOrIdCard, DetailsType, Mode, Name, NormalMode, UserAnswers}
 import navigation.Navigator
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.html.trustee.individual.PassportOrIdCardDetailsView
@@ -35,23 +37,28 @@ import views.html.trustee.individual.PassportOrIdCardDetailsView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
+class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
-  val form = formProvider.withPrefix("trustee.individual.passportOrIdCardDetails")
+  val form: Form[CombinedPassportOrIdCard] = formProvider.withPrefix("trustee.individual.passportOrIdCardDetails")
   val trusteeName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  val name: Name = Name("FirstName", None, "LastName")
 
   val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
   val mode: Mode = NormalMode
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
-  
-  lazy val passportOrIdCardDetailsRoute = routes.PassportOrIdCardDetailsController.onPageLoad(mode).url
 
-  val validData = CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
+  lazy val passportOrIdCardDetailsRoute: String = routes.PassportOrIdCardDetailsController.onPageLoad(mode).url
+
+  val validData: CombinedPassportOrIdCard = CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
+
+  override def beforeEach(): Unit = {
+    reset(playbackRepository)
+    when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+  }
 
   "PassportOrIdCardDetails Controller" must {
 
@@ -93,34 +100,67 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted" when {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      "answer has changed" in {
 
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[Navigator].toInstance(fakeNavigator))
-        .build()
-
-      val request =
-        FakeRequest(POST, passportOrIdCardDetailsRoute)
+        val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
           .withFormUrlEncodedBody(
-            "country" -> "country",
-            "number" -> "123456",
-            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
+            "country" -> validData.countryOfIssue,
+            "number" -> validData.number,
+            "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
             "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-            "expiryDate.year"  -> validData.expirationDate.getYear.toString,
-            "detailsType"      -> DetailsType.Combined.toString
+            "expiryDate.year" -> validData.expirationDate.getYear.toString,
+            "detailsType" -> validData.detailsType.toString
           )
 
-      val result = route(application, request).value
+        val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-      application.stop()
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.CombinedProvisional
+
+        application.stop()
+      }
+
+      "answer has not changed" in {
+
+        val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, validData).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
+
+        val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
+          .withFormUrlEncodedBody(
+            "country" -> validData.countryOfIssue,
+            "number" -> validData.number,
+            "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+            "expiryDate.year" -> validData.expirationDate.getYear.toString,
+            "detailsType" -> validData.detailsType.toString
+          )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(playbackRepository).set(uaCaptor.capture)
+        uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.Combined
+
+        application.stop()
+      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

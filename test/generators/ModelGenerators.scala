@@ -17,6 +17,7 @@
 package generators
 
 import models.BpMatchStatus._
+import models.DetailsType.DetailsType
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 import models._
@@ -170,6 +171,10 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(Seq(FullyMatched, Unmatched, NoMatchAttempted, FailedToMatch))
     }
+  }
+
+  implicit lazy val arbitraryDetailsType: Arbitrary[DetailsType] = Arbitrary {
+    Gen.oneOf(DetailsType.values)
   }
 
 }

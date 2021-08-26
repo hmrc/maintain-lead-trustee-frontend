@@ -32,11 +32,9 @@ class PassportOrIdCardDetailsYesNoPageSpec extends PageBehaviours {
       "NO selected" in {
         val userAnswers = emptyUserAnswers
           .set(PassportOrIdCardDetailsPage, arbitraryCombinedPassportOrIdCard.arbitrary.sample.get).success.value
-          .set(ProvisionalIdDetailsPage, false).success.value
           .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
         userAnswers.get(PassportOrIdCardDetailsPage) mustBe None
-        userAnswers.get(ProvisionalIdDetailsPage) mustBe None
       }
     }
   }

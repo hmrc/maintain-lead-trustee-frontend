@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.CombinedPassportOrIdCardDetailsFormProvider
 import models.CombinedPassportOrIdCard
+import models.DetailsType._
 import navigation.Navigator
 import pages.leadtrustee.individual.PassportOrIdCardDetailsPage
 import play.api.data.Form
@@ -65,10 +66,12 @@ class PassportOrIdCardController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, countryOptions.options))),
 
-        value =>
+        newAnswer =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, value))
-            _              <- playbackRepository.set(updatedAnswers)
+            oldAnswer <- Future.successful(request.userAnswers.get(PassportOrIdCardDetailsPage))
+            detailsType = if (oldAnswer.contains(newAnswer)) Combined else CombinedProvisional
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, newAnswer.copy(detailsType = detailsType)))
+            _ <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, updatedAnswers))
       )
   }

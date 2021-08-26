@@ -72,7 +72,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(IdCardDetailsPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
         result.get(PassportOrIdCardDetailsPage) mustBe None
-        result.get(ProvisionalIdDetailsPage) mustBe None
 
       }
 
@@ -108,7 +107,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(IdCardDetailsPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
         result.get(PassportOrIdCardDetailsPage).get mustBe combined
-        result.get(ProvisionalIdDetailsPage).get mustBe false
 
       }
 
@@ -142,7 +140,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(IdCardDetailsPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
         result.get(PassportOrIdCardDetailsPage) mustBe None
-        result.get(ProvisionalIdDetailsPage) mustBe None
 
       }
 
@@ -176,7 +173,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
         result.get(IdCardDetailsPage) mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
         result.get(PassportOrIdCardDetailsPage) mustBe None
-        result.get(ProvisionalIdDetailsPage) mustBe None
 
       }
     }
@@ -222,7 +218,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
             result.get(PassportOrIdCardDetailsPage) mustBe None
             result.get(MentalCapacityYesNoPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has no country of residence but does have an address" in {
@@ -254,7 +249,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IdCardDetailsPage) mustBe None
             result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
             result.get(PassportOrIdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
         }
 
@@ -296,7 +290,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IdCardDetailsYesNoPage) mustBe None
             result.get(IdCardDetailsPage) mustBe None
             result.get(MentalCapacityYesNoPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has no country of residence but does have an address" in {
@@ -329,7 +322,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IdCardDetailsPage) mustBe None
             result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
             result.get(PassportOrIdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has a country of residence in GB" in {
@@ -355,7 +347,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportDetailsPage) mustBe None
             result.get(IdCardDetailsYesNoPage) mustBe None
             result.get(IdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has a country of residence in Spain" in {
@@ -381,7 +372,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportDetailsPage) mustBe None
             result.get(IdCardDetailsYesNoPage) mustBe None
             result.get(IdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has a country of nationality in GB" in {
@@ -407,7 +397,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportDetailsPage) mustBe None
             result.get(IdCardDetailsYesNoPage) mustBe None
             result.get(IdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has a country of nationality in Spain" in {
@@ -433,7 +422,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportDetailsPage) mustBe None
             result.get(IdCardDetailsYesNoPage) mustBe None
             result.get(IdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has a mental capacity" in {
@@ -458,7 +446,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportDetailsPage) mustBe None
             result.get(IdCardDetailsYesNoPage) mustBe None
             result.get(IdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
           
           "has an NINO" in {
@@ -485,7 +472,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(PassportDetailsPage) mustBe None
             result.get(IdCardDetailsYesNoPage) mustBe None
             result.get(IdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
 
           "has passport details" in {
@@ -512,7 +498,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IdCardDetailsPage) mustBe None
             result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
             result.get(PassportOrIdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage).get mustBe true
           }
 
           "has ID Card details" in {
@@ -539,7 +524,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IdCardDetailsPage).get mustBe idCard
             result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
             result.get(PassportOrIdCardDetailsPage) mustBe None
-            result.get(ProvisionalIdDetailsPage).get mustBe true
           }
 
           "has passport or ID card details" in {
@@ -566,7 +550,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             result.get(IdCardDetailsPage) mustBe None
             result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
             result.get(PassportOrIdCardDetailsPage).get mustBe combined
-            result.get(ProvisionalIdDetailsPage).get mustBe false
           }
 
         }
@@ -601,7 +584,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(PassportDetailsPage) mustBe None
           result.get(IdCardDetailsYesNoPage) mustBe None
           result.get(IdCardDetailsPage) mustBe None
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
 
         "has a country of residence and nationality in Spain" in {
@@ -631,7 +613,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(PassportDetailsPage) mustBe None
           result.get(IdCardDetailsYesNoPage) mustBe None
           result.get(IdCardDetailsPage) mustBe None
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
 
         "has an address" in {
@@ -658,7 +639,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(PassportDetailsPage) mustBe None
           result.get(IdCardDetailsYesNoPage) mustBe None
           result.get(IdCardDetailsPage) mustBe None
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
 
         "has a mental capacity" in {
@@ -683,7 +663,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(PassportDetailsPage) mustBe None
           result.get(IdCardDetailsYesNoPage) mustBe None
           result.get(IdCardDetailsPage) mustBe None
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
 
         "has an NINO" in {
@@ -710,7 +689,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(PassportDetailsPage) mustBe None
           result.get(IdCardDetailsYesNoPage) mustBe None
           result.get(IdCardDetailsPage) mustBe None
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
 
         "has a Passport or Card Details" in {
@@ -737,7 +715,6 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           result.get(IdCardDetailsPage) mustBe None
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(ProvisionalIdDetailsPage).get mustBe false
         }
       }
     }
