@@ -131,35 +131,73 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
         application.stop()
       }
 
-      "answer has not changed" in {
+      "answer has not changed" when {
 
-        val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, validData).success.value
+        "previously Combined" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
-          .build()
+          val vd = validData.copy(detailsType = DetailsType.Combined)
 
-        val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
-          .withFormUrlEncodedBody(
-            "country" -> validData.countryOfIssue,
-            "number" -> validData.number,
-            "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
-            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-            "expiryDate.year" -> validData.expirationDate.getYear.toString,
-            "detailsType" -> validData.detailsType.toString
-          )
+          val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, vd).success.value
 
-        val result = route(application, request).value
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[Navigator].toInstance(fakeNavigator))
+            .build()
 
-        status(result) mustEqual SEE_OTHER
+          val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
+            .withFormUrlEncodedBody(
+              "country" -> vd.countryOfIssue,
+              "number" -> vd.number,
+              "expiryDate.day" -> vd.expirationDate.getDayOfMonth.toString,
+              "expiryDate.month" -> vd.expirationDate.getMonthValue.toString,
+              "expiryDate.year" -> vd.expirationDate.getYear.toString,
+              "detailsType" -> vd.detailsType.toString
+            )
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+          val result = route(application, request).value
 
-        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(playbackRepository).set(uaCaptor.capture)
-        uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.Combined
+          status(result) mustEqual SEE_OTHER
 
-        application.stop()
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(playbackRepository).set(uaCaptor.capture)
+          uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.Combined
+
+          application.stop()
+        }
+
+        "previously CombinedProvisional" in {
+
+          val vd = validData.copy(detailsType = DetailsType.CombinedProvisional)
+
+          val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, vd).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[Navigator].toInstance(fakeNavigator))
+            .build()
+
+          val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
+            .withFormUrlEncodedBody(
+              "country" -> vd.countryOfIssue,
+              "number" -> vd.number,
+              "expiryDate.day" -> vd.expirationDate.getDayOfMonth.toString,
+              "expiryDate.month" -> vd.expirationDate.getMonthValue.toString,
+              "expiryDate.year" -> vd.expirationDate.getYear.toString,
+              "detailsType" -> vd.detailsType.toString
+            )
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(playbackRepository).set(uaCaptor.capture)
+          uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.CombinedProvisional
+
+          application.stop()
+        }
       }
     }
 

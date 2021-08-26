@@ -69,7 +69,12 @@ class PassportOrIdCardController @Inject()(
         newAnswer =>
           for {
             oldAnswer <- Future.successful(request.userAnswers.get(PassportOrIdCardDetailsPage))
-            detailsType = if (oldAnswer.contains(newAnswer)) Combined else CombinedProvisional
+            detailsType = {
+              oldAnswer match {
+                case Some(value) if value == newAnswer && !value.detailsType.isProvisional => Combined
+                case _ => CombinedProvisional
+              }
+            }
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, newAnswer.copy(detailsType = detailsType)))
             _ <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, updatedAnswers))
