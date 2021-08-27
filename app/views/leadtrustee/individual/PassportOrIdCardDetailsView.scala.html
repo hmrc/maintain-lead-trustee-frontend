@@ -15,8 +15,9 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
+@import models.DetailsType
 @import utils.InputOption
-@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton, InputHidden}
 
 @this(
     main_template: MainTemplate,
@@ -26,10 +27,11 @@
     inputSelect: InputSelect,
     inputText: InputText,
     inputDate: InputDate,
+    inputHidden: InputHidden,
     submitButton: SubmitButton
 )
 
-@(form: Form[_], name: String, countryOptions:Seq[InputOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String, countryOptions: Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("leadtrustee.individual.passportOrIdCardDetails.title")}",
@@ -64,6 +66,11 @@
             legendClass = "bold",
             legendAsHeading = false,
             hint = Some(messages(s"leadtrustee.individual.passportOrIdCardDetails.expiryDate.hint"))
+        )
+
+        @inputHidden(
+            field = form("detailsType"),
+            defaultValue = Some(DetailsType.CombinedProvisional.toString)
         )
 
         @submitButton()

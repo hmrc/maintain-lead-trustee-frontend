@@ -85,15 +85,25 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     }
   }
 
-  def pageWithPassportOrIDCardDetailsFields(form: Form[A],
-                       createView: Form[A] => HtmlFormat.Appendable,
-                       messageKeyPrefix: String,
-                       expectedFormAction: String,
-                       textFields: Seq[(String, Option[String])],
-                       dateKey : String,
-                       args: String*) = {
+  def pageWithHiddenInput(form: Form[A],
+                          createView: Form[A] => HtmlFormat.Appendable,
+                          field: String): Unit = {
 
-    val dateFields = Seq(s"${dateKey}.day", s"${dateKey}.month", s"${dateKey}.year")
+    s"contain hidden input for $field" in {
+      val doc = asDocument(createView(form))
+      doc.getElementById(field).attr("type") mustBe "hidden"
+    }
+  }
+
+  def pageWithPassportOrIDCardDetailsFields(form: Form[A],
+                                            createView: Form[A] => HtmlFormat.Appendable,
+                                            messageKeyPrefix: String,
+                                            expectedFormAction: String,
+                                            textFields: Seq[(String, Option[String])],
+                                            dateKey : String,
+                                            args: String*) = {
+
+    val dateFields = Seq(s"$dateKey.day", s"$dateKey.month", s"$dateKey.year")
 
     "behave like a passportOrIDCard page" when {
 
@@ -181,7 +191,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
                          key: String,
                          args: String*) = {
 
-    val fields = Seq(s"${key}.day", s"${key}.month", s"${key}.year")
+    val fields = Seq(s"$key.day", s"$key.month", s"$key.year")
 
     "behave like a question page" when {
 

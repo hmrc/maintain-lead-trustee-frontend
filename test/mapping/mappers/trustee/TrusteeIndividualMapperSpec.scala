@@ -21,7 +21,6 @@ import models.Constants.GB
 import models._
 import pages.trustee.individual._
 import pages.trustee.individual.add._
-import pages.trustee.individual.amend._
 
 import java.time.LocalDate
 
@@ -110,7 +109,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             name = name,
             dateOfBirth = None,
             phoneNumber = None,
-            identification = Some(passport),
+            identification = Some(passport.asCombined),
             address = Some(ukAddress),
             entityStart = startDate,
             provisional = true
@@ -135,7 +134,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             name = name,
             dateOfBirth = None,
             phoneNumber = None,
-            identification = Some(idCard),
+            identification = Some(idCard.asCombined),
             address = Some(nonUkAddress),
             entityStart = startDate,
             provisional = true

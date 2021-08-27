@@ -48,7 +48,7 @@ class CheckDetailsController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper.printIndividualTrustee(request.userAnswers, provisional = true, request.trusteeName)
+      val section: AnswerSection = printHelper.printIndividualTrustee(request.userAnswers, adding = true, request.trusteeName)
       Ok(view(section))
   }
 

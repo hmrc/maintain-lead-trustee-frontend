@@ -19,9 +19,11 @@ package controllers.leadtrustee.individual
 import controllers.actions._
 import controllers.leadtrustee.actions.NameRequiredAction
 import forms.CombinedPassportOrIdCardDetailsFormProvider
-import javax.inject.Inject
+import models.CombinedPassportOrIdCard
+import models.DetailsType._
 import navigation.Navigator
 import pages.leadtrustee.individual.PassportOrIdCardDetailsPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -29,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import views.html.leadtrustee.individual.PassportOrIdCardDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PassportOrIdCardController @Inject()(
@@ -41,9 +44,9 @@ class PassportOrIdCardController @Inject()(
                                             countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: PassportOrIdCardDetailsView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
+  private val form: Form[CombinedPassportOrIdCard] = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
@@ -63,10 +66,17 @@ class PassportOrIdCardController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, countryOptions.options))),
 
-        value =>
+        newAnswer =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, value))
-            _              <- playbackRepository.set(updatedAnswers)
+            maybeOldAnswer <- Future.successful(request.userAnswers.get(PassportOrIdCardDetailsPage))
+            detailsType = {
+              maybeOldAnswer match {
+                case Some(oldAnswer) if oldAnswer.number == newAnswer.number && !oldAnswer.detailsType.isProvisional => Combined
+                case _ => CombinedProvisional
+              }
+            }
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, newAnswer.copy(detailsType = detailsType)))
+            _ <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, updatedAnswers))
       )
   }

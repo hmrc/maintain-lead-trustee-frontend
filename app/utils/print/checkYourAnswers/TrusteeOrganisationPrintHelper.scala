@@ -28,14 +28,14 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def print(userAnswers: UserAnswers, provisional: Boolean, trusteeName: String)(implicit messages: Messages): AnswerSection = {
+  def print(userAnswers: UserAnswers, adding: Boolean, trusteeName: String)(implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
     val prefix: String = "trustee.organisation"
 
     def answerRows: Seq[AnswerRow] = {
-      val mode: Mode = if (provisional) NormalMode else CheckMode
+      val mode: Mode = if (adding) NormalMode else CheckMode
       Seq(
         bound.stringQuestion(NamePage, s"$prefix.name", NameController.onPageLoad(mode).url),
         bound.yesNoQuestion(UtrYesNoPage, s"$prefix.utrYesNo", UtrYesNoController.onPageLoad(mode).url),
@@ -47,7 +47,7 @@ class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConv
         bound.yesNoQuestion(AddressInTheUkYesNoPage, s"$prefix.addressInTheUkYesNo", AddressInTheUkYesNoController.onPageLoad(mode).url),
         bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad(mode).url),
         bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad(mode).url),
-        if (mode == NormalMode) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
+        if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
       ).flatten
     }
 

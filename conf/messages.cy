@@ -4,6 +4,7 @@ site.service_section=Ymddiriedolwyr
 site.sign_in=Mewngofnodi
 site.try-again=Rhowch gynnig arall arni
 site.verified=Dilyswyd
+site.number-ending = Rhif sy’n gorffen gyda {0}
 session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ymddiriedolaeth.
 leadtrustee.individual.dateOfBirth.matching.error.past=Mae’n rhaid i’r dyddiad geni fod ar ôl 31 Rhagfyr 1899
 leadtrustee.individual.countryOfNationalityInTheUkYesNo.title=A oes gan y prif ymddiriedolwr genedligrwydd y DU?

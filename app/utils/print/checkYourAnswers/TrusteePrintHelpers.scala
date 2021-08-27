@@ -26,12 +26,12 @@ class TrusteePrintHelpers @Inject()(trusteeIndividualPrintHelper: TrusteeIndivid
                                     leadTrusteeIndividualPrintHelper: LeadTrusteeIndividualPrintHelper,
                                     leadTrusteeOrganisationPrintHelper: LeadTrusteeOrganisationPrintHelper) {
 
-  def printIndividualTrustee(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
-    trusteeIndividualPrintHelper.print(userAnswers, provisional, name)
+  def printIndividualTrustee(userAnswers: UserAnswers, adding: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+    trusteeIndividualPrintHelper.print(userAnswers, adding, name)
   }
 
-  def printOrganisationTrustee(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
-    trusteeOrganisationPrintHelper.print(userAnswers, provisional, name)
+  def printOrganisationTrustee(userAnswers: UserAnswers, adding: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+    trusteeOrganisationPrintHelper.print(userAnswers, adding, name)
   }
 
   def printLeadIndividualTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {

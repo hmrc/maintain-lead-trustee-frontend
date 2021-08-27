@@ -16,15 +16,16 @@
 
 package forms
 
-import java.time.LocalDate
-
+import config.FrontendAppConfig
 import forms.mappings.{Constraints, Mappings}
-import javax.inject.Inject
 import models.CombinedPassportOrIdCard
+import models.DetailsType.DetailsType
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
-class CombinedPassportOrIdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
+import javax.inject.Inject
+
+class CombinedPassportOrIdCardDetailsFormProvider @Inject()(config: FrontendAppConfig) extends Mappings with Constraints {
   val maxLengthCountryField = 100
   val maxLengthNumberField = 30
 
@@ -52,14 +53,15 @@ class CombinedPassportOrIdCardDetailsFormProvider @Inject() extends Mappings wit
         requiredKey    = s"$prefix.expiryDate.error.required"
       ).verifying(firstError(
         maxDate(
-          LocalDate.of(2099, 12, 31),
+          config.maxDate,
           s"$prefix.expiryDate.error.future", "day", "month", "year"
         ),
         minDate(
-          LocalDate.of(1500,1,1),
+          config.minDate,
           s"$prefix.expiryDate.error.past", "day", "month", "year"
         )
-      ))
+      )),
+      "detailsType" -> enumerable[DetailsType]()
     )(CombinedPassportOrIdCard.apply)(CombinedPassportOrIdCard.unapply)
   )
 }

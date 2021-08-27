@@ -16,16 +16,15 @@
 
 package forms
 
-import java.time.LocalDate
-
-import forms.mappings.Mappings
-import javax.inject.Inject
+import config.FrontendAppConfig
+import forms.mappings.{Constraints, Mappings}
 import models.IdCard
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import forms.mappings.Constraints
 
-class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
+import javax.inject.Inject
+
+class IdCardDetailsFormProvider @Inject()(config: FrontendAppConfig) extends Mappings with Constraints {
   val maxLengthCountryField = 100
   val maxLengthNumberField = 30
 
@@ -53,11 +52,11 @@ class IdCardDetailsFormProvider @Inject() extends Mappings with Constraints {
         requiredKey    = s"$prefix.individual.idCardDetails.expiryDate.error.required"
       ).verifying(firstError(
         maxDate(
-          LocalDate.of(2099, 12, 31),
+          config.maxDate,
           s"$prefix.individual.idCardDetails.expiryDate.error.future", "day", "month", "year"
         ),
         minDate(
-          LocalDate.of(1500,1,1),
+          config.minDate,
           s"$prefix.individual.idCardDetails.expiryDate.error.past", "day", "month", "year"
         )
       ))

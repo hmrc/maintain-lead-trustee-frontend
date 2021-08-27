@@ -17,7 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import models.IdCard
+import play.api.data.{Form, FormError}
 
 class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
 
@@ -25,7 +26,7 @@ class IdCardDetailsFormProviderSpec extends StringFieldBehaviours {
   val lengthKey = "leadtrustee.individual.idCardDetails.country.error.length"
   val maxLengthCountryField = 100
 
-  val form = new IdCardDetailsFormProvider().withPrefix("leadtrustee")
+  val form: Form[IdCard] = new IdCardDetailsFormProvider(frontendAppConfig).withPrefix("leadtrustee")
 
   ".country" must {
 

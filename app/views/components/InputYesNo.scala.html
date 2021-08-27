@@ -18,11 +18,12 @@
 
 @(
     field: Field,
-    label: String,
+    label: String = "",
     hint: Option[String] = None,
     legendClass: Option[String] = None,
     legendAsHeading: Boolean = true,
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
+    hidden: Boolean = false
 )(implicit messages: Messages)
 
 @govukRadios(Radios(
@@ -54,7 +55,7 @@
             value = Some("false"),
             checked = field.value.contains("false"),
             content = Text(messages("site.no")),
-            attributes = if(readOnly && !field.value.contains("false")) Map("disabled" -> "disabled") else Map.empty
+            attributes = if(readOnly && !field.value.contains("false")) Map("disabled" -> "disabled") else Map("type" -> "hidden")
         )
     )
 

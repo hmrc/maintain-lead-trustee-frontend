@@ -89,7 +89,7 @@ class CheckDetailsController @Inject()(
                            (implicit request: DataRequest[AnyContent]): Result = {
     val section: AnswerSection = printHelper.printOrganisationTrustee(
       userAnswers = userAnswers,
-      provisional = false,
+      adding = false,
       name = name
     )
 

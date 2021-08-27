@@ -17,8 +17,6 @@
 package pages.trustee.individual
 
 import pages.behaviours.PageBehaviours
-import pages.trustee.individual.add._
-import pages.trustee.individual.amend._
 
 class NationalInsuranceNumberYesNoPageSpec extends PageBehaviours {
 

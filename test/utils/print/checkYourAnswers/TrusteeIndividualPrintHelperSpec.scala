@@ -18,14 +18,12 @@ package utils.print.checkYourAnswers
 
 import base.SpecBase
 import controllers.trustee.individual.add.{routes => addRts}
-import controllers.trustee.individual.amend.{routes => amendRts}
 import controllers.trustee.individual.{routes => rts}
 import models.IndividualOrBusiness.Individual
 import models._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual._
 import pages.trustee.individual.add._
-import pages.trustee.individual.amend._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
 
@@ -44,7 +42,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
 
       "adding" in {
 
-        val provisional = true
+        val adding = true
         val mode = NormalMode
 
         val helper = injector.instanceOf[TrusteeIndividualPrintHelper]
@@ -67,13 +65,13 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(UkAddressPage, trusteeUkAddress).success.value
           .set(NonUkAddressPage, trusteeNonUkAddress).success.value
           .set(PassportDetailsYesNoPage, true).success.value
-          .set(PassportDetailsPage, Passport("GB", "1", LocalDate.of(2030, 10, 10))).success.value
+          .set(PassportDetailsPage, Passport("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
           .set(IdCardDetailsYesNoPage, true).success.value
-          .set(IdCardDetailsPage, IdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
+          .set(IdCardDetailsPage, IdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
           .set(MentalCapacityYesNoPage, true).success.value
           .set(WhenAddedPage, LocalDate.of(2020, 1, 1)).success.value
 
-        val result = helper.print(userAnswers, provisional, name.displayName)
+        val result = helper.print(userAnswers, adding, name.displayName)
 
         result mustBe AnswerSection(
           headingKey = None,
@@ -93,10 +91,10 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
             AnswerRow(label = messages("trustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.individual.passportDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(addRts.PassportDetailsYesNoController.onPageLoad().url)),
-            AnswerRow(label = messages("trustee.individual.passportDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(addRts.PassportDetailsController.onPageLoad().url)),
-            AnswerRow(label = messages("trustee.individual.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(addRts.IdCardDetailsYesNoController.onPageLoad().url)),
-            AnswerRow(label = messages("trustee.individual.idCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(addRts.IdCardDetailsController.onPageLoad().url)),
+            AnswerRow(label = messages("trustee.individual.passportDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.PassportDetailsYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.passportDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />1234567890<br />10 October 2030"), changeUrl = Some(rts.PassportDetailsController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.idCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />1234567890<br />10 October 2030"), changeUrl = Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName), answer = Html("1 January 2020"), changeUrl = Some(addRts.WhenAddedController.onPageLoad().url))
           )
@@ -105,7 +103,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
 
       "amending" in {
 
-        val provisional = false
+        val adding = false
         val mode = CheckMode
 
         val helper = injector.instanceOf[TrusteeIndividualPrintHelper]
@@ -128,10 +126,10 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(UkAddressPage, trusteeUkAddress).success.value
           .set(NonUkAddressPage, trusteeNonUkAddress).success.value
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
-          .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1", LocalDate.of(2030, 10, 10))).success.value
+          .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
           .set(MentalCapacityYesNoPage, true).success.value
 
-        val result = helper.print(userAnswers, provisional, name.displayName)
+        val result = helper.print(userAnswers, adding, name.displayName)
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
@@ -150,8 +148,8 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
             AnswerRow(label = messages("trustee.individual.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.individual.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
-            AnswerRow(label = messages("trustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />1<br />10 October 2030"), changeUrl = Some(amendRts.PassportOrIdCardDetailsController.onPageLoad().url)),
+            AnswerRow(label = messages("trustee.individual.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />Number ending 7890<br />10 October 2030"), changeUrl = Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
           )
         )
