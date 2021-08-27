@@ -102,7 +102,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
     "redirect to the next page when valid data is submitted" when {
 
-      "answer has changed" in {
+      "number has changed" in {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].toInstance(fakeNavigator))
@@ -131,7 +131,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
         application.stop()
       }
 
-      "answer has not changed" when {
+      "number has not changed" when {
 
         "previously Combined" in {
 
@@ -195,6 +195,37 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(playbackRepository).set(uaCaptor.capture)
           uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.CombinedProvisional
+
+          application.stop()
+        }
+
+        "country or expiry date have changed" in {
+
+          val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, validData).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[Navigator].toInstance(fakeNavigator))
+            .build()
+
+          val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
+            .withFormUrlEncodedBody(
+              "country" -> "changed country",
+              "number" -> validData.number,
+              "expiryDate.day" -> validData.expirationDate.plusDays(1).getDayOfMonth.toString,
+              "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+              "expiryDate.year" -> validData.expirationDate.getYear.toString,
+              "detailsType" -> validData.detailsType.toString
+            )
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(playbackRepository).set(uaCaptor.capture)
+          uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.Combined
 
           application.stop()
         }
