@@ -18,4 +18,4 @@
 
 @(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
-<a class="govuk-link" id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>
+<a class="govuk-link" id="@id" href="@href" @if(openInNewWindow) {target="_blank" rel="noopener noreferrer"}>@messages(key)</a>
