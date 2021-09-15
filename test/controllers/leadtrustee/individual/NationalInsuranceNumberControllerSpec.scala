@@ -138,7 +138,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
         "lead trustee matched" in {
 
-          val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+          val userAnswers = emptyUserAnswers
             .set(NationalInsuranceNumberPage, nino).success.value
             .set(BpMatchStatusPage, FullyMatched).success.value
 
@@ -164,40 +164,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
     "redirect to the next page when valid data is submitted" when {
 
-      "in 4mld mode" in {
-
-        val mockService = mock[TrustsIndividualCheckService]
-
-        when(mockService.matchLeadTrustee(any())(any(), any()))
-          .thenReturn(Future.successful(ServiceNotIn5mldModeResponse))
-
-        val userAnswers = emptyUserAnswers
-          .set(NationalInsuranceNumberPage, nino).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator()),
-            bind[TrustsIndividualCheckService].toInstance(mockService),
-            bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
-
-        val request = FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", nino))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-
-        application.stop()
-
-        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(playbackRepository).set(uaCaptor.capture)
-        uaCaptor.getValue.get(BpMatchStatusPage) mustBe None
-      }
-
-      "in 5mld mode and SuccessfulMatchResponse" in {
+      "SuccessfulMatchResponse" in {
 
         val mockService = mock[TrustsIndividualCheckService]
 

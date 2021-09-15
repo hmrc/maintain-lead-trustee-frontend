@@ -28,16 +28,12 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
   "OrganisationLeadTrusteeNavigator" when {
 
-    "4mld" when {
-
-      val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
-
       "UK registered yes/no" when {
         val page = RegisteredInUkYesNoPage
 
         "-> YES" must {
 
-          val answers = baseAnswers
+          val answers = emptyUserAnswers
             .set(page, true).success.value
 
           "-> Name page" in {
@@ -53,113 +49,7 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         "-> NO" must {
 
-          val answers = baseAnswers
-            .set(page, false).success.value
-
-          "-> Name page" in {
-            navigator.nextPage(page, answers)
-              .mustBe(NameController.onPageLoad())
-          }
-
-          "-> Name page -> UK address yes/no page" in {
-            navigator.nextPage(NamePage, answers)
-              .mustBe(AddressInTheUkYesNoController.onPageLoad())
-          }
-        }
-      }
-
-      "UTR page -> UK address yes/no page" in {
-        navigator.nextPage(UtrPage, emptyUserAnswers)
-          .mustBe(AddressInTheUkYesNoController.onPageLoad())
-      }
-
-      "UK address yes/no page" when {
-        val page = AddressInTheUkYesNoPage
-
-        "-> YES -> UK address page" in {
           val answers = emptyUserAnswers
-            .set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(UkAddressController.onPageLoad())
-        }
-
-        "-> NO -> Non-UK address page" in {
-          val answers = emptyUserAnswers
-            .set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(NonUkAddressController.onPageLoad())
-        }
-      }
-
-      "UK address page -> Email address yes/no page" in {
-        navigator.nextPage(UkAddressPage, emptyUserAnswers)
-          .mustBe(EmailAddressYesNoController.onPageLoad())
-      }
-
-      "Non-UK address page -> Email address yes/no page" in {
-        navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
-          .mustBe(EmailAddressYesNoController.onPageLoad())
-      }
-
-      "Email address yes/no page" when {
-        val page = EmailAddressYesNoPage
-
-        "-> YES -> Email address page" in {
-          val answers = emptyUserAnswers
-            .set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(EmailAddressController.onPageLoad())
-        }
-
-        "-> NO -> Telephone number page" in {
-          val answers = emptyUserAnswers
-            .set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(TelephoneNumberController.onPageLoad())
-        }
-      }
-
-      "Email address page -> Telephone number page" in {
-        navigator.nextPage(EmailAddressPage, emptyUserAnswers)
-          .mustBe(TelephoneNumberController.onPageLoad())
-      }
-
-      "Telephone number page -> Check details page" in {
-        navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
-          .mustBe(CheckDetailsController.onPageLoadUpdated())
-      }
-    }
-
-    "5mld" when {
-
-      val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
-
-      "UK registered yes/no" when {
-        val page = RegisteredInUkYesNoPage
-
-        "-> YES" must {
-
-          val answers = baseAnswers
-            .set(page, true).success.value
-
-          "-> Name page" in {
-            navigator.nextPage(page, answers)
-              .mustBe(NameController.onPageLoad())
-          }
-
-          "-> Name Page -> UTR page" in {
-            navigator.nextPage(NamePage, answers)
-              .mustBe(UtrController.onPageLoad())
-          }
-        }
-
-        "-> NO" must {
-
-          val answers = baseAnswers
             .set(page, false).success.value
 
           "-> Name page" in {
@@ -174,9 +64,9 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
         }
       }
 
-      "UTR page -> UK address yes/no page" in {
+      "UTR page -> CountryOfResidenceInTheUk yes/no page" in {
         navigator.nextPage(UtrPage, emptyUserAnswers)
-          .mustBe(AddressInTheUkYesNoController.onPageLoad())
+          .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
       }
 
       "UK residency yes/no page" when {
@@ -243,6 +133,5 @@ class OrganisationLeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPrope
         navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
           .mustBe(CheckDetailsController.onPageLoadUpdated())
       }
-    }
   }
 }

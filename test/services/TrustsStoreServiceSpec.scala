@@ -18,7 +18,6 @@ package services
 
 import base.SpecBase
 import connectors.TrustsStoreConnector
-import models.FeatureResponse
 import models.TaskStatus.Completed
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
@@ -33,31 +32,6 @@ class TrustsStoreServiceSpec extends SpecBase {
   val mockConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
   val featureFlagService = new TrustsStoreService(mockConnector)
-
-  "is5mldEnabled" must {
-
-    "return true when 5mld is enabled" in {
-
-      when(mockConnector.getFeature(any())(any(), any())).thenReturn(Future.successful(FeatureResponse("5mld", isEnabled = true)))
-
-      val result = featureFlagService.is5mldEnabled()
-
-       whenReady(result) { res =>
-         res mustEqual true
-       }
-    }
-
-    "return false when 5mld is disabled" in {
-
-      when(mockConnector.getFeature(any())(any(), any())).thenReturn(Future.successful(FeatureResponse("5mld", isEnabled = false)))
-
-      val result = featureFlagService.is5mldEnabled()
-
-      whenReady(result) { res =>
-        res mustEqual false
-      }
-    }
-  }
 
   ".updateTaskStatus" must {
     "call trusts store connector" in {

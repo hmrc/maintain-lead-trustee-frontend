@@ -71,7 +71,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
       ???
 
     override def getTrustee(identifier: String, index: Int)
-                           (implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
+                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee] =
       ???
 
     override def removeTrustee(identifier: String, trustee: RemoveTrustee)
@@ -92,32 +92,35 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" when {
 
-      "4mld" in {
+      "all trustees mentally capable" in {
 
-        val indTrustee = TrusteeIndividual(
-          name = Name(firstName = "Joe", middleName = None, lastName = "Bloggs"),
+        val trustee1 = TrusteeIndividual(
+          name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
           dateOfBirth = None,
           phoneNumber = None,
           identification = None,
           address = None,
+          mentalCapacityYesNo = Some(true),
           entityStart = date,
           provisional = true
         )
 
-        val orgTrustee = TrusteeOrganisation(
-          name = "Amazon",
+        val trustee2 = TrusteeIndividual(
+          name = Name(firstName = "John", middleName = Some("Joe"), lastName = "Doe"),
+          dateOfBirth = None,
           phoneNumber = None,
-          email = None,
           identification = None,
+          address = None,
+          mentalCapacityYesNo = Some(true),
           entityStart = date,
           provisional = true
         )
 
-        val trustees = Trustees(List(indTrustee, orgTrustee))
+        val trustees = Trustees(List(trustee1, trustee2))
 
         val expectedRadioOptions = List(
           RadioOption(s"$messageKeyPrefix.0", "0", "Joe Bloggs"),
-          RadioOption(s"$messageKeyPrefix.1", "1", "Amazon")
+          RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
         )
 
         val fakeService = new FakeService(trustees)
@@ -140,108 +143,54 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
         application.stop()
       }
 
-      "5mld" when {
+      "trustees contains a mentally incapable trustee" in {
 
-        "all trustees mentally capable" in {
+        val indTrustee1 = TrusteeIndividual(
+          name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          mentalCapacityYesNo = Some(false),
+          entityStart = date,
+          provisional = true
+        )
 
-          val trustee1 = TrusteeIndividual(
-            name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
-            dateOfBirth = None,
-            phoneNumber = None,
-            identification = None,
-            address = None,
-            mentalCapacityYesNo = Some(true),
-            entityStart = date,
-            provisional = true
-          )
+        val indTrustee2 = TrusteeIndividual(
+          name = Name(firstName = "John", middleName = Some("Joe"), lastName = "Doe"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          mentalCapacityYesNo = Some(true),
+          entityStart = date,
+          provisional = true
+        )
 
-          val trustee2 = TrusteeIndividual(
-            name = Name(firstName = "John", middleName = Some("Joe"), lastName = "Doe"),
-            dateOfBirth = None,
-            phoneNumber = None,
-            identification = None,
-            address = None,
-            mentalCapacityYesNo = Some(true),
-            entityStart = date,
-            provisional = true
-          )
+        val trustees = Trustees(List(indTrustee1, indTrustee2))
 
-          val trustees = Trustees(List(trustee1, trustee2))
+        val expectedRadioOptions = List(
+          RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
+        )
 
-          val expectedRadioOptions = List(
-            RadioOption(s"$messageKeyPrefix.0", "0", "Joe Bloggs"),
-            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
-          )
+        val fakeService = new FakeService(trustees)
 
-          val fakeService = new FakeService(trustees)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-            .build()
+        val request = FakeRequest(GET, replacingLeadTrusteeRoute)
 
-          val request = FakeRequest(GET, replacingLeadTrusteeRoute)
+        val result = route(application, request).value
 
-          val result = route(application, request).value
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
 
-          val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+        status(result) mustEqual OK
 
-          status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
 
-          contentAsString(result) mustEqual
-            view(form, "John Smith", expectedRadioOptions)(request, messages).toString
-
-          application.stop()
-        }
-
-        "trustees contains a mentally incapable trustee" in {
-
-          val indTrustee1 = TrusteeIndividual(
-            name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
-            dateOfBirth = None,
-            phoneNumber = None,
-            identification = None,
-            address = None,
-            mentalCapacityYesNo = Some(false),
-            entityStart = date,
-            provisional = true
-          )
-
-          val indTrustee2 = TrusteeIndividual(
-            name = Name(firstName = "John", middleName = Some("Joe"), lastName = "Doe"),
-            dateOfBirth = None,
-            phoneNumber = None,
-            identification = None,
-            address = None,
-            mentalCapacityYesNo = Some(true),
-            entityStart = date,
-            provisional = true
-          )
-
-          val trustees = Trustees(List(indTrustee1, indTrustee2))
-
-          val expectedRadioOptions = List(
-            RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
-          )
-
-          val fakeService = new FakeService(trustees)
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-            .build()
-
-          val request = FakeRequest(GET, replacingLeadTrusteeRoute)
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
-
-          status(result) mustEqual OK
-
-          contentAsString(result) mustEqual
-            view(form, "John Smith", expectedRadioOptions)(request, messages).toString
-
-          application.stop()
-        }
+        application.stop()
       }
     }
 

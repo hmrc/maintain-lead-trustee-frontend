@@ -44,8 +44,8 @@ class DateOfBirthController @Inject()(
                                        view: DateOfBirthView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(implicit request: LeadTrusteeNameRequest[_]): Form[LocalDate] =
-    formProvider.withConfig("leadtrustee.individual.dateOfBirth", request.userAnswers.is5mldEnabled)
+  private def form: Form[LocalDate] =
+    formProvider.withConfig("leadtrustee.individual.dateOfBirth", matchingLeadTrustee = true)
 
   private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
     request.userAnswers.isLeadTrusteeMatched

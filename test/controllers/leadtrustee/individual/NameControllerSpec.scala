@@ -92,7 +92,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
         "lead trustee matched" in {
 
-          val userAnswers = baseAnswers.copy(is5mldEnabled = true)
+          val userAnswers = baseAnswers
             .set(NationalInsuranceNumberPage, "nino").success.value
             .set(BpMatchStatusPage, FullyMatched).success.value
 

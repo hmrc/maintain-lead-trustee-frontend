@@ -33,7 +33,7 @@ trait TrusteeExtractor extends Extractor {
   def addressYesNoPage: QuestionPage[Boolean]
 
   override def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.isTaxable || !answers.is5mldEnabled) {
+    if (answers.isTaxable) {
       address match {
         case Some(value) => extractAddress(value, answers)
         case _ => answers.set(addressYesNoPage, false)
@@ -44,7 +44,7 @@ trait TrusteeExtractor extends Extractor {
   }
 
   override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.isTaxable || !answers.is5mldEnabled) {
+    if (answers.isTaxable) {
       address match {
         case uk: UkAddress => answers
           .set(addressYesNoPage, true)
@@ -65,7 +65,7 @@ trait TrusteeExtractor extends Extractor {
                                                       yesNoPage: QuestionPage[Boolean],
                                                       ukYesNoPage: QuestionPage[Boolean],
                                                       page: QuestionPage[String]): Try[UserAnswers] = {
-    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+    if (answers.isUnderlyingData5mld) {
       country match {
         case Some(GB) => answers
           .set(yesNoPage, true)

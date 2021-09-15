@@ -30,9 +30,9 @@ object IndividualLeadTrusteeNavigator extends LeadTrusteeNavigator {
 
   private def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => DateOfBirthController.onPageLoad()
-    case DateOfBirthPage => navigateAwayFromDateOfBirthQuestion
+    case DateOfBirthPage => _ => CountryOfNationalityInTheUkYesNoController.onPageLoad()
     case CountryOfNationalityPage => _ => UkCitizenController.onPageLoad()
-    case NationalInsuranceNumberPage | PassportOrIdCardDetailsPage => navigateAwayFromIdentificationQuestions
+    case NationalInsuranceNumberPage | PassportOrIdCardDetailsPage => _ => CountryOfResidenceInTheUkYesNoController.onPageLoad()
     case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
     case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
@@ -45,21 +45,5 @@ object IndividualLeadTrusteeNavigator extends LeadTrusteeNavigator {
       yesNoNav(CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad()) orElse
       yesNoNav(LiveInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse
       yesNoNav(EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
-
-  private def navigateAwayFromDateOfBirthQuestion(ua: UserAnswers): Call = {
-    if (ua.is5mldEnabled) {
-      CountryOfNationalityInTheUkYesNoController.onPageLoad()
-    } else {
-      UkCitizenController.onPageLoad()
-    }
-  }
-
-  private def navigateAwayFromIdentificationQuestions(ua: UserAnswers): Call = {
-    if (ua.is5mldEnabled) {
-      CountryOfResidenceInTheUkYesNoController.onPageLoad()
-    } else {
-      LiveInTheUkYesNoController.onPageLoad()
-    }
-  }
 
 }

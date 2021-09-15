@@ -30,7 +30,7 @@ object OrganisationLeadTrusteeNavigator extends LeadTrusteeNavigator {
       conditionalNavigation
 
   private def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case UtrPage => navigateAwayFromUtrQuestions
+    case UtrPage => _ => CountryOfResidenceInTheUkYesNoController.onPageLoad()
     case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
     case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
     case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
@@ -50,16 +50,8 @@ object OrganisationLeadTrusteeNavigator extends LeadTrusteeNavigator {
   private def navigateToUtrQuestionIfUkRegistered(userAnswers: UserAnswers): Call = {
     userAnswers.get(RegisteredInUkYesNoPage).map {
       case true => UtrController.onPageLoad()
-      case false => navigateAwayFromUtrQuestions(userAnswers)
+      case false => CountryOfResidenceInTheUkYesNoController.onPageLoad()
     }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
-  }
-
-  private def navigateAwayFromUtrQuestions(ua: UserAnswers): Call = {
-    if (ua.is5mldEnabled) {
-      CountryOfResidenceInTheUkYesNoController.onPageLoad()
-    } else {
-      AddressInTheUkYesNoController.onPageLoad()
-    }
   }
 
 }

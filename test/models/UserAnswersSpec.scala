@@ -55,9 +55,9 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelG
     ".isLeadTrusteeMatched" must {
 
       "return true" when {
-        "5mld enabled and lead trustee fully matched with a NINO" in {
+        "lead trustee fully matched with a NINO" in {
 
-          val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+          val userAnswers = emptyUserAnswers
             .set(BpMatchStatusPage, FullyMatched).success.value
             .set(NationalInsuranceNumberPage, "nino").success.value
 
@@ -66,15 +66,15 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelG
       }
 
       "return false" when {
-        "any of these false: 5mld enabled; fully matched; has nino" in {
+        "any of these false: fully matched; has nino" in {
 
-          val gen = arbitrary[(Boolean, BpMatchStatus, Option[String])]
+          val gen = arbitrary[(BpMatchStatus, Option[String])]
 
-          forAll(gen.suchThat(x => !(x._1 && x._2 == FullyMatched && x._3.isDefined))) {
+          forAll(gen.suchThat(x => !(x._1 == FullyMatched && x._2.isDefined))) {
             x =>
-              val userAnswers = emptyUserAnswers.copy(is5mldEnabled = x._1)
-                .set(BpMatchStatusPage, x._2).success.value
-                .set(NationalInsuranceNumberPage, x._3).success.value
+              val userAnswers = emptyUserAnswers
+                .set(BpMatchStatusPage, x._1).success.value
+                .set(NationalInsuranceNumberPage, x._2).success.value
 
               userAnswers.isLeadTrusteeMatched mustEqual false
           }

@@ -35,7 +35,7 @@ object OrganisationTrusteeNavigator extends TrusteeNavigator {
 
   private def linearNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => ua => navigateAwayFromNamePage(mode, ua)
-    case UtrPage => ua =>navigateAwayFromUtrPages(mode, ua)
+    case UtrPage => ua => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     case CountryOfResidencePage => ua => navigateAwayFromResidencePages(mode, ua)
     case UkAddressPage | NonUkAddressPage => ua => navigateToStartDateOrCheckDetails(mode, ua)
     case WhenAddedPage => _ => addRts.CheckDetailsController.onPageLoad()
@@ -47,7 +47,7 @@ object OrganisationTrusteeNavigator extends TrusteeNavigator {
       ua = ua,
       fromPage = UtrYesNoPage,
       yesCall = rts.UtrController.onPageLoad(mode),
-      noCall = navigateAwayFromUtrPages(mode, ua)
+      noCall = rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     )
     case CountryOfResidenceYesNoPage => ua => yesNoNav(
       ua = ua,
@@ -76,17 +76,15 @@ object OrganisationTrusteeNavigator extends TrusteeNavigator {
   }
 
   private def navigateAwayFromNamePage(mode: Mode, answers: UserAnswers): Call = {
-    if (answers.is5mldEnabled && !answers.isTaxable) {
-      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-    } else {
+    if (answers.isTaxable) {
       rts.UtrYesNoController.onPageLoad(mode)
+    } else {
+      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     }
   }
 
   private def navigateAwayFromResidencePages(mode: Mode, answers: UserAnswers): Call = {
-    val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
-
-    if (isNonTaxable5mld || isUtrDefined(answers)){
+    if (!answers.isTaxable || isUtrDefined(answers)){
       navigateToStartDateOrCheckDetails(mode, answers)
     } else {
       rts.AddressYesNoController.onPageLoad(mode)
@@ -105,14 +103,6 @@ object OrganisationTrusteeNavigator extends TrusteeNavigator {
     answers.get(IndexPage) match {
       case Some(index) => amendRts.CheckDetailsController.onPageLoadUpdated(index)
       case None => controllers.routes.SessionExpiredController.onPageLoad()
-    }
-  }
-
-  private def navigateAwayFromUtrPages(mode: Mode, answers: UserAnswers): Call = {
-    (answers.is5mldEnabled, isUtrDefined(answers)) match {
-      case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-      case (false, true) => navigateToStartDateOrCheckDetails(mode, answers)
-      case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
     }
   }
 

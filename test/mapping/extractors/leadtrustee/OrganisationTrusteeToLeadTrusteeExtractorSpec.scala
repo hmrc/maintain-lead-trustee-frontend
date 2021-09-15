@@ -19,7 +19,7 @@ package mapping.extractors.leadtrustee
 import base.SpecBase
 import models.Constants.GB
 import models.IndividualOrBusiness.Business
-import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress, UserAnswers}
+import models.{NonUkAddress, TrustIdentificationOrgType, TrusteeOrganisation, UkAddress}
 import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.organisation._
 
@@ -34,9 +34,6 @@ class OrganisationTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
   private val country: String = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
-  private val utr: String = "utr"
-  private val email: String = "email"
-  private val tel: String = "phone"
 
   private val extractor: OrganisationTrusteeToLeadTrusteeExtractor = new OrganisationTrusteeToLeadTrusteeExtractor()
 
@@ -44,202 +41,88 @@ class OrganisationTrusteeToLeadTrusteeExtractorSpec extends SpecBase {
 
     "populate user answers" when {
 
-      "4mld" when {
+      "trustee has minimum data" in {
 
-        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+        val trustee = TrusteeOrganisation(
+          name = name,
+          phoneNumber = None,
+          email = None,
+          identification = None,
+          countryOfResidence = None,
+          entityStart = date,
+          provisional = true
+        )
 
-        "has a UTR" in {
+        val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
-          val trustee = TrusteeOrganisation(
-            name = name,
-            phoneNumber = Some(tel),
-            email = Some(email),
-            identification = Some(TrustIdentificationOrgType(None, Some(utr), None)),
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor.extract(baseAnswers, trustee, index).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage).get mustBe true
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage).get mustBe utr
-          result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage).get mustBe true
-          result.get(EmailAddressPage).get mustBe email
-          result.get(TelephoneNumberPage).get mustBe tel
-
-        }
-
-        "has a UK address" in {
-
-          val trustee = TrusteeOrganisation(
-            name = name,
-            phoneNumber = Some(tel),
-            email = Some(email),
-            identification = Some(TrustIdentificationOrgType(None, None, Some(ukAddress))),
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor.extract(baseAnswers, trustee, index).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage).get mustBe false
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(AddressInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage).get mustBe true
-          result.get(EmailAddressPage).get mustBe email
-          result.get(TelephoneNumberPage).get mustBe tel
-
-        }
-
-        "has a non-UK address" in {
-
-          val trustee = TrusteeOrganisation(
-            name = name,
-            phoneNumber = Some(tel),
-            email = Some(email),
-            identification = Some(TrustIdentificationOrgType(None, None, Some(nonUkAddress))),
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor.extract(baseAnswers, trustee, index).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage).get mustBe false
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(AddressInTheUkYesNoPage).get mustBe false
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(EmailAddressYesNoPage).get mustBe true
-          result.get(EmailAddressPage).get mustBe email
-          result.get(TelephoneNumberPage).get mustBe tel
-
-        }
-
-        "has no UTR or address" in {
-
-          val trustee = TrusteeOrganisation(
-            name = name,
-            phoneNumber = None,
-            email = None,
-            identification = None,
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor.extract(baseAnswers, trustee, index).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage) mustBe None
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage) mustBe None
-          result.get(EmailAddressPage) mustBe None
-          result.get(TelephoneNumberPage) mustBe None
-
-        }
+        result.get(IndividualOrBusinessPage).get mustBe Business
+        result.get(RegisteredInUkYesNoPage) mustBe None
+        result.get(NamePage).get mustBe name
+        result.get(UtrPage) mustBe None
+        result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
+        result.get(CountryOfResidencePage) mustBe None
+        result.get(AddressInTheUkYesNoPage) mustBe None
+        result.get(UkAddressPage) mustBe None
+        result.get(NonUkAddressPage) mustBe None
+        result.get(EmailAddressYesNoPage) mustBe None
+        result.get(EmailAddressPage) mustBe None
+        result.get(TelephoneNumberPage) mustBe None
       }
 
-      "5mld" when {
+      "trustee has UK residency" in {
 
-        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+        val trustee = TrusteeOrganisation(
+          name = name,
+          phoneNumber = None,
+          email = None,
+          identification = Some(TrustIdentificationOrgType(None, None, Some(ukAddress))),
+          countryOfResidence = Some(GB),
+          entityStart = date,
+          provisional = true
+        )
 
-        "trustee has minimum data" in {
+        val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
-          val trustee = TrusteeOrganisation(
-            name = name,
-            phoneNumber = None,
-            email = None,
-            identification = None,
-            countryOfResidence = None,
-            entityStart = date,
-            provisional = true
-          )
+        result.get(IndividualOrBusinessPage).get mustBe Business
+        result.get(RegisteredInUkYesNoPage).get mustBe false
+        result.get(NamePage).get mustBe name
+        result.get(UtrPage) mustBe None
+        result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
+        result.get(CountryOfResidencePage).get mustBe GB
+        result.get(AddressInTheUkYesNoPage) mustBe None
+        result.get(UkAddressPage).get mustBe ukAddress
+        result.get(NonUkAddressPage) mustBe None
+        result.get(EmailAddressYesNoPage) mustBe None
+        result.get(EmailAddressPage) mustBe None
+        result.get(TelephoneNumberPage) mustBe None
+      }
 
-          val result = extractor.extract(baseAnswers, trustee, index).get
+      "trustee has non-UK residency" in {
 
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage) mustBe None
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
-          result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage) mustBe None
-          result.get(EmailAddressPage) mustBe None
-          result.get(TelephoneNumberPage) mustBe None
-        }
+        val trustee = TrusteeOrganisation(
+          name = name,
+          phoneNumber = None,
+          email = None,
+          identification = Some(TrustIdentificationOrgType(None, None, Some(nonUkAddress))),
+          countryOfResidence = Some(country),
+          entityStart = date,
+          provisional = true
+        )
 
-        "trustee has UK residency" in {
+        val result = extractor.extract(emptyUserAnswers, trustee, index).get
 
-          val trustee = TrusteeOrganisation(
-            name = name,
-            phoneNumber = None,
-            email = None,
-            identification = Some(TrustIdentificationOrgType(None, None, Some(ukAddress))),
-            countryOfResidence = Some(GB),
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor.extract(baseAnswers, trustee, index).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage).get mustBe false
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
-          result.get(CountryOfResidencePage).get mustBe GB
-          result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage) mustBe None
-          result.get(EmailAddressPage) mustBe None
-          result.get(TelephoneNumberPage) mustBe None
-        }
-
-        "trustee has non-UK residency" in {
-
-          val trustee = TrusteeOrganisation(
-            name = name,
-            phoneNumber = None,
-            email = None,
-            identification = Some(TrustIdentificationOrgType(None, None, Some(nonUkAddress))),
-            countryOfResidence = Some(country),
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor.extract(baseAnswers, trustee, index).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(RegisteredInUkYesNoPage).get mustBe false
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
-          result.get(CountryOfResidencePage).get mustBe country
-          result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(EmailAddressYesNoPage) mustBe None
-          result.get(EmailAddressPage) mustBe None
-          result.get(TelephoneNumberPage) mustBe None
-        }
+        result.get(IndividualOrBusinessPage).get mustBe Business
+        result.get(RegisteredInUkYesNoPage).get mustBe false
+        result.get(NamePage).get mustBe name
+        result.get(UtrPage) mustBe None
+        result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
+        result.get(CountryOfResidencePage).get mustBe country
+        result.get(AddressInTheUkYesNoPage) mustBe None
+        result.get(UkAddressPage) mustBe None
+        result.get(NonUkAddressPage).get mustBe nonUkAddress
+        result.get(EmailAddressYesNoPage) mustBe None
+        result.get(EmailAddressPage) mustBe None
+        result.get(TelephoneNumberPage) mustBe None
       }
     }
   }

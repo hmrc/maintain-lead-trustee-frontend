@@ -29,7 +29,6 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
   val messageKeyPrefix = "trustee.individual.dateOfBirth"
   val name: Name = Name("First", Some("Middle"), "Last")
 
-  //  TODO: need separate test cases for 4MLD and 5MLD
   override val form: Form[LocalDate] = new DateOfBirthFormProvider(frontendAppConfig).withConfig(messageKeyPrefix)
 
   "trustee.individual.DateOfBirth view" must {

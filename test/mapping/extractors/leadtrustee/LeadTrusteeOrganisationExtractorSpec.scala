@@ -36,62 +36,7 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
   "Lead trustee organisation extractor" must {
 
     "populate user answers" when {
-
-      "4mld" when {
-
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
-
-        "trustee has a UTR, a UK address and no email" in {
-
-          val trustee = LeadTrusteeOrganisation(
-            name = name,
-            phoneNumber = phone,
-            email = None,
-            utr = Some(utr),
-            address = ukAddress
-          )
-
-          val result = extractor.extract(baseAnswers, trustee).get
-
-          result.get(RegisteredInUkYesNoPage).get mustBe true
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage).get mustBe utr
-          result.get(AddressInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage).get mustBe false
-          result.get(EmailAddressPage) mustBe None
-          result.get(TelephoneNumberPage).get mustBe phone
-        }
-
-        "trustee has no UTR, a non-UK address and an email" in {
-
-          val trustee = LeadTrusteeOrganisation(
-            name = name,
-            phoneNumber = phone,
-            email = Some(email),
-            utr = None,
-            address = nonUkAddress
-          )
-
-          val result = extractor.extract(baseAnswers, trustee).get
-
-          result.get(RegisteredInUkYesNoPage).get mustBe false
-          result.get(NamePage).get mustBe name
-          result.get(UtrPage) mustBe None
-          result.get(AddressInTheUkYesNoPage).get mustBe false
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(EmailAddressYesNoPage).get mustBe true
-          result.get(EmailAddressPage).get mustBe email
-          result.get(TelephoneNumberPage).get mustBe phone
-        }
-      }
       
-      "5mld" when {
-
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
-
         "trustee has a UTR, a UK residency/address and no email" in {
 
           val trustee = LeadTrusteeOrganisation(
@@ -103,7 +48,7 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
             countryOfResidence = Some(GB)
           )
 
-          val result = extractor.extract(baseAnswers, trustee).get
+          val result = extractor.extract(emptyUserAnswers, trustee).get
 
           result.get(RegisteredInUkYesNoPage).get mustBe true
           result.get(NamePage).get mustBe name
@@ -129,7 +74,7 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
             countryOfResidence = Some(country)
           )
 
-          val result = extractor.extract(baseAnswers, trustee).get
+          val result = extractor.extract(emptyUserAnswers, trustee).get
 
           result.get(RegisteredInUkYesNoPage).get mustBe false
           result.get(NamePage).get mustBe name
@@ -143,7 +88,6 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
           result.get(EmailAddressPage).get mustBe email
           result.get(TelephoneNumberPage).get mustBe phone
         }
-      }
     }
   }
 }
