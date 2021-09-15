@@ -46,7 +46,7 @@ class TrusteeOrganisationExtractor extends TrusteeExtractor {
   }
 
   private def extractIdentification(identification: Option[TrustIdentificationOrgType], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.isTaxable || !answers.is5mldEnabled) {
+    if (answers.isTaxable) {
       identification match {
         case Some(TrustIdentificationOrgType(_, Some(utr), None)) => answers
           .set(UtrYesNoPage, true)

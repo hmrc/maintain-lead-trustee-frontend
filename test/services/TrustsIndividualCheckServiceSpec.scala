@@ -60,193 +60,171 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
 
     ".matchLeadTrustee" when {
 
-      "4mld" must {
-        "return ServiceNotIn5mldModeResponse" in {
+      "sufficient data to assemble IdMatchRequest body" must {
 
-          val mockConnector = mock[TrustsIndividualCheckConnector]
-          val service = new TrustsIndividualCheckService(mockConnector)
+        val userAnswers = emptyUserAnswers
+          .set(NamePage, Name(firstName, None, lastName)).success.value
+          .set(TrusteesDateOfBirthPage, LocalDate.parse(date)).success.value
+          .set(NationalInsuranceNumberPage, nino).success.value
 
-          val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+        "return SuccessfulMatchResponse" when {
+          "successfully matched" in {
 
-          val result = service.matchLeadTrustee(userAnswers)
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
 
-          whenReady(result) { res =>
-            res mustBe ServiceNotIn5mldModeResponse
-            verify(mockConnector, never()).matchLeadTrustee(any())(any(), any())
+            when(mockConnector.matchLeadTrustee(any())(any(), any()))
+              .thenReturn(Future.successful(SuccessfulOrUnsuccessfulMatchResponse(id, idMatch = true)))
+
+            val result = service.matchLeadTrustee(userAnswers)
+
+            whenReady(result) { res =>
+              res mustBe SuccessfulMatchResponse
+              verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
+            }
+          }
+        }
+
+        "return UnsuccessfulMatchResponse" when {
+
+          "unsuccessfully matched" in {
+
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
+
+            when(mockConnector.matchLeadTrustee(any())(any(), any()))
+              .thenReturn(Future.successful(SuccessfulOrUnsuccessfulMatchResponse(id, idMatch = false)))
+
+            val result = service.matchLeadTrustee(userAnswers)
+
+            whenReady(result) { res =>
+              res mustBe UnsuccessfulMatchResponse
+              verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
+            }
+          }
+
+          "NINO not found" in {
+
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
+
+            when(mockConnector.matchLeadTrustee(any())(any(), any()))
+              .thenReturn(Future.successful(NinoNotFoundResponse))
+
+            val result = service.matchLeadTrustee(userAnswers)
+
+            whenReady(result) { res =>
+              res mustBe UnsuccessfulMatchResponse
+              verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
+            }
+          }
+        }
+
+        "return LockedMatchResponse" when {
+          "attempt limit exceeded" in {
+
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
+
+            when(mockConnector.matchLeadTrustee(any())(any(), any()))
+              .thenReturn(Future.successful(AttemptLimitExceededResponse))
+
+            val result = service.matchLeadTrustee(userAnswers)
+
+            whenReady(result) { res =>
+              res mustBe LockedMatchResponse
+              verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
+            }
+          }
+        }
+
+        "return ServiceUnavailableErrorResponse" when {
+          "service unavailable" in {
+
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
+
+            when(mockConnector.matchLeadTrustee(any())(any(), any()))
+              .thenReturn(Future.successful(ServiceUnavailableResponse))
+
+            val result = service.matchLeadTrustee(userAnswers)
+
+            whenReady(result) { res =>
+              res mustBe ServiceUnavailableErrorResponse
+              verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
+            }
+          }
+        }
+
+        "return MatchingErrorResponse" when {
+
+          "invalid match ID" in {
+
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
+
+            when(mockConnector.matchLeadTrustee(any())(any(), any()))
+              .thenReturn(Future.successful(InvalidIdMatchResponse))
+
+            val result = service.matchLeadTrustee(userAnswers)
+
+            whenReady(result) { res =>
+              res mustBe MatchingErrorResponse
+              verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
+            }
+          }
+
+          "internal server error" in {
+
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
+
+            when(mockConnector.matchLeadTrustee(any())(any(), any()))
+              .thenReturn(Future.successful(InternalServerErrorResponse))
+
+            val result = service.matchLeadTrustee(userAnswers)
+
+            whenReady(result) { res =>
+              res mustBe MatchingErrorResponse
+              verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
+            }
           }
         }
       }
 
-      "5mld" when {
+      "insufficient data to assemble IdMatchRequest body" must {
+        "return IssueBuildingPayloadResponse" when {
 
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+          "invalid date of birth" in {
 
-        "sufficient data to assemble IdMatchRequest body" must {
+            val date = "1500-01-01"
 
-          val userAnswers = baseAnswers
-            .set(NamePage, Name(firstName, None, lastName)).success.value
-            .set(TrusteesDateOfBirthPage, LocalDate.parse(date)).success.value
-            .set(NationalInsuranceNumberPage, nino).success.value
+            val userAnswers = emptyUserAnswers
+              .set(NamePage, Name(firstName, None, lastName)).success.value
+              .set(TrusteesDateOfBirthPage, LocalDate.parse(date)).success.value
+              .set(NationalInsuranceNumberPage, nino).success.value
 
-          "return SuccessfulMatchResponse" when {
-            "successfully matched" in {
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
 
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
+            val result = service.matchLeadTrustee(userAnswers)
 
-              when(mockConnector.matchLeadTrustee(any())(any(), any()))
-                .thenReturn(Future.successful(SuccessfulOrUnsuccessfulMatchResponse(id, idMatch = true)))
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe SuccessfulMatchResponse
-                verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
-              }
+            whenReady(result) { res =>
+              res mustBe IssueBuildingPayloadResponse
+              verify(mockConnector, never()).matchLeadTrustee(any())(any(), any())
             }
           }
 
-          "return UnsuccessfulMatchResponse" when {
+          "missing data" in {
 
-            "unsuccessfully matched" in {
+            val mockConnector = mock[TrustsIndividualCheckConnector]
+            val service = new TrustsIndividualCheckService(mockConnector)
 
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
+            val result = service.matchLeadTrustee(emptyUserAnswers)
 
-              when(mockConnector.matchLeadTrustee(any())(any(), any()))
-                .thenReturn(Future.successful(SuccessfulOrUnsuccessfulMatchResponse(id, idMatch = false)))
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe UnsuccessfulMatchResponse
-                verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
-              }
-            }
-
-            "NINO not found" in {
-
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
-
-              when(mockConnector.matchLeadTrustee(any())(any(), any()))
-                .thenReturn(Future.successful(NinoNotFoundResponse))
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe UnsuccessfulMatchResponse
-                verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
-              }
-            }
-          }
-
-          "return LockedMatchResponse" when {
-            "attempt limit exceeded" in {
-
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
-
-              when(mockConnector.matchLeadTrustee(any())(any(), any()))
-                .thenReturn(Future.successful(AttemptLimitExceededResponse))
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe LockedMatchResponse
-                verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
-              }
-            }
-          }
-
-          "return ServiceUnavailableErrorResponse" when {
-            "service unavailable" in {
-
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
-
-              when(mockConnector.matchLeadTrustee(any())(any(), any()))
-                .thenReturn(Future.successful(ServiceUnavailableResponse))
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe ServiceUnavailableErrorResponse
-                verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
-              }
-            }
-          }
-
-          "return MatchingErrorResponse" when {
-
-            "invalid match ID" in {
-
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
-
-              when(mockConnector.matchLeadTrustee(any())(any(), any()))
-                .thenReturn(Future.successful(InvalidIdMatchResponse))
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe MatchingErrorResponse
-                verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
-              }
-            }
-
-            "internal server error" in {
-
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
-
-              when(mockConnector.matchLeadTrustee(any())(any(), any()))
-                .thenReturn(Future.successful(InternalServerErrorResponse))
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe MatchingErrorResponse
-                verify(mockConnector).matchLeadTrustee(eqTo(idMatchRequest))(any(), any())
-              }
-            }
-          }
-        }
-
-        "insufficient data to assemble IdMatchRequest body" must {
-          "return IssueBuildingPayloadResponse" when {
-
-            "invalid date of birth" in {
-
-              val date = "1500-01-01"
-
-              val userAnswers = baseAnswers
-                .set(NamePage, Name(firstName, None, lastName)).success.value
-                .set(TrusteesDateOfBirthPage, LocalDate.parse(date)).success.value
-                .set(NationalInsuranceNumberPage, nino).success.value
-
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
-
-              val result = service.matchLeadTrustee(userAnswers)
-
-              whenReady(result) { res =>
-                res mustBe IssueBuildingPayloadResponse
-                verify(mockConnector, never()).matchLeadTrustee(any())(any(), any())
-              }
-            }
-
-            "missing data" in {
-
-              val mockConnector = mock[TrustsIndividualCheckConnector]
-              val service = new TrustsIndividualCheckService(mockConnector)
-
-              val result = service.matchLeadTrustee(baseAnswers)
-
-              whenReady(result) { res =>
-                res mustBe IssueBuildingPayloadResponse
-                verify(mockConnector, never()).matchLeadTrustee(any())(any(), any())
-              }
+            whenReady(result) { res =>
+              res mustBe IssueBuildingPayloadResponse
+              verify(mockConnector, never()).matchLeadTrustee(any())(any(), any())
             }
           }
         }

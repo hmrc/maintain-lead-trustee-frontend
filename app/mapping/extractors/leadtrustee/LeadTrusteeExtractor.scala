@@ -38,15 +38,10 @@ trait LeadTrusteeExtractor extends Extractor {
   }
 
   override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
-
-    def setUkAddressYesNoIf4mld(value: Boolean): Try[UserAnswers] = {
-      if (answers.is5mldEnabled) Success(answers) else answers.set(ukAddressYesNoPage, value)
-    }
-
     address match {
-      case uk: UkAddress => setUkAddressYesNoIf4mld(true)
+      case uk: UkAddress => Success(answers)
         .flatMap(_.set(ukAddressPage, uk))
-      case nonUk: NonUkAddress => setUkAddressYesNoIf4mld(false)
+      case nonUk: NonUkAddress => Success(answers)
         .flatMap(_.set(nonUkAddressPage, nonUk))
     }
   }
@@ -56,7 +51,6 @@ trait LeadTrusteeExtractor extends Extractor {
                                                       yesNoPage: QuestionPage[Boolean],
                                                       ukYesNoPage: QuestionPage[Boolean],
                                                       page: QuestionPage[String]): Try[UserAnswers] = {
-    if (answers.is5mldEnabled) {
       country match {
         case Some(GB) => answers
           .set(ukYesNoPage, true)
@@ -66,9 +60,6 @@ trait LeadTrusteeExtractor extends Extractor {
           .flatMap(_.set(page, country))
         case None => Success(answers)
       }
-    } else {
-      Success(answers)
-    }
   }
 
   def ninoYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]

@@ -85,7 +85,7 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
 
         val helper = injector.instanceOf[LeadTrusteeIndividualPrintHelper]
 
-        val userAnswers = baseAnswers.copy(is5mldEnabled = true)
+        val userAnswers = baseAnswers
           .set(BpMatchStatusPage, FullyMatched).success.value
 
         val result = helper.print(userAnswers, name.displayName)
@@ -118,7 +118,7 @@ class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
 
             val helper = injector.instanceOf[LeadTrusteeIndividualPrintHelper]
 
-            val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+            val userAnswers = emptyUserAnswers
               .set(BpMatchStatusPage, FullyMatched).success.value
               .set(NationalInsuranceNumberPage, nino).success.value
 

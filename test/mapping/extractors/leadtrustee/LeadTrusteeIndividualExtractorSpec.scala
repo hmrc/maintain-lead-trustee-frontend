@@ -36,160 +36,87 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
   private val phone: String = "tel"
   private val email: String = "email"
   private val nino: String = "nino"
-  private val combined = CombinedPassportOrIdCard(country, "number", date)
 
   private val extractor: LeadTrusteeIndividualExtractor = new LeadTrusteeIndividualExtractor()
-  
+
   "LeadTrusteeIndividualExtractor" must {
 
     "populate user answers" when {
 
-      "4mld" when {
+      "trustee has UK nationality, NINO, and UK residency/address" in {
 
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+        val identification = NationalInsuranceNumber(nino)
 
-        "trustee has a NINO and UK address" in {
+        val trustee = LeadTrusteeIndividual(
+          bpMatchStatus = Some(FullyMatched),
+          name = name,
+          dateOfBirth = date,
+          phoneNumber = phone,
+          email = None,
+          identification = identification,
+          address = ukAddress,
+          countryOfResidence = Some(GB),
+          nationality = Some(GB)
+        )
 
-          val identification = NationalInsuranceNumber(nino)
+        val result = extractor.extract(emptyUserAnswers, trustee).get
 
-          val trustee = LeadTrusteeIndividual(
-            bpMatchStatus = Some(FullyMatched),
-            name = name,
-            dateOfBirth = date,
-            phoneNumber = phone,
-            email = None,
-            identification = identification,
-            address = ukAddress
-          )
+        result.get(IndividualOrBusinessPage).get mustBe Individual
+        result.get(BpMatchStatusPage).get mustBe FullyMatched
+        result.get(NamePage).get mustBe name
+        result.get(DateOfBirthPage).get mustBe date
+        result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
+        result.get(CountryOfNationalityPage).get mustBe GB
+        result.get(UkCitizenPage).get mustBe true
+        result.get(NationalInsuranceNumberPage).get mustBe nino
+        result.get(PassportOrIdCardDetailsPage) mustBe None
+        result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
+        result.get(CountryOfResidencePage).get mustBe GB
+        result.get(LiveInTheUkYesNoPage) mustBe None
+        result.get(UkAddressPage).get mustBe ukAddress
+        result.get(NonUkAddressPage) mustBe None
+        result.get(EmailAddressYesNoPage).get mustBe false
+        result.get(EmailAddressPage) mustBe None
+        result.get(TelephoneNumberPage).get mustBe phone
 
-          val result = extractor.extract(baseAnswers, trustee).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Individual
-          result.get(BpMatchStatusPage).get mustBe FullyMatched
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthPage).get mustBe date
-          result.get(UkCitizenPage).get mustBe true
-          result.get(NationalInsuranceNumberPage).get mustBe nino
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(LiveInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage).get mustBe false
-          result.get(EmailAddressPage) mustBe None
-          result.get(TelephoneNumberPage).get mustBe phone
-
-        }
-
-        "trustee has a passport/ID card, non-UK address and email" in {
-
-          val trustee = LeadTrusteeIndividual(
-            bpMatchStatus = Some(FullyMatched),
-            name = name,
-            dateOfBirth = date,
-            phoneNumber = phone,
-            email = Some(email),
-            identification = combined,
-            address = nonUkAddress
-          )
-
-          val result = extractor.extract(baseAnswers, trustee).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Individual
-          result.get(BpMatchStatusPage).get mustBe FullyMatched
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthPage).get mustBe date
-          result.get(UkCitizenPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage).get mustBe combined
-          result.get(LiveInTheUkYesNoPage).get mustBe false
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(EmailAddressYesNoPage).get mustBe true
-          result.get(EmailAddressPage).get mustBe email
-          result.get(TelephoneNumberPage).get mustBe phone
-
-        }
       }
 
-      "5mld" when {
+      "trustee has non-UK nationality, passport/ID card, non-UK residency/address, and email" in {
 
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+        val combined = CombinedPassportOrIdCard("country", "number", date)
 
-        "trustee has UK nationality, NINO, and UK residency/address" in {
+        val trustee = LeadTrusteeIndividual(
+          bpMatchStatus = Some(FullyMatched),
+          name = name,
+          dateOfBirth = date,
+          phoneNumber = phone,
+          email = Some(email),
+          identification = combined,
+          address = nonUkAddress,
+          countryOfResidence = Some(country),
+          nationality = Some(country)
+        )
 
-          val identification = NationalInsuranceNumber(nino)
+        val result = extractor.extract(emptyUserAnswers, trustee).get
 
-          val trustee = LeadTrusteeIndividual(
-            bpMatchStatus = Some(FullyMatched),
-            name = name,
-            dateOfBirth = date,
-            phoneNumber = phone,
-            email = None,
-            identification = identification,
-            address = ukAddress,
-            countryOfResidence = Some(GB),
-            nationality = Some(GB)
-          )
+        result.get(IndividualOrBusinessPage).get mustBe Individual
+        result.get(BpMatchStatusPage).get mustBe FullyMatched
+        result.get(NamePage).get mustBe name
+        result.get(DateOfBirthPage).get mustBe date
+        result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
+        result.get(CountryOfNationalityPage).get mustBe country
+        result.get(UkCitizenPage).get mustBe false
+        result.get(NationalInsuranceNumberPage) mustBe None
+        result.get(PassportOrIdCardDetailsPage).get mustBe combined
+        result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
+        result.get(CountryOfResidencePage).get mustBe country
+        result.get(LiveInTheUkYesNoPage) mustBe None
+        result.get(UkAddressPage) mustBe None
+        result.get(NonUkAddressPage).get mustBe nonUkAddress
+        result.get(EmailAddressYesNoPage).get mustBe true
+        result.get(EmailAddressPage).get mustBe email
+        result.get(TelephoneNumberPage).get mustBe phone
 
-          val result = extractor.extract(baseAnswers, trustee).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Individual
-          result.get(BpMatchStatusPage).get mustBe FullyMatched
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthPage).get mustBe date
-          result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
-          result.get(CountryOfNationalityPage).get mustBe GB
-          result.get(UkCitizenPage).get mustBe true
-          result.get(NationalInsuranceNumberPage).get mustBe nino
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
-          result.get(CountryOfResidencePage).get mustBe GB
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(EmailAddressYesNoPage).get mustBe false
-          result.get(EmailAddressPage) mustBe None
-          result.get(TelephoneNumberPage).get mustBe phone
-
-        }
-
-        "trustee has non-UK nationality, passport/ID card, non-UK residency/address, and email" in {
-
-          val combined = CombinedPassportOrIdCard("country", "number", date)
-
-          val trustee = LeadTrusteeIndividual(
-            bpMatchStatus = Some(FullyMatched),
-            name = name,
-            dateOfBirth = date,
-            phoneNumber = phone,
-            email = Some(email),
-            identification = combined,
-            address = nonUkAddress,
-            countryOfResidence = Some(country),
-            nationality = Some(country)
-          )
-
-          val result = extractor.extract(baseAnswers, trustee).get
-
-          result.get(IndividualOrBusinessPage).get mustBe Individual
-          result.get(BpMatchStatusPage).get mustBe FullyMatched
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthPage).get mustBe date
-          result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
-          result.get(CountryOfNationalityPage).get mustBe country
-          result.get(UkCitizenPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage).get mustBe combined
-          result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
-          result.get(CountryOfResidencePage).get mustBe country
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(EmailAddressYesNoPage).get mustBe true
-          result.get(EmailAddressPage).get mustBe email
-          result.get(TelephoneNumberPage).get mustBe phone
-
-        }
       }
     }
   }

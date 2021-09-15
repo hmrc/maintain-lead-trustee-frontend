@@ -54,7 +54,7 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
   }
 
   private def extractMentalCapacity(mentalCapacityYesNo: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+    if (answers.isUnderlyingData5mld) {
       extractValue(mentalCapacityYesNo, MentalCapacityYesNoPage, answers)
     } else {
       Success(answers)

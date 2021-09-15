@@ -37,7 +37,6 @@ class IndexControllerSpec extends SpecBase {
   "Index Controller" must {
     val identifier = "1234567890"
     val startDate = "2019-06-01"
-    val is5mldEnabled = false
     val isTaxable = false
     val isUnderlyingData5mld = false
 
@@ -48,9 +47,6 @@ class IndexControllerSpec extends SpecBase {
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), trustTaxable = Some(isTaxable))))
-
-      when(mockTrustsStoreService.is5mldEnabled()(any(), any()))
-        .thenReturn(Future.successful(is5mldEnabled))
 
       when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -78,7 +74,6 @@ class IndexControllerSpec extends SpecBase {
       uaCaptor.getValue.internalId mustBe "id"
       uaCaptor.getValue.identifier mustBe identifier
       uaCaptor.getValue.whenTrustSetup mustBe LocalDate.parse(startDate)
-      uaCaptor.getValue.is5mldEnabled mustBe is5mldEnabled
       uaCaptor.getValue.isTaxable mustBe isTaxable
 
       verify(mockTrustsStoreService).updateTaskStatus(eqTo(identifier), eqTo(InProgress))(any(), any())

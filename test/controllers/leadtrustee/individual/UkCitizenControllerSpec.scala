@@ -94,7 +94,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
         "lead trustee matched" in {
 
-          val userAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+          val userAnswers = emptyUserAnswers
             .set(UkCitizenPage, true).success.value
             .set(NationalInsuranceNumberPage, "nino").success.value
             .set(BpMatchStatusPage, FullyMatched).success.value

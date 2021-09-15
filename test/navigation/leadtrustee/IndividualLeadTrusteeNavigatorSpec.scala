@@ -18,7 +18,6 @@ package navigation.leadtrustee
 
 import base.SpecBase
 import controllers.leadtrustee.individual.routes._
-import models.UserAnswers
 import navigation.Navigator
 import pages.leadtrustee.individual._
 
@@ -28,230 +27,126 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
 
   "IndividualLeadTrusteeNavigator" when {
 
-    "4mld" when {
+    "Name page -> Date of birth page" in {
+      navigator.nextPage(NamePage, emptyUserAnswers)
+        .mustBe(DateOfBirthController.onPageLoad())
+    }
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+    "Date of birth page -> UK nationality yes/no page" in {
+      navigator.nextPage(DateOfBirthPage, emptyUserAnswers)
+        .mustBe(CountryOfNationalityInTheUkYesNoController.onPageLoad())
+    }
 
-      "Name page -> Date of birth page" in {
-        navigator.nextPage(NamePage, baseAnswers)
-          .mustBe(DateOfBirthController.onPageLoad())
-      }
+    "UK nationality yes/no page" when {
+      val page = CountryOfNationalityInTheUkYesNoPage
 
-      "Date of birth page -> NINO yes/no page" in {
-        navigator.nextPage(DateOfBirthPage, baseAnswers)
+      "-> YES -> NINO yes/no page" in {
+        val answers = emptyUserAnswers.set(page, true).success.value
+
+        navigator.nextPage(page, answers)
           .mustBe(UkCitizenController.onPageLoad())
       }
 
-      "NINO yes/no page" when {
-        val page = UkCitizenPage
+      "-> NO -> Nationality page" in {
+        val answers = emptyUserAnswers.set(page, false).success.value
 
-        "-> YES -> NINO page" in {
-          val answers = baseAnswers.set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(NationalInsuranceNumberController.onPageLoad())
-        }
-
-        "-> NO -> Passport/ID card page" in {
-          val answers = baseAnswers.set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(PassportOrIdCardController.onPageLoad())
-        }
-      }
-
-      "NINO page -> UK address yes/no page" in {
-        navigator.nextPage(NationalInsuranceNumberPage, baseAnswers)
-          .mustBe(LiveInTheUkYesNoController.onPageLoad())
-      }
-
-      "Passport/ID card page -> UK address yes/no page" in {
-        navigator.nextPage(PassportOrIdCardDetailsPage, baseAnswers)
-          .mustBe(LiveInTheUkYesNoController.onPageLoad())
-      }
-
-      "UK address yes/no page" when {
-        val page = LiveInTheUkYesNoPage
-
-        "-> YES -> UK address page" in {
-          val answers = baseAnswers.set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(UkAddressController.onPageLoad())
-        }
-
-        "-> NO -> Non-UK address page" in {
-          val answers = baseAnswers.set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(NonUkAddressController.onPageLoad())
-        }
-      }
-
-      "UK address page -> Email yes/no page" in {
-        navigator.nextPage(UkAddressPage, baseAnswers)
-          .mustBe(EmailAddressYesNoController.onPageLoad())
-      }
-
-      "Non-UK address page -> Email address yes/no page" in {
-        navigator.nextPage(NonUkAddressPage, baseAnswers)
-          .mustBe(EmailAddressYesNoController.onPageLoad())
-      }
-
-      "Email address yes/no page" when {
-        val page = EmailAddressYesNoPage
-
-        "-> YES -> Email address page" in {
-          val answers = baseAnswers.set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(EmailAddressController.onPageLoad())
-        }
-
-        "-> NO -> Telephone number page" in {
-          val answers = baseAnswers.set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(TelephoneNumberController.onPageLoad())
-        }
-      }
-
-      "Email address page -> Telephone number page" in {
-        navigator.nextPage(EmailAddressPage, baseAnswers)
-          .mustBe(TelephoneNumberController.onPageLoad())
-      }
-
-      "Telephone number page -> Check details page" in {
-        navigator.nextPage(TelephoneNumberPage, baseAnswers)
-          .mustBe(CheckDetailsController.onPageLoadUpdated())
+        navigator.nextPage(page, answers)
+          .mustBe(CountryOfNationalityController.onPageLoad())
       }
     }
 
-    "5mld" when {
+    "Nationality page -> NINO yes/no page" in {
+      navigator.nextPage(CountryOfNationalityPage, emptyUserAnswers)
+        .mustBe(UkCitizenController.onPageLoad())
+    }
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+    "NINO yes/no page" when {
+      val page = UkCitizenPage
 
-      "Name page -> Date of birth page" in {
-        navigator.nextPage(NamePage, baseAnswers)
-          .mustBe(DateOfBirthController.onPageLoad())
+      "-> YES -> NINO page" in {
+        val answers = emptyUserAnswers.set(page, true).success.value
+
+        navigator.nextPage(page, answers)
+          .mustBe(NationalInsuranceNumberController.onPageLoad())
       }
 
-      "Date of birth page -> UK nationality yes/no page" in {
-        navigator.nextPage(DateOfBirthPage, baseAnswers)
-          .mustBe(CountryOfNationalityInTheUkYesNoController.onPageLoad())
+      "-> NO -> Passport/ID card page" in {
+        val answers = emptyUserAnswers.set(page, false).success.value
+
+        navigator.nextPage(page, answers)
+          .mustBe(PassportOrIdCardController.onPageLoad())
+      }
+    }
+
+    "NINO page -> UK residency yes/no page" in {
+      navigator.nextPage(NationalInsuranceNumberPage, emptyUserAnswers)
+        .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
+    }
+
+    "Passport/ID card page -> UK residency yes/no page" in {
+      navigator.nextPage(PassportOrIdCardDetailsPage, emptyUserAnswers)
+        .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
+    }
+
+    "UK residency yes/no page" when {
+      val page = CountryOfResidenceInTheUkYesNoPage
+
+      "-> YES -> UK address page" in {
+        val answers = emptyUserAnswers.set(page, true).success.value
+
+        navigator.nextPage(page, answers)
+          .mustBe(UkAddressController.onPageLoad())
       }
 
-      "UK nationality yes/no page" when {
-        val page = CountryOfNationalityInTheUkYesNoPage
+      "-> NO -> Residency page" in {
+        val answers = emptyUserAnswers.set(page, false).success.value
 
-        "-> YES -> NINO yes/no page" in {
-          val answers = baseAnswers.set(page, true).success.value
+        navigator.nextPage(page, answers)
+          .mustBe(CountryOfResidenceController.onPageLoad())
+      }
+    }
 
-          navigator.nextPage(page, answers)
-            .mustBe(UkCitizenController.onPageLoad())
-        }
+    "Residency page -> Non-UK address page" in {
+      navigator.nextPage(CountryOfResidencePage, emptyUserAnswers)
+        .mustBe(NonUkAddressController.onPageLoad())
+    }
 
-        "-> NO -> Nationality page" in {
-          val answers = baseAnswers.set(page, false).success.value
+    "UK address page -> Email yes/no page" in {
+      navigator.nextPage(UkAddressPage, emptyUserAnswers)
+        .mustBe(EmailAddressYesNoController.onPageLoad())
+    }
 
-          navigator.nextPage(page, answers)
-            .mustBe(CountryOfNationalityController.onPageLoad())
-        }
+    "Non-UK address page -> Email address yes/no page" in {
+      navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
+        .mustBe(EmailAddressYesNoController.onPageLoad())
+    }
+
+    "Email address yes/no page" when {
+      val page = EmailAddressYesNoPage
+
+      "-> YES -> Email address page" in {
+        val answers = emptyUserAnswers.set(page, true).success.value
+
+        navigator.nextPage(page, answers)
+          .mustBe(EmailAddressController.onPageLoad())
       }
 
-      "Nationality page -> NINO yes/no page" in {
-        navigator.nextPage(CountryOfNationalityPage, baseAnswers)
-          .mustBe(UkCitizenController.onPageLoad())
-      }
+      "-> NO -> Telephone number page" in {
+        val answers = emptyUserAnswers.set(page, false).success.value
 
-      "NINO yes/no page" when {
-        val page = UkCitizenPage
-
-        "-> YES -> NINO page" in {
-          val answers = baseAnswers.set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(NationalInsuranceNumberController.onPageLoad())
-        }
-
-        "-> NO -> Passport/ID card page" in {
-          val answers = baseAnswers.set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(PassportOrIdCardController.onPageLoad())
-        }
-      }
-
-      "NINO page -> UK residency yes/no page" in {
-        navigator.nextPage(NationalInsuranceNumberPage, baseAnswers)
-          .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
-      }
-
-      "Passport/ID card page -> UK residency yes/no page" in {
-        navigator.nextPage(PassportOrIdCardDetailsPage, baseAnswers)
-          .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
-      }
-
-      "UK residency yes/no page" when {
-        val page = CountryOfResidenceInTheUkYesNoPage
-
-        "-> YES -> UK address page" in {
-          val answers = baseAnswers.set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(UkAddressController.onPageLoad())
-        }
-
-        "-> NO -> Residency page" in {
-          val answers = baseAnswers.set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(CountryOfResidenceController.onPageLoad())
-        }
-      }
-
-      "Residency page -> Non-UK address page" in {
-        navigator.nextPage(CountryOfResidencePage, baseAnswers)
-          .mustBe(NonUkAddressController.onPageLoad())
-      }
-
-      "UK address page -> Email yes/no page" in {
-        navigator.nextPage(UkAddressPage, baseAnswers)
-          .mustBe(EmailAddressYesNoController.onPageLoad())
-      }
-
-      "Non-UK address page -> Email address yes/no page" in {
-        navigator.nextPage(NonUkAddressPage, baseAnswers)
-          .mustBe(EmailAddressYesNoController.onPageLoad())
-      }
-
-      "Email address yes/no page" when {
-        val page = EmailAddressYesNoPage
-
-        "-> YES -> Email address page" in {
-          val answers = baseAnswers.set(page, true).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(EmailAddressController.onPageLoad())
-        }
-
-        "-> NO -> Telephone number page" in {
-          val answers = baseAnswers.set(page, false).success.value
-
-          navigator.nextPage(page, answers)
-            .mustBe(TelephoneNumberController.onPageLoad())
-        }
-      }
-
-      "Email address page -> Telephone number page" in {
-        navigator.nextPage(EmailAddressPage, baseAnswers)
+        navigator.nextPage(page, answers)
           .mustBe(TelephoneNumberController.onPageLoad())
       }
+    }
 
-      "Telephone number page -> Check details page" in {
-        navigator.nextPage(TelephoneNumberPage, baseAnswers)
-          .mustBe(CheckDetailsController.onPageLoadUpdated())
-      }
+    "Email address page -> Telephone number page" in {
+      navigator.nextPage(EmailAddressPage, emptyUserAnswers)
+        .mustBe(TelephoneNumberController.onPageLoad())
+    }
+
+    "Telephone number page -> Check details page" in {
+      navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
+        .mustBe(CheckDetailsController.onPageLoadUpdated())
     }
   }
 }
