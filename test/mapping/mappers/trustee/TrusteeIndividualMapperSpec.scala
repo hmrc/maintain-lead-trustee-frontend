@@ -18,6 +18,7 @@ package mapping.mappers.trustee
 
 import base.SpecBase
 import models.Constants.GB
+import models.YesNoDontKnow.{No, Yes}
 import models._
 import pages.trustee.individual._
 import pages.trustee.individual.add._
@@ -282,7 +283,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
           val userAnswers = baseAnswers
             .set(DateOfBirthYesNoPage, false).success.value
             .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(MentalCapacityYesNoPage, true).success.value
+            .set(MentalCapacityYesNoPage, Yes).success.value
             .set(AddressYesNoPage, false).success.value
             .set(PassportDetailsYesNoPage, false).success.value
             .set(IdCardDetailsYesNoPage, false).success.value
@@ -297,7 +298,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             identification = None,
             countryOfResidence = None,
             nationality = None,
-            mentalCapacityYesNo = Some(true),
+            mentalCapacityYesNo = Some(Yes),
             address = None,
             entityStart = startDate,
             provisional = true
@@ -309,7 +310,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
           val userAnswers = baseAnswers
             .set(DateOfBirthYesNoPage, false).success.value
             .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(MentalCapacityYesNoPage, false).success.value
+            .set(MentalCapacityYesNoPage, No).success.value
             .set(AddressYesNoPage, false).success.value
             .set(PassportDetailsYesNoPage, false).success.value
             .set(IdCardDetailsYesNoPage, false).success.value
@@ -324,7 +325,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             identification = None,
             countryOfResidence = None,
             nationality = None,
-            mentalCapacityYesNo = Some(false),
+            mentalCapacityYesNo = Some(No),
             address = None,
             entityStart = startDate,
             provisional = true
@@ -349,7 +350,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             .set(CountryOfNationalityYesNoPage, true).success.value
             .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
             .set(CountryOfNationalityPage, "Spain").success.value
-            .set(MentalCapacityYesNoPage, true).success.value
+            .set(MentalCapacityYesNoPage, Yes).success.value
             .set(WhenAddedPage, startDate).success.value
 
           val result = mapper.map(userAnswers).get
@@ -362,7 +363,7 @@ class TrusteeIndividualMapperSpec extends SpecBase {
             address = Some(nonUkAddress),
             countryOfResidence = Some("Spain"),
             nationality = Some("Spain"),
-            mentalCapacityYesNo = Some(true),
+            mentalCapacityYesNo = Some(Yes),
             entityStart = startDate,
             provisional = true
           )

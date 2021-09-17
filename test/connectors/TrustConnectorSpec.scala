@@ -23,6 +23,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.Constants.INDIVIDUAL_TRUSTEE
+import models.YesNoDontKnow.DontKnow
 import models._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
@@ -355,7 +356,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
               None,
               None,
               entityStart = LocalDate.parse("2019-02-28"),
-              provisional = true
+              provisional = true,
+              mentalCapacityYesNo = Some(DontKnow)
             ),
             TrusteeOrganisation(
               name = "Trustee Org",

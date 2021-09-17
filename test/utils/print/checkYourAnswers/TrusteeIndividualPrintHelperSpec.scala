@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.trustee.individual.add.{routes => addRts}
 import controllers.trustee.individual.{routes => rts}
 import models.IndividualOrBusiness.Individual
+import models.YesNoDontKnow.Yes
 import models._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual._
@@ -68,7 +69,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(PassportDetailsPage, Passport("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
           .set(IdCardDetailsYesNoPage, true).success.value
           .set(IdCardDetailsPage, IdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, Yes).success.value
           .set(WhenAddedPage, LocalDate.of(2020, 1, 1)).success.value
 
         val result = helper.print(userAnswers, adding, name.displayName)
@@ -127,7 +128,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(NonUkAddressPage, trusteeNonUkAddress).success.value
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
           .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, Yes).success.value
 
         val result = helper.print(userAnswers, adding, name.displayName)
         result mustBe AnswerSection(

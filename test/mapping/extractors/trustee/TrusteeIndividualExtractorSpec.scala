@@ -19,6 +19,7 @@ package mapping.extractors.trustee
 import base.SpecBase
 import models.Constants.GB
 import models.IndividualOrBusiness.Individual
+import models.YesNoDontKnow.Yes
 import models._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual._
@@ -292,7 +293,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             phoneNumber = None,
             identification = None,
             nationality = None,
-            mentalCapacityYesNo = Some(true),
+            mentalCapacityYesNo = Some(Yes),
             address = None,
             entityStart = date,
             provisional = true
@@ -302,7 +303,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           result.get(IndexPage).get mustBe index
           result.get(NamePage).get mustBe name
-          result.get(MentalCapacityYesNoPage).get mustBe true
+          result.get(MentalCapacityYesNoPage).get mustBe Yes
           result.get(PassportDetailsYesNoPage) mustBe None
           result.get(PassportDetailsPage) mustBe None
           result.get(IdCardDetailsYesNoPage) mustBe None
@@ -509,7 +510,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
           phoneNumber = None,
           identification = None,
           nationality = None,
-          mentalCapacityYesNo = Some(true),
+          mentalCapacityYesNo = Some(Yes),
           address = None,
           entityStart = date,
           provisional = true
@@ -519,7 +520,7 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
         result.get(IndexPage).get mustBe index
         result.get(NamePage).get mustBe name
-        result.get(MentalCapacityYesNoPage).get mustBe true
+        result.get(MentalCapacityYesNoPage).get mustBe Yes
         result.get(PassportDetailsYesNoPage) mustBe None
         result.get(PassportDetailsPage) mustBe None
         result.get(IdCardDetailsYesNoPage) mustBe None

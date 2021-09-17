@@ -17,7 +17,7 @@
 package models
 
 import models.Constants._
-import models.Trustee.readMentalCapacity
+import models.Trustee.{legallyIncapableWrites, readMentalCapacity}
 import models.YesNoDontKnow.{No, Yes}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -55,11 +55,11 @@ object Trustee {
       Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
     }
 
-  def writeMentalCapacity(value: Option[YesNoDontKnow]): Writes[Option[YesNoDontKnow]] = {
-    value match {
-      case Some(Yes) => (__ \ 'legallyIncapable).writeNullable[Boolean](_ => JsBoolean(false))
-      case Some(No) => (__ \ 'legallyIncapable).writeNullable[Boolean](_ => JsBoolean(true))
-      case _ => (__ \ 'legallyIncapable).writeNullable[Boolean](_ => JsNull)
+  def legallyIncapableWrites: Writes[YesNoDontKnow] = new Writes[YesNoDontKnow] {
+    override def writes(o: YesNoDontKnow): JsValue = o match {
+      case Yes => JsBoolean(false)
+      case No => JsBoolean(true)
+      case _ => JsNull
     }
   }
 }
@@ -108,18 +108,11 @@ object TrusteeIndividual {
       (__ \ 'identification \ 'address).writeNullable[Address] and
       (__ \ 'countryOfResidence).writeNullable[String] and
       (__ \ 'nationality).writeNullable[String] and
-      legallyIncapableWrites and
+      (__ \ 'legallyIncapable).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     )(unlift(TrusteeIndividual.unapply))
 
-  implicit val legallyIncapableWrites: Writes[Option[YesNoDontKnow]] = new Writes[Option[YesNoDontKnow]] {
-    override def writes(o: Option[YesNoDontKnow]): JsValue = o match {
-      case Some(Yes) => Json.obj("legallyIncapable" -> JsBoolean(false))
-      case Some(No) => Json.obj("legallyIncapable" -> JsBoolean(true))
-      case _ => JsNull
-    }
-  }
 }
 
 case class TrusteeOrganisation(name: String,

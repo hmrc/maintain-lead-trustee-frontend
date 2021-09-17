@@ -22,6 +22,7 @@ import controllers.leadtrustee.organisation.{routes => ltoRts}
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.leadtrustee._
+import models.YesNoDontKnow.No
 import models._
 import models.requests.DataRequest
 import play.api.Logging
@@ -98,7 +99,7 @@ class ReplacingLeadTrusteeController @Inject()(
     trustees
       .zipWithIndex
       .filter(_._1 match {
-        case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(false)
+        case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(No)
         case _: TrusteeOrganisation => true
       })
       .map { x =>

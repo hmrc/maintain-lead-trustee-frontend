@@ -18,6 +18,7 @@ package models
 
 import base.SpecBase
 import models.Constants.GB
+import models.YesNoDontKnow.{No, Yes}
 import play.api.libs.json.{Json, __}
 
 import java.time.LocalDate
@@ -66,7 +67,7 @@ class TrusteeSpec extends SpecBase {
           address = None,
           countryOfResidence = Some(GB),
           nationality = Some(GB),
-          mentalCapacityYesNo = Some(true),
+          mentalCapacityYesNo = Some(Yes),
           entityStart = LocalDate.parse(startDate),
           provisional = true
         )
@@ -104,7 +105,7 @@ class TrusteeSpec extends SpecBase {
           address = None,
           countryOfResidence = Some(country),
           nationality = Some(country),
-          mentalCapacityYesNo = Some(false),
+          mentalCapacityYesNo = Some(No),
           entityStart = LocalDate.parse(startDate),
           provisional = true
         )
