@@ -18,27 +18,25 @@ package controllers.trustee.individual
 
 import base.SpecBase
 import forms.YesNoDontKnowFormProvider
-import models.YesNoDontKnow.Yes
 import models.{Name, NormalMode, UserAnswers, YesNoDontKnow}
 import navigation.{FakeNavigator, Navigator}
+import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{MentalCapacityYesNoPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.trustee.individual.MentalCapacityYesNoView
 
-class MentalCapacityYesNoControllerSpec extends SpecBase {
+class MentalCapacityYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val form: Form[YesNoDontKnow] = new YesNoDontKnowFormProvider().withPrefix("trustee.individual.mentalCapacityYesNo")
-  private val onPageLoadRoute: String = routes.MentalCapacityYesNoController.onPageLoad(NormalMode).url
   private val name: Name = Name("FirstName", None, "LastName")
-  private val onwardRoute = Call("GET", "/foo")
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  lazy val onPageLoadRoute: String = routes.MentalCapacityYesNoController.onPageLoad(NormalMode).url
 
-  "MentalCapacityYesNoController" must {
+  "MentalCapacityYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -46,9 +44,9 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
 
       val request = FakeRequest(GET, onPageLoadRoute)
 
-      val view = application.injector.instanceOf[MentalCapacityYesNoView]
-
       val result = route(application, request).value
+
+      val view = application.injector.instanceOf[MentalCapacityYesNoView]
 
       status(result) mustEqual OK
 
@@ -60,7 +58,7 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val answers = baseAnswers.set(MentalCapacityYesNoPage, Yes).success.value
+      val answers = baseAnswers.set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -73,28 +71,27 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Yes), NormalMode, name.displayName)(request, messages).toString
+        view(form.fill(YesNoDontKnow.Yes), NormalMode, name.displayName)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          ).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers))
+        .overrides(
+          bind[Navigator].toInstance(new FakeNavigator)
+        ).build()
 
       val request =
         FakeRequest(POST, onPageLoadRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody(("value", "yes"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }
@@ -103,7 +100,9 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val request = FakeRequest(POST, onPageLoadRoute)
+      val request =
+        FakeRequest(POST, onPageLoadRoute)
+          .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -116,7 +115,7 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, NormalMode, name.displayName)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -128,6 +127,7 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()

@@ -18,9 +18,7 @@ package controllers.trustee.individual
 
 import controllers.actions._
 import controllers.trustee.actions.NameRequiredAction
-import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
-
-import javax.inject.Inject
+import forms.YesNoDontKnowFormProvider
 import models.{Mode, YesNoDontKnow}
 import navigation.Navigator
 import pages.trustee.individual.MentalCapacityYesNoPage
@@ -31,6 +29,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.trustee.individual.MentalCapacityYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MentalCapacityYesNoController @Inject()(
