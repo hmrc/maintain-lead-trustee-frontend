@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.trustee.individual.add.{routes => addRts}
 import controllers.trustee.individual.{routes => rts}
 import models.IndividualOrBusiness.Individual
-import models.YesNoDontKnow.Yes
+import models.YesNoDontKnow.{DontKnow, Yes}
 import models._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual._
@@ -152,6 +152,50 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
             AnswerRow(label = messages("trustee.individual.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />Number ending 7890<br />10 October 2030"), changeUrl = Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
+          )
+        )
+      }
+
+      "adding with unknown mental capacity data must show `I don’t know`" in {
+
+        val adding = true
+        val mode = NormalMode
+
+        val helper = injector.instanceOf[TrusteeIndividualPrintHelper]
+
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(NamePage, name).success.value
+          .set(MentalCapacityYesNoPage, DontKnow).success.value
+
+        val result = helper.print(userAnswers, adding, name.displayName)
+        result mustBe AnswerSection(
+          headingKey = None,
+          rows = Seq(
+            AnswerRow(label = messages("trustee.individual.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
+          )
+        )
+      }
+
+      "amending with unknown mental capacity data must show `I don’t know or not provided`" in {
+
+        val adding = false
+        val mode = CheckMode
+
+        val helper = injector.instanceOf[TrusteeIndividualPrintHelper]
+
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(NamePage, name).success.value
+          .set(MentalCapacityYesNoPage, DontKnow).success.value
+
+        val result = helper.print(userAnswers, adding, name.displayName)
+        result mustBe AnswerSection(
+          headingKey = None,
+          rows = Seq(
+            AnswerRow(label = messages("trustee.individual.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
           )
         )
       }
