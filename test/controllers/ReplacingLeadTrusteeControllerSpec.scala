@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
 import models.BpMatchStatus.FullyMatched
+import models.YesNoDontKnow.{No, Yes}
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -100,7 +101,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
           phoneNumber = None,
           identification = None,
           address = None,
-          mentalCapacityYesNo = Some(true),
+          mentalCapacityYesNo = Some(Yes),
           entityStart = date,
           provisional = true
         )
@@ -111,7 +112,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
           phoneNumber = None,
           identification = None,
           address = None,
-          mentalCapacityYesNo = Some(true),
+          mentalCapacityYesNo = Some(Yes),
           entityStart = date,
           provisional = true
         )
@@ -151,7 +152,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
           phoneNumber = None,
           identification = None,
           address = None,
-          mentalCapacityYesNo = Some(false),
+          mentalCapacityYesNo = Some(No),
           entityStart = date,
           provisional = true
         )
@@ -162,7 +163,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
           phoneNumber = None,
           identification = None,
           address = None,
-          mentalCapacityYesNo = Some(true),
+          mentalCapacityYesNo = Some(Yes),
           entityStart = date,
           provisional = true
         )

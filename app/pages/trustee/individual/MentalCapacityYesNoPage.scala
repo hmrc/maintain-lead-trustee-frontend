@@ -16,10 +16,11 @@
 
 package pages.trustee.individual
 
+import models.YesNoDontKnow
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object MentalCapacityYesNoPage extends QuestionPage[Boolean] {
+case object MentalCapacityYesNoPage extends QuestionPage[YesNoDontKnow] {
 
   override def path: JsPath = basePath \ toString
 

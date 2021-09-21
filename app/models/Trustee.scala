@@ -17,6 +17,8 @@
 package models
 
 import models.Constants._
+import models.Trustee.{legallyIncapableWrites, readMentalCapacity}
+import models.YesNoDontKnow.{No, Yes}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -47,6 +49,19 @@ object Trustee {
       case Left(errs) => JsError(errs)
     }
   }
+
+  def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
+    (__ \ 'legallyIncapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+      Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
+    }
+
+  def legallyIncapableWrites: Writes[YesNoDontKnow] = new Writes[YesNoDontKnow] {
+    override def writes(o: YesNoDontKnow): JsValue = o match {
+      case Yes => JsBoolean(false)
+      case No => JsBoolean(true)
+      case _ => JsNull
+    }
+  }
 }
 
 case class TrusteeIndividual(name: Name,
@@ -56,7 +71,7 @@ case class TrusteeIndividual(name: Name,
                              address: Option[Address],
                              countryOfResidence: Option[String] = None,
                              nationality: Option[String] = None,
-                             mentalCapacityYesNo: Option[Boolean] = None,
+                             mentalCapacityYesNo: Option[YesNoDontKnow] = None,
                              entityStart: LocalDate,
                              provisional: Boolean) extends Trustee {
 
@@ -80,7 +95,7 @@ object TrusteeIndividual {
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
       (__ \ 'countryOfResidence).readNullable[String] and
       (__ \ 'nationality).readNullable[String] and
-      (__ \ 'legallyIncapable).readNullable[Boolean].map(_.map(!_)) and
+      readMentalCapacity and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").read[Boolean]
     )(TrusteeIndividual.apply _)
@@ -93,10 +108,11 @@ object TrusteeIndividual {
       (__ \ 'identification \ 'address).writeNullable[Address] and
       (__ \ 'countryOfResidence).writeNullable[String] and
       (__ \ 'nationality).writeNullable[String] and
-      (__ \ 'legallyIncapable).writeNullable[Boolean](x => JsBoolean(!x)) and
+      (__ \ 'legallyIncapable).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     )(unlift(TrusteeIndividual.unapply))
+
 }
 
 case class TrusteeOrganisation(name: String,

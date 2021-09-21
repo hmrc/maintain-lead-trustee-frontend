@@ -18,6 +18,7 @@ package generators
 
 import models.BpMatchStatus._
 import models.DetailsType.DetailsType
+import models.YesNoDontKnow.{DontKnow, No, Yes}
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 import models._
@@ -155,7 +156,7 @@ trait ModelGenerators {
         address <- arbitrary[Option[Address]]
         countryOfResidence <- arbitrary[Option[String]]
         nationality <- arbitrary[Option[String]]
-        mentalCapacity <- arbitrary[Option[Boolean]]
+        mentalCapacity <- arbitrary[Option[YesNoDontKnow]]
         enitityStart <- datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(2019, 12, 31))
         provisional <- arbitrary[Boolean]
       } yield TrusteeIndividual(name, Some(dob), phone, id, address, countryOfResidence, nationality, mentalCapacity, enitityStart, provisional)
@@ -170,6 +171,12 @@ trait ModelGenerators {
   implicit lazy val arbitraryBpMatchStatus: Arbitrary[BpMatchStatus] = {
     Arbitrary {
       Gen.oneOf(Seq(FullyMatched, Unmatched, NoMatchAttempted, FailedToMatch))
+    }
+  }
+
+  implicit lazy val arbitraryYesNoDontKnow: Arbitrary[YesNoDontKnow] = {
+    Arbitrary {
+      Gen.oneOf(YesNoDontKnow.values)
     }
   }
 

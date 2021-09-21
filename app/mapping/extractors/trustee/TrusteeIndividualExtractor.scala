@@ -53,7 +53,7 @@ class TrusteeIndividualExtractor extends TrusteeExtractor {
       .flatMap(_.set(WhenAddedPage, trustee.entityStart))
   }
 
-  private def extractMentalCapacity(mentalCapacityYesNo: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractMentalCapacity(mentalCapacityYesNo: Option[YesNoDontKnow], answers: UserAnswers): Try[UserAnswers] = {
     if (answers.isUnderlyingData5mld) {
       extractValue(mentalCapacityYesNo, MentalCapacityYesNoPage, answers)
     } else {

@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.trustee.individual.add.{routes => addRts}
 import controllers.trustee.individual.{routes => rts}
 import models.IndividualOrBusiness.Individual
+import models.YesNoDontKnow.{DontKnow, Yes}
 import models._
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual._
@@ -68,7 +69,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(PassportDetailsPage, Passport("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
           .set(IdCardDetailsYesNoPage, true).success.value
           .set(IdCardDetailsPage, IdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, Yes).success.value
           .set(WhenAddedPage, LocalDate.of(2020, 1, 1)).success.value
 
         val result = helper.print(userAnswers, adding, name.displayName)
@@ -127,7 +128,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           .set(NonUkAddressPage, trusteeNonUkAddress).success.value
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
           .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, Yes).success.value
 
         val result = helper.print(userAnswers, adding, name.displayName)
         result mustBe AnswerSection(
@@ -151,6 +152,50 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
             AnswerRow(label = messages("trustee.individual.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />Number ending 7890<br />10 October 2030"), changeUrl = Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
+          )
+        )
+      }
+
+      "adding with unknown mental capacity data must show `I don’t know or not provided`" in {
+
+        val adding = true
+        val mode = NormalMode
+
+        val helper = injector.instanceOf[TrusteeIndividualPrintHelper]
+
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(NamePage, name).success.value
+          .set(MentalCapacityYesNoPage, DontKnow).success.value
+
+        val result = helper.print(userAnswers, adding, name.displayName)
+        result mustBe AnswerSection(
+          headingKey = None,
+          rows = Seq(
+            AnswerRow(label = messages("trustee.individual.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
+          )
+        )
+      }
+
+      "amending with unknown mental capacity data must show `I don’t know or not provided`" in {
+
+        val adding = false
+        val mode = CheckMode
+
+        val helper = injector.instanceOf[TrusteeIndividualPrintHelper]
+
+        val userAnswers = emptyUserAnswers
+          .set(IndividualOrBusinessPage, Individual).success.value
+          .set(NamePage, name).success.value
+          .set(MentalCapacityYesNoPage, DontKnow).success.value
+
+        val result = helper.print(userAnswers, adding, name.displayName)
+        result mustBe AnswerSection(
+          headingKey = None,
+          rows = Seq(
+            AnswerRow(label = messages("trustee.individual.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
           )
         )
       }
