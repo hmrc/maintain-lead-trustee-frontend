@@ -156,7 +156,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
         )
       }
 
-      "adding with unknown mental capacity data must show `I don’t know`" in {
+      "adding with unknown mental capacity data must show `I don’t know or not provided`" in {
 
         val adding = true
         val mode = NormalMode
@@ -173,7 +173,7 @@ class TrusteeIndividualPrintHelperSpec extends SpecBase {
           headingKey = None,
           rows = Seq(
             AnswerRow(label = messages("trustee.individual.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
+            AnswerRow(label = messages("trustee.individual.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
           )
         )
       }

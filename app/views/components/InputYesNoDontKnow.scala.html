@@ -62,7 +62,7 @@
             id = Some(field.id + "-dontKnow"),
             value = Some("dontKnow"),
             checked = field.value.contains("dontKnow"),
-            content = Text(messages("site.dontKnow")),
+            content = Text(messages("site.iDontKnow")),
             attributes = if(disabled && !field.value.contains("dontKnow")) Map("disabled" -> "disabled") else Map.empty
        )
     )
