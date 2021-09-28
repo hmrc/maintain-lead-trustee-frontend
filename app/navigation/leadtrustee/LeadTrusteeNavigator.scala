@@ -30,6 +30,12 @@ trait LeadTrusteeNavigator {
         .map(if (_) yesCall else noCall)
         .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
+
+  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+    ua.get(fromPage)
+      .map(if (_) yesCall else noCall)
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 }
 
 object LeadTrusteeNavigator {

@@ -62,7 +62,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                                       changeUrl: String,
                                       canEdit: Boolean = true): Option[AnswerRow] = {
       yesNoQuestion(query, labelKey, changeUrl, canEdit) orElse
-        Some(answer(labelKey, changeUrl, canEdit))
+        Some(answer(labelKey, Some(changeUrl), canEdit))
     }
 
     def dateQuestion(query: Gettable[LocalDate],
@@ -94,6 +94,14 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                                         changeUrl: String): Option[AnswerRow] = {
       val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
       question(query, labelKey, format, changeUrl)
+    }
+
+    def passportOrIdCardDetailsQuestion(query: Gettable[CombinedPassportOrIdCard],
+                                        labelKey: String,
+                                        changeUrl: Option[String],
+                                        canEdit: Boolean = true): Option[AnswerRow] = {
+      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
+      question(query, labelKey, format, changeUrl, canEdit)
     }
 
     def passportDetailsQuestion(query: Gettable[Passport],
@@ -140,18 +148,29 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                             canEdit: Boolean = true)
                            (implicit rds: Reads[T]): Option[AnswerRow] = {
       userAnswers.get(query) map { x =>
+        answer(labelKey, Some(changeUrl), canEdit, format(x))
+      }
+    }
+
+    private def question[T](query: Gettable[T],
+                            labelKey: String,
+                            format: T => Html,
+                            changeUrl: Option[String],
+                            canEdit: Boolean)
+                           (implicit rds: Reads[T]): Option[AnswerRow] = {
+      userAnswers.get(query) map { x =>
         answer(labelKey, changeUrl, canEdit, format(x))
       }
     }
 
     private def answer(labelKey: String,
-                       changeUrl: String,
+                       changeUrl: Option[String],
                        canEdit: Boolean,
                        format: Html = HtmlFormat.empty): AnswerRow = {
       AnswerRow(
         label = messages(s"$labelKey.checkYourAnswersLabel", trusteeName),
         answer = format,
-        changeUrl = Some(changeUrl),
+        changeUrl = changeUrl,
         canEdit = canEdit
       )
     }

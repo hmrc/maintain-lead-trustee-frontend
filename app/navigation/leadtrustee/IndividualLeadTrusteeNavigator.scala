@@ -19,7 +19,7 @@ package navigation.leadtrustee
 import controllers.leadtrustee.individual.routes._
 import models.UserAnswers
 import pages.Page
-import pages.leadtrustee.individual._
+import pages.leadtrustee.individual.{CountryOfNationalityInTheUkYesNoPage, CountryOfResidenceInTheUkYesNoPage, EmailAddressYesNoPage, LiveInTheUkYesNoPage, UkCitizenPage, _}
 import play.api.mvc.Call
 
 object IndividualLeadTrusteeNavigator extends LeadTrusteeNavigator {
@@ -39,11 +39,23 @@ object IndividualLeadTrusteeNavigator extends LeadTrusteeNavigator {
     case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadUpdated()
   }
 
-  private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] =
-    yesNoNav(CountryOfNationalityInTheUkYesNoPage, UkCitizenController.onPageLoad(), CountryOfNationalityController.onPageLoad()) orElse
-      yesNoNav(UkCitizenPage, NationalInsuranceNumberController.onPageLoad(), PassportOrIdCardController.onPageLoad()) orElse
-      yesNoNav(CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad()) orElse
-      yesNoNav(LiveInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse
-      yesNoNav(EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
+  private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] = {
+    case CountryOfNationalityInTheUkYesNoPage => ua =>
+      yesNoNav(ua, CountryOfNationalityInTheUkYesNoPage, UkCitizenController.onPageLoad(), CountryOfNationalityController.onPageLoad())
+    case UkCitizenPage => ua =>
+      yesNoNav(ua, UkCitizenPage, NationalInsuranceNumberController.onPageLoad(), navigateToPassportOrIdIfAllowed(ua))
+    case CountryOfResidenceInTheUkYesNoPage => ua =>
+      yesNoNav(ua, CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad())
+    case LiveInTheUkYesNoPage => ua =>
+      yesNoNav(ua, LiveInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad())
+    case EmailAddressYesNoPage => ua =>
+      yesNoNav(ua, EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
+  }
 
+  def navigateToPassportOrIdIfAllowed(userAnswers: UserAnswers): Call = {
+    userAnswers.get(PassportOrIdCardDetailsPage) match {
+      case Some(value) if (!value.detailsType.isProvisional) => CountryOfResidenceInTheUkYesNoController.onPageLoad()
+      case _ => PassportOrIdCardController.onPageLoad()
+    }
+  }
 }

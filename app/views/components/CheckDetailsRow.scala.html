@@ -35,11 +35,20 @@
             </a>
         </dd>
     } else {
-        @* Add Verified Tag *@
-        <dd class="govuk-summary-list__actions">
-            <span>
-                <strong class="govuk-tag verified">@messages("site.verified")</strong>
-            </span>
-        </dd>
+        @if(row.changeUrl.isEmpty) {
+            @* Add Cannot Change Tag *@
+            <dd class="govuk-summary-list__actions">
+                <span>
+                    <strong class="govuk-tag--grey">@messages("site.cannot.change")</strong>
+                </span>
+            </dd>
+        } else {
+            @* Add Verified Tag *@
+            <dd class="govuk-summary-list__actions">
+                <span>
+                    <strong class="govuk-tag verified">@messages("site.verified")</strong>
+                </span>
+            </dd>
+        }
     }
 </div>
