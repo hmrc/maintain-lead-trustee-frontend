@@ -40,8 +40,8 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
     case CountryOfNationalityPage => navigateAwayFromCountryOfNationalityPages(_, mode)
     case NationalInsuranceNumberPage => _ => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     case CountryOfResidencePage => navigateToOrBypassAddressPages(_, mode)
-    case UkAddressPage | NonUkAddressPage => navigateToIdQuestions(_, mode)
-    case PassportDetailsPage | IdCardDetailsPage | PassportOrIdCardDetailsPage => _ => rts.MentalCapacityYesNoController.onPageLoad(mode)
+    case UkAddressPage | NonUkAddressPage => navigateAwayFromAddressPages(_, mode)
+    case PassportDetailsPage | IdCardDetailsPage | PassportOrIdCardDetailsPage => _ => navigateAwayFromPassportIdCardCombined(mode)
     case MentalCapacityYesNoPage => navigateToWhenAddedOrCheckDetails(_, mode)
     case WhenAddedPage => _ => addRts.CheckDetailsController.onPageLoad()
   }
@@ -113,12 +113,21 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
   }
 
   private def amendNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case PassportOrIdCardDetailsYesNoPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = PassportOrIdCardDetailsYesNoPage,
-      yesCall = rts.PassportOrIdCardDetailsController.onPageLoad(mode),
-      noCall = rts.MentalCapacityYesNoController.onPageLoad(mode)
-    )
+    case PassportOrIdCardDetailsYesNoPage => ua =>
+      if (mode == NormalMode) {
+        yesNoNav(
+          ua = ua,
+          fromPage = PassportOrIdCardDetailsYesNoPage,
+          yesCall = rts.PassportOrIdCardDetailsController.onPageLoad(mode),
+          noCall = rts.MentalCapacityYesNoController.onPageLoad(mode)
+        )
+      } else {
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
+      }
+  }
+
+  private def navigateAwayFromPassportIdCardCombined(mode: Mode): Call = {
+    rts.MentalCapacityYesNoController.onPageLoad(mode)
   }
 
   private def navigateToOrBypassAddressPages(ua: UserAnswers, mode: Mode): Call = {
@@ -137,9 +146,13 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
     }
   }
 
-  private def navigateToIdQuestions(userAnswers: UserAnswers, mode: Mode): Call = {
+  private def navigateAwayFromAddressPages(userAnswers: UserAnswers, mode: Mode): Call = {
     if (userAnswers.get(PassportOrIdCardDetailsYesNoPage).isDefined || userAnswers.get(PassportOrIdCardDetailsPage).isDefined) {
-      rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
+      if (mode == NormalMode) {
+        rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
+      } else {
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
+      }
     } else {
       rts.PassportDetailsYesNoController.onPageLoad(mode)
     }

@@ -18,7 +18,7 @@
 
 @this()
 
-@(row: AnswerRow)(implicit messages: Messages)
+@(row: AnswerRow, tagType: Option[String])(implicit messages: Messages)
 
 <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key govuk-!-width-two-thirds">
@@ -35,11 +35,13 @@
             </a>
         </dd>
     } else {
-        @* Add Verified Tag *@
-        <dd class="govuk-summary-list__actions">
-            <span>
-                <strong class="govuk-tag verified">@messages("site.verified")</strong>
-            </span>
-        </dd>
+            <dd class="govuk-summary-list__actions">
+                <span>
+                    @tagType match {
+                        case None => {<strong class="govuk-tag verified">@messages("site.verified")</strong>}
+                        case _ => {<strong class="govuk-tag govuk-tag--grey">@messages("site.cannot.change")</strong>}
+                    }
+                </span>
+            </dd>
     }
 </div>
