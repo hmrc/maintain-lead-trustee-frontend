@@ -17,57 +17,37 @@
 package controllers.trustee.individual
 
 import controllers.actions.StandardActionSets
-import controllers.trustee.actions.NameRequiredAction
-import forms.YesNoFormProvider
+import controllers.trustee.actions.{NameRequiredAction, TrusteeNameRequest}
 import models.Mode
-import navigation.Navigator
-import pages.trustee.individual.PassportOrIdCardDetailsYesNoPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.trustee.individual.PassportOrIdCardDetailsYesNoView
+import pages.trustee.individual.amend.IndexPage
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class PassportOrIdCardDetailsYesNoController @Inject()(
                                                         override val messagesApi: MessagesApi,
-                                                        sessionRepository: PlaybackRepository,
-                                                        navigator: Navigator,
                                                         standardActionSets: StandardActionSets,
                                                         nameAction: NameRequiredAction,
-                                                        formProvider: YesNoFormProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        view: PassportOrIdCardDetailsYesNoView
-                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                        val controllerComponents: MessagesControllerComponents
+                                                      )() extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.passportOrIdCardDetailsYesNo")
+  private def route()(implicit request: TrusteeNameRequest[AnyContent]) =
+    request.userAnswers.get(IndexPage) match {
+      case Some(index) =>
+        Redirect(amend.routes.CheckDetailsController.onPageLoadUpdated(index))
+      case None =>
+        Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(PassportOrIdCardDetailsYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, request.trusteeName))
+      route()
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsYesNoPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsYesNoPage, mode, updatedAnswers))
-      )
+      route()
   }
 }

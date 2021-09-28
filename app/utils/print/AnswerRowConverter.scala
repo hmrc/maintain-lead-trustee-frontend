@@ -57,6 +57,14 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
+    def yesNoQuestion(query: Gettable[Boolean],
+                      labelKey: String,
+                      changeUrl: Option[String],
+                      canEdit: Boolean): Option[AnswerRow] = {
+      val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
+      question(query, labelKey, format, changeUrl, canEdit)
+    }
+
     def yesNoQuestionAllowEmptyAnswer(query: Gettable[Boolean],
                                       labelKey: String,
                                       changeUrl: String,
@@ -86,13 +94,6 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                                       changeUrl: String)
                                      (implicit reads: Reads[T]): Option[AnswerRow] = {
       val format = (x: T) => checkAnswersFormatters.formatAddress(x)
-      question(query, labelKey, format, changeUrl)
-    }
-
-    def passportOrIdCardDetailsQuestion(query: Gettable[CombinedPassportOrIdCard],
-                                        labelKey: String,
-                                        changeUrl: String): Option[AnswerRow] = {
-      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
       question(query, labelKey, format, changeUrl)
     }
 

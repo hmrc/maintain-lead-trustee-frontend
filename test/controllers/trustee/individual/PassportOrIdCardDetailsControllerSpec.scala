@@ -17,41 +17,35 @@
 package controllers.trustee.individual
 
 import base.SpecBase
-import forms.CombinedPassportOrIdCardDetailsFormProvider
-import models.{CombinedPassportOrIdCard, DetailsType, Mode, Name, NormalMode, UserAnswers}
-import navigation.Navigator
-import org.mockito.ArgumentCaptor
+import models.{CombinedPassportOrIdCard, Mode, Name, NormalMode, UserAnswers}
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsPage}
-import play.api.data.Form
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.InputOption
-import utils.countryOptions.CountryOptions
-import views.html.trustee.individual.PassportOrIdCardDetailsView
-
 import java.time.LocalDate
+
+import pages.trustee.individual.amend.IndexPage
+
 import scala.concurrent.Future
 
 class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
-  val form: Form[CombinedPassportOrIdCard] = formProvider.withPrefix("trustee.individual.passportOrIdCardDetails")
-  val trusteeName = "FirstName LastName"
-  val name: Name = Name("FirstName", None, "LastName")
-
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
-
-  val mode: Mode = NormalMode
+  private val name: Name = Name("FirstName", None, "LastName")
+  private val mode: Mode = NormalMode
+  private val index = 0
 
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
+    .set(IndexPage, index).success.value
 
-  lazy val passportOrIdCardDetailsRoute: String = routes.PassportOrIdCardDetailsController.onPageLoad(mode).url
+  private lazy val passportOrIdCardDetailsRoute: String =
+    routes.PassportOrIdCardDetailsController.onPageLoad(mode).url
+
+  private lazy val checkDetailsRoute =
+    controllers.trustee.individual.amend.routes.CheckDetailsController.onPageLoadUpdated(index).url
 
   val validData: CombinedPassportOrIdCard = CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
 
@@ -62,7 +56,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
   "PassportOrIdCardDetails Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "redirect to check details for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -70,17 +64,14 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[PassportOrIdCardDetailsView]
+      status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, mode, trusteeName, countryOptions)(request, messages).toString
+      redirectLocation(result).value mustEqual checkDetailsRoute
 
       application.stop()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
+    "redirect to check details when previously answered" in {
 
       val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, validData).success.value
 
@@ -88,170 +79,38 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
       val request = FakeRequest(GET, passportOrIdCardDetailsRoute)
 
-      val view = application.injector.instanceOf[PassportOrIdCardDetailsView]
-
       val result = route(application, request).value
 
-      status(result) mustEqual OK
+      status(result) mustEqual SEE_OTHER
 
-      contentAsString(result) mustEqual
-        view(form.fill(validData), mode, trusteeName, countryOptions)(request, messages).toString
+      redirectLocation(result).value mustEqual checkDetailsRoute
 
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" when {
+    "redirect to check details when valid data is submitted" in {
 
-      "number has changed" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .build()
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
-          .build()
-
-        val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
-          .withFormUrlEncodedBody(
-            "country" -> validData.countryOfIssue,
-            "number" -> validData.number,
-            "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
-            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-            "expiryDate.year" -> validData.expirationDate.getYear.toString,
-            "detailsType" -> validData.detailsType.toString
-          )
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-
-        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(playbackRepository).set(uaCaptor.capture)
-        uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.CombinedProvisional
-
-        application.stop()
-      }
-
-      "number has not changed" when {
-
-        "previously Combined" in {
-
-          val vd = validData.copy(detailsType = DetailsType.Combined)
-
-          val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, vd).success.value
-
-          val application = applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(bind[Navigator].toInstance(fakeNavigator))
-            .build()
-
-          val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
-            .withFormUrlEncodedBody(
-              "country" -> vd.countryOfIssue,
-              "number" -> vd.number,
-              "expiryDate.day" -> vd.expirationDate.getDayOfMonth.toString,
-              "expiryDate.month" -> vd.expirationDate.getMonthValue.toString,
-              "expiryDate.year" -> vd.expirationDate.getYear.toString,
-              "detailsType" -> vd.detailsType.toString
-            )
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(playbackRepository).set(uaCaptor.capture)
-          uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.Combined
-
-          application.stop()
-        }
-
-        "previously CombinedProvisional" in {
-
-          val vd = validData.copy(detailsType = DetailsType.CombinedProvisional)
-
-          val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, vd).success.value
-
-          val application = applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(bind[Navigator].toInstance(fakeNavigator))
-            .build()
-
-          val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
-            .withFormUrlEncodedBody(
-              "country" -> vd.countryOfIssue,
-              "number" -> vd.number,
-              "expiryDate.day" -> vd.expirationDate.getDayOfMonth.toString,
-              "expiryDate.month" -> vd.expirationDate.getMonthValue.toString,
-              "expiryDate.year" -> vd.expirationDate.getYear.toString,
-              "detailsType" -> vd.detailsType.toString
-            )
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(playbackRepository).set(uaCaptor.capture)
-          uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.CombinedProvisional
-
-          application.stop()
-        }
-
-        "country or expiry date have changed" in {
-
-          val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, validData).success.value
-
-          val application = applicationBuilder(userAnswers = Some(userAnswers))
-            .overrides(bind[Navigator].toInstance(fakeNavigator))
-            .build()
-
-          val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
-            .withFormUrlEncodedBody(
-              "country" -> "changed country",
-              "number" -> validData.number,
-              "expiryDate.day" -> validData.expirationDate.plusDays(1).getDayOfMonth.toString,
-              "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-              "expiryDate.year" -> validData.expirationDate.getYear.toString,
-              "detailsType" -> validData.detailsType.toString
-            )
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(playbackRepository).set(uaCaptor.capture)
-          uaCaptor.getValue.get(PassportOrIdCardDetailsPage).get.detailsType mustBe DetailsType.Combined
-
-          application.stop()
-        }
-      }
-    }
-
-    "return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request =
-        FakeRequest(POST, passportOrIdCardDetailsRoute)
-          .withFormUrlEncodedBody(("value", ""))
-
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val view = application.injector.instanceOf[PassportOrIdCardDetailsView]
+      val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
+        .withFormUrlEncodedBody(
+          "country" -> validData.countryOfIssue,
+          "number" -> validData.number,
+          "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
+          "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+          "expiryDate.year" -> validData.expirationDate.getYear.toString,
+          "detailsType" -> validData.detailsType.toString
+        )
 
       val result = route(application, request).value
 
-      status(result) mustEqual BAD_REQUEST
+      status(result) mustEqual SEE_OTHER
 
-      contentAsString(result) mustEqual
-        view(boundForm, mode, trusteeName, countryOptions)(request, messages).toString
+      redirectLocation(result).value mustEqual checkDetailsRoute
 
       application.stop()
+
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

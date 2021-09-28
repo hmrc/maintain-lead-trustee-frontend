@@ -21,10 +21,10 @@
     checkDetailsRow: CheckDetailsRow
 )
 
-@(answersSection: AnswerSection)(implicit messages: Messages)
+@(answersSection: AnswerSection, tagType: Option[String] = None)(implicit messages: Messages)
 
 <dl class="govuk-summary-list">
     @for(row <- answersSection.rows){
-        @checkDetailsRow(row)
+        @checkDetailsRow(row, if(row.changeUrl.isEmpty) Some("CannotChange") else tagType)
     }
 </dl>
