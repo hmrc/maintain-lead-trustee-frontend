@@ -91,9 +91,10 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
 
     def passportOrIdCardDetailsQuestion(query: Gettable[CombinedPassportOrIdCard],
                                         labelKey: String,
-                                        changeUrl: String): Option[AnswerRow] = {
+                                        changeUrl: String,
+                                        canEdit: Boolean = true): Option[AnswerRow] = {
       val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
-      question(query, labelKey, format, changeUrl)
+      question(query, labelKey, format, changeUrl, canEdit)
     }
 
     def passportDetailsQuestion(query: Gettable[Passport],

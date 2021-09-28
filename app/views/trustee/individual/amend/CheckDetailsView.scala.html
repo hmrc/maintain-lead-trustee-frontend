@@ -38,7 +38,10 @@
 
         @heading("trustee.checkDetails.heading")
 
-        @checkDetailsList(answersSection = answersSection)
+        <p>@messages("trustee.individual.cannotChange.p1")</p>
+        <p>@messages("trustee.individual.cannotChange.p2")</p>
+
+        @checkDetailsList(answersSection = answersSection, tagType = Some("CannotChange"))
 
         @submitButton()
     }

@@ -26,6 +26,7 @@ site.cannotRemove = Cannot remove
 site.cannotRemove-hidden = Cannot remove {0}
 site.try-again = Try again
 site.verified = Verified
+site.cannot.change = Cannot change
 site.number-ending = Number ending {0}
 
 checkYourAnswers.title = Check Your Answers
@@ -576,6 +577,9 @@ trustee.individual.mentalCapacityYesNo.p4 = If you are not certain whether the t
 trustee.individual.mentalCapacityYesNo.heading2 = Why HMRC are asking this question
 trustee.individual.mentalCapacityYesNo.p5 = Normally, HMRC can share a person’s data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020.
 trustee.individual.mentalCapacityYesNo.p6 = Where a person does not have mental capacity, HMRC are required to not share their personal data.
+
+trustee.individual.cannotChange.p1 = Some of the information we ask about the trustee cannot be changed.
+trustee.individual.cannotChange.p2 = If you need to update the trustee’s details, you will need to remove them, then add them as a new trustee.
 
 trustee.organisation.name.heading = What is the business’s name?
 trustee.organisation.name.title = What is the business’s name?
