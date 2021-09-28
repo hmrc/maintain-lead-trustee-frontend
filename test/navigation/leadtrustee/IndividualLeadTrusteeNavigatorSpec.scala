@@ -18,8 +18,11 @@ package navigation.leadtrustee
 
 import base.SpecBase
 import controllers.leadtrustee.individual.routes._
+import models.CombinedPassportOrIdCard
 import navigation.Navigator
 import pages.leadtrustee.individual._
+
+import java.time.LocalDate
 
 class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
 
@@ -70,11 +73,20 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
           .mustBe(NationalInsuranceNumberController.onPageLoad())
       }
 
-      "-> NO -> Passport/ID card page" in {
+      "-> NO (When Adding or amending in session) -> Passport/ID card page" in {
         val answers = emptyUserAnswers.set(page, false).success.value
 
         navigator.nextPage(page, answers)
           .mustBe(PassportOrIdCardController.onPageLoad())
+      }
+
+      "-> NO (When Amending from ETMP) -> UK residency yes/no page" in {
+        val answers = emptyUserAnswers
+          .set(page, false).success.value
+          .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.now())).success.value
+
+        navigator.nextPage(page, answers)
+          .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
       }
     }
 
