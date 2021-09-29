@@ -32,8 +32,8 @@ class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowCo
     val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
     val adding: Boolean = userAnswers.get(PassportOrIdCardDetailsPage) match {
-      case Some(value) => value.detailsType.isProvisional
-      case None => false
+      case Some(value) if (!value.detailsType.isProvisional) => false
+      case _ => true
     }
 
     val changeLinkOrNone: (Boolean, String) => Option[String] =
