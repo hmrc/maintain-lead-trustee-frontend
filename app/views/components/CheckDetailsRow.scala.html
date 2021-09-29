@@ -40,9 +40,11 @@
                     @tagType match {
                         case None => {<strong class="govuk-tag verified">@messages("site.verified")</strong>}
                         case _ => {
-                            <span><strong class="govuk-tag govuk-tag--grey">@messages("site.cannot.change")</strong> @row.label)</span>
-                        }
-                    }
+                            <span>
+                                <strong class="govuk-tag govuk-tag--grey">@messages("site.cannot.change")</strong>
+                                <span class="govuk-visually-hidden">@row.label</span>)
+                            </span>
+                    }}
                 </span>
             </dd>
     }
