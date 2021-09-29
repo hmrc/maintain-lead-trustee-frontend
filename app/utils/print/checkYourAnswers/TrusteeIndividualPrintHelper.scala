@@ -32,6 +32,9 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
 
     val bound = answerRowConverter.bind(userAnswers, name)
 
+    val changeLinkOrNone: (Boolean, String) => Option[String] =
+      (adding: Boolean, route: String) => if(adding) Some(route) else None
+
     val prefix: String = "trustee.individual"
 
     def answerRows: Seq[AnswerRow] = {
@@ -56,8 +59,8 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.passportDetailsQuestion(PassportDetailsPage, s"$prefix.passportDetails", PassportDetailsController.onPageLoad(mode).url),
         bound.yesNoQuestion(IdCardDetailsYesNoPage, s"$prefix.idCardDetailsYesNo", IdCardDetailsYesNoController.onPageLoad(mode).url),
         bound.idCardDetailsQuestion(IdCardDetailsPage, s"$prefix.idCardDetails", IdCardDetailsController.onPageLoad(mode).url),
-        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, s"$prefix.passportOrIdCardDetailsYesNo", changeUrl = PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url, canEdit = adding),
-        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", changeUrl = PassportOrIdCardDetailsController.onPageLoad(mode).url, canEdit = adding),
+        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, s"$prefix.passportOrIdCardDetailsYesNo", changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url), canEdit = adding),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsController.onPageLoad(mode).url), canEdit = adding),
         bound.enumQuestion(MentalCapacityYesNoPage, s"$prefix.mentalCapacityYesNo", MentalCapacityYesNoController.onPageLoad(mode).url, "site"),
         if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
       ).flatten

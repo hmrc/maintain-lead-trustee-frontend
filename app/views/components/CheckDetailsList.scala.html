@@ -25,6 +25,6 @@
 
 <dl class="govuk-summary-list">
     @for(row <- answersSection.rows){
-        @checkDetailsRow(row, tagType)
+        @checkDetailsRow(row, if(row.changeUrl.isEmpty) Some("CannotChange") else tagType)
     }
 </dl>
