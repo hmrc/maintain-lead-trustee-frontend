@@ -35,7 +35,7 @@ object LeadTrustee {
       orgErrs <- data.validate[LeadTrusteeOrganisation].asEither.left
     } yield indErrs.map(pair => (pair._1, JsonValidationError("Failed to read as LeadTrusteeIndividual") +: pair._2)) ++
       orgErrs.map(pair => (pair._1, JsonValidationError("Failed to read as LeadTrusteeOrganisation") +: pair._2))
-    
+
     allErrors match {
       case Right(lt) => JsSuccess(lt)
       case Left(errs) => JsError(errs)
