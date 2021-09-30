@@ -185,7 +185,7 @@ leadTrusteeDetails.title = Check lead trustee details
 leadTrusteeDetails.heading = Check lead trustee details
 
 leadTrusteeDetails.cannotChange.p1 = Some of the information we ask about the lead trustee cannot be changed.
-leadTrusteeDetails.cannotChange.p2 = If you need to update the lead trustee's details, you will need to remove them, then add them as a new lead trustee.
+leadTrusteeDetails.cannotChange.p2 = If you need to update the lead trustee’s details, you will need to remove them, then add them as a new lead trustee.
 
 leadtrustee.individualOrBusiness.title = Is the lead trustee an individual or a business?
 leadtrustee.individualOrBusiness.heading = Is the lead trustee an individual or a business?
