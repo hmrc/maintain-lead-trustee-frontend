@@ -579,7 +579,7 @@ trustee.individual.mentalCapacityYesNo.p3 = HMRC will assume that the trustee do
 trustee.individual.mentalCapacityYesNo.p4 = If you are not certain whether the trustee has mental capacity, select ‘I don’t know’.
 
 trustee.individual.mentalCapacityYesNo.heading2 = Why HMRC are asking this question
-trustee.individual.mentalCapacityYesNo.p5 = Under certain limited circumstances, HMRC can share personal data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020
+trustee.individual.mentalCapacityYesNo.p5 = Under certain limited circumstances, HMRC can share personal data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020.
 trustee.individual.mentalCapacityYesNo.p6 = Where a person does not have mental capacity, HMRC will not share their personal data.
 
 trustee.individual.cannotChange.p1 = Some of the information we ask about the trustee cannot be changed.
