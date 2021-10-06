@@ -19,7 +19,7 @@ package config
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Call
 import java.time.LocalDate
 
@@ -84,5 +84,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   val maxMatchingAttempts: Int = getInt("individual-match.max-attempts")
+
+  def helplineUrl(implicit messages: Messages): String = {
+    val path = messages.lang.code match {
+      case WELSH => "urls.welshHelpline"
+      case _ => "urls.trustsHelpline"
+    }
+    configuration.get[String](path)
+  }
 
 }

@@ -53,6 +53,13 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 error.postcodeInvalid = Enter a real postcode
 
+pageNotFound.title = Page not found
+pageNotFound.heading = Page not found
+pageNotFound.p1 = If you typed the web address, check it is correct.
+pageNotFound.p2 = If you pasted the web address, check that you copied the entire address.
+pageNotFound.p3 = If the web address is correct or you selected a link or button, {0}.
+pageNotFound.link = contact the trust helpline to speak to someone about a trust (opens in a new tab)
+
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.guidance = This is because you have been inactive on the service for 15 minutes.
