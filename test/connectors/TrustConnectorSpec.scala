@@ -34,7 +34,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
 
   private def getLeadTrusteeUrl(identifier: String): String = s"/trusts/trustees/$identifier/transformed/lead-trustee"
-  private def getTrustDetailsUrl(identifier: String) = s"/trusts/$identifier/trust-details"
+  private def getTrustDetailsUrl(identifier: String) = s"/trusts/trust-details/$identifier/transformed"
   private def getTrusteesUrl(identifier: String) = s"/trusts/trustees/$identifier/transformed/trustee"
   private def removeTrusteeUrl(identifier: String) = s"/trusts/trustees/$identifier/remove"
   private def promoteTrusteeUrl(identifier: String, index: Int) = s"/trusts/trustees/promote/$identifier/$index"
