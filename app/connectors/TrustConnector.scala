@@ -35,7 +35,7 @@ class TrustConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
   def getTrustDetails(identifier: String)
                      (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
-    val url: String = s"${config.trustsUrl}/trusts/$identifier/trust-details"
+    val url: String = s"${config.trustsUrl}/trusts/trust-details/$identifier/transformed"
     http.GET[TrustDetails](url)
   }
 
