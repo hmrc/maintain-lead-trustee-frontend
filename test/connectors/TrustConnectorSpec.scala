@@ -16,7 +16,6 @@
 
 package connectors
 
-import java.time.LocalDate
 import base.SpecBase
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -29,6 +28,8 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
+
+import java.time.LocalDate
 
 class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {

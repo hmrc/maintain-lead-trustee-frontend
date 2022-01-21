@@ -17,19 +17,17 @@
 package controllers.trustee.individual
 
 import base.SpecBase
-import models.{Mode, Name, NormalMode, UserAnswers}
+import models.{Mode, Name, NormalMode}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsYesNoPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import java.time.LocalDate
-
-import pages.trustee.individual.amend.IndexPage
 
 import scala.concurrent.Future
 
@@ -40,7 +38,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
   private val index = 0
 
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+  val userAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
     .set(IndexPage, index).success.value
 
@@ -53,7 +51,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
     "redirect to check details for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, passportOrIdCardDetailsYesNoRoute)
 
@@ -68,9 +66,9 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
     "redirect to check details when previously answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsYesNoPage, true).success.value
+      val newUserAnswers = userAnswers.set(PassportOrIdCardDetailsYesNoPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       val request = FakeRequest(GET, passportOrIdCardDetailsYesNoRoute)
 
@@ -89,7 +87,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()
 

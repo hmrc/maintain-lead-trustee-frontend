@@ -16,11 +16,11 @@
 
 package forms.trustee
 
-import java.time.{LocalDate, ZoneOffset}
-
 import forms.DateRemovedFromTrustFormProvider
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
+
+import java.time.{LocalDate, ZoneOffset}
 
 class DateRemovedFromTrustFormProviderSpec extends DateBehaviours {
 

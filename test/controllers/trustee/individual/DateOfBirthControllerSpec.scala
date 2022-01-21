@@ -16,7 +16,6 @@
 
 package controllers.trustee.individual
 
-import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import forms.DateOfBirthFormProvider
 import models.{Name, NormalMode}
@@ -32,6 +31,7 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.trustee.individual.DateOfBirthView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {

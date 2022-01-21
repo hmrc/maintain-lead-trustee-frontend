@@ -16,12 +16,12 @@
 
 package views
 
+import base.SpecBase
 import models.UserAnswers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import play.twirl.api.Html
-import base.SpecBase
 import org.scalatest.Assertion
+import play.twirl.api.Html
 
 import scala.reflect.ClassTag
 

@@ -20,6 +20,7 @@ import connectors.TrustConnector
 import controllers.actions.StandardActionSets
 import models.TaskStatus.InProgress
 import models.UserAnswers
+import utils.Session
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,6 +57,7 @@ class IndexController @Inject()(
             case None => UserAnswers(
               internalId = request.user.internalId,
               identifier = identifier,
+              sessionId = Session.id(hc),
               whenTrustSetup = trustDetails.startDate,
               isTaxable = trustDetails.isTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld

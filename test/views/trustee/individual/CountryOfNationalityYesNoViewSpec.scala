@@ -16,13 +16,13 @@
 
 package views.trustee.individual
 
+import controllers.trustee.individual.routes
 import forms.YesNoFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.trustee.individual.CountryOfNationalityYesNoView
-import controllers.trustee.individual.routes
 
 class CountryOfNationalityYesNoViewSpec extends YesNoViewBehaviours {
 

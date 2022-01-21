@@ -16,11 +16,9 @@
 
 package controllers.leadtrustee.organisation
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.UkAddressFormProvider
-import models.{UkAddress, UserAnswers}
+import models.UkAddress
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -43,8 +41,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
   val name = "Org Name"
   val address = UkAddress("line 1", "line 2", None, None, "AB11AB")
 
-  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   "UkAddress Controller" must {
 

@@ -16,7 +16,6 @@
 
 package controllers.trustee.individual
 
-import java.time.LocalDate
 import base.SpecBase
 import forms.NonUkAddressFormProvider
 import models.{Name, NonUkAddress, NormalMode, UserAnswers}
@@ -43,8 +42,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val userAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(NormalMode).url
 
@@ -58,7 +56,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val result = route(application, getRequest).value
 
@@ -74,11 +72,11 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
+      val newUserAnswers = userAnswers
         .set(NonUkAddressPage, validData).success.value
         .set(NamePage, name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       val view = application.injector.instanceOf[NonUkAddressView]
 
@@ -99,7 +97,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
@@ -120,7 +118,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
         FakeRequest(POST, nonUkAddressRoute)

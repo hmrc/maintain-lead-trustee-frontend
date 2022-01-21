@@ -18,12 +18,11 @@ package generators
 
 import models.BpMatchStatus._
 import models.DetailsType.DetailsType
-import models.YesNoDontKnow.{DontKnow, No, Yes}
-
-import java.time.{Instant, LocalDate, ZoneOffset}
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+
+import java.time.{Instant, LocalDate, ZoneOffset}
 
 trait ModelGenerators {
 

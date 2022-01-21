@@ -42,6 +42,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelG
         val ua = new UserAnswers(
           "ID",
           "UTRUTRUTR",
+          "sessionId",
           LocalDate.of(1999, 10, 20),
           json
         )

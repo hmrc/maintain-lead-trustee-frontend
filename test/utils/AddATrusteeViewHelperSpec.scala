@@ -16,11 +16,11 @@
 
 package utils
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.{AllTrustees, Name, NationalInsuranceNumber, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation}
 import viewmodels.addAnother.AddRow
+
+import java.time.LocalDate
 
 class AddATrusteeViewHelperSpec extends SpecBase {
 

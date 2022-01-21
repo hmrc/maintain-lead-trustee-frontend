@@ -25,9 +25,9 @@ import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.individual._
 import pages.trustee.individual.add._
-import java.time.LocalDate
-
 import pages.trustee.individual.amend.IndexPage
+
+import java.time.LocalDate
 
 class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks {
 

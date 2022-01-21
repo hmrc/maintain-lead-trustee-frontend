@@ -16,13 +16,13 @@
 
 package views.leadtrustee.individual
 
-import java.time.LocalDate
-
 import forms.DateOfBirthFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.leadtrustee.individual.DateOfBirthView
+
+import java.time.LocalDate
 
 class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 

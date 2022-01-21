@@ -16,7 +16,6 @@
 
 package base
 
-import java.time.LocalDate
 import controllers.actions._
 import navigation.FakeNavigator
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
@@ -28,7 +27,8 @@ import play.api.mvc.BodyParsers
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestUserAnswers
+
+import java.time.LocalDate
 
 trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked with BeforeAndAfter with FakeTrustsApp {
   this: TestSuite =>
@@ -38,7 +38,9 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  def emptyUserAnswers = models.UserAnswers(TestUserAnswers.userInternalId, "UTRUTRUTR", LocalDate.now())
+  lazy val userInternalId = "internalId"
+
+  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", "sessionId", LocalDate.now())
 
   lazy val bodyParsers = injector.instanceOf[BodyParsers.Default]
 

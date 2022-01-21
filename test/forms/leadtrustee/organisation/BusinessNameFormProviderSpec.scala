@@ -16,8 +16,8 @@
 
 package forms.leadtrustee.organisation
 
-import forms.{BusinessNameFormProvider, Validation}
 import forms.behaviours.StringFieldBehaviours
+import forms.{BusinessNameFormProvider, Validation}
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
