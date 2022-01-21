@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 
 package controllers.leadtrustee.organisation
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.NonUkAddressFormProvider
-import models.{NonUkAddress, UserAnswers}
+import models.NonUkAddress
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -46,8 +44,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   val name = "Org Name"
   val address = NonUkAddress("line 1", "line 2", None, "DE")
 
-  val userAnswers = UserAnswers("fakeId", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   "NonUkAddress Controller" must {
 

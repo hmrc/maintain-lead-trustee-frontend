@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package controllers.leadtrustee
 
 
-import java.time.LocalDate
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.{CombinedPassportOrIdCard, LeadTrusteeIndividual, Name, UkAddress}
@@ -29,6 +28,7 @@ import play.api.test.Helpers._
 import services.TrustService
 import views.html.leadtrustee.UnableToRemoveView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class UnableToRemoveControllerSpec extends SpecBase   {

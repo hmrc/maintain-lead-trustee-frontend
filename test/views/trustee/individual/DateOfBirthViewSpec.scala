@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 
 package views.trustee.individual
 
-import java.time.LocalDate
 import forms.DateOfBirthFormProvider
 import models.{Name, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.trustee.individual.DateOfBirthView
+
+import java.time.LocalDate
 
 class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 

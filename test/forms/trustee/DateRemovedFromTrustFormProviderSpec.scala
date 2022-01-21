@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package forms.trustee
 
-import java.time.{LocalDate, ZoneOffset}
-
 import forms.DateRemovedFromTrustFormProvider
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
+
+import java.time.{LocalDate, ZoneOffset}
 
 class DateRemovedFromTrustFormProviderSpec extends DateBehaviours {
 

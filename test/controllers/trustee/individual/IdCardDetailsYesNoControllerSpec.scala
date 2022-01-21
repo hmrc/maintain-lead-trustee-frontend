@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.trustee.individual.IdCardDetailsYesNoView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
@@ -44,8 +43,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val mode: Mode = NormalMode
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val userAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad(mode).url
 
@@ -55,7 +53,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val result = route(application, getRequest).value
 
@@ -71,11 +69,11 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
+      val newUserAnswers = userAnswers
         .set(NamePage, name).success.value
         .set(IdCardDetailsYesNoPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       val view = application.injector.instanceOf[IdCardDetailsYesNoView]
 
@@ -96,7 +94,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
@@ -117,7 +115,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
         FakeRequest(POST, idCardDetailsYesNoRoute)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+
 import java.time.LocalDate
-
-import pages.trustee.individual.amend.IndexPage
-
 import scala.concurrent.Future
 
 class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
@@ -37,7 +36,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
   private val mode: Mode = NormalMode
   private val index = 0
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
+  val userAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
     .set(IndexPage, index).success.value
 
@@ -58,7 +57,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
     "redirect to check details for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, passportOrIdCardDetailsRoute)
 
@@ -73,9 +72,9 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
     "redirect to check details when previously answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsPage, validData).success.value
+      val newUserAnswers = userAnswers.set(PassportOrIdCardDetailsPage, validData).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       val request = FakeRequest(GET, passportOrIdCardDetailsRoute)
 
@@ -90,7 +89,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
     "redirect to check details when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
         .build()
 
       val request = FakeRequest(POST, passportOrIdCardDetailsRoute)

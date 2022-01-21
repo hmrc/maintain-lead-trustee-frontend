@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package controllers.trustee
 
-import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
@@ -36,6 +35,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import views.html.RemoveIndexView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures with BeforeAndAfterEach {

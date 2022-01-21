@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package generators.leadtrustee.individual
 
-import java.time.LocalDate
-
 import generators.Generators
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
@@ -26,6 +24,8 @@ import org.scalatest.TryValues
 import pages.QuestionPage
 import pages.leadtrustee.individual._
 import play.api.libs.json.{JsValue, Json}
+
+import java.time.LocalDate
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
@@ -52,6 +52,7 @@ trait UserAnswersGenerator extends TryValues {
       for {
         id <- nonEmptyString
         utr <- nonEmptyString
+        sessionId <- nonEmptyString
         data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
           case _ => Gen.mapOf(oneOf(generators))
@@ -59,6 +60,7 @@ trait UserAnswersGenerator extends TryValues {
       } yield UserAnswers(
         internalId = id,
         identifier = utr,
+        sessionId = sessionId,
         whenTrustSetup = LocalDate.now(),
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>

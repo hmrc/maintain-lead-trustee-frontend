@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package utils.print.checkYourAnswers
 
-import java.time.LocalDate
 import base.SpecBase
 import controllers.leadtrustee.individual.routes._
 import models.BpMatchStatus.FullyMatched
@@ -25,6 +24,8 @@ import models.{CombinedPassportOrIdCard, Name, NonUkAddress, UkAddress, UserAnsw
 import pages.leadtrustee.individual._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
+
+import java.time.LocalDate
 
 class LeadTrusteeIndividualPrintHelperSpec extends SpecBase {
 

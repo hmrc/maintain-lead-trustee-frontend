@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package controllers.trustee.individual
 
-import java.time.LocalDate
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, NormalMode}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -40,8 +39,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
   
   lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url
 
@@ -49,7 +47,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, nationalInsuranceNumberYesNoRoute)
 
@@ -67,9 +65,9 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NationalInsuranceNumberYesNoPage, true).success.value
+      val newUserAnswers = userAnswers.set(NationalInsuranceNumberYesNoPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       val request = FakeRequest(GET, nationalInsuranceNumberYesNoRoute)
 
@@ -91,7 +89,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()
 
@@ -110,7 +108,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
         FakeRequest(POST, nationalInsuranceNumberYesNoRoute)

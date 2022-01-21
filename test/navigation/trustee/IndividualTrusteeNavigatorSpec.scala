@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.trustee.individual._
 import pages.trustee.individual.add._
-import java.time.LocalDate
-
 import pages.trustee.individual.amend.IndexPage
+
+import java.time.LocalDate
 
 class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks {
 

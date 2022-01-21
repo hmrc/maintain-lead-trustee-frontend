@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package controllers.leadtrustee.actions
 
-import java.time.LocalDate
-
 import models.UserAnswers
 import models.requests.DataRequest
 import org.mockito.Matchers.any
@@ -29,6 +27,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContent, Request}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFutures with MustMatchers {
@@ -42,6 +41,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
     val ua = UserAnswers("id",
       "UTRUTRUTR",
+      "sessionId",
       LocalDate.now(),
       Json.obj().transform(pages.leadtrustee.individual.NamePage.path.json.put(Json.obj(
       "firstName" -> "testFirstName",
@@ -61,6 +61,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
     val ua = UserAnswers("id",
       "UTRUTRUTR",
+      "sessionId",
       LocalDate.now(),
       Json.obj().transform(pages.leadtrustee.organisation.NamePage.path.json.put(JsString("org name"))).get)
 
@@ -79,7 +80,7 @@ class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFuture
 
     val OUT = new Harness(messagesApi)
 
-    val ua = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), Json.obj())
+    val ua = UserAnswers("id", "UTRUTRUTR", "sessionId", LocalDate.now(), Json.obj())
 
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>

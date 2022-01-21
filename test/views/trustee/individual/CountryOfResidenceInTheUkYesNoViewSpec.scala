@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 
 package views.trustee.individual
 
+import controllers.trustee.individual.routes
 import forms.YesNoFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.trustee.individual.CountryOfResidenceInTheUkYesNoView
-import controllers.trustee.individual.routes
-import models.NormalMode
-import controllers.trustee.individual.routes
 
 class CountryOfResidenceInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 

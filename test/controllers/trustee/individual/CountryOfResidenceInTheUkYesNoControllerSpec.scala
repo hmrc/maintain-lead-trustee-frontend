@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 
 package controllers.trustee.individual
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.YesNoFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.{CountryOfResidenceInTheUkYesNoPage, NamePage}
@@ -40,8 +38,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   lazy val countryOfResidenceInTheUkYesNo: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad(NormalMode).url
 
@@ -49,7 +46,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, countryOfResidenceInTheUkYesNo)
 
@@ -67,11 +64,11 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
+      val newUserAnswers = userAnswers
         .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
       val request = FakeRequest(GET, countryOfResidenceInTheUkYesNo)
 
@@ -90,7 +87,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
@@ -111,7 +108,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
         FakeRequest(POST, countryOfResidenceInTheUkYesNo)

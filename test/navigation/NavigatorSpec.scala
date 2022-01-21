@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,10 @@
 
 package navigation
 
-import java.time.LocalDate
-
 import base.SpecBase
 import controllers.routes.IndexController
 import generators.Generators
 import models.TrusteeType._
-import models.UserAnswers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 
@@ -38,14 +35,14 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
       "navigating away from the trustee name question should go to the Do you know Date of birth question" in {
         val value1 = DateOfBirthController.onPageLoad()
-        navigator.nextPage(NamePage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe value1
+        navigator.nextPage(NamePage, emptyUserAnswers) mustBe value1
       }
     }
 
     "go to Index from a page that doesn't exist in the route map" in {
 
       case object UnknownPage extends Page
-      navigator.nextPage(UnknownPage, UserAnswers("id", "UTRUTRUTR", LocalDate.now())) mustBe IndexController.onPageLoad("UTRUTRUTR")
+      navigator.nextPage(UnknownPage, emptyUserAnswers) mustBe IndexController.onPageLoad("UTRUTRUTR")
     }
 
     "Lead trustee or trustee page -> Lead trustee -> Lead trustee individual or business page" in {

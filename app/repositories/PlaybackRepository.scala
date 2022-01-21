@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,8 @@ class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
   )
 
   private val internalIdAndUtrIndex = MongoIndex(
-    key = Seq("internalId" -> IndexType.Ascending, "utr" -> IndexType.Ascending),
-    name = "internal-id-and-utr-compound-index"
+    key = Seq("internalId" -> IndexType.Ascending, "utr" -> IndexType.Ascending, "newId" -> IndexType.Ascending),
+    name = "internal-id-and-utr-and-newId-compound-index"
   )
 
   private def ensureIndexes = for {
@@ -67,12 +67,13 @@ class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
       createdIdIndex          <- collection.indexesManager.ensure(internalIdAndUtrIndex)
     } yield createdLastUpdatedIndex && createdIdIndex
 
-  override def get(internalId: String, utr: String): Future[Option[UserAnswers]] = {
+  private def selector(internalId: String, utr: String, sessionId: String): JsObject = Json.obj(
+    "internalId" -> internalId,
+    "utr" -> utr,
+    "newId" -> s"$internalId-$utr-$sessionId"
+  )
 
-    val selector = Json.obj(
-      "internalId" -> internalId,
-      "utr" -> utr
-    )
+  override def get(internalId: String, utr: String, sessionId: String): Future[Option[UserAnswers]] = {
 
     val modifier = Json.obj(
       "$set" -> Json.obj(
@@ -83,7 +84,7 @@ class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
     for {
       col <- collection
       r <- col.findAndUpdate(
-        selector = selector,
+        selector = selector(internalId, utr, sessionId),
         update = modifier,
         fetchNewObject = true,
         upsert = false,
@@ -100,39 +101,30 @@ class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
 
   override def set(userAnswers: UserAnswers): Future[Boolean] = {
 
-    val selector = Json.obj(
-      "internalId" -> userAnswers.internalId,
-      "utr" -> userAnswers.identifier
-    )
-
     val modifier = Json.obj(
       "$set" -> userAnswers.copy(updatedAt = LocalDateTime.now)
     )
 
     for {
       col <- collection
-      r <- col.update(ordered = false).one(selector, modifier, upsert = true, multi = false)
+      r <- col.update(ordered = false).one(selector(userAnswers.internalId, userAnswers.identifier, userAnswers.sessionId), modifier, upsert = true, multi = false)
     } yield r.ok
   }
 
-  override def resetCache(internalId: String, utr: String): Future[Option[JsObject]] = {
-    val selector = Json.obj(
-      "internalId" -> internalId,
-      "utr" -> utr
-    )
+  override def resetCache(internalId: String, utr: String, sessionId: String): Future[Option[JsObject]] = {
 
     for {
       col <- collection
-      r <- col.findAndRemove(selector, None, None, WriteConcern.Default, None, None, Seq.empty)
+      r <- col.findAndRemove(selector(internalId, utr, sessionId), None, None, WriteConcern.Default, None, None, Seq.empty)
     } yield r.value
   }
 }
 
 trait PlaybackRepository {
 
-  def get(internalId: String, utr: String): Future[Option[UserAnswers]]
+  def get(internalId: String, utr: String, sessionId: String): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers): Future[Boolean]
 
-  def resetCache(internalId: String, utr: String): Future[Option[JsObject]]
+  def resetCache(internalId: String, utr: String, sessionId: String): Future[Option[JsObject]]
 }
