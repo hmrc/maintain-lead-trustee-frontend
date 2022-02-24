@@ -56,20 +56,18 @@ class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
     expireAfterSeconds = Some(cacheTtl)
   )
 
-  private val internalIdAndUtrIndex = MongoIndex(
-    key = Seq("internalId" -> IndexType.Ascending, "utr" -> IndexType.Ascending, "newId" -> IndexType.Ascending),
-    name = "internal-id-and-utr-and-newId-compound-index"
+  private val internalIdAndUtrAndSessionIdIndex = MongoIndex(
+    key = Seq("newId" -> IndexType.Ascending),
+    name = "internal-id-and-utr-and-sessionId-compound-index"
   )
 
   private def ensureIndexes = for {
       collection              <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
       createdLastUpdatedIndex <- collection.indexesManager.ensure(lastUpdatedIndex)
-      createdIdIndex          <- collection.indexesManager.ensure(internalIdAndUtrIndex)
+      createdIdIndex          <- collection.indexesManager.ensure(internalIdAndUtrAndSessionIdIndex)
     } yield createdLastUpdatedIndex && createdIdIndex
 
   private def selector(internalId: String, utr: String, sessionId: String): JsObject = Json.obj(
-    "internalId" -> internalId,
-    "utr" -> utr,
     "newId" -> s"$internalId-$utr-$sessionId"
   )
 
