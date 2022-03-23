@@ -59,3 +59,9 @@ p {
 h2 {
  @extend .govuk-heading-m
 }
+
+@media (min-width: 40.0625em) {
+  .govuk-summary-list__value {
+    width: 50%;
+  }
+}
