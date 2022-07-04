@@ -133,7 +133,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar with BeforeAn
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
 
         val captor = ArgumentCaptor.forClass(classOf[RemoveTrustee])
         verify(mockConnector).removeTrustee(any(), captor.capture)(any(), any())
@@ -154,7 +154,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar with BeforeAn
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
 
         val captor = ArgumentCaptor.forClass(classOf[RemoveTrustee])
         verify(mockConnector).removeTrustee(any(), captor.capture)(any(), any())
@@ -194,7 +194,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar with BeforeAn
       val result = route(application, getRequest(index)).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -207,7 +207,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar with BeforeAn
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

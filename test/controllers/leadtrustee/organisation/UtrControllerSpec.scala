@@ -41,7 +41,7 @@ class UtrControllerSpec extends SpecBase {
   val fakeBusinessName = "Business name"
   val fakeUtr = "1234567890"
 
-  lazy val trusteeUtrRoute: String = routes.UtrController.onPageLoad().url
+  lazy val trusteeUtrRoute: String = routes.UtrController.onPageLoad.url
 
   val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
   when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))
@@ -156,7 +156,7 @@ class UtrControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -172,7 +172,7 @@ class UtrControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

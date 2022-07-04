@@ -33,7 +33,7 @@ class RegisteredInUkYesNoControllerSpec extends SpecBase {
   val index = 0
   val emptyTrusteeName = ""
 
-  val onwardRoute = routes.RegisteredInUkYesNoController.onPageLoad().url
+  val onwardRoute = routes.RegisteredInUkYesNoController.onPageLoad.url
 
   "TrusteeUtrYesNo Controller" must {
 
@@ -133,7 +133,7 @@ class RegisteredInUkYesNoControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -149,7 +149,7 @@ class RegisteredInUkYesNoControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

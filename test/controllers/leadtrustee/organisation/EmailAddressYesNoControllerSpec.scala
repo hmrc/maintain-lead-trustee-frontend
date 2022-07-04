@@ -44,7 +44,7 @@ class EmailAddressYesNoControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  lazy val emailAddressYesNoRoute = routes.EmailAddressYesNoController.onPageLoad().url
+  lazy val emailAddressYesNoRoute = routes.EmailAddressYesNoController.onPageLoad.url
 
   "EmailAddressYesNo Controller" must {
 
@@ -144,7 +144,7 @@ class EmailAddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -161,7 +161,7 @@ class EmailAddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

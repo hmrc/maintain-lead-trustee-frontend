@@ -32,7 +32,7 @@ import views.html.leadtrustee.individual.CountryOfResidenceInTheUkYesNoView
 class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.individual.countryOfResidenceInTheUkYesNo")
-  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad().url
+  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad.url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute: Call = Call("GET", "/foo")
 
@@ -131,7 +131,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -147,7 +147,7 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with Mockito
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

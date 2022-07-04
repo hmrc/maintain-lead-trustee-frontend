@@ -67,7 +67,7 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
             AnswerRow(label = messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressInTheUkYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
             AnswerRow(label = messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName), answer = Html("1 January 2020"), changeUrl = Some(addRts.WhenAddedController.onPageLoad().url))
+            AnswerRow(label = messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName), answer = Html("1 January 2020"), changeUrl = Some(addRts.WhenAddedController.onPageLoad.url))
           )
         )
       }

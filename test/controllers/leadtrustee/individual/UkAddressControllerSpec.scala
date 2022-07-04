@@ -47,7 +47,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val ukAddressRoute = routes.UkAddressController.onPageLoad().url
+  lazy val ukAddressRoute = routes.UkAddressController.onPageLoad.url
 
   val userAnswers = emptyUserAnswers.set(UkAddressPage, validAnswer).success.value
 
@@ -147,7 +147,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -164,7 +164,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

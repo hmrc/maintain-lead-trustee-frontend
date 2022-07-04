@@ -1,5 +1,4 @@
 # microservice specific routes
-->         /govuk-frontend                  govuk.Routes
 ->         /hmrc-frontend                   hmrcfrontend.Routes
 ->         /lead-trustee                    leadtrustee.Routes
 ->         /trustee                         trustee.Routes

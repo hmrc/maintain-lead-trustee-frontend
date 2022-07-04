@@ -62,7 +62,7 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, s"$prefix.passportOrIdCardDetailsYesNo", changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url), canEdit = adding),
         bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsController.onPageLoad(mode).url), canEdit = adding),
         bound.enumQuestion(MentalCapacityYesNoPage, s"$prefix.mentalCapacityYesNo", MentalCapacityYesNoController.onPageLoad(mode).url, "site"),
-        if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
+        if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad.url) else None
       ).flatten
     }
 

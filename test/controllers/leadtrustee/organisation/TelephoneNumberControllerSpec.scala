@@ -44,7 +44,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers = super.emptyUserAnswers
       .set(NamePage, name).success.value
 
-  lazy val telephoneNumberRoute = routes.TelephoneNumberController.onPageLoad().url
+  lazy val telephoneNumberRoute = routes.TelephoneNumberController.onPageLoad.url
 
   "TelephoneNumber Controller" must {
 
@@ -143,7 +143,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -160,7 +160,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

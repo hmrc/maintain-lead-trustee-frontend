@@ -21,7 +21,8 @@ import models.requests.DataRequest
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsString, Json}
@@ -30,7 +31,7 @@ import play.api.mvc.{AnyContent, Request}
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class NameRequiredActionSpec extends WordSpec with MockitoSugar with ScalaFutures with MustMatchers {
+class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFutures with Matchers {
   class Harness(messagesApi: MessagesApi) extends NameRequiredAction(scala.concurrent.ExecutionContext.global, messagesApi) {
     def callTransform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = transform(request)
   }

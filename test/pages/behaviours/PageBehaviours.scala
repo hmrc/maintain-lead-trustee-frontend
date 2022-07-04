@@ -20,14 +20,16 @@ import generators.Generators
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
+import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.libs.json._
 
 import java.time.LocalDate
 
-trait PageBehaviours extends WordSpec with MustMatchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
+trait PageBehaviours extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
 
   def emptyUserAnswers: UserAnswers = models.UserAnswers("internalId", "UTRUTRUTR", "sessionId", LocalDate.now())
 

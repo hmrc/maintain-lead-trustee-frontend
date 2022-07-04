@@ -41,7 +41,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
-  private lazy val onPageLoadRoute = routes.CheckDetailsController.onPageLoad().url
+  private lazy val onPageLoadRoute = routes.CheckDetailsController.onPageLoad.url
   private lazy val onSubmitRoute = routes.CheckDetailsController.onSubmit().url
 
   private val name = Name("Joe", None, "Bloggs")
@@ -109,7 +109,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
 
       application.stop()
     }

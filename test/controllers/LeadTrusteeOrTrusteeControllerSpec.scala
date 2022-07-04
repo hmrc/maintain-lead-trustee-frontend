@@ -37,7 +37,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new TrusteeTypeFormProvider()
   val form = formProvider.withPrefix("leadTrusteeOrTrustee")
   
-  lazy val leadTrusteeOrTrusteeRoute = routes.LeadTrusteeOrTrusteeController.onPageLoad().url
+  lazy val leadTrusteeOrTrusteeRoute = routes.LeadTrusteeOrTrusteeController.onPageLoad.url
 
   "LeadTrusteeOrTrustee controller" must {
 
@@ -134,7 +134,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -151,7 +151,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

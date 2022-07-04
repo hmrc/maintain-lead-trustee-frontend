@@ -19,7 +19,8 @@ package connectors
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -29,7 +30,7 @@ import utils.WireMockHelper
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-class TrustsIndividualCheckConnectorSpec extends SpecBase with MustMatchers with OptionValues with WireMockHelper {
+class TrustsIndividualCheckConnectorSpec extends SpecBase with Matchers with OptionValues with WireMockHelper {
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Seq(

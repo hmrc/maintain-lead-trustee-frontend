@@ -117,7 +117,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
 
         application.stop()
       }
@@ -139,7 +139,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
 
         application.stop()
       }
@@ -185,7 +185,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
 
         val captor = ArgumentCaptor.forClass(classOf[RemoveTrustee])
         verify(mockConnector).removeTrustee(any(), captor.capture)(any(), any())
@@ -232,7 +232,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -250,7 +250,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

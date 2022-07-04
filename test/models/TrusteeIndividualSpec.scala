@@ -17,12 +17,13 @@
 package models
 
 import base.SpecBase
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class TrusteeIndividualSpec extends SpecBase with MustMatchers with OptionValues {
+class TrusteeIndividualSpec extends SpecBase with Matchers with OptionValues {
 
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
