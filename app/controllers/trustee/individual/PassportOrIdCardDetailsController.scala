@@ -37,7 +37,7 @@ class PassportOrIdCardDetailsController @Inject()(
       case Some(index) =>
         Redirect(amend.routes.CheckDetailsController.onPageLoadUpdated(index))
       case None =>
-        Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+        Redirect(controllers.routes.SessionExpiredController.onPageLoad)
     }
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {

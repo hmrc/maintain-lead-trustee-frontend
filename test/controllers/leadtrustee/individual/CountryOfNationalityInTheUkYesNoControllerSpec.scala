@@ -31,7 +31,7 @@ import views.html.leadtrustee.individual.CountryOfNationalityInTheUkYesNoView
 class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.individual.countryOfNationalityInTheUkYesNo")
-  private val onPageLoadRoute: String = routes.CountryOfNationalityInTheUkYesNoController.onPageLoad().url
+  private val onPageLoadRoute: String = routes.CountryOfNationalityInTheUkYesNoController.onPageLoad.url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute = Call("GET", "/foo")
 
@@ -128,7 +128,7 @@ class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -144,7 +144,7 @@ class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

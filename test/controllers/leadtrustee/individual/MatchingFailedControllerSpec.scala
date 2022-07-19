@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class MatchingFailedControllerSpec extends SpecBase {
 
   private lazy val matchingFailedRoute: String =
-    routes.MatchingFailedController.onPageLoad().url
+    routes.MatchingFailedController.onPageLoad.url
 
   private val mockService = mock[TrustsIndividualCheckService]
 
@@ -85,7 +85,7 @@ class MatchingFailedControllerSpec extends SpecBase {
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual routes.MatchingLockedController.onPageLoad().url
+            redirectLocation(result).value mustEqual routes.MatchingLockedController.onPageLoad.url
 
             application.stop()
           }
@@ -122,7 +122,7 @@ class MatchingFailedControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
           application.stop()
         }
@@ -142,7 +142,7 @@ class MatchingFailedControllerSpec extends SpecBase {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual routes.NameController.onPageLoad().url
+          redirectLocation(result).value mustEqual routes.NameController.onPageLoad.url
 
           application.stop()
         }
@@ -159,7 +159,7 @@ class MatchingFailedControllerSpec extends SpecBase {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
           application.stop()
         }

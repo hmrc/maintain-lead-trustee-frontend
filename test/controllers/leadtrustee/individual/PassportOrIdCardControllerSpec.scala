@@ -41,7 +41,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with Bef
   val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
   val form: Form[CombinedPassportOrIdCard] = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
 
-  lazy val passportDetailsRoute: String = routes.PassportOrIdCardController.onPageLoad().url
+  lazy val passportDetailsRoute: String = routes.PassportOrIdCardController.onPageLoad.url
 
   val countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
@@ -255,7 +255,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with Bef
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -272,7 +272,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with Bef
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

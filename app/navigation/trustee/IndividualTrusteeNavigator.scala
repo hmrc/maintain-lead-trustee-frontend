@@ -169,7 +169,7 @@ object IndividualTrusteeNavigator extends TrusteeNavigator {
   private def checkDetailsNavigation(userAnswers: UserAnswers): Call = {
     userAnswers.get(IndexPage) match {
       case Some(index) => amendRts.CheckDetailsController.onPageLoadUpdated(index)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 

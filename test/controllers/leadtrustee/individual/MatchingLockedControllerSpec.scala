@@ -40,7 +40,7 @@ class MatchingLockedControllerSpec extends SpecBase {
 
     ".onPageLoad" when {
 
-      lazy val onPageLoadRoute = routes.MatchingLockedController.onPageLoad().url
+      lazy val onPageLoadRoute = routes.MatchingLockedController.onPageLoad.url
 
       "existing data found" must {
         "return OK and the correct view for a GET" in {
@@ -72,7 +72,7 @@ class MatchingLockedControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
           application.stop()
         }
@@ -98,7 +98,7 @@ class MatchingLockedControllerSpec extends SpecBase {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual routes.PassportOrIdCardController.onPageLoad().url
+          redirectLocation(result).value mustEqual routes.PassportOrIdCardController.onPageLoad.url
 
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(playbackRepository).set(uaCaptor.capture)
@@ -119,7 +119,7 @@ class MatchingLockedControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
           application.stop()
         }

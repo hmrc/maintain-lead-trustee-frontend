@@ -38,7 +38,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider.withPrefix("leadtrustee.individualOrBusiness")
   val index = 0
   
-  lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad().url
+  lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad.url
 
   "IndividualOrBusiness Controller" must {
 
@@ -127,7 +127,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -142,7 +142,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
     }
   }
 }

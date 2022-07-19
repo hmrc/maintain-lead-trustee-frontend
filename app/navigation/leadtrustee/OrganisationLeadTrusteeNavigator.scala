@@ -51,7 +51,7 @@ object OrganisationLeadTrusteeNavigator extends LeadTrusteeNavigator {
     userAnswers.get(RegisteredInUkYesNoPage).map {
       case true => UtrController.onPageLoad()
       case false => CountryOfResidenceInTheUkYesNoController.onPageLoad()
-    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
   }
 
 }

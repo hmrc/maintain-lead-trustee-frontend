@@ -37,7 +37,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
 
-  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad().url
+  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad.url
 
   val name = Name("Lead", None, "Trustee")
 
@@ -140,7 +140,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -157,7 +157,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

@@ -46,7 +46,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  lazy val getRoute: String = controllers.routes.AddATrusteeController.onPageLoad().url
+  lazy val getRoute: String = controllers.routes.AddATrusteeController.onPageLoad.url
   lazy val submitAnotherRoute: String = controllers.routes.AddATrusteeController.submitAnother().url
   lazy val submitYesNoRoute: String = controllers.routes.AddATrusteeController.submitOne().url
   lazy val submitCompleteRoute: String = controllers.routes.AddATrusteeController.submitComplete().url
@@ -166,7 +166,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
       }
@@ -182,7 +182,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
       }
@@ -227,7 +227,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.LeadTrusteeOrTrusteeController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.LeadTrusteeOrTrusteeController.onPageLoad.url
 
         application.stop()
       }
@@ -297,7 +297,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad.url
 
         application.stop()
       }
@@ -461,7 +461,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad.url
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)

@@ -44,7 +44,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
   val name: Name = Name("Lead", None, "Trustee")
 
-  lazy val ukCitizenRoute: String = routes.UkCitizenController.onPageLoad().url
+  lazy val ukCitizenRoute: String = routes.UkCitizenController.onPageLoad.url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
@@ -175,7 +175,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -192,7 +192,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

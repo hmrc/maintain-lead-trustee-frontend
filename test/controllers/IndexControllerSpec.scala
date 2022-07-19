@@ -66,7 +66,7 @@ class IndexControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.routes.AddATrusteeController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.AddATrusteeController.onPageLoad.url)
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)

@@ -37,7 +37,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new IndividualOrBusinessFormProvider()
   val form = formProvider.withPrefix("trustee.individualOrBusiness")
   
-  lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad().url
+  lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad.url
 
   "IndividualOrBusiness Controller" must {
 
@@ -134,7 +134,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -151,7 +151,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

@@ -49,7 +49,7 @@ class Navigator @Inject()() {
     userAnswers.get(TrusteeTypePage).map {
       case LeadTrustee => controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()
       case Trustee => controllers.trustee.routes.IndividualOrBusinessController.onPageLoad()
-    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
   }
 
 }
