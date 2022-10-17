@@ -16,9 +16,8 @@
 
 package base
 
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 
 import scala.concurrent.Future
@@ -32,4 +31,5 @@ trait Mocked extends MockitoSugar {
   val mockSessionRepository : ActiveSessionRepository = mock[ActiveSessionRepository]
 
   when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
 }

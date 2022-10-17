@@ -20,10 +20,9 @@ import base.SpecBase
 import forms.NationalInsuranceNumberFormProvider
 import models.{Name, NormalMode}
 import navigation.Navigator
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form

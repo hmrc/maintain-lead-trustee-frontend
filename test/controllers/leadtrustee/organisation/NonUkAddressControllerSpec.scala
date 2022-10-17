@@ -20,9 +20,8 @@ import base.SpecBase
 import forms.NonUkAddressFormProvider
 import models.NonUkAddress
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.leadtrustee.organisation.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

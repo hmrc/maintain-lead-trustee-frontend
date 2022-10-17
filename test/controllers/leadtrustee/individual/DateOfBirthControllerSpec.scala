@@ -16,14 +16,15 @@
 
 package controllers.leadtrustee.individual
 
+import java.time.{LocalDate, ZoneOffset}
+
 import base.SpecBase
 import forms.DateOfBirthFormProvider
 import models.BpMatchStatus.FullyMatched
 import models.Name
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.leadtrustee.individual.{BpMatchStatusPage, DateOfBirthPage, NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -33,7 +34,6 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.leadtrustee.individual.DateOfBirthView
 
-import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {

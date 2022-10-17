@@ -16,14 +16,15 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
 import models.BpMatchStatus.FullyMatched
 import models.YesNoDontKnow.{No, Yes}
 import models._
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,7 +35,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.RadioOption
 import views.html.ReplacingLeadTrusteeView
 
-import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {

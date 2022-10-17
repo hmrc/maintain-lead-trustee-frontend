@@ -21,10 +21,9 @@ import forms.CombinedPassportOrIdCardDetailsFormProvider
 import models.{CombinedPassportOrIdCard, DetailsType, Name, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.leadtrustee.individual.{NamePage, PassportOrIdCardDetailsPage}
 import play.api.data.Form
 import play.api.inject.bind

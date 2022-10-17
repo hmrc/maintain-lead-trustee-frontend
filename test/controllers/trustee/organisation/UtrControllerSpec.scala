@@ -20,8 +20,7 @@ import base.SpecBase
 import forms.UtrFormProvider
 import models.NormalMode
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 import pages.trustee.organisation.{NamePage, UtrPage}
 import play.api.data.Form
 import play.api.inject.bind

@@ -24,8 +24,7 @@ import models.IndividualOrBusiness.Individual
 import models.TaskStatus.Completed
 import models._
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.scalatest.BeforeAndAfterEach
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual.NamePage

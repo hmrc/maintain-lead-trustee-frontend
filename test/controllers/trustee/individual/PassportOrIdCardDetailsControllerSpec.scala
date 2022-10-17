@@ -16,18 +16,18 @@
 
 package controllers.trustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import models.{CombinedPassportOrIdCard, Mode, Name, NormalMode, UserAnswers}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {

@@ -17,7 +17,7 @@
 package controllers.leadtrustee.organisation
 
 import base.SpecBase
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.leadtrustee.organisation.NamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

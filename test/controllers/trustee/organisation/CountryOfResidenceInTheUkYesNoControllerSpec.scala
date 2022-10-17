@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.trustee.organisation.{CountryOfResidenceInTheUkYesNoPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind

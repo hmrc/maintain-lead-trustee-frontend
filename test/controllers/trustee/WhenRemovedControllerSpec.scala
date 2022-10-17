@@ -22,10 +22,9 @@ import forms.DateRemovedFromTrustFormProvider
 import models.Constants.{BUSINESS_TRUSTEE, INDIVIDUAL_TRUSTEE}
 import models.{Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, TrusteeOrganisation, Trustees}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}

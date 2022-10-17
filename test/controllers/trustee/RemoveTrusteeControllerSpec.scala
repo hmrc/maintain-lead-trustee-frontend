@@ -22,8 +22,7 @@ import forms.RemoveIndexFormProvider
 import models.Constants.INDIVIDUAL_TRUSTEE
 import models.{Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

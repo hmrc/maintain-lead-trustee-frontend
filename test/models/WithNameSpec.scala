@@ -16,7 +16,6 @@
 
 package models
 
-import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

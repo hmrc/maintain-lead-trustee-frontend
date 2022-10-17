@@ -31,7 +31,7 @@ import java.time.LocalDate
 
 trait PageBehaviours extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
 
-  def emptyUserAnswers: UserAnswers = models.UserAnswers("internalId", "UTRUTRUTR", "sessionId", LocalDate.now())
+  def emptyUserAnswers: UserAnswers = models.UserAnswers("internalId", "UTRUTRUTR", "sessionId","newId", LocalDate.now())
 
   class BeRetrievable[A] {
     def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {

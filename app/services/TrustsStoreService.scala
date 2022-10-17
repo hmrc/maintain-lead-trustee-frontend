@@ -29,5 +29,4 @@ class TrustsStoreService @Inject()(trustsStoreConnector: TrustsStoreConnector) {
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     trustsStoreConnector.updateTaskStatus(identifier, taskStatus)
   }
-  
 }

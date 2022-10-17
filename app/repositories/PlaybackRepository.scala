@@ -17,112 +17,79 @@
 package repositories
 
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
+import com.google.inject.ImplementedBy
+import org.mongodb.scala.model.Filters.equal
+import org.mongodb.scala.model.{FindOneAndUpdateOptions, ReplaceOptions, ReturnDocument, Updates}
+import org.mongodb.scala.model.Indexes.ascending
+import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import models.{MongoDateTimeFormats, UserAnswers}
-import play.api.Configuration
+import models.UserAnswers
+import org.bson.conversions.Bson
+import org.mongodb.scala.model.{IndexModel, IndexOptions}
+import play.api.Logging
 import play.api.libs.json._
-import reactivemongo.api.WriteConcern
-import reactivemongo.api.indexes.IndexType
-import reactivemongo.play.json.collection.JSONCollection
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PlaybackRepositoryImpl @Inject()(override val mongo: MongoDriver,
-                                       config: Configuration
-                                      )(override implicit val ec: ExecutionContext)
-  extends PlaybackRepository
-  with IndexManager {
+class PlaybackRepositoryImpl @Inject()(val mongoComponent: MongoComponent,
+                                       val config: FrontendAppConfig
+                                      )(implicit val ec: ExecutionContext)
+  extends PlayMongoRepository[UserAnswers](
+    collectionName = "user-answers",
+    mongoComponent = mongoComponent,
+    domainFormat = Format(UserAnswers.reads,UserAnswers.writes),
+    indexes = Seq(
+      IndexModel(
+        ascending("updatedAt"),
+        IndexOptions()
+          .unique(false)
+          .name("user-answers-updated-at-index")
+          .expireAfter(config.cachettlplaybackInSeconds, TimeUnit.SECONDS)),
+      IndexModel(
+        ascending("newId"),
+        IndexOptions()
+          .unique(false)
+          .name("internal-id-and-utr-and-sessionId-compound-index")
+      )
+    ), replaceIndexes = config.dropIndexes
 
-  implicit final val jsObjectWrites: OWrites[JsObject] = OWrites[JsObject](identity)
+  ) with Logging with PlaybackRepository {
 
-  override val collectionName: String = "user-answers"
-
-  override val dropIndexes: Boolean =
-    config.get[Boolean]("microservice.services.features.mongo.dropIndexes")
-
-  private val cacheTtl = config.get[Int]("mongodb.playback.ttlSeconds")
-
-  private def collection: Future[JSONCollection] =
-    for {
-      _ <- ensureIndexes
-      res <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
-    } yield res
-
-  private val lastUpdatedIndex = MongoIndex(
-    key = Seq("updatedAt" -> IndexType.Ascending),
-    name = "user-answers-updated-at-index",
-    expireAfterSeconds = Some(cacheTtl)
-  )
-
-  private val internalIdAndUtrAndSessionIdIndex = MongoIndex(
-    key = Seq("newId" -> IndexType.Ascending),
-    name = "internal-id-and-utr-and-sessionId-compound-index"
-  )
-
-  private def ensureIndexes = for {
-      collection              <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
-      createdLastUpdatedIndex <- collection.indexesManager.ensure(lastUpdatedIndex)
-      createdIdIndex          <- collection.indexesManager.ensure(internalIdAndUtrAndSessionIdIndex)
-    } yield createdLastUpdatedIndex && createdIdIndex
-
-  private def selector(internalId: String, utr: String, sessionId: String): JsObject = Json.obj(
-    "newId" -> s"$internalId-$utr-$sessionId"
-  )
+  private def selector(internalId: String, utr: String, sessionId: String): Bson =
+    equal("newId" , s"$internalId-$utr-$sessionId")
 
   override def get(internalId: String, utr: String, sessionId: String): Future[Option[UserAnswers]] = {
 
-    val modifier = Json.obj(
-      "$set" -> Json.obj(
-        "updatedAt" -> MongoDateTimeFormats.localDateTimeWrite.writes(LocalDateTime.now)
-      )
-    )
+    val modifier = Updates.set("updatedAt",LocalDateTime.now)
 
-    for {
-      col <- collection
-      r <- col.findAndUpdate(
-        selector = selector(internalId, utr, sessionId),
-        update = modifier,
-        fetchNewObject = true,
-        upsert = false,
-        sort = None,
-        fields = None,
-        bypassDocumentValidation = false,
-        writeConcern = WriteConcern.Default,
-        maxTime = None,
-        collation = None,
-        arrayFilters = Nil
-      )
-    } yield r.result[UserAnswers]
+    val updateOption = new FindOneAndUpdateOptions().upsert(false).returnDocument(ReturnDocument.BEFORE)
+
+    collection.findOneAndUpdate(selector(internalId,utr,sessionId),modifier,updateOption).toFutureOption()
   }
 
   override def set(userAnswers: UserAnswers): Future[Boolean] = {
 
-    val modifier = Json.obj(
-      "$set" -> userAnswers.copy(updatedAt = LocalDateTime.now)
-    )
+    val select = selector(userAnswers.internalId,userAnswers.identifier,userAnswers.sessionId)
 
-    for {
-      col <- collection
-      r <- col.update(ordered = false).one(selector(userAnswers.internalId, userAnswers.identifier, userAnswers.sessionId), modifier, upsert = true, multi = false)
-    } yield r.ok
+    val newUserAnswers = userAnswers.copy(updatedAt = LocalDateTime.now)
+
+    val replaceOptions = new ReplaceOptions().upsert(true)
+
+    collection.replaceOne(select,newUserAnswers,replaceOptions).headOption().map(_.exists(_.wasAcknowledged()))
   }
 
-  override def resetCache(internalId: String, utr: String, sessionId: String): Future[Option[JsObject]] = {
-
-    for {
-      col <- collection
-      r <- col.findAndRemove(selector(internalId, utr, sessionId), None, None, WriteConcern.Default, None, None, Seq.empty)
-    } yield r.value
-  }
 }
 
+@ImplementedBy(classOf[PlaybackRepositoryImpl])
 trait PlaybackRepository {
 
   def get(internalId: String, utr: String, sessionId: String): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers): Future[Boolean]
 
-  def resetCache(internalId: String, utr: String, sessionId: String): Future[Option[JsObject]]
 }

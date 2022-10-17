@@ -22,10 +22,9 @@ import models.BpMatchStatus.FullyMatched
 import models._
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.leadtrustee.individual.{BpMatchStatusPage, IndexPage, NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.inject.bind

@@ -20,9 +20,8 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.{Name, NormalMode}
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, NationalInsuranceNumberYesNoPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
