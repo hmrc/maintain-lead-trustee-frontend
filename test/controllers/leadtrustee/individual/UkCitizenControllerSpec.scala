@@ -21,9 +21,8 @@ import forms.YesNoFormProvider
 import models.BpMatchStatus.FullyMatched
 import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage, NationalInsuranceNumberPage, UkCitizenPage}
 import play.api.data.Form
 import play.api.inject.bind

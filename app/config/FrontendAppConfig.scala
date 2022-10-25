@@ -93,4 +93,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
     configuration.get[String](path)
   }
 
+  val cachettlplaybackInSeconds: Long = configuration.get[Long]("mongodb.playback.ttlSeconds")
+
+  val cachettlSessionInSeconds: Long = configuration.get[Long]("mongodb.session.ttlSeconds")
+
+  val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(true)
+
 }

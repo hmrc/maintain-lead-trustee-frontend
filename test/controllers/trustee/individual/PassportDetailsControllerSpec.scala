@@ -16,13 +16,14 @@
 
 package controllers.trustee.individual
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.PassportDetailsFormProvider
 import models.{Mode, Name, NormalMode, Passport, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.trustee.individual.{NamePage, PassportDetailsPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -33,7 +34,6 @@ import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.html.trustee.individual.PassportDetailsView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {

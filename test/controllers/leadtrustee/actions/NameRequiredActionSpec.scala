@@ -16,19 +16,19 @@
 
 package controllers.leadtrustee.actions
 
+import java.time.LocalDate
+
 import models.UserAnswers
 import models.requests.DataRequest
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContent, Request}
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFutures with Matchers {
@@ -42,7 +42,7 @@ class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFut
 
     val ua = UserAnswers("id",
       "UTRUTRUTR",
-      "sessionId",
+      "sessionId", "newId",
       LocalDate.now(),
       Json.obj().transform(pages.leadtrustee.individual.NamePage.path.json.put(Json.obj(
       "firstName" -> "testFirstName",
@@ -62,7 +62,7 @@ class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFut
 
     val ua = UserAnswers("id",
       "UTRUTRUTR",
-      "sessionId",
+      "sessionId", "newId",
       LocalDate.now(),
       Json.obj().transform(pages.leadtrustee.organisation.NamePage.path.json.put(JsString("org name"))).get)
 
@@ -81,7 +81,7 @@ class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFut
 
     val OUT = new Harness(messagesApi)
 
-    val ua = UserAnswers("id", "UTRUTRUTR", "sessionId", LocalDate.now(), Json.obj())
+    val ua = UserAnswers("id", "UTRUTRUTR", "sessionId", "newId", LocalDate.now(), Json.obj())
 
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>

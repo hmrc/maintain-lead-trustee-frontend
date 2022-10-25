@@ -43,6 +43,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelG
           "ID",
           "UTRUTRUTR",
           "sessionId",
+           newId = s"ID-UTRUTRUTR-sessionId",
           LocalDate.of(1999, 10, 20),
           json
         )

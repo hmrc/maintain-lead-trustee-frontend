@@ -40,7 +40,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   lazy val userInternalId = "internalId"
 
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", "sessionId", LocalDate.now())
+  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", "sessionId", "newId", LocalDate.now())
 
   lazy val bodyParsers = injector.instanceOf[BodyParsers.Default]
 

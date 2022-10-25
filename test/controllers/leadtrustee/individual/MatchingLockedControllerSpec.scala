@@ -19,8 +19,7 @@ package controllers.leadtrustee.individual
 import base.SpecBase
 import models.{Name, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.any
 import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

@@ -16,18 +16,18 @@
 
 package services
 
+import java.time.LocalDate
+
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.TrustsIndividualCheckConnector
 import models._
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.scalatest.RecoverMethods.recoverToSucceededIf
 import org.scalatest.concurrent.ScalaFutures
 import pages.leadtrustee.individual._
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
@@ -211,7 +211,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
 
             whenReady(result) { res =>
               res mustBe IssueBuildingPayloadResponse
-              verify(mockConnector, never()).matchLeadTrustee(any())(any(), any())
+              verify(mockConnector, never).matchLeadTrustee(any())(any(), any())
             }
           }
 
@@ -224,7 +224,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
 
             whenReady(result) { res =>
               res mustBe IssueBuildingPayloadResponse
-              verify(mockConnector, never()).matchLeadTrustee(any())(any(), any())
+              verify(mockConnector, never).matchLeadTrustee(any())(any(), any())
             }
           }
         }

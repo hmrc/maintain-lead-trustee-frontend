@@ -16,14 +16,15 @@
 
 package controllers.trustee.organisation.add
 
+import java.time.LocalDate
+
 import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.trustee.TrusteeOrganisationMapper
 import models.TrusteeOrganisation
-import org.mockito.Matchers.any
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import pages.trustee.organisation.NamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,7 +35,6 @@ import utils.print.checkYourAnswers.TrusteeOrganisationPrintHelper
 import viewmodels.AnswerSection
 import views.html.trustee.organisation.add.CheckDetailsView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {

@@ -19,9 +19,8 @@ package controllers.trustee.individual
 import base.SpecBase
 import models.{Mode, Name, NormalMode}
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsYesNoPage}
 import play.api.inject.bind

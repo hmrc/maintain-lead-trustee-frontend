@@ -61,6 +61,7 @@ trait UserAnswersGenerator extends TryValues {
         internalId = id,
         identifier = utr,
         sessionId = sessionId,
+        newId = s"$id-$utr-$sessionId",
         whenTrustSetup = LocalDate.now(),
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>

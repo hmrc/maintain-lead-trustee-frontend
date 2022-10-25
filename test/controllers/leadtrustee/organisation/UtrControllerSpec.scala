@@ -19,8 +19,7 @@ package controllers.leadtrustee.organisation
 import base.SpecBase
 import forms.UtrFormProvider
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 import pages.leadtrustee.organisation.{NamePage, UtrPage}
 import play.api.data.Form
 import play.api.inject.bind

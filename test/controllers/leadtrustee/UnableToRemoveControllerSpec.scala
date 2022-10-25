@@ -17,18 +17,18 @@
 package controllers.leadtrustee
 
 
+import java.time.LocalDate
+
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.{CombinedPassportOrIdCard, LeadTrusteeIndividual, Name, UkAddress}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustService
 import views.html.leadtrustee.UnableToRemoveView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class UnableToRemoveControllerSpec extends SpecBase   {
