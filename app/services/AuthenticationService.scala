@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,11 @@ import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied}
 import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
-class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector) extends AuthenticationService with Logging {
+class AuthenticationServiceImpl @Inject()(trustAuthConnector: TrustAuthConnector)(implicit ec: ExecutionContext) extends AuthenticationService with Logging {
 
   override def authenticateAgent()
                                 (implicit hc: HeaderCarrier): Future[Either[Result, String]] = {
