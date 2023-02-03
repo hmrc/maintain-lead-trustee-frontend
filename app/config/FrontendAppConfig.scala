@@ -33,6 +33,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
   final val WELSH = "cy"
   final val UK_COUNTRY_CODE = "GB"
 
+  val appName: String = configuration.get[String]("appName")
   val maintainATrustOverview: String = configuration.get[String]("urls.maintainATrustOverview")
 
   private def loadConfig(key: String) = configuration.get[String](key)

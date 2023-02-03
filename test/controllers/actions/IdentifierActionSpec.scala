@@ -149,7 +149,7 @@ class IdentifierActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get mustBe s"${frontendAppConfig.loginUrl}?continue=http%3A%2F%2Flocalhost%3A9781%2Ftrusts-registration&origin=maintain-lead-trustee-frontend"
         application.stop()
       }
     }
@@ -167,7 +167,7 @@ class IdentifierActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get mustBe s"${frontendAppConfig.loginUrl}?continue=http%3A%2F%2Flocalhost%3A9781%2Ftrusts-registration&origin=maintain-lead-trustee-frontend"
         application.stop()
       }
     }
