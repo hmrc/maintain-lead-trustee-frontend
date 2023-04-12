@@ -33,7 +33,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = LeadTrusteeOrTrusteeController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, TrusteeType.options)
 

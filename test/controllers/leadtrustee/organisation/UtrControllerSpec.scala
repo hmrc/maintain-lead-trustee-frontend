@@ -40,7 +40,7 @@ class UtrControllerSpec extends SpecBase {
   val fakeBusinessName = "Business name"
   val fakeUtr = "1234567890"
 
-  lazy val trusteeUtrRoute: String = routes.UtrController.onPageLoad.url
+  lazy val trusteeUtrRoute: String = routes.UtrController.onPageLoad().url
 
   val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
   when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))

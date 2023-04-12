@@ -19,5 +19,5 @@ package pages.leadtrustee
 import play.api.libs.json.JsPath
 
 package object organisation {
-  val basePath: JsPath = JsPath \ 'leadtrustee \ 'organisation
+  val basePath: JsPath = JsPath \ Symbol("leadtrustee") \ Symbol("organisation")
 }

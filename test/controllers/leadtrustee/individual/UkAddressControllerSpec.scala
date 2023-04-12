@@ -46,7 +46,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val ukAddressRoute = routes.UkAddressController.onPageLoad.url
+  lazy val ukAddressRoute = routes.UkAddressController.onPageLoad().url
 
   val userAnswers = emptyUserAnswers.set(UkAddressPage, validAnswer).success.value
 

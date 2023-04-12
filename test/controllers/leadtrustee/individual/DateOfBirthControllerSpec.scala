@@ -44,7 +44,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer: LocalDate = LocalDate.now(ZoneOffset.UTC)
 
-  lazy val dateOfBirthRoute: String = routes.DateOfBirthController.onPageLoad.url
+  lazy val dateOfBirthRoute: String = routes.DateOfBirthController.onPageLoad().url
 
   val name: Name = Name("Lead", None, "Trustee")
 

@@ -19,9 +19,6 @@ package controllers.trustee.organisation
 import controllers.actions._
 import forms.BusinessNameFormProvider
 import models.Mode
-
-import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.trustee.organisation.NamePage
 import play.api.data.Form
@@ -31,6 +28,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.trustee.organisation.NameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(

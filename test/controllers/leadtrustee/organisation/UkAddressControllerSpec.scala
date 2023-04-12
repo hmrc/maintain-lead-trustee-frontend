@@ -35,7 +35,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val form = new UkAddressFormProvider()()
 
-  lazy val ukAddressRoute = routes.UkAddressController.onPageLoad.url
+  lazy val ukAddressRoute = routes.UkAddressController.onPageLoad().url
 
   val name = "Org Name"
   val address = UkAddress("line 1", "line 2", None, None, "AB11AB")

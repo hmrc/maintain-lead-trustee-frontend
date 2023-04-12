@@ -40,7 +40,7 @@
     title = s"${errorPrefix(form)}$heading"
 ) {
 
-    @formHelper(action = AddATrusteeController.submitAnother(), 'autoComplete -> "off") {
+    @formHelper(action = AddATrusteeController.submitAnother(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, AddATrustee.options)
 
@@ -56,7 +56,7 @@
             </div>
         }
 
-        <p>@messages("addATrustee.p1") <a class="govuk-link" href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad.url">@messages("addATrustee.p1.a")</a>.</p>
+        <p>@messages("addATrustee.p1") <a class="govuk-link" href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
 
         @inputRadio(
             field = form("value"),

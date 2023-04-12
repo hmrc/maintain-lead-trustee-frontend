@@ -38,7 +38,7 @@ object Trustee {
   }
 
   implicit val reads : Reads[Trustee] = Reads { data : JsValue =>
-    val allErrors: Either[Seq[(JsPath, Seq[JsonValidationError])], Trustee] = for {
+    val allErrors: Either[collection.Seq[(JsPath, collection.Seq[JsonValidationError])], Trustee] = for {
       indErrs <- (data \ INDIVIDUAL_TRUSTEE).validate[TrusteeIndividual].asEither.left
       orgErrs <- (data \ BUSINESS_TRUSTEE).validate[TrusteeOrganisation].asEither.left
     } yield indErrs.map(pair => (pair._1, JsonValidationError("Failed to read as TrusteeIndividual") +: pair._2)) ++
@@ -51,7 +51,7 @@ object Trustee {
   }
 
   def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
-    (__ \ 'legallyIncapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+    (__ \ Symbol("legallyIncapable")).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
       Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
     }
 
@@ -88,27 +88,27 @@ object TrusteeIndividual {
   )
 
   implicit val reads: Reads[TrusteeIndividual] = (
-    (__ \ 'name).read[Name] and
-      (__ \ 'dateOfBirth).readNullable[LocalDate] and
-      (__ \ 'phoneNumber).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
-      (__ \ 'countryOfResidence).readNullable[String] and
-      (__ \ 'nationality).readNullable[String] and
+    (__ \ Symbol("name")).read[Name] and
+      (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
+      (__ \ Symbol("phoneNumber")).readNullable[String] and
+      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
+      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
+      (__ \ Symbol("countryOfResidence")).readNullable[String] and
+      (__ \ Symbol("nationality")).readNullable[String] and
       readMentalCapacity and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").read[Boolean]
     )(TrusteeIndividual.apply _)
 
   implicit val writes: Writes[TrusteeIndividual] = (
-    (__ \ 'name).write[Name] and
-      (__ \ 'dateOfBirth).writeNullable[LocalDate] and
-      (__ \ 'phoneNumber).writeNullable[String] and
-      (__ \ 'identification).writeNullable[IndividualIdentification] and
-      (__ \ 'identification \ 'address).writeNullable[Address] and
-      (__ \ 'countryOfResidence).writeNullable[String] and
-      (__ \ 'nationality).writeNullable[String] and
-      (__ \ 'legallyIncapable).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
+    (__ \ Symbol("name")).write[Name] and
+      (__ \ Symbol("dateOfBirth")).writeNullable[LocalDate] and
+      (__ \ Symbol("phoneNumber")).writeNullable[String] and
+      (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
+      (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address] and
+      (__ \ Symbol("countryOfResidence")).writeNullable[String] and
+      (__ \ Symbol("nationality")).writeNullable[String] and
+      (__ \ Symbol("legallyIncapable")).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     )(unlift(TrusteeIndividual.unapply))

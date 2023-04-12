@@ -33,7 +33,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = NameController.onSubmit(), 'autoComplete -> "on") {
+    @formHelper(action = NameController.onSubmit(), Symbol("autoComplete") -> "on") {
 
         @errorSummary(form.errors)
 

@@ -31,7 +31,7 @@
     showBackLink = false
 ) {
 
-    @formHelper(action = MatchingFailedController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = MatchingFailedController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @headingWithCaption(
             messagePrefix = "leadTrustee.individual.matching.failed",

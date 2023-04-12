@@ -56,7 +56,7 @@ class UnableToRemoveControllerSpec extends SpecBase   {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustService].toInstance(mockTrustService)).build()
 
-      val request = FakeRequest(GET, routes.UnableToRemoveController.onPageLoad.url)
+      val request = FakeRequest(GET, routes.UnableToRemoveController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -82,13 +82,13 @@ class UnableToRemoveControllerSpec extends SpecBase   {
         )
         .build()
 
-      val request = FakeRequest(GET, routes.UnableToRemoveController.onPageLoad.url)
+      val request = FakeRequest(GET, routes.UnableToRemoveController.onPageLoad().url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
+      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
 
       application.stop()
     }

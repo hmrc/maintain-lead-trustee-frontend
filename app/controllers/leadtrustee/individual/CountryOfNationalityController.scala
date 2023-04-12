@@ -53,7 +53,7 @@ class CountryOfNationalityController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.leadTrusteeName, countryOptions.options))
+      Ok(view(preparedForm, request.leadTrusteeName, countryOptions.options()))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
@@ -61,7 +61,7 @@ class CountryOfNationalityController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, countryOptions.options))),
+          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, countryOptions.options()))),
 
         value =>
           for {

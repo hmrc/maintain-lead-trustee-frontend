@@ -33,7 +33,7 @@ class RegisteredInUkYesNoControllerSpec extends SpecBase {
   val index = 0
   val emptyTrusteeName = ""
 
-  val onwardRoute = routes.RegisteredInUkYesNoController.onPageLoad.url
+  val onwardRoute = routes.RegisteredInUkYesNoController.onPageLoad().url
 
   "TrusteeUtrYesNo Controller" must {
 

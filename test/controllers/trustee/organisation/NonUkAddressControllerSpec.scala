@@ -36,7 +36,7 @@ class NonUkAddressControllerSpec extends SpecBase {
 
   val name: String = "Trustee Name"
   val fakeAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "DE")
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
   "UkAddress Controller" must {
 

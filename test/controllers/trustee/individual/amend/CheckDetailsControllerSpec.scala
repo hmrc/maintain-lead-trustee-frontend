@@ -188,7 +188,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad.url
+          redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
 
           verify(mockTrustConnector).amendTrustee(any(), eqTo(index), eqTo(trustee))(any(), any())
         }

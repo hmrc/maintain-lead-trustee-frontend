@@ -35,7 +35,7 @@ class CountryOfResidenceViewSpec extends SelectCountryViewBehaviours {
 
     val view = viewFor[CountryOfResidenceView](Some(emptyUserAnswers))
 
-    val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+    val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, countryOptions, name)(fakeRequest, messages)
