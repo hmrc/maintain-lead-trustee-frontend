@@ -35,7 +35,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new TrusteeTypeFormProvider()
   val form = formProvider.withPrefix("leadTrusteeOrTrustee")
-  
+
   lazy val leadTrusteeOrTrusteeRoute = routes.LeadTrusteeOrTrusteeController.onPageLoad.url
 
   "LeadTrusteeOrTrustee controller" must {

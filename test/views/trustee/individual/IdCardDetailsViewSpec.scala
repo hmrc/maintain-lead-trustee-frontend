@@ -42,7 +42,7 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, mode, countryOptions, name.displayName)(fakeRequest, messages)
-    
+
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))

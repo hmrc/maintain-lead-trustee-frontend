@@ -39,7 +39,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
   val name = Name("FirstName", None, "LastName")
 
   val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
-  
+
   lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url
 
   "NationalInsuranceNumberYesNo Controller" must {

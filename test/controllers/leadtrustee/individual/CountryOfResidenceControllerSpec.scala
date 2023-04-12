@@ -31,7 +31,7 @@ import utils.countryOptions.CountryOptionsNonUK
 import views.html.leadtrustee.individual.CountryOfResidenceView
 
 class CountryOfResidenceControllerSpec extends SpecBase {
-  
+
   private val form: Form[String] = new CountryFormProvider().withPrefix("leadtrustee.individual.countryOfResidence")
   private val onPageLoadRoute: String = routes.CountryOfResidenceController.onPageLoad.url
   private val name: Name = Name("FirstName", None, "LastName")

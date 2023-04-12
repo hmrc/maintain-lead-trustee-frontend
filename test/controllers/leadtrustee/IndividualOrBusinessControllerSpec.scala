@@ -36,7 +36,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new IndividualOrBusinessFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individualOrBusiness")
   val index = 0
-  
+
   lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad.url
 
   "IndividualOrBusiness Controller" must {
