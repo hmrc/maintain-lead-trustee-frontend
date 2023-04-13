@@ -33,7 +33,7 @@ class NeedToAnswerQuestionsControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(NamePage, leadTrustee).success.value)).build()
 
-      val request = FakeRequest(GET, routes.NeedToAnswerQuestionsController.onPageLoad.url)
+      val request = FakeRequest(GET, routes.NeedToAnswerQuestionsController.onPageLoad().url)
 
       val result = route(application, request).value
 

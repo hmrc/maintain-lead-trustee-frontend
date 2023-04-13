@@ -43,7 +43,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
 
   val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
-  
+
   lazy val liveInTheUkYesNoControllerRoute = routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url
 
   "LiveInTheUkYesNoPage Controller" must {

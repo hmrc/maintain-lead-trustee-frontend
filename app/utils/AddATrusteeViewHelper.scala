@@ -54,7 +54,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           name = leadInd.name.displayName,
           typeLabel = messages(s"entities.leadtrustee.individual"),
           changeLabel = messages("site.change.details"),
-          changeUrl = controllers.leadtrustee.individual.routes.CheckDetailsController.onPageLoad.url,
+          changeUrl = controllers.leadtrustee.individual.routes.CheckDetailsController.onPageLoad().url,
           removeLabel =  Some(messages("site.cannotRemove")),
           removeUrl = None
         ))
@@ -63,7 +63,7 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
           name = leadIOrg.name,
           typeLabel = messages(s"entities.leadtrustee.organisation"),
           changeLabel = messages("site.change.details"),
-          changeUrl = controllers.leadtrustee.organisation.routes.CheckDetailsController.onPageLoad.url,
+          changeUrl = controllers.leadtrustee.organisation.routes.CheckDetailsController.onPageLoad().url,
           removeLabel =  Some(messages("site.cannotRemove")),
           removeUrl = None
         ))

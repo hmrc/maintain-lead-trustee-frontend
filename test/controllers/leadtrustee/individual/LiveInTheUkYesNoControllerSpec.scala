@@ -36,7 +36,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
 
-  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad.url
+  lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad().url
 
   val name = Name("Lead", None, "Trustee")
 

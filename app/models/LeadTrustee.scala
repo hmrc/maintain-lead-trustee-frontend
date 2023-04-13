@@ -30,7 +30,7 @@ object LeadTrustee {
   }
 
   implicit val reads: Reads[LeadTrustee] = Reads { (data:JsValue) =>
-    val allErrors: Either[Seq[(JsPath, Seq[JsonValidationError])], LeadTrustee] = for {
+    val allErrors: Either[collection.Seq[(JsPath, collection.Seq[JsonValidationError])], LeadTrustee] = for {
       indErrs <- data.validate[LeadTrusteeIndividual].asEither.left
       orgErrs <- data.validate[LeadTrusteeOrganisation].asEither.left
     } yield indErrs.map(pair => (pair._1, JsonValidationError("Failed to read as LeadTrusteeIndividual") +: pair._2)) ++
@@ -55,27 +55,27 @@ case class LeadTrusteeIndividual(bpMatchStatus: Option[BpMatchStatus],
 
 object LeadTrusteeIndividual {
   implicit val reads: Reads[LeadTrusteeIndividual] = (
-    (__ \ 'bpMatchStatus).readNullable[BpMatchStatus] and
-      (__ \ 'name).read[Name] and
-      (__ \ 'dateOfBirth).read[LocalDate] and
-      (__ \ 'phoneNumber).read[String] and
-      (__ \ 'email).readNullable[String] and
-      (__ \ 'identification).read[IndividualIdentification] and
-      (__ \ 'identification \ 'address).read[Address] and
-      (__ \ 'countryOfResidence).readNullable[String] and
-      (__ \ 'nationality).readNullable[String]
+    (__ \ Symbol("bpMatchStatus")).readNullable[BpMatchStatus] and
+      (__ \ Symbol("name")).read[Name] and
+      (__ \ Symbol("dateOfBirth")).read[LocalDate] and
+      (__ \ Symbol("phoneNumber")).read[String] and
+      (__ \ Symbol("email")).readNullable[String] and
+      (__ \ Symbol("identification")).read[IndividualIdentification] and
+      (__ \ Symbol("identification") \ Symbol("address")).read[Address] and
+      (__ \ Symbol("countryOfResidence")).readNullable[String] and
+      (__ \ Symbol("nationality")).readNullable[String]
     )(LeadTrusteeIndividual.apply _)
 
   implicit val writes: Writes[LeadTrusteeIndividual] = (
-    (__ \ 'bpMatchStatus).writeNullable[BpMatchStatus] and
-      (__ \ 'name).write[Name] and
-      (__ \ 'dateOfBirth).write[LocalDate] and
-      (__ \ 'phoneNumber).write[String] and
-      (__ \ 'email).writeNullable[String] and
-      (__ \ 'identification).write[IndividualIdentification] and
-      (__ \ 'identification \ 'address).write[Address] and
-      (__ \ 'countryOfResidence).writeNullable[String] and
-      (__ \ 'nationality).writeNullable[String]
+    (__ \ Symbol("bpMatchStatus")).writeNullable[BpMatchStatus] and
+      (__ \ Symbol("name")).write[Name] and
+      (__ \ Symbol("dateOfBirth")).write[LocalDate] and
+      (__ \ Symbol("phoneNumber")).write[String] and
+      (__ \ Symbol("email")).writeNullable[String] and
+      (__ \ Symbol("identification")).write[IndividualIdentification] and
+      (__ \ Symbol("identification") \ Symbol("address")).write[Address] and
+      (__ \ Symbol("countryOfResidence")).writeNullable[String] and
+      (__ \ Symbol("nationality")).writeNullable[String]
     )(unlift(LeadTrusteeIndividual.unapply))
 }
 
@@ -88,20 +88,20 @@ case class LeadTrusteeOrganisation(name: String,
 
 object LeadTrusteeOrganisation {
   implicit val reads: Reads[LeadTrusteeOrganisation] = (
-    (__ \ 'name).read[String] and
-      (__ \ 'phoneNumber).read[String] and
-      (__ \ 'email).readNullable[String] and
-      (__ \ 'identification \ 'utr).readNullable[String] and
-      (__ \ 'identification \ 'address).read[Address] and
-      (__ \ 'countryOfResidence).readNullable[String]
+    (__ \ Symbol("name")).read[String] and
+      (__ \ Symbol("phoneNumber")).read[String] and
+      (__ \ Symbol("email")).readNullable[String] and
+      (__ \ Symbol("identification") \ Symbol("utr")).readNullable[String] and
+      (__ \ Symbol("identification") \ Symbol("address")).read[Address] and
+      (__ \ Symbol("countryOfResidence")).readNullable[String]
     )(LeadTrusteeOrganisation.apply _)
 
   implicit val writes: Writes[LeadTrusteeOrganisation] = (
-    (__ \ 'name).write[String] and
-      (__ \ 'phoneNumber).write[String] and
-      (__ \ 'email).writeNullable[String] and
-      (__ \ 'identification \ 'utr).writeNullable[String] and
-      (__ \ 'identification \ 'address).write[Address] and
-      (__ \ 'countryOfResidence).writeNullable[String]
+    (__ \ Symbol("name")).write[String] and
+      (__ \ Symbol("phoneNumber")).write[String] and
+      (__ \ Symbol("email")).writeNullable[String] and
+      (__ \ Symbol("identification") \ Symbol("utr")).writeNullable[String] and
+      (__ \ Symbol("identification") \ Symbol("address")).write[Address] and
+      (__ \ Symbol("countryOfResidence")).writeNullable[String]
     )(unlift(LeadTrusteeOrganisation.unapply))
 }

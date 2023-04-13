@@ -31,7 +31,7 @@ import views.html.leadtrustee.individual.CountryOfNationalityInTheUkYesNoView
 class CountryOfNationalityInTheUkYesNoControllerSpec extends SpecBase {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.individual.countryOfNationalityInTheUkYesNo")
-  private val onPageLoadRoute: String = routes.CountryOfNationalityInTheUkYesNoController.onPageLoad.url
+  private val onPageLoadRoute: String = routes.CountryOfNationalityInTheUkYesNoController.onPageLoad().url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute = Call("GET", "/foo")
 

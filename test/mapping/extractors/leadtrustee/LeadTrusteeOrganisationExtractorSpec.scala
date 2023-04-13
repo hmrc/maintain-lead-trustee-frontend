@@ -36,7 +36,7 @@ class LeadTrusteeOrganisationExtractorSpec extends SpecBase {
   "Lead trustee organisation extractor" must {
 
     "populate user answers" when {
-      
+
         "trustee has a UTR, a UK residency/address and no email" in {
 
           val trustee = LeadTrusteeOrganisation(

@@ -33,13 +33,13 @@ import views.html.leadtrustee.individual.CountryOfNationalityView
 class CountryOfNationalityControllerSpec extends SpecBase {
 
   private val form: Form[String] = new CountryFormProvider().withPrefix("leadtrustee.individual.countryOfNationality")
-  private val onPageLoadRoute: String = routes.CountryOfNationalityController.onPageLoad.url
+  private val onPageLoadRoute: String = routes.CountryOfNationalityController.onPageLoad().url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute = Call("GET", "/foo")
 
   private val validAnswer: String = "FR"
 
-  private val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+  private val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
   private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 

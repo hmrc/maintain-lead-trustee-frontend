@@ -60,6 +60,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       navigator.nextPage(TrusteeTypePage, answers)
         .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
     }
-    
+
   }
 }

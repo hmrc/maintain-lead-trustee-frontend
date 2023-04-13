@@ -52,7 +52,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val getRequest = FakeRequest(GET, idCardDetailsRoute)
 
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
+  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options()
 
   val validData: IdCard = IdCard("country", "card number", LocalDate.of(2020, 1, 1))
 

@@ -43,7 +43,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
   override val emptyUserAnswers = super.emptyUserAnswers
       .set(NamePage, name).success.value
 
-  lazy val telephoneNumberRoute = routes.TelephoneNumberController.onPageLoad.url
+  lazy val telephoneNumberRoute = routes.TelephoneNumberController.onPageLoad().url
 
   "TelephoneNumber Controller" must {
 

@@ -38,7 +38,7 @@ class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.displayName)(fakeRequest, messages)
-    
+
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))

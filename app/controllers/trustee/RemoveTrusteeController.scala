@@ -104,7 +104,7 @@ class RemoveTrusteeController @Inject()(
                 Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
             }
           } else {
-            Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad.url))
+            Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))
           }
         }
       )

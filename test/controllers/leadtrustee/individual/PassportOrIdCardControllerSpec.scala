@@ -40,7 +40,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with Bef
   val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
   val form: Form[CombinedPassportOrIdCard] = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
 
-  lazy val passportDetailsRoute: String = routes.PassportOrIdCardController.onPageLoad.url
+  lazy val passportDetailsRoute: String = routes.PassportOrIdCardController.onPageLoad().url
 
   val countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
@@ -69,7 +69,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with Bef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, "Lead Trustee", countryOptions.options)(request, messages).toString
+        view(form, "Lead Trustee", countryOptions.options())(request, messages).toString
 
       application.stop()
     }
@@ -89,7 +89,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with Bef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validData), "Lead Trustee", countryOptions.options)(request, messages).toString
+        view(form.fill(validData), "Lead Trustee", countryOptions.options())(request, messages).toString
 
       application.stop()
     }
@@ -239,7 +239,7 @@ class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with Bef
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, "Lead Trustee", countryOptions.options)(request, messages).toString
+        view(boundForm, "Lead Trustee", countryOptions.options())(request, messages).toString
 
       application.stop()
     }

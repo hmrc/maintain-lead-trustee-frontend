@@ -43,7 +43,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
   val nino = "JH123456C"
 
-  lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad.url
+  lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad().url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
@@ -225,7 +225,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.MatchingFailedController.onPageLoad.url
+          routes.MatchingFailedController.onPageLoad().url
 
         application.stop()
 
@@ -260,7 +260,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.MatchingLockedController.onPageLoad.url
+          routes.MatchingLockedController.onPageLoad().url
 
         application.stop()
 

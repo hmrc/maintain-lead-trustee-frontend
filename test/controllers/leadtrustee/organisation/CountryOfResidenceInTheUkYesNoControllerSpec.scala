@@ -32,7 +32,7 @@ import views.html.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoView
 class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.organisation.countryOfResidenceInTheUkYesNo")
-  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad.url
+  private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad().url
   private val name = "Company"
   private val onwardRoute: Call = Call("GET", "/foo")
 

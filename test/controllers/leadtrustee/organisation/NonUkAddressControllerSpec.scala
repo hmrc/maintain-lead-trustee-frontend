@@ -36,7 +36,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val form = new NonUkAddressFormProvider()()
 
-  lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad.url
+  lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
 
   val countryOptions = injector.instanceOf[CountryOptionsNonUK]
 
@@ -60,7 +60,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions.options, name)(request, messages).toString
+        view(form, countryOptions.options(), name)(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +80,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(address), countryOptions.options, name)(request, messages).toString
+        view(form.fill(address), countryOptions.options(), name)(request, messages).toString
 
       application.stop()
     }
@@ -129,7 +129,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions.options, name)(request, messages).toString
+        view(boundForm, countryOptions.options(), name)(request, messages).toString
 
        application.stop()
     }

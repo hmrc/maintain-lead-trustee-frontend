@@ -43,7 +43,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
   val name: Name = Name("Lead", None, "Trustee")
 
-  lazy val ukCitizenRoute: String = routes.UkCitizenController.onPageLoad.url
+  lazy val ukCitizenRoute: String = routes.UkCitizenController.onPageLoad().url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value

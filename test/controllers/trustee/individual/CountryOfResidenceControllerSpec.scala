@@ -56,7 +56,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       val view = application.injector.instanceOf[CountryOfResidenceView]
 
-      val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+      val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
       status(result) mustEqual OK
 
@@ -77,7 +77,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       val view = application.injector.instanceOf[CountryOfResidenceView]
 
-      val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+      val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
       val result = route(application, request).value
 
@@ -123,7 +123,7 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
       val view = application.injector.instanceOf[CountryOfResidenceView]
 
-      val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+      val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
       val result = route(application, request).value
 

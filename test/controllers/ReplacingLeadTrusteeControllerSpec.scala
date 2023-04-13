@@ -42,7 +42,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
   private val messageKeyPrefix: String = "replacingLeadTrustee"
   private val form: Form[TrusteeType] = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
 
-  private lazy val replacingLeadTrusteeRoute: String = routes.ReplacingLeadTrusteeController.onPageLoad.url
+  private lazy val replacingLeadTrusteeRoute: String = routes.ReplacingLeadTrusteeController.onPageLoad().url
 
   private val date: LocalDate = LocalDate.parse("2019-02-28")
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
@@ -226,7 +226,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad.url
+        redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad().url
 
         application.stop()
       }
@@ -259,7 +259,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad.url
+        redirectLocation(result).value mustBe controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad().url
 
         application.stop()
       }

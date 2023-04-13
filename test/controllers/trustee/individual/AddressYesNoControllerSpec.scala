@@ -42,7 +42,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
   val name = Name("FirstName", None, "LastName")
 
   val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
-  
+
   lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
 
   "AddressYesNo Controller" must {

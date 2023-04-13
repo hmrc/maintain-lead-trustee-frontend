@@ -33,7 +33,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = ReplacingLeadTrusteeController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = ReplacingLeadTrusteeController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, trustees)
 
@@ -48,6 +48,6 @@
 
         @submitButton()
 
-        <p><a class="govuk-link" href="@controllers.routes.AddATrusteeController.onPageLoad.url">@messages("replacingLeadTrustee.return.link")</a></p>
+        <p><a class="govuk-link" href="@controllers.routes.AddATrusteeController.onPageLoad().url">@messages("replacingLeadTrustee.return.link")</a></p>
     }
 }

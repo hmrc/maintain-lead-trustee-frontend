@@ -48,8 +48,8 @@ class WhenAddedControllerSpec extends SpecBase with MockitoSugar {
   private val validAnswer: LocalDate = LocalDate.parse("2000-01-01")
   private val name: String = "Amazon"
 
-  private lazy val onPageLoadRoute = routes.WhenAddedController.onPageLoad.url
-  private lazy val onSubmitRoute = routes.WhenAddedController.onPageLoad.url
+  private lazy val onPageLoadRoute = routes.WhenAddedController.onPageLoad().url
+  private lazy val onSubmitRoute = routes.WhenAddedController.onPageLoad().url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
     .set(NamePage, name).success.value
