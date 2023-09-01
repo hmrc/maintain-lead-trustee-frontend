@@ -25,7 +25,7 @@ import pages._
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  implicit val navigator = new Navigator
+  implicit val navigator: Navigator = new Navigator
 
   "Navigator" when {
 
