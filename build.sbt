@@ -13,7 +13,7 @@ lazy val root = (project in file("."))
   .settings(
     DefaultBuildSettings.scalaSettings,
     DefaultBuildSettings.defaultSettings(),
-    scalaVersion := "2.13.11",
+    scalaVersion := "2.13.12",
     libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
     inConfig(Test)(testSettings),
     majorVersion := 0,
