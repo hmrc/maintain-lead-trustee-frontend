@@ -45,8 +45,7 @@ class UkAddressFormProvider @Inject() extends Mappings {
               regexp(Validation.addressLineRegex, "ukAddress.error.line2.invalidCharacters")
             )),
       "line3" ->
-        optional(Forms.text
-          .transform(trimWhitespace, identity[String])
+        optional(text()
           .verifying(
             firstError(
               maxLength(35, "ukAddress.error.line3.length"),
@@ -54,8 +53,7 @@ class UkAddressFormProvider @Inject() extends Mappings {
             ))
         ).transform(emptyToNone, identity[Option[String]]),
       "line4" ->
-        optional(Forms.text
-          .transform(trimWhitespace, identity[String])
+        optional(text()
           .verifying(
             firstError(
               maxLength(35, "ukAddress.error.line4.length"),
