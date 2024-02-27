@@ -16,13 +16,13 @@
 
 package forms
 
-import forms.helpers.WhitespaceHelper.{emptyToNone, trimWhitespace}
+import forms.helpers.WhitespaceHelper.emptyToNone
 import forms.mappings.Mappings
+import models.NonUkAddress
+import play.api.data.Form
+import play.api.data.Forms._
 
 import javax.inject.Inject
-import models.NonUkAddress
-import play.api.data.{Form, Forms}
-import play.api.data.Forms._
 
 class NonUkAddressFormProvider @Inject() extends Mappings {
 
