@@ -19,6 +19,8 @@ package controllers.actions
 import base.SpecBase
 import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, Results}
@@ -33,7 +35,7 @@ class IdentifierActionSpec extends SpecBase {
 
   type RetrievalType = Option[String] ~ Option[AffinityGroup] ~ Enrolments
 
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockAuthConnector: AuthConnector = Mockito.mock(classOf[AuthConnector])
   val appConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   class Harness(authAction: IdentifierAction) {
@@ -69,8 +71,8 @@ class IdentifierActionSpec extends SpecBase {
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
           .thenReturn(authRetrievals(AffinityGroup.Agent, noEnrollment))
 
-        val mockAuthService = mock[AuthenticationService]
-        when (mockAuthService.authenticateAgent()(any())).thenReturn(Future.successful(Left(Redirect("test-redirect-url"))))
+        val mockAuthService = Mockito.mock(classOf[AuthenticationService])
+        when(mockAuthService.authenticateAgent()(any())).thenReturn(Future.successful(Left(Redirect("test-redirect-url"))))
 
         val action = actionToTest(application, mockAuthService)
 

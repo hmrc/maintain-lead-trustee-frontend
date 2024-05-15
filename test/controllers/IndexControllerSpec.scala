@@ -20,8 +20,9 @@ import base.SpecBase
 import connectors.TrustConnector
 import models.TaskStatus.InProgress
 import models.{TrustDetails, UserAnswers}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{verify, when}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,8 +42,8 @@ class IndexControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val mockTrustConnector = mock[TrustConnector]
-      val mockTrustsStoreService = mock[TrustsStoreService]
+      val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+      val mockTrustsStoreService = Mockito.mock(classOf[TrustsStoreService])
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), trustTaxable = Some(isTaxable))))

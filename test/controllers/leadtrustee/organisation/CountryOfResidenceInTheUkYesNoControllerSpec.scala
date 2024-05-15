@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
 import pages.leadtrustee.organisation.{CountryOfResidenceInTheUkYesNoPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -29,7 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.leadtrustee.organisation.CountryOfResidenceInTheUkYesNoView
 
-class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
+class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.organisation.countryOfResidenceInTheUkYesNo")
   private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad().url

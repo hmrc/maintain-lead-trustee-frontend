@@ -21,7 +21,8 @@ import forms.YesNoFormProvider
 import models.Name
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.leadtrustee.individual.{LiveInTheUkYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ import views.html.leadtrustee.individual.LiveInTheUkYesNoView
 
 import scala.concurrent.Future
 
-class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
+class LiveInTheUkYesNoControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
@@ -85,7 +86,7 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

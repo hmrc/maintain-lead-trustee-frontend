@@ -20,6 +20,8 @@ import base.SpecBase
 import forms.UtrFormProvider
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import pages.leadtrustee.organisation.{NamePage, UtrPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -42,7 +44,7 @@ class UtrControllerSpec extends SpecBase {
 
   lazy val trusteeUtrRoute: String = routes.UtrController.onPageLoad().url
 
-  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  val mockTrustsService: TrustServiceImpl = Mockito.mock(classOf[TrustServiceImpl])
   when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))
     .thenReturn(Future.successful(Nil))
 
@@ -97,7 +99,7 @@ class UtrControllerSpec extends SpecBase {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

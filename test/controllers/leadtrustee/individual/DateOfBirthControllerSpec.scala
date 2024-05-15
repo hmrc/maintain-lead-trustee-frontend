@@ -17,14 +17,14 @@
 package controllers.leadtrustee.individual
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import forms.DateOfBirthFormProvider
 import models.BpMatchStatus.FullyMatched
 import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.leadtrustee.individual.{BpMatchStatusPage, DateOfBirthPage, NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -36,7 +36,7 @@ import views.html.leadtrustee.individual.DateOfBirthView
 
 import scala.concurrent.Future
 
-class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
+class DateOfBirthControllerSpec extends SpecBase {
 
   val formProvider = new DateOfBirthFormProvider(frontendAppConfig)
 
@@ -127,7 +127,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

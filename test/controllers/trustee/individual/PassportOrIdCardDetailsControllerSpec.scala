@@ -17,11 +17,10 @@
 package controllers.trustee.individual
 
 import java.time.LocalDate
-
 import base.SpecBase
 import models.{CombinedPassportOrIdCard, Mode, Name, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsPage}
@@ -30,7 +29,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+class PassportOrIdCardDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private val name: Name = Name("FirstName", None, "LastName")
   private val mode: Mode = NormalMode

@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.YesNoDontKnowFormProvider
 import models.{Name, NormalMode, UserAnswers, YesNoDontKnow}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
 import pages.trustee.individual.{MentalCapacityYesNoPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -28,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.trustee.individual.MentalCapacityYesNoView
 
-class MentalCapacityYesNoControllerSpec extends SpecBase with MockitoSugar {
+class MentalCapacityYesNoControllerSpec extends SpecBase {
 
   private val form: Form[YesNoDontKnow] = new YesNoDontKnowFormProvider().withPrefix("trustee.individual.mentalCapacityYesNo")
   private val name: Name = Name("FirstName", None, "LastName")

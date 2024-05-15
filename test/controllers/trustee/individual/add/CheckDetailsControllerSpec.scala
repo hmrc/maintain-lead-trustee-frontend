@@ -17,13 +17,13 @@
 package controllers.trustee.individual.add
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.trustee.TrusteeIndividualMapper
 import models.{Name, TrusteeIndividual}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import org.scalatest.concurrent.ScalaFutures
 import pages.trustee.individual.NamePage
 import play.api.inject.bind
@@ -37,7 +37,7 @@ import views.html.trustee.individual.add.CheckDetailsView
 
 import scala.concurrent.Future
 
-class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class CheckDetailsControllerSpec extends SpecBase with ScalaFutures {
 
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
@@ -66,7 +66,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "return OK and the correct view for a GET" in {
 
-      val printHelper: TrusteeIndividualPrintHelper = mock[TrusteeIndividualPrintHelper]
+      val printHelper: TrusteeIndividualPrintHelper = Mockito.mock(classOf[TrusteeIndividualPrintHelper])
 
       val answerSection: AnswerSection = AnswerSection(None, Nil)
 
@@ -90,8 +90,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to the 'add a trustee' page when submitted" in {
 
-      val connector: TrustConnector = mock[TrustConnector]
-      val mapper: TrusteeIndividualMapper = mock[TrusteeIndividualMapper]
+      val connector: TrustConnector = Mockito.mock(classOf[TrustConnector])
+      val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
         .overrides(
@@ -117,7 +117,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     "return InternalServerError for a POST" when {
       "mapper fails" in {
 
-        val mapper: TrusteeIndividualMapper = mock[TrusteeIndividualMapper]
+        val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
 
         val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
           .overrides(bind[TrusteeIndividualMapper].toInstance(mapper))

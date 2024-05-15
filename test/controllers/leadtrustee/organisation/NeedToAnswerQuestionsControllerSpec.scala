@@ -17,13 +17,12 @@
 package controllers.leadtrustee.organisation
 
 import base.SpecBase
-import org.mockito.MockitoSugar
 import pages.leadtrustee.organisation.NamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.leadtrustee.organisation.NeedToAnswerQuestionsView
 
-class NeedToAnswerQuestionsControllerSpec extends SpecBase with MockitoSugar {
+class NeedToAnswerQuestionsControllerSpec extends SpecBase {
 
   val leadTrustee: String = "Lead Trustee"
 

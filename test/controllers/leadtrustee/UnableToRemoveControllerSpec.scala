@@ -18,11 +18,12 @@ package controllers.leadtrustee
 
 
 import java.time.LocalDate
-
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.{CombinedPassportOrIdCard, LeadTrusteeIndividual, Name, UkAddress}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,7 +40,7 @@ class UnableToRemoveControllerSpec extends SpecBase   {
 
     "return OK and the correct view for a GET" in {
 
-      val mockTrustService= mock[TrustService]
+      val mockTrustService= Mockito.mock(classOf[TrustService])
 
       val lt = LeadTrusteeIndividual(
         bpMatchStatus = Some(FullyMatched),
@@ -72,7 +73,7 @@ class UnableToRemoveControllerSpec extends SpecBase   {
 
     "redirect to AddToPage when no name is found for lead trustee" in {
 
-      val mockTrustService = mock[TrustService]
+      val mockTrustService = Mockito.mock(classOf[TrustService])
 
       when(mockTrustService.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(None))
 

@@ -21,8 +21,9 @@ import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
 import models.Constants.INDIVIDUAL_TRUSTEE
 import models.{Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, Trustees}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -48,7 +49,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
   lazy val content : String = "First 1 Last 1"
 
-  val mockConnector: TrustConnector = mock[TrustConnector]
+  val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
 
   def trusteeInd(id: Int, provisional: Boolean): TrusteeIndividual = TrusteeIndividual(
     name = Name(firstName = s"First $id", middleName = None, lastName = s"Last $id"),

@@ -21,10 +21,10 @@ import connectors.TrustConnector
 import forms.DateRemovedFromTrustFormProvider
 import models.Constants.{BUSINESS_TRUSTEE, INDIVIDUAL_TRUSTEE}
 import models.{Name, NationalInsuranceNumber, RemoveTrustee, TrusteeIndividual, TrusteeOrganisation, Trustees}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -37,7 +37,7 @@ import views.html.trustee.WhenRemovedView
 import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
-class WhenRemovedControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   val formProvider = new DateRemovedFromTrustFormProvider()
 
@@ -49,7 +49,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar with BeforeAn
 
   lazy val name: Name = Name(firstName = "First", middleName = None, lastName = "Last")
 
-  val mockConnector: TrustConnector = mock[TrustConnector]
+  val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
 
   val fakeService = new TrustServiceImpl(mockConnector)
 

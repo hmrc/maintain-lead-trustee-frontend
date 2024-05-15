@@ -21,7 +21,8 @@ import forms.UkAddressFormProvider
 import models.UkAddress
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import pages.leadtrustee.organisation.{NamePage, UkAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ import views.html.leadtrustee.organisation.UkAddressView
 
 import scala.concurrent.Future
 
-class UkAddressControllerSpec extends SpecBase with MockitoSugar {
+class UkAddressControllerSpec extends SpecBase {
 
   val form = new UkAddressFormProvider()()
 
@@ -84,7 +85,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

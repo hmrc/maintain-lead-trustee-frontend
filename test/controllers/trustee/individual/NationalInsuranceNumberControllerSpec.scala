@@ -21,7 +21,8 @@ import forms.NationalInsuranceNumberFormProvider
 import models.{Name, NormalMode}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito
 import org.scalatest.BeforeAndAfterEach
 import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, NationalInsuranceNumberPage}
@@ -34,7 +35,7 @@ import views.html.trustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
-class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach{
+class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfterEach{
 
   val formProvider = new NationalInsuranceNumberFormProvider()
   val form: Form[String] = formProvider.apply("trustee.individual.nationalInsuranceNumber", Nil)
@@ -43,7 +44,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
   lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad(NormalMode).url
 
-  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  val mockTrustsService: TrustServiceImpl = Mockito.mock(classOf[TrustServiceImpl])
 
   val index = 0
 

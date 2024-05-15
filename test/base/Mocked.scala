@@ -17,19 +17,18 @@
 package base
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 
 import scala.concurrent.Future
 
-trait Mocked extends MockitoSugar {
+trait Mocked {
 
-  val playbackRepository: PlaybackRepository = mock[PlaybackRepository]
+  val playbackRepository: PlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
+  val mockSessionRepository : ActiveSessionRepository = Mockito.mock(classOf[ActiveSessionRepository])
 
   when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-
-  val mockSessionRepository : ActiveSessionRepository = mock[ActiveSessionRepository]
-
   when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
 }

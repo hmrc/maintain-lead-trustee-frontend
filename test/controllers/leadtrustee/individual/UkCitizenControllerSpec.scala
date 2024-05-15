@@ -22,7 +22,8 @@ import models.BpMatchStatus.FullyMatched
 import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.leadtrustee.individual.{BpMatchStatusPage, NamePage, NationalInsuranceNumberPage, UkCitizenPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -34,7 +35,7 @@ import views.html.leadtrustee.individual.UkCitizenView
 
 import scala.concurrent.Future
 
-class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
+class UkCitizenControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -118,7 +119,7 @@ class UkCitizenControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

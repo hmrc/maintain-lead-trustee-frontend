@@ -20,7 +20,8 @@ import base.SpecBase
 import connectors.TrustsStoreConnector
 import models.TaskStatus.Completed
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.scalatest.concurrent.ScalaFutures.whenReady
+import org.mockito.Mockito
+import org.mockito.Mockito.{verify, when}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.HttpResponse
 
@@ -28,7 +29,7 @@ import scala.concurrent.Future
 
 class TrustsStoreServiceSpec extends SpecBase {
 
-  val mockConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
+  val mockConnector: TrustsStoreConnector = Mockito.mock(classOf[TrustsStoreConnector])
 
   val featureFlagService = new TrustsStoreService(mockConnector)
 

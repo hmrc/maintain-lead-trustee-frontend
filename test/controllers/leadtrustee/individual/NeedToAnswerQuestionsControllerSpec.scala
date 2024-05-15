@@ -18,13 +18,12 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import models.Name
-import org.mockito.MockitoSugar
 import pages.leadtrustee.individual.NamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.leadtrustee.individual.NeedToAnswerQuestionsView
 
-class NeedToAnswerQuestionsControllerSpec extends SpecBase with MockitoSugar {
+class NeedToAnswerQuestionsControllerSpec extends SpecBase {
 
   val leadTrustee: Name = Name("Lead", None, "Trustee")
 

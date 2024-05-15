@@ -19,15 +19,15 @@ package controllers.actions
 import base.SpecBase
 import models.UtrSession
 import models.requests.{IdentifierRequest, OptionalDataRequest, OrganisationUser}
-import org.mockito.MockitoSugar
-import org.scalatest.concurrent.ScalaFutures
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import repositories.PlaybackRepository
 import uk.gov.hmrc.auth.core.Enrolments
 import utils.Session
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class DataRetrievalActionSpec extends SpecBase {
 
   class Harness(playbackRepository: PlaybackRepository) extends DataRetrievalActionImpl(mockSessionRepository, playbackRepository) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
@@ -39,7 +39,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       "set userAnswers to 'None' in the request" in {
 
-        val playbackRepository = mock[PlaybackRepository]
+        val playbackRepository = Mockito.mock(classOf[PlaybackRepository])
 
         when(mockSessionRepository.get("id")).thenReturn(Future.successful(None))
 
@@ -58,7 +58,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       "set userAnswers to 'None' in the request" in {
 
-        val playbackRepository = mock[PlaybackRepository]
+        val playbackRepository = Mockito.mock(classOf[PlaybackRepository])
 
         when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(UtrSession("id", "utr"))))
         when(playbackRepository.get("id", "utr", Session.id(hc))) thenReturn Future(None)
@@ -77,7 +77,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       "build a userAnswers object and add it to the request" in {
 
-        val playbackRepository = mock[PlaybackRepository]
+        val playbackRepository = Mockito.mock(classOf[PlaybackRepository])
 
         when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(UtrSession("id", "utr"))))
         when(playbackRepository.get("id", "utr", Session.id(hc))) thenReturn Future(Some(emptyUserAnswers))

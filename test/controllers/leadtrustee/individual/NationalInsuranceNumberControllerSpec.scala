@@ -21,10 +21,10 @@ import forms.NationalInsuranceNumberFormProvider
 import models.BpMatchStatus.FullyMatched
 import models._
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import pages.leadtrustee.individual.{BpMatchStatusPage, IndexPage, NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -35,7 +35,7 @@ import views.html.leadtrustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
-class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   val form: Form[String] = new NationalInsuranceNumberFormProvider().apply("leadtrustee.individual.nationalInsuranceNumber", Nil)
 
@@ -48,10 +48,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  val mockTrustsService: TrustServiceImpl = Mockito.mock(classOf[TrustServiceImpl])
 
   override def beforeEach(): Unit = {
-    reset(playbackRepository, mockTrustsService)
+    reset(playbackRepository)
+    reset(mockTrustsService)
+
     when(playbackRepository.set(any())).thenReturn(Future.successful(true))
     when(mockTrustsService.getIndividualNinos(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(Nil))
@@ -165,7 +167,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
       "SuccessfulMatchResponse" in {
 
-        val mockService = mock[TrustsIndividualCheckService]
+        val mockService = Mockito.mock(classOf[TrustsIndividualCheckService])
 
         when(mockService.matchLeadTrustee(any())(any(), any()))
           .thenReturn(Future.successful(SuccessfulMatchResponse))
@@ -200,7 +202,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
     "redirect to matching failed page" when {
       "UnsuccessfulMatchResponse" in {
 
-        val mockService = mock[TrustsIndividualCheckService]
+        val mockService = Mockito.mock(classOf[TrustsIndividualCheckService])
 
         when(mockService.matchLeadTrustee(any())(any(), any()))
           .thenReturn(Future.successful(UnsuccessfulMatchResponse))
@@ -238,7 +240,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
     "redirect to matching locked page" when {
       "LockedMatchResponse" in {
 
-        val mockService = mock[TrustsIndividualCheckService]
+        val mockService = Mockito.mock(classOf[TrustsIndividualCheckService])
 
         when(mockService.matchLeadTrustee(any())(any(), any()))
           .thenReturn(Future.successful(LockedMatchResponse))
@@ -274,7 +276,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
       "IssueBuildingPayloadResponse" in {
 
-        val mockService = mock[TrustsIndividualCheckService]
+        val mockService = Mockito.mock(classOf[TrustsIndividualCheckService])
 
         when(mockService.matchLeadTrustee(any())(any(), any()))
           .thenReturn(Future.successful(IssueBuildingPayloadResponse))
@@ -304,7 +306,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
       "ServiceUnavailableErrorResponse" in {
 
-        val mockService = mock[TrustsIndividualCheckService]
+        val mockService = Mockito.mock(classOf[TrustsIndividualCheckService])
 
         when(mockService.matchLeadTrustee(any())(any(), any()))
           .thenReturn(Future.successful(ServiceUnavailableErrorResponse))

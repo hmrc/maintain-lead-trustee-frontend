@@ -21,7 +21,8 @@ import forms.IndividualOrBusinessFormProvider
 import models.IndividualOrBusiness.Individual
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.leadtrustee.IndividualOrBusinessPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ import views.html.leadtrustee.IndividualOrBusinessView
 
 import scala.concurrent.Future
 
-class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
+class IndividualOrBusinessControllerSpec extends SpecBase {
 
   val formProvider = new IndividualOrBusinessFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individualOrBusiness")
@@ -77,7 +78,7 @@ class IndividualOrBusinessControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

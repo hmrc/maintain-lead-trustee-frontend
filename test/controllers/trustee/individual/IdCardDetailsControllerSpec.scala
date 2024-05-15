@@ -17,13 +17,13 @@
 package controllers.trustee.individual
 
 import java.time.LocalDate
-
 import base.SpecBase
 import forms.IdCardDetailsFormProvider
 import models.{IdCard, Mode, Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.trustee.individual.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ import views.html.trustee.individual.IdCardDetailsView
 
 import scala.concurrent.Future
 
-class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
+class IdCardDetailsControllerSpec extends SpecBase {
 
   val formProvider = new IdCardDetailsFormProvider(frontendAppConfig)
   private def form = formProvider.withPrefix("trustee")
@@ -96,7 +96,7 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

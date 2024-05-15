@@ -19,14 +19,14 @@ package controllers.actions
 import base.SpecBase
 import models.requests.{IdentifierRequest, OrganisationUser}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.Enrolments
 
 import scala.concurrent.Future
 
-class SaveSessionActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class SaveSessionActionSpec extends SpecBase with ScalaFutures {
 
   class Harness(utr: String) extends SaveActiveSessionImpl(utr, mockSessionRepository) {
     def callFilter[A](request: IdentifierRequest[A]): Future[Option[Result]] = filter(request)

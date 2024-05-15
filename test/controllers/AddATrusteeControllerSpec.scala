@@ -23,8 +23,9 @@ import forms.trustee.AddATrusteeFormProvider
 import models.IndividualOrBusiness.Individual
 import models.TaskStatus.Completed
 import models._
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual.NamePage
@@ -50,7 +51,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
   lazy val submitYesNoRoute: String = controllers.routes.AddATrusteeController.submitOne().url
   lazy val submitCompleteRoute: String = controllers.routes.AddATrusteeController.submitComplete().url
 
-  val mockStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
+  val mockStoreConnector: TrustsStoreConnector = Mockito.mock(classOf[TrustsStoreConnector])
 
   val addTrusteeForm = new AddATrusteeFormProvider()()
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
@@ -439,7 +440,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     "Clear out the user answers when starting the add trustee journey and redirect to individual or business page" in {
 
-      val mockTrustService = mock[TrustService]
+      val mockTrustService = Mockito.mock(classOf[TrustService])
 
       val userAnswers = emptyUserAnswers
         .set(IndividualOrBusinessPage, Individual).success.value
@@ -462,7 +463,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad().url
 
-      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
       uaCaptor.getValue.data mustBe Json.obj()
     }
