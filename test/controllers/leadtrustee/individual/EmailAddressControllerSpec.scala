@@ -21,7 +21,8 @@ import forms.EmailAddressFormProvider
 import models.Name
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import pages.leadtrustee.individual.{EmailAddressPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ import views.html.leadtrustee.individual.EmailAddressView
 
 import scala.concurrent.Future
 
-class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
+class EmailAddressControllerSpec extends SpecBase {
 
   val formProvider = new EmailAddressFormProvider()
   val form = formProvider.withPrefix("leadtrustee.individual.emailAddress")
@@ -85,7 +86,7 @@ class EmailAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

@@ -16,23 +16,17 @@
 
 package connectors
 
+import base.SpecBase
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.freespec.AnyFreeSpec
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
-import play.api.test.DefaultAwaitTimeout
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class TrustAuthConnectorSpec extends AnyFreeSpec with Matchers with WireMockHelper with DefaultAwaitTimeout{
-
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+class TrustAuthConnectorSpec extends SpecBase with WireMockHelper {
 
   private val authorisedUrl: String = s"/trusts-auth/agent-authorised"
   private def authorisedUrlFor(utr: String): String = s"/trusts-auth/authorised/$utr"
@@ -50,20 +44,18 @@ class TrustAuthConnectorSpec extends AnyFreeSpec with Matchers with WireMockHelp
     server.stubFor(get(urlEqualTo(url)).willReturn(response))
   }
 
-  lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-auth.port" -> server.port(),
-      "auditing.enabled" -> false
-    ): _*).build()
+  override lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(defaultAppConfigurations ++ Map("microservice.services.trusts-auth.port" -> server.port()))
+    .build()
 
   private lazy val connector = app.injector.instanceOf[TrustAuthConnector]
 
   private val utr = "0123456789"
 
-  "TrustAuthConnector" - {
-    "authorisedForUtr" - {
+  "TrustAuthConnector" should {
+    "authorisedForUtr" when {
 
-      "returns 'Allowed' when" - {
+      "returns 'Allowed' when" when {
         "service returns with no redirect url" in {
 
           wiremock(authorisedUrlFor(utr), allowedResponse)
@@ -73,7 +65,7 @@ class TrustAuthConnectorSpec extends AnyFreeSpec with Matchers with WireMockHelp
           }
         }
       }
-      "returns 'Denied' when" - {
+      "returns 'Denied' when" when {
         "service returns a redirect url" in {
 
           wiremock(authorisedUrlFor(utr), redirectResponse("redirect-url"))
@@ -83,7 +75,7 @@ class TrustAuthConnectorSpec extends AnyFreeSpec with Matchers with WireMockHelp
           }
         }
       }
-      "returns 'Internal server error' when" - {
+      "returns 'Internal server error' when" when {
         "service returns something not OK" in {
 
           wiremock(authorisedUrlFor(utr), aResponse().withStatus(Status.INTERNAL_SERVER_ERROR))
@@ -94,9 +86,9 @@ class TrustAuthConnectorSpec extends AnyFreeSpec with Matchers with WireMockHelp
         }
       }
     }
-    "authorised" - {
+    "authorised" when {
 
-      "returns 'Agent Allowed' when" - {
+      "returns 'Agent Allowed' when" when {
         "service returns with agent authorised response" in {
 
           wiremock(authorisedUrl, allowedAgentResponse)
@@ -107,7 +99,7 @@ class TrustAuthConnectorSpec extends AnyFreeSpec with Matchers with WireMockHelp
         }
       }
 
-      "returns 'Denied' when" - {
+      "returns 'Denied' when" when {
         "service returns a redirect url" in {
 
           wiremock(authorisedUrl, redirectResponse("redirect-url"))
@@ -117,7 +109,7 @@ class TrustAuthConnectorSpec extends AnyFreeSpec with Matchers with WireMockHelp
           }
         }
       }
-      "returns 'Internal server error' when" - {
+      "returns 'Internal server error' when" when {
         "service returns something not OK" in {
 
           wiremock(authorisedUrl, aResponse().withStatus(Status.INTERNAL_SERVER_ERROR))

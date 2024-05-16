@@ -20,7 +20,8 @@ import base.SpecBase
 import models.{Mode, Name, NormalMode}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.trustee.individual.amend.IndexPage
 import pages.trustee.individual.{NamePage, PassportOrIdCardDetailsYesNoPage}
 import play.api.inject.bind
@@ -30,7 +31,7 @@ import repositories.PlaybackRepository
 
 import scala.concurrent.Future
 
-class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
+class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase {
 
   private val name = Name("FirstName", None, "LastName")
   private val mode: Mode = NormalMode
@@ -82,7 +83,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
     "redirect to the check details when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

@@ -21,6 +21,8 @@ import connectors.TrustAuthConnector
 import models.requests.{AgentUser, DataRequest}
 import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{EitherValues, RecoverMethods}
 import play.api.inject.bind
@@ -48,7 +50,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
   type RetrievalType = Option[String] ~ Option[AffinityGroup] ~ Enrolments
 
-  private lazy val trustAuthConnector = mock[TrustAuthConnector]
+  private lazy val trustAuthConnector = Mockito.mock(classOf[TrustAuthConnector])
 
   "invoking authenticateForUtr" when {
     "user is authenticated" must {

@@ -17,13 +17,13 @@
 package controllers.leadtrustee.individual
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.TrusteeMappers
 import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, UkAddress}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito
 import pages.leadtrustee.individual.IndexPage
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ import views.html.leadtrustee.individual.CheckDetailsView
 
 import scala.concurrent.Future
 
-class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
+class CheckDetailsControllerSpec extends SpecBase {
 
   private lazy val onPageLoadRoute: Call = routes.CheckDetailsController.onPageLoad()
   private lazy val onPageLoadUpdatedRoute: Call = routes.CheckDetailsController.onPageLoadUpdated()
@@ -56,8 +56,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
     nationality = None
   )
 
-  private val mockPrintHelper = mock[TrusteePrintHelpers]
-  private val mockMapper = mock[TrusteeMappers]
+  private val mockPrintHelper = Mockito.mock(classOf[TrusteePrintHelpers])
+  private val mockMapper = Mockito.mock(classOf[TrusteeMappers])
   private val answerSection = AnswerSection(None, Nil)
 
   "CheckDetails Controller" when {
@@ -66,7 +66,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       "return OK and the correct view for a GET" in {
 
-        val mockTrustsConnector = mock[TrustConnector]
+        val mockTrustsConnector = Mockito.mock(classOf[TrustConnector])
 
         when(mockTrustsConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(leadTrustee))
         when(mockPrintHelper.printLeadIndividualTrustee(any(), any())(any())).thenReturn(answerSection)
@@ -92,7 +92,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
       "return INTERNAL_SERVER_ERROR" when {
         "lead trustee is of type organisation" in {
 
-          val mockTrustsConnector = mock[TrustConnector]
+          val mockTrustsConnector = Mockito.mock(classOf[TrustConnector])
 
           val leadTrustee = LeadTrusteeOrganisation(
             name = "Amazon",
@@ -118,7 +118,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
         "error getting lead trustee" in {
 
-          val mockTrustsConnector = mock[TrustConnector]
+          val mockTrustsConnector = Mockito.mock(classOf[TrustConnector])
 
           when(mockTrustsConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.failed(new Throwable("")))
 
@@ -166,7 +166,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
           "redirect to the the next page" in {
 
-            val mockTrustConnector = mock[TrustConnector]
+            val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
 
             val userAnswers = emptyUserAnswers
 
@@ -197,7 +197,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
             val index = 0
 
-            val mockTrustConnector = mock[TrustConnector]
+            val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
 
             val userAnswers = emptyUserAnswers.set(IndexPage, index).success.value
 

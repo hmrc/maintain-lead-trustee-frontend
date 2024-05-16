@@ -20,6 +20,7 @@ import base.SpecBase
 import models.{Name, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import pages.leadtrustee.individual.{NamePage, NationalInsuranceNumberPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

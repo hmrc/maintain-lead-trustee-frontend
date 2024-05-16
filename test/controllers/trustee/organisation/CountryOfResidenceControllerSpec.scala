@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.CountryFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
 import pages.trustee.organisation.{CountryOfResidencePage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -31,7 +30,7 @@ import utils.InputOption
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.trustee.organisation.CountryOfResidenceView
 
-class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
+class CountryOfResidenceControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 

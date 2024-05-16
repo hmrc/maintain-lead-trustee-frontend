@@ -22,8 +22,8 @@ import models.{CombinedPassportOrIdCard, DetailsType, Name, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
 import pages.leadtrustee.individual.{NamePage, PassportOrIdCardDetailsPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -35,7 +35,7 @@ import views.html.leadtrustee.individual.PassportOrIdCardDetailsView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class PassportOrIdCardControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
+class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
   val form: Form[CombinedPassportOrIdCard] = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")

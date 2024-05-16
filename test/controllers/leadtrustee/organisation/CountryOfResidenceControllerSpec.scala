@@ -20,7 +20,6 @@ import base.SpecBase
 import forms.CountryFormProvider
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.MockitoSugar
 import pages.leadtrustee.organisation.{CountryOfResidencePage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -31,7 +30,7 @@ import utils.InputOption
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.leadtrustee.organisation.CountryOfResidenceView
 
-class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
+class CountryOfResidenceControllerSpec extends SpecBase {
 
   private val form: Form[String] = new CountryFormProvider().withPrefix("trustee.organisation.countryOfResidence")
   private val onPageLoadRoute: String = routes.CountryOfResidenceController.onPageLoad().url

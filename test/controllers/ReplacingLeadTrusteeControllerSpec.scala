@@ -17,14 +17,14 @@
 package controllers
 
 import java.time.LocalDate
-
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
 import models.BpMatchStatus.FullyMatched
 import models.YesNoDontKnow.{No, Yes}
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +37,7 @@ import views.html.ReplacingLeadTrusteeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
+class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
   private val messageKeyPrefix: String = "replacingLeadTrustee"
   private val form: Form[TrusteeType] = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
@@ -211,7 +211,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
         val fakeService = new FakeService(Trustees(List(trustee)))
 
-        val mockPlaybackRepository = mock[PlaybackRepository]
+        val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
         when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
@@ -244,7 +244,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
         val fakeService = new FakeService(Trustees(List(trustee)))
 
-        val mockPlaybackRepository = mock[PlaybackRepository]
+        val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
         when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

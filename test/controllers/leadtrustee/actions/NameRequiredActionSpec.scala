@@ -17,11 +17,11 @@
 package controllers.leadtrustee.actions
 
 import java.time.LocalDate
-
 import models.UserAnswers
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -31,14 +31,14 @@ import play.api.mvc.{AnyContent, Request}
 
 import scala.concurrent.Future
 
-class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFutures with Matchers {
+class NameRequiredActionSpec extends AnyWordSpec with ScalaFutures with Matchers {
   class Harness(messagesApi: MessagesApi) extends NameRequiredAction(scala.concurrent.ExecutionContext.global, messagesApi) {
     def callTransform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = transform(request)
   }
 
   "Pulls the individual name from userAnswers into the Request" in {
-    val OUT = new Harness(mock[MessagesApi])
-    val sourceRequest = mock[DataRequest[AnyContent]]
+    val OUT = new Harness(Mockito.mock(classOf[MessagesApi]))
+    val sourceRequest = Mockito.mock(classOf[DataRequest[AnyContent]])
 
     val ua = UserAnswers("id",
       "UTRUTRUTR",
@@ -57,8 +57,8 @@ class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFut
   }
 
   "Pulls the org name from userAnswers into the Request" in {
-    val OUT = new Harness(mock[MessagesApi])
-    val sourceRequest = mock[DataRequest[AnyContent]]
+    val OUT = new Harness(Mockito.mock(classOf[MessagesApi]))
+    val sourceRequest = Mockito.mock(classOf[DataRequest[AnyContent]])
 
     val ua = UserAnswers("id",
       "UTRUTRUTR",
@@ -73,9 +73,9 @@ class NameRequiredActionSpec extends AnyWordSpec with MockitoSugar with ScalaFut
   }
 
   "Provides default text when the name isn't in userAnswers" in {
-    val sourceRequest = mock[DataRequest[AnyContent]]
-    val messagesApi = mock[MessagesApi]
-    val messages = mock[Messages]
+    val sourceRequest = Mockito.mock(classOf[DataRequest[AnyContent]])
+    val messagesApi = Mockito.mock(classOf[MessagesApi])
+    val messages = Mockito.mock(classOf[Messages])
     when(messagesApi.preferred(any[Request[AnyContent]])).thenReturn(messages)
     when(messages("leadTrusteeName.defaultText")).thenReturn("defaultValue")
 

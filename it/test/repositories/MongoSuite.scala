@@ -26,12 +26,14 @@ trait MongoSuite extends ScalaFutures {
 
   implicit val defaultPatience: PatienceConfig = PatienceConfig(timeout = Span(30, Seconds), interval = Span(500, Millis))
 
+  val defaultAppConfigurations: Map[String, Any] = Map(
+    "auditing.enabled" -> false,
+    "metrics.enabled" -> false,
+    "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
+  )
+
   val application : Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "metrics.enabled" -> false,
-      "auditing.enabled" -> false,
-      "mongo-async-driver.akka.log-dead-letters" -> 0
-    ): _*)
+    .configure(defaultAppConfigurations)
     .build()
 
   val config = application.injector.instanceOf[FrontendAppConfig]

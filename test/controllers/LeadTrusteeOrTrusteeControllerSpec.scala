@@ -21,7 +21,8 @@ import forms.TrusteeTypeFormProvider
 import models.TrusteeType._
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.TrusteeTypePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ import views.html.LeadTrusteeOrTrusteeView
 
 import scala.concurrent.Future
 
-class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
+class LeadTrusteeOrTrusteeControllerSpec extends SpecBase {
 
   val formProvider = new TrusteeTypeFormProvider()
   val form = formProvider.withPrefix("leadTrusteeOrTrustee")
@@ -80,7 +81,7 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

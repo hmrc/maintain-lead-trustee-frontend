@@ -17,13 +17,13 @@
 package controllers.trustee.organisation.amend
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.TrusteeMappers
 import models.{Name, TrusteeIndividual, TrusteeOrganisation}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito
 import pages.trustee.organisation.NamePage
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -37,7 +37,7 @@ import views.html.trustee.organisation.amend.CheckDetailsView
 
 import scala.concurrent.Future
 
-class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
+class CheckDetailsControllerSpec extends SpecBase {
 
   private val index = 0
   private val name = "Amazon"
@@ -60,8 +60,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
   private val baseAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
 
-  private val mockPrintHelper = mock[TrusteePrintHelpers]
-  private val mockMapper = mock[TrusteeMappers]
+  private val mockPrintHelper = Mockito.mock(classOf[TrusteePrintHelpers])
+  private val mockMapper = Mockito.mock(classOf[TrusteeMappers])
   private val answerSection = AnswerSection(None, Nil)
 
   "CheckDetails Controller" when {
@@ -70,7 +70,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
       "return OK and the correct view for a GET" in {
 
-        val mockTrustService = mock[TrustService]
+        val mockTrustService = Mockito.mock(classOf[TrustService])
 
         when(mockTrustService.getTrustee(any(), any())(any(), any())).thenReturn(Future.successful(trustee))
         when(mockPrintHelper.printOrganisationTrustee(any(), any(), any())(any())).thenReturn(answerSection)
@@ -96,7 +96,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
       "return INTERNAL_SERVER_ERROR" when {
         "trustee is of type individual" in {
 
-          val mockTrustService = mock[TrustService]
+          val mockTrustService = Mockito.mock(classOf[TrustService])
 
           val trustee = TrusteeIndividual(
             name = Name("Joe", None, "Bloggs"),
@@ -126,7 +126,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
 
         "error getting trustee" in {
 
-          val mockTrustService = mock[TrustService]
+          val mockTrustService = Mockito.mock(classOf[TrustService])
 
           when(mockTrustService.getTrustee(any(), any())(any(), any())).thenReturn(Future.failed(new Throwable("")))
 
@@ -171,7 +171,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar {
       "mapper returns trustee" must {
         "redirect to the the next page" in {
 
-          val mockTrustConnector = mock[TrustConnector]
+          val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
 
           when(mockMapper.mapToTrusteeOrganisation(any())).thenReturn(Some(trustee))
           when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))

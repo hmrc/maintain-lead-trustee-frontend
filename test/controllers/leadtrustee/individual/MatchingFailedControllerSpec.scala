@@ -18,6 +18,8 @@ package controllers.leadtrustee.individual
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,7 +33,7 @@ class MatchingFailedControllerSpec extends SpecBase {
   private lazy val matchingFailedRoute: String =
     routes.MatchingFailedController.onPageLoad().url
 
-  private val mockService = mock[TrustsIndividualCheckService]
+  private val mockService = Mockito.mock(classOf[TrustsIndividualCheckService])
 
   "MatchingFailedController" when {
 

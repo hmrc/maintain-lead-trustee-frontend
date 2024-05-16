@@ -21,7 +21,8 @@ import forms.UkAddressFormProvider
 import models.{Name, UkAddress}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import pages.leadtrustee.individual.{NamePage, UkAddressPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -32,7 +33,7 @@ import views.html.leadtrustee.individual.UkAddressView
 
 import scala.concurrent.Future
 
-class UkAddressControllerSpec extends SpecBase with MockitoSugar {
+class UkAddressControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -90,7 +91,7 @@ class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

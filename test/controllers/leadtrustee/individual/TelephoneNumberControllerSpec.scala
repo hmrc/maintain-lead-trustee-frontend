@@ -21,7 +21,8 @@ import forms.TelephoneNumberFormProvider
 import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.leadtrustee.individual.{NamePage, TelephoneNumberPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -32,7 +33,7 @@ import views.html.leadtrustee.individual.TelephoneNumberView
 
 import scala.concurrent.Future
 
-class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
+class TelephoneNumberControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -88,7 +89,7 @@ class TelephoneNumberControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

@@ -21,7 +21,8 @@ import forms.NonUkAddressFormProvider
 import models.{Name, NonUkAddress, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.mockito.Mockito
 import pages.trustee.individual.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -34,7 +35,7 @@ import views.html.trustee.individual.NonUkAddressView
 
 import scala.concurrent.Future
 
-class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
+class NonUkAddressControllerSpec extends SpecBase {
 
   val form = new NonUkAddressFormProvider().apply()
 
@@ -91,7 +92,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
+      val mockPlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 

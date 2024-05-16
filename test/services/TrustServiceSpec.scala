@@ -16,27 +16,27 @@
 
 package services
 
-import java.time.LocalDate
-
 import connectors.TrustConnector
 import models.BpMatchStatus.FullyMatched
 import models.Constants.INDIVIDUAL_TRUSTEE
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-class TrustServiceSpec extends AnyFreeSpec with MockitoSugar with Matchers with ScalaFutures {
+class TrustServiceSpec extends AnyFreeSpec with Matchers with ScalaFutures {
 
-  val mockConnector: TrustConnector = mock[TrustConnector]
+  val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
 
   val service = new TrustServiceImpl(mockConnector)
 

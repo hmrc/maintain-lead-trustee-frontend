@@ -21,6 +21,8 @@ import forms.UtrFormProvider
 import models.NormalMode
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import pages.trustee.organisation.{NamePage, UtrPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -41,7 +43,7 @@ class UtrControllerSpec extends SpecBase {
   val name: String = "Trustee Name"
   val fakeUtr: String = "1234567890"
 
-  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  val mockTrustsService: TrustServiceImpl = Mockito.mock(classOf[TrustServiceImpl])
   when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))
     .thenReturn(Future.successful(Nil))
 
