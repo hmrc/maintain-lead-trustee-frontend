@@ -50,6 +50,7 @@
     <logger name="io.netty.buffer" level="INFO"/>
     <logger name="play.core.netty" level="INFO"/>
     <logger name="reactivemongo.core" level="INFO"/>
+    <logger name="org.mongodb" level="INFO"/>
     <logger name="akka" level="INFO"/>
     <logger name="play" level="INFO"/>
     <logger name="org.jose4j" level="INFO"/>
