@@ -98,7 +98,7 @@ class NationalInsuranceNumberController @Inject()(
               case LockedMatchResponse =>
                 Redirect(routes.MatchingLockedController.onPageLoad())
               case _ =>
-                InternalServerError(errorHandler.internalServerErrorTemplate)
+                InternalServerError(errorHandler.internalServerErrorTemplate.toString)
             }
         )
       }

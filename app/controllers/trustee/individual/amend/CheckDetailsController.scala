@@ -33,10 +33,10 @@ import services.TrustService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelpers
-import views.html.trustee.individual.amend.CheckDetailsView
-import javax.inject.Inject
 import viewmodels.AnswerSection
+import views.html.trustee.individual.amend.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -55,13 +55,15 @@ class CheckDetailsController @Inject()(
                                         errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
+
   private def logInfo(implicit request: DataRequest[AnyContent]): String =
     s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]"
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-
-      trustService.getTrustee(request.userAnswers.identifier, index).flatMap {
+//val res: Res
+      trustService.getTrustee(request.userAnswers.identifier, index)
+        .flatMap {
         case ind: TrusteeIndividual =>
           val answers = extractor.extractTrusteeIndividual(request.userAnswers, ind, index)
           for {
@@ -72,11 +74,13 @@ class CheckDetailsController @Inject()(
           }
         case _ =>
           logger.error(s"$logInfo Expected trustee to be of type TrusteeIndividual")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
       } recover {
         case e =>
           logger.error(s"$logInfo Unable to retrieve trustee from trusts: ${e.getMessage}")
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          InternalServerError(
+            errorHandler.internalServerErrorTemplate.toString
+          )
       }
   }
 
@@ -87,7 +91,8 @@ class CheckDetailsController @Inject()(
 
   private def renderTrustee(userAnswers: UserAnswers, index: Int, name: String)
                            (implicit request: DataRequest[AnyContent]): Result = {
-    val section: AnswerSection = printHelper.printIndividualTrustee(
+    val section: AnswerSection =
+      printHelper.printIndividualTrustee(
       userAnswers = userAnswers,
       adding = false,
       name = name
@@ -104,7 +109,7 @@ class CheckDetailsController @Inject()(
           amendTrustee(request.userAnswers, t, index)
         case _ =>
           logger.error(s"$logInfo Unable to amend trustee")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          Future(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
       }
   }
 

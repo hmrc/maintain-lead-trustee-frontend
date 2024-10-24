@@ -16,8 +16,9 @@
 
 package handlers
 
+import play.api.http.{HttpEntity, Writeable}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.RequestHeader
+import play.api.mvc.{RequestHeader, ResponseHeader, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.{ErrorTemplate, PageNotFoundView}
@@ -32,11 +33,28 @@ class ErrorHandler @Inject()(
                               notFoundView: PageNotFoundView
                             )(implicit val ec : ExecutionContext) extends FrontendErrorHandler with I18nSupport {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: RequestHeader): Future[Html] =
-    Future(view(pageTitle, heading, message))
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)
+                                    (implicit rh: RequestHeader): Future[Html] =
+    Future.successful{
+      view(pageTitle, heading, message)
+    }
 
   override def notFoundTemplate(implicit request: RequestHeader): Future[Html]  =
-    Future(notFoundView())
+    Future.successful{
+      notFoundView()
+    }
+
+
 }
 
+
+class Status(status: Int) extends Result(header = ResponseHeader(status), body = HttpEntity.NoEntity)
+{
+  def apply[C](content: C)(implicit writeable: Writeable[C]): Result = {
+    Result(
+      header,
+      writeable.toEntity(content)
+    )
+  }
+}
 

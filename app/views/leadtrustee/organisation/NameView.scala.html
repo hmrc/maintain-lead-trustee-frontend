@@ -26,7 +26,7 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], isUKRegisteredCompany: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], isUKRegisteredCompany: Boolean)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("leadtrustee.organisation.name.title")}",

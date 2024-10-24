@@ -22,8 +22,10 @@ import handlers.ErrorHandler
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
 import play.api.Logging
 import play.api.data.Form
+import play.api.http.Writeable
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.twirl.api.Html
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RemoveIndexView
@@ -39,7 +41,7 @@ class RemoveTrusteeController @Inject()(
                                          val controllerComponents: MessagesControllerComponents,
                                          view: RemoveIndexView,
                                          errorHandler: ErrorHandler
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                       )(implicit val ec: ExecutionContext, val writeable: Writeable[Future[Html]]) extends FrontendBaseController with I18nSupport with Logging {
 
   private def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveTrusteeController.onSubmit(index)

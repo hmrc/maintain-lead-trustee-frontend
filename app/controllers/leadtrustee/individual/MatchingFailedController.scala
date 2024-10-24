@@ -20,8 +20,10 @@ import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
 import handlers.ErrorHandler
 import play.api.Logging
+import play.api.http.Writeable
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import services.TrustsIndividualCheckService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.MatchingFailedView
@@ -36,7 +38,7 @@ class MatchingFailedController @Inject()(
                                           view: MatchingFailedView,
                                           errorHandler: ErrorHandler,
                                           service: TrustsIndividualCheckService
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                        )(implicit ec: ExecutionContext, writeable: Writeable[Future[Html]]) extends FrontendBaseController with I18nSupport with Logging {
 
   private def actions() =
     standardActionSets.verifiedForUtr

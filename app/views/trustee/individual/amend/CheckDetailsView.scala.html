@@ -27,7 +27,7 @@
     checkDetailsList: CheckDetailsList
 )
 
-@(answersSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
+@(answersSection: AnswerSection, index: Int)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = messages("trustee.checkDetails.title"),

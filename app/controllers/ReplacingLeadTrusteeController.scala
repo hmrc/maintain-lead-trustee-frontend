@@ -27,8 +27,10 @@ import models._
 import models.requests.DataRequest
 import play.api.Logging
 import play.api.data.Form
+import play.api.http.Writeable
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import play.twirl.api.Html
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -50,7 +52,7 @@ class ReplacingLeadTrusteeController @Inject()(
                                                 errorHandler: ErrorHandler,
                                                 individualTrusteeToLeadTrusteeExtractor: IndividualTrusteeToLeadTrusteeExtractor,
                                                 organisationTrusteeToLeadTrusteeExtractor: OrganisationTrusteeToLeadTrusteeExtractor
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                              )(implicit ec: ExecutionContext, val writeable: Writeable[Future[Html]]) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messageKeyPrefix: String = "replacingLeadTrustee"
 
