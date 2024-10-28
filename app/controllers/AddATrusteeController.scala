@@ -26,10 +26,8 @@ import models.TaskStatus.Completed
 import models.{AddATrustee, AllTrustees}
 import play.api.Logging
 import play.api.data.Form
-import play.api.http.Writeable
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.Html
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,7 +51,7 @@ class AddATrusteeController @Inject()(
                                        val appConfig: FrontendAppConfig,
                                        trustStoreConnector: TrustsStoreConnector,
                                        errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext, val writeable: Writeable[Future[Html]])
+                                     )(implicit ec: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Logging {
 
   private val addAnotherForm: Form[AddATrustee] = addAnotherFormProvider()
@@ -91,7 +89,7 @@ class AddATrusteeController @Inject()(
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
       }
   }
 
@@ -148,7 +146,7 @@ class AddATrusteeController @Inject()(
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
       }
   }
 
