@@ -16,9 +16,8 @@
 
 package handlers
 
-import play.api.http.{HttpEntity, Writeable}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{RequestHeader, ResponseHeader, Result}
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.{ErrorTemplate, PageNotFoundView}
@@ -47,14 +46,4 @@ class ErrorHandler @Inject()(
 
 }
 
-
-class Status(status: Int) extends Result(header = ResponseHeader(status), body = HttpEntity.NoEntity)
-{
-  def apply[C](content: C)(implicit writeable: Writeable[C]): Result = {
-    Result(
-      header,
-      writeable.toEntity(content)
-    )
-  }
-}
 
