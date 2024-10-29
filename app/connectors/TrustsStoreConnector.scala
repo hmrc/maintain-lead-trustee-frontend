@@ -34,14 +34,12 @@ class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConf
   def updateTaskStatus(identifier: String, taskStatus: TaskStatus)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$baseUrl/maintain/tasks/update-trustees/$identifier"
-    //http.POST[TaskStatus, HttpResponse](url, taskStatus)
     http.post(url"$url").withBody(Json.toJson(taskStatus)).execute[HttpResponse]
   }
 
   def getFeature(feature: String)
                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureResponse] = {
     val url: String = s"$baseUrl/features/$feature"
-   // http.GET[FeatureResponse](url)
     http.get(url"$url").execute[FeatureResponse]
   }
 

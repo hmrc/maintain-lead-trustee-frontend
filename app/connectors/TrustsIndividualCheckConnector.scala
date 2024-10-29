@@ -32,13 +32,11 @@ class TrustsIndividualCheckConnector @Inject()(http: HttpClientV2, config: Front
 
   def matchLeadTrustee(body: IdMatchRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IdMatchResponse] = {
     val url: String = s"$baseUrl/individual-check"
-   // http.POST[IdMatchRequest, IdMatchResponse](url, body)
     http.post(url"$url").withBody(Json.toJson(body)).execute[IdMatchResponse]
   }
 
   def failedAttempts(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
     val url: String = s"$baseUrl/$id/failed-attempts"
-    //http.GET[Int](url)
     http.get(url"$url").execute[Int]
   }
 }
