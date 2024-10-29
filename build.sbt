@@ -4,7 +4,7 @@ import uk.gov.hmrc.DefaultBuildSettings
 
 lazy val appName: String = "maintain-lead-trustee-frontend"
 
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.14"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = (project in file("."))
