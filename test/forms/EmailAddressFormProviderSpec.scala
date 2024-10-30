@@ -37,7 +37,7 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.emailRegex)
+      stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
@@ -51,6 +51,17 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+  }
+
+  ".emailAddress" must {
+
+    val fieldName = "emailAddress"
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      RegexpGen.from(Validation.emailRegex)
     )
   }
 }
