@@ -61,7 +61,6 @@ class CheckDetailsController @Inject()(
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-//val res: Res
       trustService.getTrustee(request.userAnswers.identifier, index)
         .flatMap {
         case ind: TrusteeIndividual =>
