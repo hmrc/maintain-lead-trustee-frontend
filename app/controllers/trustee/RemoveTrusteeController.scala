@@ -67,7 +67,7 @@ class RemoveTrusteeController @Inject()(
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
@@ -101,7 +101,7 @@ class RemoveTrusteeController @Inject()(
               case _ =>
                 logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
                   s" user cannot remove trustee as trustee was not found")
-                Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
+                errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
             }
           } else {
             Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))

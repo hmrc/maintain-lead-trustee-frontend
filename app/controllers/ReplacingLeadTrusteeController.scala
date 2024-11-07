@@ -132,7 +132,7 @@ class ReplacingLeadTrusteeController @Inject()(
       logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
         s" Problem getting trustees: ${e.getMessage}")
 
-      Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
+      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }
 
 }
