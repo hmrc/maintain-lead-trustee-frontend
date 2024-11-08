@@ -74,12 +74,10 @@ class CheckDetailsController @Inject()(
         case _ =>
           logger.error(s"$logInfo Expected trustee to be of type TrusteeIndividual")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      } recover {
+      } recoverWith  {
         case e =>
           logger.error(s"$logInfo Unable to retrieve trustee from trusts: ${e.getMessage}")
-          InternalServerError(
-            errorHandler.internalServerErrorTemplate.toString
-          )
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
@@ -108,7 +106,7 @@ class CheckDetailsController @Inject()(
           amendTrustee(request.userAnswers, t, index)
         case _ =>
           logger.error(s"$logInfo Unable to amend trustee")
-          Future(InternalServerError(errorHandler.internalServerErrorTemplate.toString))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
