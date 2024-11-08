@@ -71,11 +71,11 @@ class CheckDetailsController @Inject()(
           }
         case _ =>
           logger.error(s"$logInfo Expected lead trustee to be of type LeadTrusteeOrganisation")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-      } recover {
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+      } recoverWith  {
         case e =>
           logger.error(s"$logInfo Unable to retrieve Lead Trustee from trusts: ${e.getMessage}")
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
@@ -109,7 +109,7 @@ class CheckDetailsController @Inject()(
           submitTransform(transform, userAnswers)
         case _ =>
           logger.error(s"$logInfo Unable to build lead trustee organisation from user answers. Cannot continue with submitting transform.")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 

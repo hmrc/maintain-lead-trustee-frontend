@@ -25,7 +25,7 @@
     checkDetailsList: CheckDetailsList
 )
 
-@(answersSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answersSection: AnswerSection)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = messages("checkYourAnswers.title")

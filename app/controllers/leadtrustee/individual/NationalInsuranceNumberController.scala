@@ -21,12 +21,12 @@ import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredActi
 import forms.NationalInsuranceNumberFormProvider
 import handlers.ErrorHandler
 import models.BpMatchStatus.FullyMatched
-import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, UnsuccessfulMatchResponse}
+import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, TrustsIndividualCheckServiceResponse, UnsuccessfulMatchResponse, UserAnswers}
 import navigation.Navigator
 import pages.leadtrustee.individual.{BpMatchStatusPage, IndexPage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
 import repositories.PlaybackRepository
 import services.{TrustService, TrustsIndividualCheckService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -90,17 +90,24 @@ class NationalInsuranceNumberController @Inject()(
                 }
               }
               _ <- playbackRepository.set(updatedAnswersWithMatched)
-            } yield matchingResponse match {
-              case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
-                Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswersWithMatched))
-              case UnsuccessfulMatchResponse =>
-                Redirect(routes.MatchingFailedController.onPageLoad())
-              case LockedMatchResponse =>
-                Redirect(routes.MatchingLockedController.onPageLoad())
-              case _ =>
-                InternalServerError(errorHandler.internalServerErrorTemplate)
-            }
+              result <- handleMatchResponse(matchingResponse, updatedAnswersWithMatched)
+            } yield result
+
         )
       }
+  }
+
+  private def handleMatchResponse(matchResponse: TrustsIndividualCheckServiceResponse, updatedAnswersWithMatched: UserAnswers)
+                                 (implicit requestHeader: RequestHeader) : Future[Result] = {
+    matchResponse match {
+      case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
+        Future.successful(Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswersWithMatched)))
+      case UnsuccessfulMatchResponse =>
+        Future.successful(Redirect(routes.MatchingFailedController.onPageLoad()))
+      case LockedMatchResponse =>
+        Future.successful(Redirect(routes.MatchingLockedController.onPageLoad()))
+      case _ =>
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
 }

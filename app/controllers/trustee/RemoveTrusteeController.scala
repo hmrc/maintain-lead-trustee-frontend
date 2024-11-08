@@ -39,7 +39,7 @@ class RemoveTrusteeController @Inject()(
                                          val controllerComponents: MessagesControllerComponents,
                                          view: RemoveIndexView,
                                          errorHandler: ErrorHandler
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                       )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveTrusteeController.onSubmit(index)
@@ -67,7 +67,7 @@ class RemoveTrusteeController @Inject()(
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
@@ -101,7 +101,7 @@ class RemoveTrusteeController @Inject()(
               case _ =>
                 logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
                   s" user cannot remove trustee as trustee was not found")
-                Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+                errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
             }
           } else {
             Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))

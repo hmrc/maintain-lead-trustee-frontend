@@ -22,7 +22,7 @@
     heading: Heading
 )
 
-@(name: String)(implicit request: Request[_], messages: Messages)
+@(name: String)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = messages("unableToRemove.title"),

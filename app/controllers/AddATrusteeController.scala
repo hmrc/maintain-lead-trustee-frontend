@@ -89,7 +89,7 @@ class AddATrusteeController @Inject()(
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
@@ -146,7 +146,7 @@ class AddATrusteeController @Inject()(
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot maintain trustees due to there being a problem getting trustees from trusts")
 
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 

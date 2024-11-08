@@ -24,7 +24,7 @@
     submitButton: SubmitButton
 )
 
-@(leadTrusteeName: String)(implicit request: Request[_], messages: Messages)
+@(leadTrusteeName: String)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = messages("answerNewQuestions.title"),

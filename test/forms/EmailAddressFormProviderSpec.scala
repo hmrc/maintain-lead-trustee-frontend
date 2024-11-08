@@ -18,6 +18,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.{Form, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class EmailAddressFormProviderSpec extends StringFieldBehaviours {
 
@@ -51,11 +52,16 @@ class EmailAddressFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
 
-    behave like emailAddressField(
+  ".emailAddress" must {
+
+    val fieldName = "emailAddress"
+
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      invalidError = FormError(fieldName, invalidKey, Seq(fieldName))
+      RegexpGen.from(Validation.emailRegex)
     )
   }
 }
