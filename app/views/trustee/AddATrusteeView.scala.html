@@ -37,7 +37,8 @@
     heading: String)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}$heading"
+    title = s"${errorPrefix(form)}$heading",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddATrusteeController.submitAnother(), Symbol("autoComplete") -> "off") {
