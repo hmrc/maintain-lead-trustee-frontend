@@ -63,7 +63,6 @@ class RemoveTrusteeController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-        //          Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found")
