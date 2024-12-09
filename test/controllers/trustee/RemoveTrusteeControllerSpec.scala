@@ -122,7 +122,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
         application.stop()
       }
 
-      "redirect to the add page if we get an Index Not Found Exception" in {
+      "show error page if we get an Index Not Found Exception" in {
 
         val index = 0
 
@@ -137,9 +137,7 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+        status(result) mustEqual INTERNAL_SERVER_ERROR
 
         application.stop()
       }

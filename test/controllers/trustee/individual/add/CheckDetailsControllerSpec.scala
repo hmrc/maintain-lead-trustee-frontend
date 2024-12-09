@@ -20,10 +20,11 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.trustee.TrusteeIndividualMapper
-import models.{Name, TrusteeIndividual}
+import models.{Name, NationalInsuranceNumber, TrusteeIndividual, Trustees}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.mockito.Mockito
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import pages.trustee.individual.NamePage
 import play.api.inject.bind
@@ -37,7 +38,7 @@ import views.html.trustee.individual.add.CheckDetailsView
 
 import scala.concurrent.Future
 
-class CheckDetailsControllerSpec extends SpecBase with ScalaFutures {
+class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
 
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
@@ -48,16 +49,26 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures {
 
   private val trustee = TrusteeIndividual(
     name = name,
-    dateOfBirth = None,
+    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
-    identification = None,
+    identification = Some(NationalInsuranceNumber("JS123456A")),
     address = None,
-    countryOfResidence = None,
-    nationality = None,
-    mentalCapacityYesNo = None,
-    entityStart = date,
+    entityStart = LocalDate.parse("2019-02-28"),
     provisional = true
   )
+
+
+  val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
+
+  override def beforeEach(): Unit = {
+    reset(mockConnector)
+
+    when(mockConnector.getTrustees(any())(any(), any()))
+      .thenReturn(Future.successful(Trustees(List(trustee))))
+
+    when(mockConnector.addTrustee(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
+  }
 
   private val baseAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
@@ -73,7 +84,9 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures {
       when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers))
-        .overrides(bind[TrusteeIndividualPrintHelper].toInstance(printHelper))
+        .overrides(
+          bind[TrustConnector].toInstance(mockConnector),
+          bind[TrusteeIndividualPrintHelper].toInstance(printHelper))
         .build()
 
       val request = FakeRequest(GET, onPageLoadRoute)
@@ -90,16 +103,16 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures {
 
     "redirect to the 'add a trustee' page when submitted" in {
 
-      val connector: TrustConnector = Mockito.mock(classOf[TrustConnector])
+
       val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
         .overrides(
-          bind[TrustConnector].toInstance(connector),
+          bind[TrustConnector].toInstance(mockConnector),
           bind[TrusteeIndividualMapper].toInstance(mapper)
         ).build()
 
-      when(connector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
 
       when(mapper.map(any())).thenReturn(Some(trustee))
 
@@ -120,7 +133,9 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures {
         val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
 
         val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
-          .overrides(bind[TrusteeIndividualMapper].toInstance(mapper))
+          .overrides(
+            bind[TrustConnector].toInstance(mockConnector),
+            bind[TrusteeIndividualMapper].toInstance(mapper))
           .build()
 
         when(mapper.map(any())).thenReturn(None)
