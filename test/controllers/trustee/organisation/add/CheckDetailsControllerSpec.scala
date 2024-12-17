@@ -26,6 +26,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import pages.trustee.organisation.NamePage
+import play.api.Application
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -59,6 +60,17 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
   )
 
   val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
+  val mapper: TrusteeOrganisationMapper = Mockito.mock(classOf[TrusteeOrganisationMapper])
+  val printHelper: TrusteeOrganisationPrintHelper = Mockito.mock(classOf[TrusteeOrganisationPrintHelper])
+
+  def createApplication(): Application = {
+    applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
+      .overrides(
+        bind[TrustConnector].toInstance(mockConnector),
+        bind[TrusteeOrganisationPrintHelper].toInstance(printHelper),
+        bind[TrusteeOrganisationMapper].toInstance(mapper))
+      .build()
+  }
 
   override def beforeEach(): Unit = {
     reset(mockConnector)
@@ -77,17 +89,11 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
 
     "return OK and the correct view for a GET" in {
 
-      val printHelper: TrusteeOrganisationPrintHelper = Mockito.mock(classOf[TrusteeOrganisationPrintHelper])
-
       val answerSection: AnswerSection = AnswerSection(None, Nil)
 
       when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
-      val application = applicationBuilder(userAnswers = Some(baseAnswers))
-        .overrides(
-          bind[TrustConnector].toInstance(mockConnector),
-          bind[TrusteeOrganisationPrintHelper].toInstance(printHelper))
-        .build()
+      val application = createApplication()
 
       val request = FakeRequest(GET, onPageLoadRoute)
 
@@ -103,15 +109,7 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
 
     "redirect to the 'add a trustee' page when submitted" in {
 
-
-      val mapper: TrusteeOrganisationMapper = Mockito.mock(classOf[TrusteeOrganisationMapper])
-
-      val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
-        .overrides(
-          bind[TrustConnector].toInstance(mockConnector),
-          bind[TrusteeOrganisationMapper].toInstance(mapper)
-        ).build()
-
+      val application = createApplication()
 
       when(mapper.map(any())).thenReturn(Some(trustee))
 
@@ -129,13 +127,7 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
     "return InternalServerError for a POST" when {
       "mapper fails" in {
 
-        val mapper: TrusteeOrganisationMapper = Mockito.mock(classOf[TrusteeOrganisationMapper])
-
-        val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
-          .overrides(
-            bind[TrustConnector].toInstance(mockConnector),
-            bind[TrusteeOrganisationMapper].toInstance(mapper))
-          .build()
+        val application = createApplication()
 
         when(mapper.map(any())).thenReturn(None)
 

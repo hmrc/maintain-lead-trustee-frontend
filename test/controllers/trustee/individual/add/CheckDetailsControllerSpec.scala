@@ -16,17 +16,17 @@
 
 package controllers.trustee.individual.add
 
-import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.trustee.TrusteeIndividualMapper
-import models.{Name, NationalInsuranceNumber, TrusteeIndividual, Trustees}
+import models.{Name, TrusteeIndividual, Trustees}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
 import org.mockito.Mockito
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import pages.trustee.individual.NamePage
+import play.api.Application
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,6 +36,7 @@ import utils.print.checkYourAnswers.TrusteeIndividualPrintHelper
 import viewmodels.AnswerSection
 import views.html.trustee.individual.add.CheckDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
@@ -49,16 +50,29 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
 
   private val trustee = TrusteeIndividual(
     name = name,
-    dateOfBirth = Some(LocalDate.parse("1983-09-24")),
+    dateOfBirth = None,
     phoneNumber = None,
-    identification = Some(NationalInsuranceNumber("JS123456A")),
+    identification = None,
     address = None,
-    entityStart = LocalDate.parse("2019-02-28"),
+    countryOfResidence = None,
+    nationality = None,
+    mentalCapacityYesNo = None,
+    entityStart = date,
     provisional = true
   )
 
-
   val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
+  val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
+  val printHelper: TrusteeIndividualPrintHelper = Mockito.mock(classOf[TrusteeIndividualPrintHelper])
+
+  def createApplication(): Application = {
+    applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
+      .overrides(
+        bind[TrustConnector].toInstance(mockConnector),
+        bind[TrusteeIndividualPrintHelper].toInstance(printHelper),
+        bind[TrusteeIndividualMapper].toInstance(mapper))
+      .build()
+  }
 
   override def beforeEach(): Unit = {
     reset(mockConnector)
@@ -77,17 +91,11 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
 
     "return OK and the correct view for a GET" in {
 
-      val printHelper: TrusteeIndividualPrintHelper = Mockito.mock(classOf[TrusteeIndividualPrintHelper])
-
       val answerSection: AnswerSection = AnswerSection(None, Nil)
 
       when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
 
-      val application = applicationBuilder(userAnswers = Some(baseAnswers))
-        .overrides(
-          bind[TrustConnector].toInstance(mockConnector),
-          bind[TrusteeIndividualPrintHelper].toInstance(printHelper))
-        .build()
+      val application = createApplication()
 
       val request = FakeRequest(GET, onPageLoadRoute)
 
@@ -102,17 +110,7 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
     }
 
     "redirect to the 'add a trustee' page when submitted" in {
-
-
-      val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
-
-      val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
-        .overrides(
-          bind[TrustConnector].toInstance(mockConnector),
-          bind[TrusteeIndividualMapper].toInstance(mapper)
-        ).build()
-
-
+      val application = createApplication()
 
       when(mapper.map(any())).thenReturn(Some(trustee))
 
@@ -129,14 +127,7 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
 
     "return InternalServerError for a POST" when {
       "mapper fails" in {
-
-        val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
-
-        val application = applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
-          .overrides(
-            bind[TrustConnector].toInstance(mockConnector),
-            bind[TrusteeIndividualMapper].toInstance(mapper))
-          .build()
+        val application = createApplication()
 
         when(mapper.map(any())).thenReturn(None)
 
