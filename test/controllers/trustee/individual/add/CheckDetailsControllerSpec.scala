@@ -90,53 +90,46 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
   "CheckDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
-
       val answerSection: AnswerSection = AnswerSection(None, Nil)
-
       when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
-
       val application = createApplication()
-
       val request = FakeRequest(GET, onPageLoadRoute)
-
       val result = route(application, request).value
-
       val view = application.injector.instanceOf[CheckDetailsView]
-
       status(result) mustEqual OK
-
       contentAsString(result) mustEqual
         view(answerSection)(request, messages).toString
     }
 
     "redirect to the 'add a trustee' page when submitted" in {
       val application = createApplication()
-
       when(mapper.map(any())).thenReturn(Some(trustee))
-
       val request = FakeRequest(POST, onSubmitRoute)
-
       val result = route(application, request).value
-
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
-
       application.stop()
     }
 
     "return InternalServerError for a POST" when {
       "mapper fails" in {
         val application = createApplication()
-
         when(mapper.map(any())).thenReturn(None)
-
         val request = FakeRequest(POST, onSubmitRoute)
-
         val result = route(application, request).value
-
         status(result) mustEqual INTERNAL_SERVER_ERROR
       }
+    }
+
+    "redirect to the AddATrusteePage when trustee details are not in the list" in {
+      val application = createApplication()
+      when(mapper.map(any())).thenReturn(Some(trustee))
+      val request = FakeRequest(POST, onSubmitRoute)
+      val result = route(application, request).value
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).get mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
     }
   }
 }
