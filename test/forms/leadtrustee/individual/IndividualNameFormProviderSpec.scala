@@ -80,22 +80,24 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
     behave like optionalField(
       form,
       fieldName,
-      validDataGenerator = RegexpGen.from(regex))
+      validDataGenerator = RegexpGen.from(regex)
+    )
 
     "bind whitespace trim values" in {
-      val result = form.bind(Map("firstName" -> "firstName", "middleName" -> "  middle  ", "lastName" -> "lastName"))
-      result.value.value.middleName mustBe Some("middle")
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "  Middle  ", "lastName" -> "LastName"))
+      result.value.value.middleName mustBe Some("Middle")
     }
 
     "bind whitespace blank values" in {
-      val result = form.bind(Map("firstName" -> "firstName", "middleName" -> "  ", "lastName" -> "lastName"))
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "  ", "lastName" -> "LastName"))
       result.value.value.middleName mustBe None
     }
 
     "bind whitespace no values" in {
-      val result = form.bind(Map("firstName" -> "firstName", "middleName" -> "", "lastName" -> "lastName"))
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "", "lastName" -> "LastName"))
       result.value.value.middleName mustBe None
     }
+
   }
 
   ".lastName" must {

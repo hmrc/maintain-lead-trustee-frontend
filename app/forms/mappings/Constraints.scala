@@ -160,4 +160,12 @@ trait Constraints {
         if (ninos.map(formatNino).contains(formatNino(nino))) Invalid(notUniqueKey) else Valid
     }
 
+  protected def startsWithCapitalLetter(value: String, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.nonEmpty && str.head.isUpper =>
+        Valid
+      case _ =>
+        Invalid(errorKey, value)
+    }
+
 }

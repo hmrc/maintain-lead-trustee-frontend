@@ -288,10 +288,16 @@ leadtrustee.individual.name.middleName=Enwau canol (dewisol)
 leadtrustee.individual.name.lastName=Enw olaf
 leadtrustee.individual.name.checkYourAnswersLabel=Beth yw enw’r prif ymddiriedolwr?
 leadtrustee.individual.name.error.firstName.required=Nodwch enw cyntaf y prif ymddiriedolwr
+
 leadtrustee.individual.name.error.lastName.required=Nodwch enw olaf y prif ymddiriedolwr
 leadtrustee.individual.name.error.firstName.length=Mae’n rhaid i enw cyntaf y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai
 leadtrustee.individual.name.error.middleName.length=Mae’n rhaid i enwau canol y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai
 leadtrustee.individual.name.error.lastName.length=Mae’n rhaid i enw olaf y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai
+
+leadtrustee.individual.name.error.firstName.capitalLetter = placeholder
+leadtrustee.individual.name.error.middleName.capitalLetter = placeholder
+leadtrustee.individual.name.error.lastName.capitalLetter = placeholder
+
 leadtrustee.individual.name.error.firstName.invalid=Mae’n rhaid i enw cyntaf y prif ymddiriedolwr gynnwys y llythrennau a i z, y rhifau 0 i 9, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 leadtrustee.individual.name.error.middleName.invalid=Mae’n rhaid i enw canol y prif ymddiriedolwr gynnwys y llythrennau a i z, y rhifau 0 i 9, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 leadtrustee.individual.name.error.lastName.invalid=Mae’n rhaid i enw olaf y prif ymddiriedolwr gynnwys y llythrennau a i z, y rhifau 0 i 9, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
@@ -421,6 +427,11 @@ trustee.individual.name.firstName=Enw cyntaf
 trustee.individual.name.middleName=Enwau canol (dewisol)
 trustee.individual.name.lastName=Enw olaf
 trustee.individual.name.checkYourAnswersLabel=Beth yw enw’r ymddiriedolwr?
+
+trustee.individual.name.error.firstName.capitalLetter = placeholder
+trustee.individual.name.error.middleName.capitalLetter = placeholder
+trustee.individual.name.error.lastName.capitalLetter = placeholder
+
 trustee.individual.name.error.firstName.required=Nodwch enw cyntaf yr ymddiriedolwr
 trustee.individual.name.error.lastName.required=Nodwch enw olaf yr ymddiriedolwr
 trustee.individual.name.error.firstName.length=Mae’n rhaid i enw cyntaf yr ymddiriedolwr fod yn 35 o gymeriadau neu lai

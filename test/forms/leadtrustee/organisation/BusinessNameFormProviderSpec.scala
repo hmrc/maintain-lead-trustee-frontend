@@ -39,7 +39,7 @@ class BusinessNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.nameRegex)
+      RegexpGen.from(Validation.businessNameRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -64,9 +64,9 @@ class BusinessNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithRegexpWithGenerator(
       form,
       fieldName,
-      regexp = Validation.nameRegex,
+      regexp = Validation.businessNameRegex,
       generator = stringsWithMaxLength(maxLength),
-      error = FormError(fieldName, invalidFormatKey, Seq(Validation.nameRegex))
+      error = FormError(fieldName, invalidFormatKey, Seq(Validation.businessNameRegex))
     )
   }
 }

@@ -130,7 +130,7 @@ class NameControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, nameRoute)
-          .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
+          .withFormUrlEncodedBody(("firstName", "Peter"), ("lastName", "Pan"))
 
       val result = route(application, request).value
 

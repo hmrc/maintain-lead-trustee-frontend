@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.MatchingFailedView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class MatchingFailedController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,

@@ -206,12 +206,18 @@ leadtrustee.individual.name.lastName = Last name
 leadtrustee.individual.name.checkYourAnswersLabel = What is the lead trustee’s name?
 leadtrustee.individual.name.error.firstName.required = Enter the lead trustee’s first name
 leadtrustee.individual.name.error.lastName.required = Enter the lead trustee’s last name
+
 leadtrustee.individual.name.error.firstName.length = Lead trustee’s first name must be 35 characters or less
 leadtrustee.individual.name.error.middleName.length = Lead trustee’s middle names must be 35 characters or less
 leadtrustee.individual.name.error.lastName.length = Lead trustee’s last name must be 35 characters or less
-leadtrustee.individual.name.error.firstName.invalid = Lead Trustee’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
-leadtrustee.individual.name.error.middleName.invalid = Lead Trustee’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
-leadtrustee.individual.name.error.lastName.invalid = Lead Trustee’s last name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+
+leadtrustee.individual.name.error.firstName.capitalLetter = Lead trustee’s first name must start with a capital letter.
+leadtrustee.individual.name.error.middleName.capitalLetter = Lead trustee’s middle name must start with a capital letter.
+leadtrustee.individual.name.error.lastName.capitalLetter = Lead trustee’s last name must start with a capital letter.
+
+leadtrustee.individual.name.error.firstName.invalid = Lead trustee’s first name must only include letters A to Z, hyphens, apostrophes or full stops.
+leadtrustee.individual.name.error.middleName.invalid = Lead trustee’s first name must only include letters A to Z, hyphens, apostrophes or full stops.
+leadtrustee.individual.name.error.lastName.invalid = Lead trustee’s first name must only include letters A to Z, hyphens, apostrophes or full stops.
 
 leadtrustee.individual.dateOfBirth.title = What is the lead trustee’s date of birth?
 leadtrustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
@@ -404,6 +410,10 @@ trustee.individual.name.error.lastName.required = Enter the trustee’s last nam
 trustee.individual.name.error.firstName.length = Trustee’s first name must be 35 characters or less
 trustee.individual.name.error.middleName.length = Trustee’s middle names must be 35 characters or less
 trustee.individual.name.error.lastName.length = Trustee’s last name must be 35 characters or less
+
+trustee.individual.name.error.firstName.capitalLetter = Trustee’s first name must start with a capital letter.
+trustee.individual.name.error.middleName.capitalLetter = Trustee’s last name must start with a capital letter.
+trustee.individual.name.error.lastName.capitalLetter = Trustee’s middle name must start with a capital letter.
 
 trustee.individual.name.error.firstName.invalid = Trustee’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 trustee.individual.name.error.middleName.invalid = Trustee’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
