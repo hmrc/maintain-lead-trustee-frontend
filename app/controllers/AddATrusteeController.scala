@@ -67,7 +67,6 @@ class AddATrusteeController @Inject()(
         case all: AllTrustees =>
 
           val trustees = new AddATrusteeViewHelper(all).rows
-
           if (all.size < 26) {
             Ok(addAnotherView(
               form = addAnotherForm,

@@ -54,15 +54,21 @@ class CheckDetailsController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-
-      mapper.mapToTrusteeIndividual(request.userAnswers) match {
-        case Some(t) =>
-          trustConnector.addTrustee(request.userAnswers.identifier, t) map { _ =>
-            Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-          }
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to submit trustee on check your answers")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+      trustConnector.getTrustees(request.userAnswers.identifier).flatMap { data =>
+        val mapperDetails = mapper.mapToTrusteeIndividual(request.userAnswers)
+        mapperDetails match {
+          case Some(trusteeDetails) =>
+            if (!data.trustees.contains(trusteeDetails)) {
+              trustConnector.addTrustee(request.userAnswers.identifier, trusteeDetails).map { _ =>
+                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              }
+            } else {
+              Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
+            }
+          case None =>
+            logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to submit trustee on check your answers")
+            errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+        }
       }
   }
 }
