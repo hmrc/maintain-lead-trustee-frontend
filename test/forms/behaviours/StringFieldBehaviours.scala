@@ -68,6 +68,17 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
     }
   }
 
+  def fieldStartingWithCapitalLetter(form: Form[_],
+                                     fieldName: String,
+                                     requiredError: FormError): Unit = {
+
+    "not allow a word without a starting capital letter" in {
+      
+      val result = form.bind(Map(fieldName -> "notStartingWithCapital")).apply(fieldName)
+      result.errors mustBe Seq(requiredError)
+    }
+  }
+
   def fieldWithRegexpWithGenerator(form: Form[_],
                                    fieldName: String,
                                    regexp: String,

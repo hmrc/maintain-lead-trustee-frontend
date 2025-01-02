@@ -48,7 +48,7 @@ class IndividualNameFormProvider @Inject() extends Mappings {
             if (value.nonEmpty) {
               firstError(
                 maxLength(maxFieldCharacters, s"$prefix.error.middleName.length"),
-                startsWithCapitalLetter("firstName", s"$prefix.error.middleName.capitalLetter"),
+                startsWithCapitalLetter("middleName", s"$prefix.error.middleName.capitalLetter"),
                 regexp(individualNameRegex, s"$prefix.error.middleName.invalid"),
               )(value)
             } else {
@@ -62,7 +62,7 @@ class IndividualNameFormProvider @Inject() extends Mappings {
           firstError(
             maxLength(maxFieldCharacters, s"$prefix.error.lastName.length"),
             nonEmptyString("lastName", s"$prefix.error.lastName.required"),
-            startsWithCapitalLetter("firstName", s"$prefix.error.lastName.capitalLetter"),
+            startsWithCapitalLetter("lastName", s"$prefix.error.lastName.capitalLetter"),
             regexp(individualNameRegex, s"$prefix.error.lastName.invalid")
           )
         )
