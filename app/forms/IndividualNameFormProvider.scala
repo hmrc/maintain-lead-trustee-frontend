@@ -44,19 +44,17 @@ class IndividualNameFormProvider @Inject() extends Mappings {
       "middleName" -> optional(text()
         .transform(trimWhitespace, identity[String])
         .verifying(
-          firstError(
-            Constraint[String] { value: String =>
-              if (value.nonEmpty) {
-                firstError(
-                  maxLength(maxFieldCharacters, s"$prefix.error.middleName.length"),
-                  startsWithCapitalLetter("firstName", s"$prefix.error.firstName.capitalLetter"),
-                  regexp(individualNameRegex, s"$prefix.error.middleName.invalid"),
-                )(value)
-              } else {
-                Valid
-              }
+          Constraint[String] { value: String =>
+            if (value.nonEmpty) {
+              firstError(
+                maxLength(maxFieldCharacters, s"$prefix.error.middleName.length"),
+                startsWithCapitalLetter("firstName", s"$prefix.error.firstName.capitalLetter"),
+                regexp(individualNameRegex, s"$prefix.error.middleName.invalid"),
+              )(value)
+            } else {
+              Valid
             }
-          )
+          }
         )
       ).transform(emptyToNone, identity[Option[String]]),
       "lastName" -> text(s"$prefix.error.lastName.required")
