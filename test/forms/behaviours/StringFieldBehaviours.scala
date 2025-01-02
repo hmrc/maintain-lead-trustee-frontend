@@ -72,7 +72,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
                                      fieldName: String,
                                      requiredError: FormError): Unit = {
 
-    "not allow a word without a starting capital letter" in {
+    "not bind a string without a starting capital letter" in {
       
       val result = form.bind(Map(fieldName -> "notStartingWithCapital")).apply(fieldName)
       result.errors mustBe Seq(requiredError)
