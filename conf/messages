@@ -216,8 +216,8 @@ leadtrustee.individual.name.error.middleName.capitalLetter = Lead trustee’s mi
 leadtrustee.individual.name.error.lastName.capitalLetter = Lead trustee’s last name must start with a capital letter.
 
 leadtrustee.individual.name.error.firstName.invalid = Lead trustee’s first name must only include letters A to Z, hyphens, apostrophes or full stops.
-leadtrustee.individual.name.error.middleName.invalid = Lead trustee’s first name must only include letters A to Z, hyphens, apostrophes or full stops.
-leadtrustee.individual.name.error.lastName.invalid = Lead trustee’s first name must only include letters A to Z, hyphens, apostrophes or full stops.
+leadtrustee.individual.name.error.middleName.invalid = Lead trustee’s middle name must only include letters A to Z, hyphens, apostrophes or full stops.
+leadtrustee.individual.name.error.lastName.invalid = Lead trustee’s last name must only include letters A to Z, hyphens, apostrophes or full stops.
 
 leadtrustee.individual.dateOfBirth.title = What is the lead trustee’s date of birth?
 leadtrustee.individual.dateOfBirth.heading = What is {0}’s date of birth?
