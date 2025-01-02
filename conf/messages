@@ -412,8 +412,8 @@ trustee.individual.name.error.middleName.length = Trustee’s middle names must 
 trustee.individual.name.error.lastName.length = Trustee’s last name must be 35 characters or less
 
 trustee.individual.name.error.firstName.capitalLetter = Trustee’s first name must start with a capital letter.
-trustee.individual.name.error.middleName.capitalLetter = Trustee’s last name must start with a capital letter.
-trustee.individual.name.error.lastName.capitalLetter = Trustee’s middle name must start with a capital letter.
+trustee.individual.name.error.middleName.capitalLetter = Trustee’s middle name must start with a capital letter.
+trustee.individual.name.error.lastName.capitalLetter = Trustee’s last name must start with a capital letter.
 
 trustee.individual.name.error.firstName.invalid = Trustee’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 trustee.individual.name.error.middleName.invalid = Trustee’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
