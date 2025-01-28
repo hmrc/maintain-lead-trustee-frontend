@@ -207,9 +207,9 @@ leadtrustee.individual.name.checkYourAnswersLabel = What is the lead trustee’s
 leadtrustee.individual.name.error.firstName.required = Enter the lead trustee’s first name
 leadtrustee.individual.name.error.lastName.required = Enter the lead trustee’s last name
 
-leadtrustee.individual.name.error.firstName.length = Lead trustee’s first name must be 35 characters or less
-leadtrustee.individual.name.error.middleName.length = Lead trustee’s middle names must be 35 characters or less
-leadtrustee.individual.name.error.lastName.length = Lead trustee’s last name must be 35 characters or less
+leadtrustee.individual.name.error.firstName.length = Lead trustee’s first name must be less than 35 characters.
+leadtrustee.individual.name.error.middleName.length = Lead trustee’s middle name must be less than 35 characters.
+leadtrustee.individual.name.error.lastName.length = Lead trustee’s last name must be less than 35 characters.
 
 leadtrustee.individual.name.error.firstName.capitalLetter = Lead trustee’s first name must start with a capital letter.
 leadtrustee.individual.name.error.middleName.capitalLetter = Lead trustee’s middle name must start with a capital letter.
@@ -407,17 +407,17 @@ trustee.individual.name.checkYourAnswersLabel = What is the trustee’s name?
 trustee.individual.name.error.firstName.required = Enter the trustee’s first name
 trustee.individual.name.error.lastName.required = Enter the trustee’s last name
 
-trustee.individual.name.error.firstName.length = Trustee’s first name must be 35 characters or less
-trustee.individual.name.error.middleName.length = Trustee’s middle names must be 35 characters or less
-trustee.individual.name.error.lastName.length = Trustee’s last name must be 35 characters or less
+trustee.individual.name.error.firstName.length = Trustee’s first name must be less than 35 characters.
+trustee.individual.name.error.middleName.length = Trustee’s middle name must be less than 35 characters.
+trustee.individual.name.error.lastName.length = Trustee’s last name must be less than 35 characters.
 
 trustee.individual.name.error.firstName.capitalLetter = Trustee’s first name must start with a capital letter.
 trustee.individual.name.error.middleName.capitalLetter = Trustee’s middle name must start with a capital letter.
 trustee.individual.name.error.lastName.capitalLetter = Trustee’s last name must start with a capital letter.
 
-trustee.individual.name.error.firstName.invalid = Trustee’s first name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
-trustee.individual.name.error.middleName.invalid = Trustee’s middle name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
-trustee.individual.name.error.lastName.invalid = Trustee’s last name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+trustee.individual.name.error.firstName.invalid = Trustee’s first name must only include letters A to Z, hyphens, apostrophes or full stops.
+trustee.individual.name.error.middleName.invalid = Trustee’s middle name must only include letters A to Z, hyphens, apostrophes or full stops.
+trustee.individual.name.error.lastName.invalid = Trustee’s last name must only include letters A to Z, hyphens, apostrophes or full stops.
 
 trustee.individual.dateOfBirthYesNo.checkYourAnswersLabel = Do you know {0}’s date of birth?
 trustee.individual.dateOfBirthYesNo.title = Do you know the trustee’s date of birth?
