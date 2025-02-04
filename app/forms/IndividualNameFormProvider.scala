@@ -49,7 +49,7 @@ class IndividualNameFormProvider @Inject() extends Mappings {
               firstError(
                 maxLength(maxFieldCharacters, s"$prefix.error.middleName.length"),
                 startsWithCapitalLetter("middleName", s"$prefix.error.middleName.capitalLetter"),
-                regexp(individualNameRegex, s"$prefix.error.middleName.invalid"),
+                regexp(individualNameRegex, s"$prefix.error.middleName.invalid")
               )(value)
             } else {
               Valid
