@@ -18,6 +18,7 @@ package forms.leadtrustee.individual
 
 import forms.IndividualNameFormProvider
 import forms.behaviours.{OptionalFieldBehaviours, StringFieldBehaviours}
+import org.scalacheck.Gen
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
@@ -36,6 +37,18 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
    */
   val testIndividualNameRegex = "([A-Z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"
 
+  /**
+   * This method produces a Gen[String] that conforms to the individualNameRegex,
+   * but is at least one character over the max allowed length
+   */
+  private def validStringButOverMaxLength(maxLength: Int): Gen[String] = {
+    for {
+      firstChar <- Gen.alphaUpperChar
+      length <- Gen.choose(maxLength + 1, maxLength * 2)
+      chars <- Gen.listOfN(length, Gen.alphaChar)
+    } yield (firstChar :: chars).mkString
+  }
+
   ".firstName" must {
 
     val fieldName = "firstName"
@@ -53,8 +66,14 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
+      stringGenerator = validStringButOverMaxLength(maxLength)
     )
+
+    "bind whitespace no values" in {
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "", "lastName" -> "LastName"))
+      result.value.value.middleName mustBe None
+    }
 
     behave like mandatoryField(
       form,
@@ -86,7 +105,8 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
+      stringGenerator = validStringButOverMaxLength(maxLength)
     )
 
     behave like optionalField(
@@ -135,7 +155,8 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
+      stringGenerator = validStringButOverMaxLength(maxLength)
     )
 
     behave like mandatoryField(

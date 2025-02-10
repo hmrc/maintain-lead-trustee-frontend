@@ -40,14 +40,29 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
     }
   }
 
-  def fieldWithMinLength(form : Form[_],
-                         fieldName : String,
-                         minLength : Int,
-                         lengthError : FormError) : Unit = {
+  def fieldWithMaxLength(form: Form[_],
+                         fieldName: String,
+                         maxLength: Int,
+                         lengthError: FormError,
+                         stringGenerator: Gen[String]): Unit = {
+
+    s"not bind strings longer than $maxLength characters" in {
+      forAll(stringGenerator -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+  }
+
+  def fieldWithMinLength(form: Form[_],
+                         fieldName: String,
+                         minLength: Int,
+                         lengthError: FormError): Unit = {
 
     s"not bind strings shorter than $minLength characters" in {
 
-      val length = if (minLength > 0 && minLength < 2) minLength else minLength -1
+      val length = if (minLength > 0 && minLength < 2) minLength else minLength - 1
 
       forAll(stringsWithMaxLength(length) -> "shortString") {
         string =>
@@ -73,7 +88,7 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
                                      requiredError: FormError): Unit = {
 
     "not bind a string without a starting capital letter" in {
-      
+
       val result = form.bind(Map(fieldName -> "notStartingWithCapital")).apply(fieldName)
       result.errors mustBe Seq(requiredError)
     }
