@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@
 package controllers
 
 import base.SpecBase
+import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito
-import org.mockito.Mockito.{never, verify}
+import org.mockito.Mockito.{clearInvocations, never, spy, times, verify, when}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -27,15 +28,21 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class LogoutControllerSpec extends SpecBase {
 
-  "logout should redirect to feedback and audit" in {
+  private val mockAuditConnector = Mockito.mock(classOf[AuditConnector])
+  private val appConfig = spy(app.injector.instanceOf[FrontendAppConfig])
 
-    val mockAuditConnector = Mockito.mock(classOf[AuditConnector])
 
-    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-      .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
-      .build()
+  private val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+    .overrides(
+      bind[AuditConnector].toInstance(mockAuditConnector),
+      bind[FrontendAppConfig].toInstance(appConfig)
+    )
+    .build()
 
-    val request = FakeRequest(GET, routes.LogoutController.logout().url)
+  private val request = FakeRequest(GET, routes.LogoutController.logout().url)
+
+
+  "logout should redirect to feedback and not audit, given appConfig.logoutAudit is false" in {
 
     val result = route(application, request).value
 
@@ -46,8 +53,24 @@ class LogoutControllerSpec extends SpecBase {
     verify(mockAuditConnector, never())
       .sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(any(), any())
 
-    application.stop()
+  }
 
+  "logout should redirect to feedback and send audit, given appConfig.logoutAudit is true" in {
+
+    clearInvocations(mockAuditConnector)
+
+    when(appConfig.logoutAudit).thenReturn(true)
+
+    val result = route(application, request).value
+
+    status(result) mustEqual SEE_OTHER
+
+    redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
+
+    verify(mockAuditConnector, times(1))
+      .sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(any(), any())
+
+    application.stop()
   }
 
 }

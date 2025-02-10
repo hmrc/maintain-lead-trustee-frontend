@@ -59,19 +59,6 @@ trait Constraints {
         }
     }
 
-  protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-
-        import ev._
-
-        if (input >= minimum && input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum, maximum)
-        }
-    }
-
   protected def regexp(regex: String, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.matches(regex) =>
@@ -88,13 +75,6 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def minLength(minimum: Int, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.length >= minimum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, minimum)
-    }
 
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
@@ -110,14 +90,6 @@ trait Constraints {
         Invalid(errorKey, args: _*)
       case _ =>
         Valid
-    }
-
-  protected def nonEmptySet(errorKey: String): Constraint[Set[_]] =
-    Constraint {
-      case set if set.nonEmpty =>
-        Valid
-      case _ =>
-        Invalid(errorKey)
     }
 
   protected def nonEmptyString(value: String, errorKey: String): Constraint[String] =
