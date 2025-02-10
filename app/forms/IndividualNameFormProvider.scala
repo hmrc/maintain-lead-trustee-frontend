@@ -35,10 +35,10 @@ class IndividualNameFormProvider @Inject() extends Mappings {
       "firstName" -> text(s"$prefix.error.firstName.required")
         .verifying(
           firstError(
-            maxLength(maxFieldCharacters, s"$prefix.error.firstName.length"),
             nonEmptyString("firstName", s"$prefix.error.firstName.required"),
-            startsWithCapitalLetter("firstName", s"$prefix.error.firstName.capitalLetter"),
-            regexp(individualNameRegex, s"$prefix.error.firstName.invalid")
+            regexp(individualNameRegex, s"$prefix.error.firstName.invalid"),
+            maxLength(maxFieldCharacters, s"$prefix.error.firstName.length"),
+            startsWithCapitalLetter("firstName", s"$prefix.error.firstName.capitalLetter")
           )
         ),
       "middleName" -> optional(text()
@@ -47,9 +47,9 @@ class IndividualNameFormProvider @Inject() extends Mappings {
           Constraint[String] { value: String =>
             if (value.nonEmpty) {
               firstError(
+                regexp(individualNameRegex, s"$prefix.error.middleName.invalid"),
                 maxLength(maxFieldCharacters, s"$prefix.error.middleName.length"),
-                startsWithCapitalLetter("middleName", s"$prefix.error.middleName.capitalLetter"),
-                regexp(individualNameRegex, s"$prefix.error.middleName.invalid")
+                startsWithCapitalLetter("middleName", s"$prefix.error.middleName.capitalLetter")
               )(value)
             } else {
               Valid
@@ -60,10 +60,10 @@ class IndividualNameFormProvider @Inject() extends Mappings {
       "lastName" -> text(s"$prefix.error.lastName.required")
         .verifying(
           firstError(
-            maxLength(maxFieldCharacters, s"$prefix.error.lastName.length"),
             nonEmptyString("lastName", s"$prefix.error.lastName.required"),
-            startsWithCapitalLetter("lastName", s"$prefix.error.lastName.capitalLetter"),
-            regexp(individualNameRegex, s"$prefix.error.lastName.invalid")
+            regexp(individualNameRegex, s"$prefix.error.lastName.invalid"),
+            maxLength(maxFieldCharacters, s"$prefix.error.lastName.length"),
+            startsWithCapitalLetter("lastName", s"$prefix.error.lastName.capitalLetter")
           )
         )
     )(Name.apply)(Name.unapply)
