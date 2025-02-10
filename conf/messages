@@ -204,6 +204,7 @@ leadtrustee.individual.name.firstName = First name
 leadtrustee.individual.name.middleName = Middle names (optional)
 leadtrustee.individual.name.lastName = Last name
 leadtrustee.individual.name.checkYourAnswersLabel = What is the lead trustee’s name?
+
 leadtrustee.individual.name.error.firstName.required = Enter the lead trustee’s first name
 leadtrustee.individual.name.error.lastName.required = Enter the lead trustee’s last name
 
@@ -404,6 +405,7 @@ trustee.individual.name.firstName = First name
 trustee.individual.name.middleName = Middle names (optional)
 trustee.individual.name.lastName = Last name
 trustee.individual.name.checkYourAnswersLabel = What is the trustee’s name?
+
 trustee.individual.name.error.firstName.required = Enter the trustee’s first name
 trustee.individual.name.error.lastName.required = Enter the trustee’s last name
 
