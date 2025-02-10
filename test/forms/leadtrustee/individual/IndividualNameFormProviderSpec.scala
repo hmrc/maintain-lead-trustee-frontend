@@ -30,10 +30,9 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
   val maxLength = 35
   val minLength = 1
 
-  /*
-    the following section of the individualNameRegex is removed,
-    as the scalacheck-gen-regexp library does not appear to support it:
-      ^(?=.{1,99}$)
+  /**
+   * The following section of the individualNameRegex is removed,
+   * as the scalacheck-gen-regexp library does not appear to support it: ^(?=.{1,99}$)
    */
   val testIndividualNameRegex = "([A-Z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"
 
