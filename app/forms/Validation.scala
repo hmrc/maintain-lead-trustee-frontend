@@ -23,9 +23,9 @@ object Validation {
   val businessNameRegex = "^[A-Za-z0-9 ,.()/&'-]*$"
 
   /** This is the actual regex for an individual's name:
-   * "^(?=.{1,99}$)([A-Z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"
-   * It has been amended to be more permissive, allowing errors to be shown in the sequence:
-   * 1 - invalid characters, 2 - over max length, 3 - no starting capital letter
+   * `"^(?=.{1,99}$)([A-Z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"`
+   * It has been amended to be more permissive, though other constraints catch the removed regex patterns.
+   * This allows errors to be shown in the sequence: 1 - invalid characters, 2 - over max length, 3 - no starting capital letter
    */
   val individualNameRegex = "^(?=.{1,99}$)([A-Za-z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"
 
