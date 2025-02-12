@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,15 @@ object Validation {
 
   val countryRegex = "^[A-Za-z ,.()'-]*$"
   val postcodeRegex = """^[a-zA-Z]{1,2}[0-9][0-9a-zA-Z]?\s?[0-9][a-zA-Z]{2}$"""
-  val nameRegex = "^[A-Za-z0-9 ,.()/&'-]*$"
+  val businessNameRegex = "^[A-Za-z0-9 ,.()/&'-]*$"
+
+  /** This is the actual regex for an individual's name:
+   * `"^(?=.{1,99}$)([A-Z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"`
+   * It has been amended to be more permissive, though other constraints catch the removed regex patterns.
+   * This allows errors to be shown in the sequence: 1 - invalid characters, 2 - over max length, 3 - no starting capital letter
+   */
+  val individualNameRegex = "^(?=.{1,99}$)([A-Za-z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"
+
   val utrRegex = "^[0-9]*$"
   val ninoRegex = """^(?i)[ \t]*[A-Z]{1}[ \t]*[ \t]*[A-Z]{1}[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*""" +
     """[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[A-D]{1}[ \t]*$"""

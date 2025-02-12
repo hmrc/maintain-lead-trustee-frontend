@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package forms.leadtrustee.individual
 
 import forms.IndividualNameFormProvider
 import forms.behaviours.{OptionalFieldBehaviours, StringFieldBehaviours}
+import org.scalacheck.Gen
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
@@ -29,25 +30,49 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
   val maxLength = 35
   val minLength = 1
 
+  /**
+   * The following section of the individualNameRegex is removed,
+   * as the scalacheck-gen-regexp library does not appear to support it: ^(?=.{1,99}$)
+   */
+  val testIndividualNameRegex = "([A-Z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"
+
+  /**
+   * This method produces a Gen[String] that conforms to the individualNameRegex,
+   * but is at least one character over the max allowed length
+   */
+  private def validStringButOverMaxLength(maxLength: Int): Gen[String] = {
+    for {
+      firstChar <- Gen.alphaUpperChar
+      length <- Gen.choose(maxLength + 1, maxLength * 2)
+      chars <- Gen.listOfN(length, Gen.alphaChar)
+    } yield (firstChar :: chars).mkString
+  }
+
   ".firstName" must {
 
     val fieldName = "firstName"
     val requiredKey = s"$messageKeyPrefix.error.firstName.required"
     val lengthKey = s"$messageKeyPrefix.error.firstName.length"
-    val regex = "^[A-Za-z0-9 ,.()/&'-]*$"
+    val capitalKey = s"$messageKeyPrefix.error.firstName.capitalLetter"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(regex)
+      RegexpGen.from(testIndividualNameRegex)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
+      stringGenerator = validStringButOverMaxLength(maxLength)
     )
+
+    "bind whitespace no values" in {
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "", "lastName" -> "LastName"))
+      result.value.value.middleName mustBe None
+    }
 
     behave like mandatoryField(
       form,
@@ -59,6 +84,12 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
+    )
+
+    behave like fieldStartingWithCapitalLetter(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, capitalKey, Seq(fieldName))
     )
   }
 
@@ -67,35 +98,43 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
     val fieldName = "middleName"
     val lengthKey = s"$messageKeyPrefix.error.middleName.length"
     val maxLength = 35
-    val regex = "^[A-Za-z0-9 ,.()/&'-]*$"
-
+    val capitalKey = s"$messageKeyPrefix.error.middleName.capitalLetter"
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
+      stringGenerator = validStringButOverMaxLength(maxLength)
     )
 
     behave like optionalField(
       form,
       fieldName,
-      validDataGenerator = RegexpGen.from(regex))
+      validDataGenerator = RegexpGen.from(testIndividualNameRegex)
+    )
+
+    behave like fieldStartingWithCapitalLetter(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, capitalKey, Seq(fieldName))
+    )
 
     "bind whitespace trim values" in {
-      val result = form.bind(Map("firstName" -> "firstName", "middleName" -> "  middle  ", "lastName" -> "lastName"))
-      result.value.value.middleName mustBe Some("middle")
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "  Middle  ", "lastName" -> "LastName"))
+      result.value.value.middleName mustBe Some("Middle")
     }
 
     "bind whitespace blank values" in {
-      val result = form.bind(Map("firstName" -> "firstName", "middleName" -> "  ", "lastName" -> "lastName"))
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "  ", "lastName" -> "LastName"))
       result.value.value.middleName mustBe None
     }
 
     "bind whitespace no values" in {
-      val result = form.bind(Map("firstName" -> "firstName", "middleName" -> "", "lastName" -> "lastName"))
+      val result = form.bind(Map("firstName" -> "FirstName", "middleName" -> "", "lastName" -> "LastName"))
       result.value.value.middleName mustBe None
     }
+
   }
 
   ".lastName" must {
@@ -103,19 +142,20 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
     val fieldName = "lastName"
     val requiredKey = s"$messageKeyPrefix.error.lastName.required"
     val lengthKey = s"$messageKeyPrefix.error.lastName.length"
-    val regex = "^[A-Za-z0-9 ,.()/&'-]*$"
+    val capitalKey = s"$messageKeyPrefix.error.lastName.capitalLetter"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(regex)
+      RegexpGen.from(testIndividualNameRegex)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
+      stringGenerator = validStringButOverMaxLength(maxLength)
     )
 
     behave like mandatoryField(
@@ -128,6 +168,12 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
+    )
+
+    behave like fieldStartingWithCapitalLetter(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, capitalKey, Seq(fieldName))
     )
   }
 }

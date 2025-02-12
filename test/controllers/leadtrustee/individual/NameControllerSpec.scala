@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ class NameControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, nameRoute)
-          .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
+          .withFormUrlEncodedBody(("firstName", "Peter"), ("lastName", "Pan"))
 
       val result = route(application, request).value
 

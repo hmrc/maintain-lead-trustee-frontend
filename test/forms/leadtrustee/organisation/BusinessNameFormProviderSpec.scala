@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ class BusinessNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(Validation.nameRegex)
+      RegexpGen.from(Validation.businessNameRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -64,9 +64,9 @@ class BusinessNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithRegexpWithGenerator(
       form,
       fieldName,
-      regexp = Validation.nameRegex,
+      regexp = Validation.businessNameRegex,
       generator = stringsWithMaxLength(maxLength),
-      error = FormError(fieldName, invalidFormatKey, Seq(Validation.nameRegex))
+      error = FormError(fieldName, invalidFormatKey, Seq(Validation.businessNameRegex))
     )
   }
 }

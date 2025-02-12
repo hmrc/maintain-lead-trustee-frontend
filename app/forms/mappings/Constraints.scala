@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,19 +59,6 @@ trait Constraints {
         }
     }
 
-  protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-
-        import ev._
-
-        if (input >= minimum && input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum, maximum)
-        }
-    }
-
   protected def regexp(regex: String, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.matches(regex) =>
@@ -88,13 +75,6 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def minLength(minimum: Int, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.length >= minimum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, minimum)
-    }
 
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
@@ -110,14 +90,6 @@ trait Constraints {
         Invalid(errorKey, args: _*)
       case _ =>
         Valid
-    }
-
-  protected def nonEmptySet(errorKey: String): Constraint[Set[_]] =
-    Constraint {
-      case set if set.nonEmpty =>
-        Valid
-      case _ =>
-        Invalid(errorKey)
     }
 
   protected def nonEmptyString(value: String, errorKey: String): Constraint[String] =
@@ -158,6 +130,14 @@ trait Constraints {
     Constraint {
       nino =>
         if (ninos.map(formatNino).contains(formatNino(nino))) Invalid(notUniqueKey) else Valid
+    }
+
+  protected def startsWithCapitalLetter(value: String, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.nonEmpty && str.head.isUpper =>
+        Valid
+      case _ =>
+        Invalid(errorKey, value)
     }
 
 }
