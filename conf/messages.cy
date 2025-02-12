@@ -335,9 +335,9 @@ leadtrustee.individual.name.checkYourAnswersLabel=Beth yw enw’r prif ymddiried
 leadtrustee.individual.name.error.firstName.required=Nodwch enw cyntaf y prif ymddiriedolwr
 leadtrustee.individual.name.error.lastName.required=Nodwch enw olaf y prif ymddiriedolwr
 
-leadtrustee.individual.name.error.firstName.length=Mae’n rhaid i enw cyntaf y prif ymddiriedolwr fod yn llai na 35 o gymeriadau.
-leadtrustee.individual.name.error.middleName.length=Mae’n rhaid i enw canol y prif ymddiriedolwr fod yn llai na 35 o gymeriadau.
-leadtrustee.individual.name.error.lastName.length=Mae’n rhaid i enw olaf y prif ymddiriedolwr fod yn llai na 35 o gymeriadau.
+leadtrustee.individual.name.error.firstName.length=Mae’n rhaid i enw cyntaf y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai.
+leadtrustee.individual.name.error.middleName.length=Mae’n rhaid i enwau canol y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai.
+leadtrustee.individual.name.error.lastName.length=Mae’n rhaid i enw olaf y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai.
 
 leadtrustee.individual.name.error.firstName.capitalLetter = Mae’n rhaid i enw cyntaf y prif ymddiriedolwr ddechrau â phrif lythyren.
 leadtrustee.individual.name.error.middleName.capitalLetter = Mae’n rhaid i enw canol y prif ymddiriedolwr ddechrau â phrif lythyren.
@@ -502,9 +502,9 @@ trustee.individual.name.error.lastName.capitalLetter = Mae’n rhaid i enw olaf 
 trustee.individual.name.error.firstName.required=Nodwch enw cyntaf yr ymddiriedolwr
 trustee.individual.name.error.lastName.required=Nodwch enw olaf yr ymddiriedolwr
 
-trustee.individual.name.error.firstName.length = Mae’n rhaid i enw cyntaf yr ymddiriedolwr fod yn llai na 35 o gymeriadau.
-trustee.individual.name.error.middleName.length = Mae’n rhaid i enw canol yr ymddiriedolwr fod yn llai 35 o gymeriadau.
-trustee.individual.name.error.lastName.length = Mae’n rhaid i enw olaf yr ymddiriedolwr fod yn llai na 35 o gymeriadau.
+trustee.individual.name.error.firstName.length = Mae’n rhaid i enw cyntaf yr ymddiriedolwr fod yn 35 o gymeriadau neu lai.
+trustee.individual.name.error.middleName.length = Mae’n rhaid i enwau canol yr ymddiriedolwr fod yn 35 o gymeriadau neu lai
+trustee.individual.name.error.lastName.length = Mae’n rhaid i enw olaf yr ymddiriedolwr fod yn 35 o gymeriadau neu lai.
 
 trustee.individual.name.error.firstName.invalid = Mae’n rhaid i enw cyntaf yr ymddiriedolwr gynnwys y llythrennau A i Z, cysylltnodau, collnodau neu atalnodau llawn yn unig.
 trustee.individual.name.error.middleName.invalid = Mae’n rhaid i enw canol yr ymddiriedolwr gynnwys y llythrennau A i Z, cysylltnodau, collnodau neu atalnodau llawn yn unig.
