@@ -332,8 +332,8 @@ leadtrustee.individual.name.middleName=Enwau canol (dewisol)
 leadtrustee.individual.name.lastName=Enw olaf
 leadtrustee.individual.name.checkYourAnswersLabel=Beth yw enw’r prif ymddiriedolwr?
 
-leadtrustee.individual.name.error.firstName.required=Nodwch enw cyntaf y prif ymddiriedolwr
-leadtrustee.individual.name.error.lastName.required=Nodwch enw olaf y prif ymddiriedolwr
+leadtrustee.individual.name.error.firstName.required=Nodwch enw cyntaf y prif ymddiriedolwr.
+leadtrustee.individual.name.error.lastName.required=Nodwch enw olaf y prif ymddiriedolwr.
 
 leadtrustee.individual.name.error.firstName.length=Mae’n rhaid i enw cyntaf y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai.
 leadtrustee.individual.name.error.middleName.length=Mae’n rhaid i enwau canol y prif ymddiriedolwr fod yn 35 o gymeriadau neu lai.
@@ -499,11 +499,11 @@ trustee.individual.name.error.firstName.capitalLetter = Mae’n rhaid i enw cynt
 trustee.individual.name.error.middleName.capitalLetter = Mae’n rhaid i enw canol yr ymddiriedolwr ddechrau â phrif lythyren.
 trustee.individual.name.error.lastName.capitalLetter = Mae’n rhaid i enw olaf yr ymddiriedolwr ddechrau â phrif lythyren.
 
-trustee.individual.name.error.firstName.required=Nodwch enw cyntaf yr ymddiriedolwr
-trustee.individual.name.error.lastName.required=Nodwch enw olaf yr ymddiriedolwr
+trustee.individual.name.error.firstName.required=Nodwch enw cyntaf yr ymddiriedolwr.
+trustee.individual.name.error.lastName.required=Nodwch enw olaf yr ymddiriedolwr.
 
 trustee.individual.name.error.firstName.length = Mae’n rhaid i enw cyntaf yr ymddiriedolwr fod yn 35 o gymeriadau neu lai.
-trustee.individual.name.error.middleName.length = Mae’n rhaid i enwau canol yr ymddiriedolwr fod yn 35 o gymeriadau neu lai
+trustee.individual.name.error.middleName.length = Mae’n rhaid i enwau canol yr ymddiriedolwr fod yn 35 o gymeriadau neu lai.
 trustee.individual.name.error.lastName.length = Mae’n rhaid i enw olaf yr ymddiriedolwr fod yn 35 o gymeriadau neu lai.
 
 trustee.individual.name.error.firstName.invalid = Mae’n rhaid i enw cyntaf yr ymddiriedolwr gynnwys y llythrennau A i Z, cysylltnodau, collnodau neu atalnodau llawn yn unig.

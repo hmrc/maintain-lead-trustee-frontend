@@ -205,8 +205,8 @@ leadtrustee.individual.name.middleName = Middle names (optional)
 leadtrustee.individual.name.lastName = Last name
 leadtrustee.individual.name.checkYourAnswersLabel = What is the lead trustee’s name?
 
-leadtrustee.individual.name.error.firstName.required = Enter the lead trustee’s first name
-leadtrustee.individual.name.error.lastName.required = Enter the lead trustee’s last name
+leadtrustee.individual.name.error.firstName.required = Enter the lead trustee’s first name.
+leadtrustee.individual.name.error.lastName.required = Enter the lead trustee’s last name.
 
 leadtrustee.individual.name.error.firstName.length = Lead trustee’s first name must be 35 characters or less.
 leadtrustee.individual.name.error.middleName.length = Lead trustee’s middle name must be 35 characters or less.
@@ -406,8 +406,8 @@ trustee.individual.name.middleName = Middle names (optional)
 trustee.individual.name.lastName = Last name
 trustee.individual.name.checkYourAnswersLabel = What is the trustee’s name?
 
-trustee.individual.name.error.firstName.required = Enter the trustee’s first name
-trustee.individual.name.error.lastName.required = Enter the trustee’s last name
+trustee.individual.name.error.firstName.required = Enter the trustee’s first name.
+trustee.individual.name.error.lastName.required = Enter the trustee’s last name.
 
 trustee.individual.name.error.firstName.length = Trustee’s first name must be 35 characters or less.
 trustee.individual.name.error.middleName.length = Trustee’s middle name must be 35 characters or less.
