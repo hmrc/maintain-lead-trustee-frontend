@@ -109,6 +109,7 @@ class CheckDetailsController @Inject()(
           }
           submitTransform(transform, userAnswers)
         case _ =>
+          // note: we hit this error
           logger.error(s"$logInfo Unable to build lead trustee individual from user answers. Cannot continue with submitting transform.")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
@@ -116,8 +117,8 @@ class CheckDetailsController @Inject()(
 
   private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
     for {
-      _ <- transform()
-      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
+      _ <- transform() // note: the response code is not checked here, we can receive a non 200 response code and the for comp continues
+      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath)) // note: try to delete lead trustee base path
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }

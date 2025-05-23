@@ -220,6 +220,34 @@ class CheckDetailsControllerSpec extends SpecBase {
 
             verify(mockTrustConnector).promoteTrustee(any(), eqTo(index), eqTo(leadTrustee))(any(), any())
           }
+
+          "carries on if internal server error" in {
+
+            val index = 0
+
+            val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+
+            val userAnswers = emptyUserAnswers.set(IndexPage, index).success.value
+
+            when(mockMapper.mapToLeadTrusteeIndividual(any())).thenReturn(Some(leadTrustee))
+            when(mockTrustConnector.promoteTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers))
+              .overrides(
+                bind[TrustConnector].toInstance(mockTrustConnector),
+                bind[TrusteeMappers].toInstance(mockMapper)
+              ).build()
+
+            val request = FakeRequest(POST, onSubmitRoute.url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
+            verify(mockTrustConnector).promoteTrustee(any(), eqTo(index), eqTo(leadTrustee))(any(), any())
+          }
         }
       }
 

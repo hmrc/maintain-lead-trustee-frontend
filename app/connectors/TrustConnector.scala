@@ -80,7 +80,7 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def promoteTrustee(identifier: String, index: Int, newLeadTrustee: LeadTrustee)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/promote/$identifier/$index"
-    http.post(url"$url").withBody(Json.toJson(newLeadTrustee)).execute[HttpResponse]
+    http.post(url"$url").withBody(Json.toJson(newLeadTrustee)).execute[HttpResponse] // note: this is the http request
 
   }
 
