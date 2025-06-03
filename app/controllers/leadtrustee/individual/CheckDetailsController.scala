@@ -24,7 +24,7 @@ import handlers.ErrorHandler
 import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
-import models.{LeadTrusteeIndividual, UserAnswers}
+import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import pages.leadtrustee.individual.IndexPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,6 +36,7 @@ import utils.print.checkYourAnswers.TrusteePrintHelpers
 import viewmodels.AnswerSection
 import views.html.leadtrustee.individual.CheckDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -102,6 +103,26 @@ class CheckDetailsController @Inject()(
           val transform = () => userAnswers.get(IndexPage) match {
             case None =>
               logger.info(s"$logInfo Amending lead trustee")
+
+              connector.getLeadTrustee(userAnswers.identifier).flatMap {
+                case oldInd: LeadTrusteeIndividual =>
+                  val oldAsTrusteeInd = TrusteeIndividual.fromLead(oldInd)
+
+                  connector.addTrustee(userAnswers.identifier, oldAsTrusteeInd).flatMap { _ =>
+                    connector.amendLeadTrustee(userAnswers.identifier, lt)
+                  }
+
+                case oldOrg: LeadTrusteeOrganisation =>
+                  val oldAsTrusteeOrg: TrusteeOrganisation = TrusteeOrganisation.fromLead(oldOrg)
+
+                  connector.addTrustee(userAnswers.identifier, oldAsTrusteeOrg).flatMap { _ =>
+                    connector.amendLeadTrustee(userAnswers.identifier, lt)
+                  }
+
+                case _ =>
+                  logger.error(s"$logInfo Could not re‐fetch existing lead trustee")
+                  Future.failed(new IllegalStateException("Unable to read old lead trustee"))
+              }
               connector.amendLeadTrustee(userAnswers.identifier, lt)
             case Some(index) =>
               logger.info(s"$logInfo Promoting lead trustee")

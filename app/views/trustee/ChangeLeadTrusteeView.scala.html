@@ -27,7 +27,7 @@
 @()(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
-    title = messages("pageNotFound.title"),
+    title = messages("changeLeadTrustee.title"),
     showBackLink = true
 ) {
 
@@ -82,7 +82,7 @@
 
     <p>@messages("changeLeadTrustee.p8")</p>
 
-    @formHelper(action = routes.ReplacingLeadTrusteeController.onPageLoad()) {
+    @formHelper(action = routes.ChangeLeadTrusteeController.onSubmit()) {
         @submitButton(Some(messages("site.continue")))
     }
 

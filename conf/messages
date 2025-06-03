@@ -143,7 +143,7 @@ addATrusteeYesNo.heading = Do you want to add a trustee?
 addATrusteeYesNo.error.required = Select yes if you want to add a trustee
 
 replacingLeadTrustee.title = Who is replacing the current lead trustee as the new lead trustee?
-replacingLeadTrustee.heading = Who will be the new lead trustee
+replacingLeadTrustee.heading = Who will be the new lead trustee?
 replacingLeadTrustee.hint = When you change the lead trustee, {0} will stay on the trust as a trustee.
 replacingLeadTrustee.add-new = Add a new lead trustee
 replacingLeadTrustee.error.required = Select who is replacing the current lead trustee as the new lead trustee
@@ -180,6 +180,7 @@ addATrustee.p1.a = change the lead trustee
 addATrustee.maxedOut = You cannot add another trustee as you have entered a maximum of 26.
 addATrustee.maxedOut.paragraph = You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.
 
+changeLeadTrustee.title = Change the lead trustee
 changeLeadTrustee.heading = Change the lead trustee
 changeLeadTrustee.p1 = Before you can change the lead trustee you must tell HMRC who will become the new lead trustee. You will also need to provide their details.
 changeLeadTrustee.p2 = The new lead trustee can be chosen from existing trustees (if they are suitable) or you can add a new trustee. They can be either:

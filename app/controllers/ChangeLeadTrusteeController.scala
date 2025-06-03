@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions.StandardActionSets
-import models.AllTrustees
+import models.{AllTrustees, Trustee, TrusteeIndividual, TrusteeOrganisation, YesNoDontKnow}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
@@ -40,11 +40,14 @@ class ChangeLeadTrusteeController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
     trustService.getAllTrustees(request.userAnswers.identifier).map {
-      case AllTrustees(leadOpt, trustees) =>
-        val nonLeadCount: Int = trustees.size - (if (leadOpt.isDefined) 1 else 0)
+      case AllTrustees(_, trustees) =>
+        val eligibleToPromote: Seq[Trustee] = trustees.filter {
+          case ti: TrusteeIndividual   => !ti.mentalCapacityYesNo.contains(YesNoDontKnow.No)
+          case _: TrusteeOrganisation   => true
+        }
 
-        if (nonLeadCount > 0) {
-          Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+        if (eligibleToPromote.nonEmpty) {
+          Redirect(controllers.routes.ReplacingLeadTrusteeController.onPageLoad())
         } else {
           Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
         }

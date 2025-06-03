@@ -24,7 +24,7 @@ import handlers.ErrorHandler
 import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
-import models.{LeadTrusteeOrganisation, UserAnswers}
+import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
 import pages.leadtrustee.organisation.IndexPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -101,7 +101,25 @@ class CheckDetailsController @Inject()(
           val transform = () => userAnswers.get(IndexPage) match {
             case None =>
               logger.info(s"$logInfo Amending lead trustee")
-              connector.amendLeadTrustee(userAnswers.identifier, lt)
+              connector.getLeadTrustee(userAnswers.identifier).flatMap {
+                case oldOrg: LeadTrusteeOrganisation =>
+                  val oldAsTrusteeOrg: TrusteeOrganisation = TrusteeOrganisation.fromLead(oldOrg)
+
+                  connector.addTrustee(userAnswers.identifier, oldAsTrusteeOrg).flatMap { _ =>
+                    connector.amendLeadTrustee(userAnswers.identifier, lt)
+                  }
+
+                case oldInd: LeadTrusteeIndividual =>
+                  val oldAsTrusteeInd: TrusteeIndividual = TrusteeIndividual.fromLead(oldInd)
+
+                  connector.addTrustee(userAnswers.identifier, oldAsTrusteeInd).flatMap { _ =>
+                    connector.amendLeadTrustee(userAnswers.identifier, lt)
+                  }
+
+                case _ =>
+                  logger.error(s"$logInfo Could not re‐fetch existing lead trustee (organisation)")
+                  Future.failed(new IllegalStateException("Unable to read old lead trustee"))
+              }
             case Some(index) =>
               logger.info(s"$logInfo Promoting lead trustee")
               connector.promoteTrustee(userAnswers.identifier, index, lt)

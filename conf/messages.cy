@@ -271,7 +271,7 @@ addATrusteeYesNo.heading=A ydych am ychwanegu ymddiriedolwr?
 addATrusteeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu ymddiriedolwr
 replacingLeadTrustee.title=Pwy sy’n disodli’r prif ymddiriedolwr presennol fel y prif ymddiriedolwr newydd?
 
-replacingLeadTrustee.heading=Pwy fydd y prif ymddiriedolwr newydd
+replacingLeadTrustee.heading=Pwy fydd y prif ymddiriedolwr newydd?
 replacingLeadTrustee.hint=Pan fyddwch yn newid y prif ymddiriedolwr, bydd {0} yn aros ar yr ymddiriedolaeth fel ymddiriedolwr.
 replacingLeadTrustee.add-new=Ychwanegwch brif ymddiriedolwr newydd
 replacingLeadTrustee.error.required=Dewiswch pwy sy’n disodli’r prif ymddiriedolwr presennol fel y prif ymddiriedolwr newydd
