@@ -1,0 +1,90 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.trustee.routes._
+@import views.html.components.{Heading, SubmitButton}
+
+@this(
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton
+)
+
+@()(implicit request: RequestHeader, messages: Messages)
+
+@mainTemplate(
+    title = messages("pageNotFound.title"),
+    showBackLink = true
+) {
+
+    @heading("changeLeadTrustee.heading")
+
+    <p>@messages("changeLeadTrustee.p1")</p>
+    <p>@messages("changeLeadTrustee.p2")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("changeLeadTrustee.bullet1")</li>
+        <li>@messages("changeLeadTrustee.bullet2")</li>
+    </ul>
+
+    <p>@messages("changeLeadTrustee.p3")</p>
+    <p>@messages("changeLeadTrustee.p4")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("changeLeadTrustee.bullet3")</li>
+        <li>@messages("changeLeadTrustee.bullet4")</li>
+        <li>@messages("changeLeadTrustee.bullet5")</li>
+        <li>@messages("changeLeadTrustee.bullet6")</li>
+    </ul>
+
+    <h1 class="govuk-heading-m">@messages("changeLeadTrustee.heading2")</h1>
+    <p>@messages("changeLeadTrustee.p5")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("changeLeadTrustee.bullet7")</li>
+        <li>@messages("changeLeadTrustee.bullet8")</li>
+        <li>@messages("changeLeadTrustee.bullet9")</li>
+        <li>@messages("changeLeadTrustee.bullet10")</li>
+        <li>@messages("changeLeadTrustee.bullet11")</li>
+        <li>@messages("changeLeadTrustee.bullet12")</li>
+        <li>@messages("changeLeadTrustee.bullet13")</li>
+        <li>@messages("changeLeadTrustee.bullet14")</li>
+    </ul>
+
+    <h2 class="govuk-heading-s">@messages("changeLeadTrustee.heading3")</h2>
+    <p>@messages("changeLeadTrustee.p6")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("changeLeadTrustee.bullet15")</li>
+        <li>@messages("changeLeadTrustee.bullet16")</li>
+    </ul>
+
+    <h3 class="govuk-heading-m">@messages("changeLeadTrustee.heading4")</h3>
+    <p>@messages("changeLeadTrustee.p7")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("changeLeadTrustee.bullet17")</li>
+        <li>@messages("changeLeadTrustee.bullet18")</li>
+        <li>@messages("changeLeadTrustee.bullet19")</li>
+        <li>@messages("changeLeadTrustee.bullet20")</li>
+        <li>@messages("changeLeadTrustee.bullet21")</li>
+        <li>@messages("changeLeadTrustee.bullet22")</li>
+    </ul>
+
+    <p>@messages("changeLeadTrustee.p8")</p>
+
+    @formHelper(action = routes.ReplacingLeadTrusteeController.onPageLoad()) {
+        @submitButton(Some(messages("site.continue")))
+    }
+
+}
+

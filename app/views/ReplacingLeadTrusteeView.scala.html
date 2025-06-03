@@ -26,7 +26,7 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], leadTrustee: String, trustees: List[RadioOption])(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], leadTrustee: String, existingOptions: List[RadioOption], addNewOption: RadioOption)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("replacingLeadTrustee.title")}",
@@ -35,14 +35,24 @@
 
     @formHelper(action = ReplacingLeadTrusteeController.onSubmit(), Symbol("autoComplete") -> "off") {
 
-        @errorSummary(form.errors, trustees)
+        @errorSummary(form.errors, existingOptions :+ addNewOption)
 
         @inputRadio(
             field = form("value"),
             legend = messages("replacingLeadTrustee.heading", leadTrustee),
-            inputs = mapRadioOptionsToRadioItems(form("value"), trustees),
+            inputs = mapRadioOptionsToRadioItems(form("value"), existingOptions),
             legendAsHeading = true,
             hint = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
+            inline = false
+        )
+
+        <p>@messages("site.or")</p>
+
+        @inputRadio(
+            field = form("value"),
+            legend = "",
+            legendClass = Some("govuk-visually-hidden"),
+            inputs = mapRadioOptionsToRadioItems(form("value"), List(addNewOption)),
             inline = false
         )
 

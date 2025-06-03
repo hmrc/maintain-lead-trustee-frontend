@@ -62,7 +62,8 @@ class ReplacingLeadTrusteeController @Inject()(
       trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(leadTrustee, trustees) =>
           val radioOptions = generateRadioOptions(trustees)
-          Ok(view(form, getLeadTrusteeName(leadTrustee), radioOptions))
+          val (existingOptions, addNewOption) = splitOptions(radioOptions)
+          Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions, addNewOption))
       } recoverWith {
         recovery
       }
@@ -76,19 +77,25 @@ class ReplacingLeadTrusteeController @Inject()(
           form.bindFromRequest().fold(
             formWithErrors => {
               val radioOptions = generateRadioOptions(trustees)
-              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), radioOptions)))
+              val (existingOptions, addNewOption) = splitOptions(radioOptions)
+              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions, addNewOption)))
             },
-            value => {
-              val index = value.toInt
-              trustees(index) match {
-                case trustee: TrusteeIndividual =>
-                  val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
-                case trustee: TrusteeOrganisation =>
-                  val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
-              }
+            {
+              case "addNew" =>
+                Future.successful(Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()))
+              case  indexString =>
+                val index = indexString.toInt
+                trustees(index) match {
+                  case trustee: TrusteeIndividual =>
+                    val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                    populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
+                  case trustee: TrusteeOrganisation =>
+                    val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                    populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
+                }
+
             }
+
           )
       } recoverWith {
         recovery
@@ -96,7 +103,7 @@ class ReplacingLeadTrusteeController @Inject()(
   }
 
   private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] = {
-    trustees
+    val existingOptions: List[RadioOption] = trustees
       .zipWithIndex
       .filter(_._1 match {
         case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(No)
@@ -109,6 +116,18 @@ class ReplacingLeadTrusteeController @Inject()(
         }
         RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
       }
+
+    val addNewOption = RadioOption(s"$messageKeyPrefix.addNew", "addNew", s"$messageKeyPrefix.addNewLabel")
+
+    existingOptions :+ addNewOption
+  }
+
+  private def splitOptions(allOptions: List[RadioOption]): (List[RadioOption], RadioOption) = {
+    val existing = allOptions.filterNot(_.value == "addNew")
+    val addNew  = allOptions.find(_.value == "addNew").getOrElse {
+      throw new IllegalStateException("generateRadioOptions did not produce an addNew option")
+    }
+    (existing, addNew)
   }
 
   private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {

@@ -57,6 +57,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
     address = ukAddress
   )
 
+  private val addNewOption = RadioOption(s"$messageKeyPrefix.addNew", "addNew", s"$messageKeyPrefix.addNewLabel")
+
   private class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = Some(leadTrusteeIndividual)) extends TrustService {
 
     override def getLeadTrustee(identifier: String)
@@ -139,7 +141,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+          view(form, "John Smith", expectedRadioOptions, addNewOption)(request, messages).toString
 
         application.stop()
       }
@@ -189,7 +191,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+          view(form, "John Smith", expectedRadioOptions, addNewOption)(request, messages).toString
 
         application.stop()
       }
@@ -287,7 +289,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "John Smith", Nil)(request, messages).toString
+          view(boundForm, "John Smith", Nil, addNewOption)(request, messages).toString
 
         application.stop()
       }
@@ -320,7 +322,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "Amazon", Nil)(request, messages).toString
+          view(boundForm, "Amazon", Nil, addNewOption)(request, messages).toString
 
         application.stop()
       }
@@ -346,7 +348,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "the lead trustee", Nil)(request, messages).toString
+          view(boundForm, "the lead trustee", Nil,addNewOption)(request, messages).toString
 
         application.stop()
       }
