@@ -98,42 +98,53 @@ class CheckDetailsController @Inject()(
 
       mapper.mapToLeadTrusteeOrganisation(userAnswers) match {
         case Some(lt) =>
-          val transform = () => userAnswers.get(IndexPage) match {
+          userAnswers.get(IndexPage) match {
             case None =>
               logger.info(s"$logInfo Amending lead trustee")
-              connector.getLeadTrustee(userAnswers.identifier).flatMap {
-                case oldOrg: LeadTrusteeOrganisation =>
-                  val oldAsTrusteeOrg: TrusteeOrganisation = TrusteeOrganisation.fromLead(oldOrg)
+              handleAmendLeadTrustee(userAnswers, lt)
 
-                  connector.addTrustee(userAnswers.identifier, oldAsTrusteeOrg).flatMap { _ =>
-                    connector.amendLeadTrustee(userAnswers.identifier, lt)
-                  }
-
-                case oldInd: LeadTrusteeIndividual =>
-                  val oldAsTrusteeInd: TrusteeIndividual = TrusteeIndividual.fromLead(oldInd)
-
-                  connector.addTrustee(userAnswers.identifier, oldAsTrusteeInd).flatMap { _ =>
-                    connector.amendLeadTrustee(userAnswers.identifier, lt)
-                  }
-
-                case _ =>
-                  logger.error(s"$logInfo Could not re‐fetch existing lead trustee (organisation)")
-                  Future.failed(new IllegalStateException("Unable to read old lead trustee"))
-              }
             case Some(index) =>
               logger.info(s"$logInfo Promoting lead trustee")
-              connector.promoteTrustee(userAnswers.identifier, index, lt)
+              connector.promoteTrustee(userAnswers.identifier, index, lt).flatMap { httpResponse =>
+                submitTransform(httpResponse, userAnswers)
+              }
           }
-          submitTransform(transform, userAnswers)
         case _ =>
           logger.error(s"$logInfo Unable to build lead trustee organisation from user answers. Cannot continue with submitting transform.")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
-  private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
+  private def handleAmendLeadTrustee(userAnswers: UserAnswers, lt: LeadTrusteeOrganisation)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    connector.getLeadTrustee(userAnswers.identifier).flatMap {
+      case oldOrg: LeadTrusteeOrganisation =>
+        val oldAsTrusteeOrg: TrusteeOrganisation = TrusteeOrganisation.fromLead(oldOrg)
+        connector.addTrustee(userAnswers.identifier, oldAsTrusteeOrg).flatMap { _ =>
+          connector.amendLeadTrustee(userAnswers.identifier, lt)
+        }.flatMap { httpResponse =>
+          submitTransform(httpResponse, userAnswers)
+        }
+
+      case oldInd: LeadTrusteeIndividual =>
+        val oldAsTrusteeInd: TrusteeIndividual = TrusteeIndividual.fromLead(oldInd)
+        connector.addTrustee(userAnswers.identifier, oldAsTrusteeInd).flatMap { _ =>
+          connector.amendLeadTrustee(userAnswers.identifier, lt)
+        }.flatMap { httpResponse =>
+          submitTransform(httpResponse, userAnswers)
+        }
+
+      case _ =>
+        logger.error(s"$logInfo Could not re‐fetch existing lead trustee")
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }.recoverWith {
+      case e =>
+        logger.error(s"$logInfo Failed during lead trustee amendment process: ${e.getMessage}")
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
+  }
+
+  private def submitTransform(httpResponse: HttpResponse, userAnswers: UserAnswers): Future[Result] = {
     for {
-      _ <- transform()
       updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())

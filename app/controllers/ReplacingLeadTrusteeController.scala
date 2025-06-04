@@ -22,7 +22,7 @@ import controllers.leadtrustee.organisation.{routes => ltoRts}
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.leadtrustee._
-import models.YesNoDontKnow.No
+import models.YesNoDontKnow.Yes
 import models._
 import models.requests.DataRequest
 import play.api.Logging
@@ -61,8 +61,7 @@ class ReplacingLeadTrusteeController @Inject()(
 
       trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(leadTrustee, trustees) =>
-          val radioOptions = generateRadioOptions(trustees)
-          val (existingOptions, addNewOption) = splitOptions(radioOptions)
+          val (existingOptions, addNewOption) = splitOptions(generateRadioOptions(trustees))
           Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions, addNewOption))
       } recoverWith {
         recovery
@@ -106,7 +105,7 @@ class ReplacingLeadTrusteeController @Inject()(
     val existingOptions: List[RadioOption] = trustees
       .zipWithIndex
       .filter(_._1 match {
-        case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(No)
+        case trustee: TrusteeIndividual => trustee.mentalCapacityYesNo.contains(Yes)
         case _: TrusteeOrganisation => true
       })
       .map { x =>
@@ -122,12 +121,14 @@ class ReplacingLeadTrusteeController @Inject()(
     existingOptions :+ addNewOption
   }
 
-  private def splitOptions(allOptions: List[RadioOption]): (List[RadioOption], RadioOption) = {
+  private def splitOptions(allOptions: List[RadioOption]): (List[RadioOption], Option[RadioOption]) = {
     val existing = allOptions.filterNot(_.value == "addNew")
-    val addNew  = allOptions.find(_.value == "addNew").getOrElse {
-      throw new IllegalStateException("generateRadioOptions did not produce an addNew option")
+    allOptions.find(_.value == "addNew") match {
+      case Some(addNew) =>
+        (existing, Some(addNew))
+      case None =>
+        (existing, None)
     }
-    (existing, addNew)
   }
 
   private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {

@@ -42,7 +42,7 @@ class ChangeLeadTrusteeController @Inject()(
     trustService.getAllTrustees(request.userAnswers.identifier).map {
       case AllTrustees(_, trustees) =>
         val eligibleToPromote: Seq[Trustee] = trustees.filter {
-          case ti: TrusteeIndividual   => !ti.mentalCapacityYesNo.contains(YesNoDontKnow.No)
+          case ti: TrusteeIndividual   => ti.mentalCapacityYesNo.contains(YesNoDontKnow.Yes)
           case _: TrusteeOrganisation   => true
         }
 
