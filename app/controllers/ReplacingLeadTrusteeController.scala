@@ -75,8 +75,7 @@ class ReplacingLeadTrusteeController @Inject()(
         case AllTrustees(leadTrustee, trustees) =>
           form.bindFromRequest().fold(
             formWithErrors => {
-              val radioOptions = generateRadioOptions(trustees)
-              val (existingOptions, addNewOption) = splitOptions(radioOptions)
+              val (existingOptions, addNewOption) = splitOptions(generateRadioOptions(trustees))
               Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions, addNewOption)))
             },
             {
@@ -92,9 +91,7 @@ class ReplacingLeadTrusteeController @Inject()(
                     val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
                     populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
                 }
-
             }
-
           )
       } recoverWith {
         recovery

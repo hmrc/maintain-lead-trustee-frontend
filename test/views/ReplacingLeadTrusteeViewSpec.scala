@@ -32,7 +32,7 @@ class ReplacingLeadTrusteeViewSpec extends StringViewBehaviours {
   val view = viewFor[ReplacingLeadTrusteeView](Some(emptyUserAnswers))
 
   def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, name, radioOptions, addNewOption)(fakeRequest, messages)
+    view.apply(form, name, radioOptions, Some(addNewOption))(fakeRequest, messages)
 
   val name = "Lead Trustee"
 

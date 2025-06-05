@@ -38,14 +38,14 @@
         @errorSummary(form.errors, existingOptions ++ addNewOption.toList)
 
         @inputRadio(
-            field        = form("value"),
-            legend       = messages("replacingLeadTrustee.heading", leadTrustee),
-            inputs       = mapRadioOptionsToRadioItems(form("value"), existingOptions) ++
-                           Seq(RadioItem(divider = Some(messages("site.or")))) ++
-                           mapRadioOptionsToRadioItems(form("value"), addNewOption.toList),
-            legendAsHeading = true,
-            hint         = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
-            inline       = false
+            field            = form("value"),
+            legend           = messages("replacingLeadTrustee.heading", leadTrustee),
+            inputs           = mapRadioOptionsToRadioItems(form("value"), existingOptions) ++
+                               Seq(RadioItem(divider = Some(messages("site.or")))) ++
+                               mapRadioOptionsToRadioItems(form("value"), addNewOption.toList),
+            legendAsHeading  = true,
+            hint             = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
+            inline           = false
         )
 
         @submitButton()

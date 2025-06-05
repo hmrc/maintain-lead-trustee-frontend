@@ -20,10 +20,10 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustConnector
 import mapping.mappers.TrusteeMappers
-import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, UkAddress}
+import models.{LeadTrustee, LeadTrusteeIndividual, LeadTrusteeOrganisation, Name, NationalInsuranceNumber, UkAddress}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{never, verify, when}
 import pages.leadtrustee.organisation.IndexPage
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -51,6 +51,18 @@ class CheckDetailsControllerSpec extends SpecBase {
     utr = None,
     address = ukAddress,
     countryOfResidence = None
+  )
+
+  private val leadTrusteeIndividual = LeadTrusteeIndividual(
+    bpMatchStatus = None,
+    name = Name("Joe", None, "Bloggs"),
+    dateOfBirth = LocalDate.parse("2000-01-01"),
+    phoneNumber = "tel",
+    email = None,
+    identification = NationalInsuranceNumber("nino"),
+    address = ukAddress,
+    countryOfResidence = None,
+    nationality = None
   )
 
   private val mockPrintHelper = Mockito.mock(classOf[TrusteePrintHelpers])
@@ -91,19 +103,7 @@ class CheckDetailsControllerSpec extends SpecBase {
 
           val mockTrustsConnector = Mockito.mock(classOf[TrustConnector])
 
-          val leadTrustee = LeadTrusteeIndividual(
-            bpMatchStatus = None,
-            name = Name("Joe", None, "Bloggs"),
-            dateOfBirth = LocalDate.parse("2000-01-01"),
-            phoneNumber = "tel",
-            email = None,
-            identification = NationalInsuranceNumber("nino"),
-            address = ukAddress,
-            countryOfResidence = None,
-            nationality = None
-          )
-
-          when(mockTrustsConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(leadTrustee))
+          when(mockTrustsConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(leadTrusteeIndividual))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(bind[TrustConnector].toInstance(mockTrustsConnector))
@@ -162,38 +162,136 @@ class CheckDetailsControllerSpec extends SpecBase {
 
       "mapper returns lead trustee" when {
 
-        "amending" must {
+        "amending" when {
 
-          "redirect to the the next page" in {
+          "existing lead trustee is organisation" must {
 
-            val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+            "redirect to the next page" in {
 
-            val userAnswers = emptyUserAnswers
+              val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
 
-            when(mockMapper.mapToLeadTrusteeOrganisation(any())).thenReturn(Some(leadTrustee))
-            when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+              val userAnswers = emptyUserAnswers
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers))
-              .overrides(
-                bind[TrustConnector].toInstance(mockTrustConnector),
-                bind[TrusteeMappers].toInstance(mockMapper)
-              ).build()
+              when(mockMapper.mapToLeadTrusteeOrganisation(any())).thenReturn(Some(leadTrustee))
+              when(mockTrustConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(leadTrustee))
+              when(mockTrustConnector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+              when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-            val request = FakeRequest(POST, onSubmitRoute.url)
+              val application = applicationBuilder(userAnswers = Some(userAnswers))
+                .overrides(
+                  bind[TrustConnector].toInstance(mockTrustConnector),
+                  bind[TrusteeMappers].toInstance(mockMapper)
+                ).build()
 
-            val result = route(application, request).value
+              val request = FakeRequest(POST, onSubmitRoute.url)
 
-            status(result) mustEqual SEE_OTHER
+              val result = route(application, request).value
 
-            redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+              status(result) mustEqual SEE_OTHER
 
-            verify(mockTrustConnector).amendLeadTrustee(any(), eqTo(leadTrustee))(any(), any())
+              redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
+              verify(mockTrustConnector).getLeadTrustee(any())(any(), any())
+              verify(mockTrustConnector).addTrustee(any(), any())(any(), any())
+              verify(mockTrustConnector).amendLeadTrustee(any(), eqTo(leadTrustee))(any(), any())
+            }
+          }
+
+          "existing lead trustee is individual" must {
+
+            "redirect to the next page" in {
+
+              val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+
+              val userAnswers = emptyUserAnswers
+
+              when(mockMapper.mapToLeadTrusteeOrganisation(any())).thenReturn(Some(leadTrustee))
+              when(mockTrustConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(leadTrusteeIndividual))
+              when(mockTrustConnector.addTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+              when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+              val application = applicationBuilder(userAnswers = Some(userAnswers))
+                .overrides(
+                  bind[TrustConnector].toInstance(mockTrustConnector),
+                  bind[TrusteeMappers].toInstance(mockMapper)
+                ).build()
+
+              val request = FakeRequest(POST, onSubmitRoute.url)
+
+              val result = route(application, request).value
+
+              status(result) mustEqual SEE_OTHER
+
+              redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
+
+              verify(mockTrustConnector).getLeadTrustee(any())(any(), any())
+              verify(mockTrustConnector).addTrustee(any(), any())(any(), any())
+              verify(mockTrustConnector).amendLeadTrustee(any(), eqTo(leadTrustee))(any(), any())
+            }
+          }
+
+          "existing lead trustee is unexpected type" must {
+
+            "return InternalServerError" in {
+
+              val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+
+              val userAnswers = emptyUserAnswers
+
+              val unexpectedLeadTrustee = Mockito.mock(classOf[LeadTrustee])
+
+              when(mockMapper.mapToLeadTrusteeOrganisation(any())).thenReturn(Some(leadTrustee))
+              when(mockTrustConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(unexpectedLeadTrustee))
+
+              val application = applicationBuilder(userAnswers = Some(userAnswers))
+                .overrides(
+                  bind[TrustConnector].toInstance(mockTrustConnector),
+                  bind[TrusteeMappers].toInstance(mockMapper)
+                ).build()
+
+              val request = FakeRequest(POST, onSubmitRoute.url)
+
+              val result = route(application, request).value
+
+              status(result) mustEqual INTERNAL_SERVER_ERROR
+
+              verify(mockTrustConnector).getLeadTrustee(any())(any(), any())
+              verify(mockTrustConnector, never()).addTrustee(any(), any())(any(), any())
+              verify(mockTrustConnector, never()).amendLeadTrustee(any(), any())(any(), any())
+            }
+          }
+
+          "connector fails during amendment process" must {
+
+            "return InternalServerError due to recoverWith" in {
+
+              val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+
+              val userAnswers = emptyUserAnswers
+
+              when(mockMapper.mapToLeadTrusteeOrganisation(any())).thenReturn(Some(leadTrustee))
+              when(mockTrustConnector.getLeadTrustee(any())(any(), any())).thenReturn(Future.failed(new RuntimeException("Connector error")))
+
+              val application = applicationBuilder(userAnswers = Some(userAnswers))
+                .overrides(
+                  bind[TrustConnector].toInstance(mockTrustConnector),
+                  bind[TrusteeMappers].toInstance(mockMapper)
+                ).build()
+
+              val request = FakeRequest(POST, onSubmitRoute.url)
+
+              val result = route(application, request).value
+
+              status(result) mustEqual INTERNAL_SERVER_ERROR
+
+              verify(mockTrustConnector).getLeadTrustee(any())(any(), any())
+            }
           }
         }
 
         "promoting" must {
 
-          "redirect to the the next page" in {
+          "redirect to the next page" in {
 
             val index = 0
 

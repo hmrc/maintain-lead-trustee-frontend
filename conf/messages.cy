@@ -308,6 +308,7 @@ addATrustee.p1.a=newid y prif ymddiriedolwr
 addATrustee.maxedOut=Ni allwch ychwanegu ymddiriedolwr arall gan eich bod wedi nodi uchafswm o 26.
 addATrustee.maxedOut.paragraph=Gallwch ychwanegu ymddiriedolwr arall drwy dynnu un presennol, neu drwy ysgrifennu at CThEF gyda manylion unrhyw ymddiriedolwyr ychwanegol.
 
+changeLeadTrustee.title = Newid y prif ymddiriedolwr
 changeLeadTrustee.heading = Newid y prif ymddiriedolwr
 changeLeadTrustee.p1 = Cyn y gallwch newid y prif ymddiriedolwr, mae’n rhaid i chi roi gwybod i CThEF pwy fydd yn dod y prif ymddiriedolwr newydd. Bydd angen i chi hefyd rhoi eu manylion.
 changeLeadTrustee.p2 = Gellir dewis y prif ymddiriedolwr newydd o blith yr ymddiriedolwyr presennol (os ydynt yn addas) neu gallwch ychwanegu ymddiriedolwr newydd. Gallant fod yn un o’r canlynol:

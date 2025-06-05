@@ -22,7 +22,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.trustee.ChangeLeadTrusteeView
+import views.html.ChangeLeadTrusteeView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
