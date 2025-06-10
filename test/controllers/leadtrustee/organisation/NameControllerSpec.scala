@@ -120,7 +120,7 @@ class NameControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
-
+      println("--------------"+contentAsString(result))
       contentAsString(result) mustEqual
         view(boundForm, true)(request, messages).toString
 
