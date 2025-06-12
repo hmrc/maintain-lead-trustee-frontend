@@ -18,19 +18,22 @@ package controllers
 
 import controllers.actions.StandardActionSets
 import models.{AllTrustees, Trustee, TrusteeIndividual, TrusteeOrganisation, YesNoDontKnow}
+import pages.leadtrustee.individual.IsReplacingLeadTrusteePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ChangeLeadTrusteeView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ChangeLeadTrusteeController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,
                                           trustService: TrustService,
                                           standardActionSets: StandardActionSets,
+                                          playbackRepository: PlaybackRepository,
                                           view: ChangeLeadTrusteeView
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -39,7 +42,7 @@ class ChangeLeadTrusteeController @Inject()(
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
-    trustService.getAllTrustees(request.userAnswers.identifier).map {
+    trustService.getAllTrustees(request.userAnswers.identifier).flatMap {
       case AllTrustees(_, trustees) =>
         val eligibleToPromote: Seq[Trustee] = trustees.filter {
           case ti: TrusteeIndividual   => ti.mentalCapacityYesNo.contains(YesNoDontKnow.Yes)
@@ -47,9 +50,15 @@ class ChangeLeadTrusteeController @Inject()(
         }
 
         if (eligibleToPromote.nonEmpty) {
-          Redirect(controllers.routes.ReplacingLeadTrusteeController.onPageLoad())
+          Future.successful(Redirect(controllers.routes.ReplacingLeadTrusteeController.onPageLoad()))
         } else {
-          Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+          val updatedAnswers = request.userAnswers.set(IsReplacingLeadTrusteePage, true)
+          for {
+            ua <- Future.fromTry(updatedAnswers)
+            _ <- playbackRepository.set(ua)
+          } yield {
+            Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+          }
         }
     }
   }

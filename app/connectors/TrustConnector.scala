@@ -56,6 +56,12 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
 
   }
 
+  def addNewLeadTrustee(identifier: String, leadTrustee: LeadTrustee)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url: String = s"${config.trustsUrl}/trusts/trustees/add-new-lead-test/$identifier"
+    http.post(url"$url").withBody(Json.toJson(leadTrustee)).execute[HttpResponse]
+  }
+
   def amendTrustee(identifier: String, index: Int, trustee: Trustee)
                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/amend/$identifier/$index"
@@ -82,6 +88,12 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
     val url: String = s"${config.trustsUrl}/trusts/trustees/promote/$identifier/$index"
     http.post(url"$url").withBody(Json.toJson(newLeadTrustee)).execute[HttpResponse]
 
+  }
+
+  def demoteLeadTrustee(identifier: String, leadTrustee: LeadTrustee)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url: String = s"${config.trustsUrl}/trusts/trustees/add-new-lead/$identifier"
+    http.post(url"$url").withBody(Json.toJson(leadTrustee)).execute[HttpResponse]
   }
 
   def isTrust5mld(identifier: String)

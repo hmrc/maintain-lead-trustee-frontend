@@ -24,7 +24,8 @@ import handlers.ErrorHandler
 import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
-import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
+import models.{LeadTrusteeOrganisation, UserAnswers}
+import pages.leadtrustee.individual.IsReplacingLeadTrusteePage
 import pages.leadtrustee.organisation.IndexPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -98,54 +99,31 @@ class CheckDetailsController @Inject()(
 
       mapper.mapToLeadTrusteeOrganisation(userAnswers) match {
         case Some(lt) =>
-          userAnswers.get(IndexPage) match {
+          val transform = () => userAnswers.get(IndexPage) match {
             case None =>
-              logger.info(s"$logInfo Amending lead trustee")
-              handleAmendLeadTrustee(userAnswers, lt)
-
+              userAnswers.get(IsReplacingLeadTrusteePage) match {
+                case Some(true) =>
+                  logger.info(s"$logInfo Adding new lead trustee to replace existing")
+                  connector.addNewLeadTrustee(userAnswers.identifier, lt)
+                case _ =>
+                  logger.info(s"$logInfo Amending lead trustee")
+                  connector.amendLeadTrustee(userAnswers.identifier, lt)
+              }
             case Some(index) =>
               logger.info(s"$logInfo Promoting lead trustee")
-              connector.promoteTrustee(userAnswers.identifier, index, lt).flatMap { httpResponse =>
-                submitTransform(httpResponse, userAnswers)
-              }
+              connector.promoteTrustee(userAnswers.identifier, index, lt)
           }
+          submitTransform(transform, userAnswers)
         case _ =>
           logger.error(s"$logInfo Unable to build lead trustee organisation from user answers. Cannot continue with submitting transform.")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
-  private def handleAmendLeadTrustee(userAnswers: UserAnswers, lt: LeadTrusteeOrganisation)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    connector.getLeadTrustee(userAnswers.identifier).flatMap {
-      case oldOrg: LeadTrusteeOrganisation =>
-        val oldAsTrusteeOrg: TrusteeOrganisation = TrusteeOrganisation.fromLead(oldOrg)
-        connector.addTrustee(userAnswers.identifier, oldAsTrusteeOrg).flatMap { _ =>
-          connector.amendLeadTrustee(userAnswers.identifier, lt)
-        }.flatMap { httpResponse =>
-          submitTransform(httpResponse, userAnswers)
-        }
-
-      case oldInd: LeadTrusteeIndividual =>
-        val oldAsTrusteeInd: TrusteeIndividual = TrusteeIndividual.fromLead(oldInd)
-        connector.addTrustee(userAnswers.identifier, oldAsTrusteeInd).flatMap { _ =>
-          connector.amendLeadTrustee(userAnswers.identifier, lt)
-        }.flatMap { httpResponse =>
-          submitTransform(httpResponse, userAnswers)
-        }
-
-      case _ =>
-        logger.error(s"$logInfo Could not re‐fetch existing lead trustee")
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }.recoverWith {
-      case e =>
-        logger.error(s"$logInfo Failed during lead trustee amendment process: ${e.getMessage}")
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
-  }
-
-  private def submitTransform(httpResponse: HttpResponse, userAnswers: UserAnswers): Future[Result] = {
+  private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
     for {
-      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
+      cleanedAnswers <- Future.fromTry(userAnswers.remove(IsReplacingLeadTrusteePage))
+      updatedUserAnswers <- Future.fromTry(cleanedAnswers.deleteAtPath(pages.leadtrustee.basePath))
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }

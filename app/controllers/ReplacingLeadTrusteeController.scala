@@ -25,6 +25,7 @@ import mapping.extractors.leadtrustee._
 import models.YesNoDontKnow.Yes
 import models._
 import models.requests.DataRequest
+import pages.leadtrustee.individual.IsReplacingLeadTrusteePage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -80,7 +81,13 @@ class ReplacingLeadTrusteeController @Inject()(
             },
             {
               case "addNew" =>
-                Future.successful(Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()))
+                val updatedAnswers = request.userAnswers.set(IsReplacingLeadTrusteePage, true)
+                for {
+                  ua <- Future.fromTry(updatedAnswers)
+                  _ <- playbackRepository.set(ua)
+                } yield {
+                  Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+                }
               case  indexString =>
                 val index = indexString.toInt
                 trustees(index) match {
