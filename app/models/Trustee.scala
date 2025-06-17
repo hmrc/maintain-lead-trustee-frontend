@@ -87,20 +87,6 @@ object TrusteeIndividual {
       .recoverWith(_ => JsSuccess(None))
   )
 
-  def fromLead(lead: LeadTrusteeIndividual): TrusteeIndividual =
-    TrusteeIndividual(
-      name                = lead.name,
-      dateOfBirth         = Some(lead.dateOfBirth),
-      phoneNumber         = Some(lead.phoneNumber),
-      identification      = Some(lead.identification),
-      address             = Some(lead.address),
-      countryOfResidence  = lead.countryOfResidence,
-      nationality         = lead.nationality,
-      mentalCapacityYesNo = None,
-      entityStart         = LocalDate.now(),
-      provisional         = false
-    )
-
   implicit val reads: Reads[TrusteeIndividual] = (
     (__ \ Symbol("name")).read[Name] and
       (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
@@ -141,25 +127,6 @@ case class TrusteeOrganisation(name: String,
 }
 
 object TrusteeOrganisation {
-
-  def fromLead(lead: LeadTrusteeOrganisation): TrusteeOrganisation = {
-    val idTypeOpt: Option[TrustIdentificationOrgType] = lead.utr.map { utrVal =>
-      TrustIdentificationOrgType(
-        safeId = None, utr = Some(utrVal), address = Some(lead.address)
-      )
-    }
-
-    TrusteeOrganisation(
-      name               = lead.name,
-      phoneNumber        = Some(lead.phoneNumber),
-      email              = lead.email,
-      identification     = idTypeOpt,
-      countryOfResidence = lead.countryOfResidence,
-      entityStart        = LocalDate.now(),
-      provisional        = false
-    )
-  }
-
   implicit val formats: Format[TrusteeOrganisation] = Json.format[TrusteeOrganisation]
 }
 
