@@ -25,7 +25,7 @@ import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
 import models.{LeadTrusteeOrganisation, UserAnswers}
-import pages.leadtrustee.individual.IsReplacingLeadTrusteePage
+import pages.leadtrustee.IsReplacingLeadTrusteePage
 import pages.leadtrustee.organisation.IndexPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -104,7 +104,7 @@ class CheckDetailsController @Inject()(
               userAnswers.get(IsReplacingLeadTrusteePage) match {
                 case Some(true) =>
                   logger.info(s"$logInfo Adding new lead trustee to replace existing")
-                  connector.addNewLeadTrustee(userAnswers.identifier, lt)
+                  connector.demoteLeadTrustee(userAnswers.identifier, lt)
                 case _ =>
                   logger.info(s"$logInfo Amending lead trustee")
                   connector.amendLeadTrustee(userAnswers.identifier, lt)
@@ -122,6 +122,7 @@ class CheckDetailsController @Inject()(
 
   private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
     for {
+      _ <- transform()
       cleanedAnswers <- Future.fromTry(userAnswers.remove(IsReplacingLeadTrusteePage))
       updatedUserAnswers <- Future.fromTry(cleanedAnswers.deleteAtPath(pages.leadtrustee.basePath))
       _ <- repository.set(updatedUserAnswers)

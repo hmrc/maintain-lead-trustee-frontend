@@ -24,8 +24,9 @@ import handlers.ErrorHandler
 import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
-import models.{LeadTrusteeIndividual, LeadTrusteeOrganisation, TrusteeIndividual, TrusteeOrganisation, UserAnswers}
-import pages.leadtrustee.individual.{IndexPage, IsReplacingLeadTrusteePage}
+import models.{LeadTrusteeIndividual, UserAnswers}
+import pages.leadtrustee.IsReplacingLeadTrusteePage
+import pages.leadtrustee.individual.IndexPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -104,7 +105,7 @@ class CheckDetailsController @Inject()(
               userAnswers.get(IsReplacingLeadTrusteePage) match {
                 case Some(true) =>
                   logger.info(s"$logInfo Adding new lead trustee to replace existing")
-                  connector.addNewLeadTrustee(userAnswers.identifier, lt)
+                  connector.demoteLeadTrustee(userAnswers.identifier, lt)
                 case _ =>
                   logger.info(s"$logInfo Amending lead trustee")
                   connector.amendLeadTrustee(userAnswers.identifier, lt)

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages.leadtrustee.individual
+package pages.leadtrustee
 
 import pages.QuestionPage
+import pages.leadtrustee.basePath
 import play.api.libs.json.JsPath
 
 object IsReplacingLeadTrusteePage extends QuestionPage[Boolean] {

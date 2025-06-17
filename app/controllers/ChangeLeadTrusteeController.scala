@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.StandardActionSets
 import models.{AllTrustees, Trustee, TrusteeIndividual, TrusteeOrganisation, YesNoDontKnow}
-import pages.leadtrustee.individual.IsReplacingLeadTrusteePage
+import pages.leadtrustee.IsReplacingLeadTrusteePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
