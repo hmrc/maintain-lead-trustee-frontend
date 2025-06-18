@@ -1,4 +1,4 @@
-service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+service.name=Rheoli ymddiriedolaeth
 
 site.service_section=Ymddiriedolwyr
 site.sign_in=Mewngofnodi
@@ -45,7 +45,7 @@ site.address.nonUk.line3=Llinell cyfeiriad 3 (dewisol)
 site.address.nonUk.country=Gwlad
 site.address.country.select=Dewiswch wlad
 
-session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ymddiriedolaeth.
+session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i reoli’r ymddiriedolaeth.
 
 pageNotFound.title = Heb ddod o hyd i’r dudalen
 pageNotFound.heading = Heb ddod o hyd i’r dudalen
