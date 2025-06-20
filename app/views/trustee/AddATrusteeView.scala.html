@@ -47,17 +47,26 @@
 
         @headingComp(heading)
 
-        @addToList(inProgressTrustees, "inprogress", "trustee")
+        @if(isLeadTrusteeDefined && completeTrustees.nonEmpty) {
 
-        @addToList(completeTrustees, "complete", "trustee")
+            @addToList(Seq(completeTrustees.head), "leadTrustee", "trustee")
 
-        @if(!isLeadTrusteeDefined) {
+            <p>@messages("addATrustee.p1") <a class="govuk-link" href="@controllers.routes.ChangeLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a></p>
+
+            @if(completeTrustees.size > 1) {
+                @addToList(completeTrustees.drop(1), "otherTrustees", "trustee")
+            }
+
+        } else {
+
+            @if(completeTrustees.nonEmpty) {
+                @addToList(completeTrustees, "other-trustees", "trustee")
+            }
+
             <div id="inset-text--addATrustee" class="govuk-inset-text">
                 @messages("addATrustee.lead-trustee.required")
             </div>
         }
-
-        <p>@messages("addATrustee.p1") <a class="govuk-link" href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
 
         @inputRadio(
             field = form("value"),

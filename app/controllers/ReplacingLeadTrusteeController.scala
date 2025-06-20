@@ -22,9 +22,10 @@ import controllers.leadtrustee.organisation.{routes => ltoRts}
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.leadtrustee._
-import models.YesNoDontKnow.No
+import models.YesNoDontKnow.Yes
 import models._
 import models.requests.DataRequest
+import pages.leadtrustee.IsReplacingLeadTrusteePage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -61,8 +62,8 @@ class ReplacingLeadTrusteeController @Inject()(
 
       trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(leadTrustee, trustees) =>
-          val radioOptions = generateRadioOptions(trustees)
-          Ok(view(form, getLeadTrusteeName(leadTrustee), radioOptions))
+          val existingOptions = generateRadioOptions(trustees)
+          Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions))
       } recoverWith {
         recovery
       }
@@ -75,19 +76,28 @@ class ReplacingLeadTrusteeController @Inject()(
         case AllTrustees(leadTrustee, trustees) =>
           form.bindFromRequest().fold(
             formWithErrors => {
-              val radioOptions = generateRadioOptions(trustees)
-              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), radioOptions)))
+              val existingOptions = generateRadioOptions(trustees)
+              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions)))
             },
-            value => {
-              val index = value.toInt
-              trustees(index) match {
-                case trustee: TrusteeIndividual =>
-                  val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
-                case trustee: TrusteeOrganisation =>
-                  val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
-              }
+            {
+              case "addNew" =>
+                val updatedAnswers = request.userAnswers.set(IsReplacingLeadTrusteePage, true)
+                for {
+                  ua <- Future.fromTry(updatedAnswers)
+                  _ <- playbackRepository.set(ua)
+                } yield {
+                  Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+                }
+              case  indexString =>
+                val index = indexString.toInt
+                trustees(index) match {
+                  case trustee: TrusteeIndividual =>
+                    val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                    populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
+                  case trustee: TrusteeOrganisation =>
+                    val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                    populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
+                }
             }
           )
       } recoverWith {
@@ -99,7 +109,7 @@ class ReplacingLeadTrusteeController @Inject()(
     trustees
       .zipWithIndex
       .filter(_._1 match {
-        case trustee: TrusteeIndividual => !trustee.mentalCapacityYesNo.contains(No)
+        case trustee: TrusteeIndividual => trustee.mentalCapacityYesNo.contains(Yes)
         case _: TrusteeOrganisation => true
       })
       .map { x =>
