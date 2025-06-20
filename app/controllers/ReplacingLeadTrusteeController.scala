@@ -62,8 +62,8 @@ class ReplacingLeadTrusteeController @Inject()(
 
       trust.getAllTrustees(request.userAnswers.identifier) map {
         case AllTrustees(leadTrustee, trustees) =>
-          val (existingOptions, addNewOption) = splitOptions(generateRadioOptions(trustees))
-          Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions, addNewOption))
+          val existingOptions = generateRadioOptions(trustees)
+          Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions))
       } recoverWith {
         recovery
       }
@@ -76,8 +76,8 @@ class ReplacingLeadTrusteeController @Inject()(
         case AllTrustees(leadTrustee, trustees) =>
           form.bindFromRequest().fold(
             formWithErrors => {
-              val (existingOptions, addNewOption) = splitOptions(generateRadioOptions(trustees))
-              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions, addNewOption)))
+              val existingOptions = generateRadioOptions(trustees)
+              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions)))
             },
             {
               case "addNew" =>
@@ -106,7 +106,7 @@ class ReplacingLeadTrusteeController @Inject()(
   }
 
   private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] = {
-    val existingOptions: List[RadioOption] = trustees
+    trustees
       .zipWithIndex
       .filter(_._1 match {
         case trustee: TrusteeIndividual => trustee.mentalCapacityYesNo.contains(Yes)
@@ -119,20 +119,6 @@ class ReplacingLeadTrusteeController @Inject()(
         }
         RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
       }
-
-    val addNewOption = RadioOption(s"$messageKeyPrefix.addNew", "addNew", s"$messageKeyPrefix.addNewLabel")
-
-    existingOptions :+ addNewOption
-  }
-
-  private def splitOptions(allOptions: List[RadioOption]): (List[RadioOption], Option[RadioOption]) = {
-    val existing = allOptions.filterNot(_.value == "addNew")
-    allOptions.find(_.value == "addNew") match {
-      case Some(addNew) =>
-        (existing, Some(addNew))
-      case None =>
-        (existing, None)
-    }
   }
 
   private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {
