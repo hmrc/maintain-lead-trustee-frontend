@@ -25,6 +25,7 @@ import mapping.extractors.TrusteeExtractors
 import mapping.mappers.TrusteeMappers
 import models.requests.DataRequest
 import models.{LeadTrusteeOrganisation, UserAnswers}
+import pages.leadtrustee.IsReplacingLeadTrusteePage
 import pages.leadtrustee.organisation.IndexPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -100,8 +101,14 @@ class CheckDetailsController @Inject()(
         case Some(lt) =>
           val transform = () => userAnswers.get(IndexPage) match {
             case None =>
-              logger.info(s"$logInfo Amending lead trustee")
-              connector.amendLeadTrustee(userAnswers.identifier, lt)
+              userAnswers.get(IsReplacingLeadTrusteePage) match {
+                case Some(true) =>
+                  logger.info(s"$logInfo Adding new lead trustee to replace existing")
+                  connector.demoteLeadTrustee(userAnswers.identifier, lt)
+                case _ =>
+                  logger.info(s"$logInfo Amending lead trustee")
+                  connector.amendLeadTrustee(userAnswers.identifier, lt)
+              }
             case Some(index) =>
               logger.info(s"$logInfo Promoting lead trustee")
               connector.promoteTrustee(userAnswers.identifier, index, lt)
@@ -116,7 +123,8 @@ class CheckDetailsController @Inject()(
   private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
     for {
       _ <- transform()
-      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.leadtrustee.basePath))
+      cleanedAnswers <- Future.fromTry(userAnswers.remove(IsReplacingLeadTrusteePage))
+      updatedUserAnswers <- Future.fromTry(cleanedAnswers.deleteAtPath(pages.leadtrustee.basePath))
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }

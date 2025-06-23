@@ -44,6 +44,8 @@ site.address.nonUk.line2=Llinell cyfeiriad 2
 site.address.nonUk.line3=Llinell cyfeiriad 3 (dewisol)
 site.address.nonUk.country=Gwlad
 site.address.country.select=Dewiswch wlad
+site.leadTrustee = Prif ymddiriedolwr
+site.otherTrustees = Ymddiriedolwyr eraill
 
 session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i reoli’r ymddiriedolaeth.
 
@@ -269,11 +271,12 @@ addATrusteeYesNo.heading=A ydych am ychwanegu ymddiriedolwr?
 addATrusteeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu ymddiriedolwr
 replacingLeadTrustee.title=Pwy sy’n disodli’r prif ymddiriedolwr presennol fel y prif ymddiriedolwr newydd?
 
-replacingLeadTrustee.heading=Pwy sy’n disodli {0} fel y prif ymddiriedolwr newydd?
-replacingLeadTrustee.hint=Bydd {0} yn aros ar yr ymddiriedolaeth fel ymddiriedolwr.
+replacingLeadTrustee.heading=Pwy fydd y prif ymddiriedolwr newydd?
+replacingLeadTrustee.hint=Pan fyddwch yn newid y prif ymddiriedolwr, bydd {0} yn aros ar yr ymddiriedolaeth fel ymddiriedolwr.
 replacingLeadTrustee.add-new=Ychwanegwch brif ymddiriedolwr newydd
 replacingLeadTrustee.error.required=Dewiswch pwy sy’n disodli’r prif ymddiriedolwr presennol fel y prif ymddiriedolwr newydd
 replacingLeadTrustee.return.link=Dychwelwch i ychwanegu ymddiriedolwr
+replacingLeadTrustee.addNewLabel = Rwyf am ychwanegu prif ymddiriedolwr newydd
 
 answerNewQuestions.title=Mae angen i chi ateb cwestiynau newydd ar gyfer y prif ymddiriedolwr newydd
 answerNewQuestions.heading=Mae angen i chi ateb cwestiynau newydd ar gyfer {0}
@@ -305,6 +308,42 @@ addATrustee.p1.a=newid y prif ymddiriedolwr
 addATrustee.maxedOut=Ni allwch ychwanegu ymddiriedolwr arall gan eich bod wedi nodi uchafswm o 26.
 addATrustee.maxedOut.paragraph=Gallwch ychwanegu ymddiriedolwr arall drwy dynnu un presennol, neu drwy ysgrifennu at CThEF gyda manylion unrhyw ymddiriedolwyr ychwanegol.
 
+changeLeadTrustee.title = Newid y prif ymddiriedolwr
+changeLeadTrustee.heading = Newid y prif ymddiriedolwr
+changeLeadTrustee.p1 = Cyn y gallwch newid y prif ymddiriedolwr, mae’n rhaid i chi roi gwybod i CThEF pwy fydd yn dod y prif ymddiriedolwr newydd. Bydd angen i chi hefyd rhoi eu manylion.
+changeLeadTrustee.p2 = Gellir dewis y prif ymddiriedolwr newydd o blith yr ymddiriedolwyr presennol (os ydynt yn addas) neu gallwch ychwanegu ymddiriedolwr newydd. Gallant fod yn un o’r canlynol:
+changeLeadTrustee.bullet1 = unigolyn
+changeLeadTrustee.bullet2 = busnes
+changeLeadTrustee.p3 = Dylai’r prif ymddiriedolwr newydd fod â’r galluedd meddyliol i ddeall gwybodaeth am yr ymddiriedolaeth. Nid oes gan brif ymddiriedolwr alluedd meddyliol os nad ydynt yn gallu deall gwybodaeth am yr ymddiriedolaeth yn gyfreithiol.
+changeLeadTrustee.p4 = Er enghraifft, gall hyn fod oherwydd:
+changeLeadTrustee.bullet3 = salwch meddwl
+changeLeadTrustee.bullet4 = anabledd dysgu
+changeLeadTrustee.bullet5 = dementia neu gyflwr cysylltiedig
+changeLeadTrustee.bullet6 = analluedd i gyfathrebu
+changeLeadTrustee.heading2 = Os yw’r prif ymddiriedolwr newydd yn unigolyn
+changeLeadTrustee.p5 = Mae’n rhaid i chi roi gwybod i CThEF:
+changeLeadTrustee.bullet7 = enw’r prif ymddiriedolwr
+changeLeadTrustee.bullet8 = dyddiad geni’r prif ymddiriedolwr
+changeLeadTrustee.bullet9 = gwlad cenedligrwydd y prif ymddiriedolwr
+changeLeadTrustee.bullet10 = Rhif Yswiriant Gwladol y prif ymddiriedolwr
+changeLeadTrustee.bullet11 = gwlad breswyl y prif ymddiriedolwr
+changeLeadTrustee.bullet12 = cyfeiriad y prif ymddiriedolwr
+changeLeadTrustee.bullet13 = cyfeiriad e-bost y prif ymddiriedolwr
+changeLeadTrustee.bullet14 = rhif ffôn y prif ymddiriedolwr
+changeLeadTrustee.heading3 = Os nad oes gan y prif ymddiriedolwr newydd rhif Yswiriant Gwladol
+changeLeadTrustee.p6 = Mae angen i chi roi ei gyfeiriad a naill ai:
+changeLeadTrustee.bullet15 = manylion pasbort y DU y prif ymddiriedolwr
+changeLeadTrustee.bullet16 = manylion cerdyn adnabod y prif ymddiriedolwr
+changeLeadTrustee.heading4 = Os yw’r prif ymddiriedolwr newydd yn fusnes
+changeLeadTrustee.p7 = Mae’n rhaid i chi roi gwybod i CThEF:
+changeLeadTrustee.bullet17 = enw’r busnes
+changeLeadTrustee.bullet18 = yr UTR ar gyfer y busnes
+changeLeadTrustee.bullet19 = cyfeiriad cofrestredig y busnes
+changeLeadTrustee.bullet20 = gwlad breswyl y busnes
+changeLeadTrustee.bullet21 = cyfeiriad e-bost y busnes
+changeLeadTrustee.bullet22 = rhif ffôn y busnes
+changeLeadTrustee.p8 = Fel arfer, y wlad breswyl yw lle mae’r busnes wedi’i gofrestru (ymgorffori). Mae’r busnes yn breswyl yn y DU os ydyw wedi’i gofrestru gyda Thŷ’r Cwmnïau.
+
 removeATrusteeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ymddiriedolwr?
 removeATrusteeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
 removeATrusteeYesNo.default=yr ymddiriedolwr
@@ -321,16 +360,16 @@ leadTrusteeDetails.heading=Gwiriwch fanylion y prif ymddiriedolwr
 leadTrusteeDetails.cannotChange.p1=Does dim modd newid peth o’r wybodaeth rydym yn gofyn amdani ynghylch y prif ymddiriedolwr.
 leadTrusteeDetails.cannotChange.p2=Os oes angen i chi ddiweddaru manylion y prif ymddiriedolwr, bydd yn rhaid i chi ei dynnu ac yna ei ychwanegu fel prif ymddiriedolwr newydd.
 
-leadtrustee.individualOrBusiness.title=A yw’r prif ymddiriedolwr yn unigolyn neu’n fusnes?
-leadtrustee.individualOrBusiness.heading=A yw’r prif ymddiriedolwr yn unigolyn neu’n fusnes?
+leadtrustee.individualOrBusiness.title=A yw’r prif ymddiriedolwr newydd yn unigolyn neu’n fusnes?
+leadtrustee.individualOrBusiness.heading=A yw’r prif ymddiriedolwr newydd yn unigolyn neu’n fusnes?
 leadtrustee.individualOrBusiness.error.required=Dewiswch os yw’r prif ymddiriedolwr yn unigolyn neu’n fusnes
 
-leadtrustee.individual.name.title=Beth yw enw’r prif ymddiriedolwr?
-leadtrustee.individual.name.heading=Beth yw enw’r prif ymddiriedolwr?
+leadtrustee.individual.name.title=Beth yw enw’r prif ymddiriedolwr newydd?
+leadtrustee.individual.name.heading=Beth yw enw’r prif ymddiriedolwr newydd?
 leadtrustee.individual.name.firstName=Enw cyntaf
 leadtrustee.individual.name.middleName=Enwau canol (dewisol)
 leadtrustee.individual.name.lastName=Enw olaf
-leadtrustee.individual.name.checkYourAnswersLabel=Beth yw enw’r prif ymddiriedolwr?
+leadtrustee.individual.name.checkYourAnswersLabel=Beth yw enw’r prif ymddiriedolwr newydd?
 
 leadtrustee.individual.name.error.firstName.required=Nodwch enw cyntaf y prif ymddiriedolwr.
 leadtrustee.individual.name.error.lastName.required=Nodwch enw olaf y prif ymddiriedolwr.

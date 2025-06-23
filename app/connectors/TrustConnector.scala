@@ -18,11 +18,12 @@ package connectors
 
 import config.FrontendAppConfig
 import models.{LeadTrustee, RemoveTrustee, TrustDetails, Trustee, Trustees}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -53,6 +54,18 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/amend-lead/$identifier"
     http.post(url"$url").withBody(Json.toJson(leadTrustee)).execute[HttpResponse]
+
+  }
+
+  def demoteLeadTrustee(identifier: String, leadTrustee: LeadTrustee)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val frontendJson = Json.toJson(leadTrustee)
+    val backendJson = frontendJson.as[JsObject] ++ Json.obj(
+      "entityStart" -> LocalDate.now()
+    )
+
+    val url: String = s"${config.trustsUrl}/trusts/trustees/add-new-lead/$identifier"
+    http.post(url"$url").withBody(backendJson).execute[HttpResponse]
 
   }
 

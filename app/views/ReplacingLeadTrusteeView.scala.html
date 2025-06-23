@@ -26,7 +26,7 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], leadTrustee: String, trustees: List[RadioOption])(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], leadTrustee: String, existingOptions: List[RadioOption])(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("replacingLeadTrustee.title")}",
@@ -35,15 +35,17 @@
 
     @formHelper(action = ReplacingLeadTrusteeController.onSubmit(), Symbol("autoComplete") -> "off") {
 
-        @errorSummary(form.errors, trustees)
+        @errorSummary(form.errors, existingOptions)
 
         @inputRadio(
-            field = form("value"),
-            legend = messages("replacingLeadTrustee.heading", leadTrustee),
-            inputs = mapRadioOptionsToRadioItems(form("value"), trustees),
-            legendAsHeading = true,
-            hint = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
-            inline = false
+            field            = form("value"),
+            legend           = messages("replacingLeadTrustee.heading", leadTrustee),
+            inputs           = mapRadioOptionsToRadioItems(form("value"), existingOptions) ++
+                               Seq(RadioItem(divider = Some(messages("site.or")))) ++
+                               Seq(RadioItem(content = Text(messages("replacingLeadTrustee.addNewLabel")), value = Some("addNew"))),
+            legendAsHeading  = true,
+            hint             = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
+            inline           = false
         )
 
         @submitButton()

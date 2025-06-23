@@ -101,6 +101,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
           phoneNumber = None,
           identification = None,
           address = None,
+          countryOfResidence = None,
+          nationality = None,
           mentalCapacityYesNo = Some(Yes),
           entityStart = date,
           provisional = true
@@ -112,6 +114,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
           phoneNumber = None,
           identification = None,
           address = None,
+          countryOfResidence = None,
+          nationality = None,
           mentalCapacityYesNo = Some(Yes),
           entityStart = date,
           provisional = true
@@ -152,6 +156,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
           phoneNumber = None,
           identification = None,
           address = None,
+          countryOfResidence = None,
+          nationality = None,
           mentalCapacityYesNo = Some(No),
           entityStart = date,
           provisional = true
@@ -163,6 +169,8 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
           phoneNumber = None,
           identification = None,
           address = None,
+          countryOfResidence = None,
+          nationality = None,
           mentalCapacityYesNo = Some(Yes),
           entityStart = date,
           provisional = true
@@ -172,6 +180,58 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
         val expectedRadioOptions = List(
           RadioOption(s"$messageKeyPrefix.1", "1", "John Doe")
+        )
+
+        val fakeService = new FakeService(trustees)
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(GET, replacingLeadTrusteeRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+
+        application.stop()
+      }
+
+      "includes organisation trustees" in {
+
+        val indTrustee = TrusteeIndividual(
+          name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          countryOfResidence = None,
+          nationality = None,
+          mentalCapacityYesNo = Some(Yes),
+          entityStart = date,
+          provisional = true
+        )
+
+        val orgTrustee = TrusteeOrganisation(
+          name = "Test Organisation",
+          phoneNumber = None,
+          email = None,
+          identification = None,
+          countryOfResidence = None,
+          entityStart = date,
+          provisional = true
+        )
+
+        val trustees = Trustees(List(indTrustee, orgTrustee))
+
+        val expectedRadioOptions = List(
+          RadioOption(s"$messageKeyPrefix.0", "0", "Joe Bloggs"),
+          RadioOption(s"$messageKeyPrefix.1", "1", "Test Organisation")
         )
 
         val fakeService = new FakeService(trustees)
@@ -205,6 +265,9 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
           phoneNumber = None,
           identification = None,
           address = None,
+          countryOfResidence = None,
+          nationality = None,
+          mentalCapacityYesNo = Some(Yes),
           entityStart = LocalDate.parse("2019-02-28"),
           provisional = true
         )
@@ -238,6 +301,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
           phoneNumber = None,
           email = None,
           identification = None,
+          countryOfResidence = None,
           entityStart = date,
           provisional = true
         )
@@ -260,6 +324,39 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustBe controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "addNew option selected" in {
+
+        val trustee = TrusteeIndividual(
+          name = Name(firstName = "Joe", middleName = Some("Joseph"), lastName = "Bloggs"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          countryOfResidence = None,
+          nationality = None,
+          mentalCapacityYesNo = Some(Yes),
+          entityStart = date,
+          provisional = true
+        )
+
+        val fakeService = new FakeService(Trustees(List(trustee)))
+
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", "addNew"))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url
 
         application.stop()
       }
