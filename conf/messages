@@ -1,4 +1,4 @@
-service.name = Register and Maintain a Trust
+service.name = Manage a trust
 
 site.service_section = Trustees
 site.back = Back
@@ -143,12 +143,11 @@ addATrusteeYesNo.heading = Do you want to add a trustee?
 addATrusteeYesNo.error.required = Select yes if you want to add a trustee
 
 replacingLeadTrustee.title = Who is replacing the current lead trustee as the new lead trustee?
-replacingLeadTrustee.heading = Who will be the new lead trustee?
-replacingLeadTrustee.hint = When you change the lead trustee, {0} will stay on the trust as a trustee.
+replacingLeadTrustee.heading = Who is replacing {0} as the new lead trustee?
+replacingLeadTrustee.hint = {0} will remain on the trust as a trustee.
 replacingLeadTrustee.add-new = Add a new lead trustee
 replacingLeadTrustee.error.required = Select who is replacing the current lead trustee as the new lead trustee
 replacingLeadTrustee.return.link = Return to add a trustee
-replacingLeadTrustee.addNewLabel = I want to add a new lead trustee
 
 answerNewQuestions.title = You need to answer new questions for the new lead trustee
 answerNewQuestions.heading = You need to answer new questions for {0}
@@ -180,42 +179,6 @@ addATrustee.p1.a = change the lead trustee
 addATrustee.maxedOut = You cannot add another trustee as you have entered a maximum of 26.
 addATrustee.maxedOut.paragraph = You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.
 
-changeLeadTrustee.title = Change the lead trustee
-changeLeadTrustee.heading = Change the lead trustee
-changeLeadTrustee.p1 = Before you can change the lead trustee you must tell HMRC who will become the new lead trustee. You will also need to provide their details.
-changeLeadTrustee.p2 = The new lead trustee can be chosen from existing trustees (if they are suitable) or you can add a new trustee. They can be either:
-changeLeadTrustee.bullet1 = an individual
-changeLeadTrustee.bullet2 = a business
-changeLeadTrustee.p3 = The new lead trustee should have mental capacity to understand information about the trust. A lead trustee lacks mental capacity if they are legally incapable of understanding information about the trust.
-changeLeadTrustee.p4 = For example, this can be due to:
-changeLeadTrustee.bullet3 = mental illness
-changeLeadTrustee.bullet4 = a learning disability
-changeLeadTrustee.bullet5 = dementia or a related condition
-changeLeadTrustee.bullet6 = being unable to communicate
-changeLeadTrustee.heading2 = If the new lead trustee is an individual
-changeLeadTrustee.p5 = You must tell HMRC their:
-changeLeadTrustee.bullet7 = name
-changeLeadTrustee.bullet8 = date of birth
-changeLeadTrustee.bullet9 = country of nationality
-changeLeadTrustee.bullet10 = National Insurance number
-changeLeadTrustee.bullet11 = country of residence
-changeLeadTrustee.bullet12 = address
-changeLeadTrustee.bullet13 = email address
-changeLeadTrustee.bullet14 = phone number
-changeLeadTrustee.heading3 = If the new lead trustee does not have a National Insurance number
-changeLeadTrustee.p6 = You need to provide their address and either:
-changeLeadTrustee.bullet15 = their passport details
-changeLeadTrustee.bullet16 = their ID card details
-changeLeadTrustee.heading4 = If the new lead trustee is a business
-changeLeadTrustee.p7 = You must tell HMRC:
-changeLeadTrustee.bullet17 = the business name
-changeLeadTrustee.bullet18 = the Unique Taxpayer Reference for the business
-changeLeadTrustee.bullet19 = the registered address
-changeLeadTrustee.bullet20 = country of residence
-changeLeadTrustee.bullet21 = email address
-changeLeadTrustee.bullet22 = phone number
-changeLeadTrustee.p8 = The country of residence is usually where the business is registered (incorporated). The business has UK residency if it is registered with Companies House.
-
 removeATrusteeYesNo.title = Are you sure you want to remove the trustee?
 removeATrusteeYesNo.heading = Are you sure you want to remove {0}?
 removeATrusteeYesNo.default = the trustee
@@ -233,17 +196,16 @@ leadTrusteeDetails.heading = Check lead trustee details
 leadTrusteeDetails.cannotChange.p1 = Some of the information we ask about the lead trustee cannot be changed.
 leadTrusteeDetails.cannotChange.p2 = If you need to update the lead trustee’s details, you will need to remove them, then add them as a new lead trustee.
 
-leadtrustee.individualOrBusiness.title = Is the new lead trustee an individual or a business?
-leadtrustee.individualOrBusiness.heading = Is the new lead trustee an individual or a business?
+leadtrustee.individualOrBusiness.title = Is the lead trustee an individual or a business?
+leadtrustee.individualOrBusiness.heading = Is the lead trustee an individual or a business?
 leadtrustee.individualOrBusiness.error.required = Select if the lead trustee is an individual or a business
-leadtrustee.individualOrBusiness.checkYourAnswersLabel = Is the new lead trustee an individual or a business?
 
-leadtrustee.individual.name.title = What is the new lead trustee’s name?
-leadtrustee.individual.name.heading = What is the new lead trustee’s name?
+leadtrustee.individual.name.title = What is the lead trustee’s name?
+leadtrustee.individual.name.heading = What is the lead trustee’s name?
 leadtrustee.individual.name.firstName = First name
 leadtrustee.individual.name.middleName = Middle names (optional)
 leadtrustee.individual.name.lastName = Last name
-leadtrustee.individual.name.checkYourAnswersLabel = What is the new lead trustee’s name?
+leadtrustee.individual.name.checkYourAnswersLabel = What is the lead trustee’s name?
 
 leadtrustee.individual.name.error.firstName.required = Enter the lead trustee’s first name.
 leadtrustee.individual.name.error.lastName.required = Enter the lead trustee’s last name.

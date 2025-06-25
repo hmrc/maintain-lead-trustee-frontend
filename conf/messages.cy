@@ -1,4 +1,4 @@
-service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+service.name=Rheoli ymddiriedolaeth
 
 site.service_section=Ymddiriedolwyr
 site.sign_in=Mewngofnodi
@@ -47,7 +47,7 @@ site.address.country.select=Dewiswch wlad
 site.leadTrustee = Prif ymddiriedolwr
 site.otherTrustees = Ymddiriedolwyr eraill
 
-session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ymddiriedolaeth.
+session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i reoli’r ymddiriedolaeth.
 
 pageNotFound.title = Heb ddod o hyd i’r dudalen
 pageNotFound.heading = Heb ddod o hyd i’r dudalen
