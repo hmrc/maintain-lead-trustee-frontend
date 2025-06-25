@@ -363,6 +363,7 @@ leadTrusteeDetails.cannotChange.p2=Os oes angen i chi ddiweddaru manylion y prif
 leadtrustee.individualOrBusiness.title=A yw’r prif ymddiriedolwr newydd yn unigolyn neu’n fusnes?
 leadtrustee.individualOrBusiness.heading=A yw’r prif ymddiriedolwr newydd yn unigolyn neu’n fusnes?
 leadtrustee.individualOrBusiness.error.required=Dewiswch os yw’r prif ymddiriedolwr yn unigolyn neu’n fusnes
+leadtrustee.individualOrBusiness.checkYourAnswersLabel=A yw’r prif ymddiriedolwr newydd yn unigolyn neu’n fusnes?
 
 leadtrustee.individual.name.title=Beth yw enw’r prif ymddiriedolwr newydd?
 leadtrustee.individual.name.heading=Beth yw enw’r prif ymddiriedolwr newydd?

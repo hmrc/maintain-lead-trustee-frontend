@@ -19,6 +19,7 @@ package utils.print.checkYourAnswers
 import com.google.inject.Inject
 import controllers.leadtrustee.organisation.routes._
 import models.UserAnswers
+import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.organisation._
 import play.api.i18n.Messages
 import utils.print.AnswerRowConverter
@@ -33,6 +34,7 @@ class LeadTrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRow
     val prefix: String = "leadtrustee.organisation"
 
     def answerRows: Seq[AnswerRow] = Seq(
+      bound.enumQuestion(IndividualOrBusinessPage, "leadtrustee.individualOrBusiness", controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url, "individualOrBusiness"),
       bound.yesNoQuestion(RegisteredInUkYesNoPage, s"$prefix.registeredInUkYesNo", RegisteredInUkYesNoController.onPageLoad().url),
       bound.stringQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url),
       bound.stringQuestion(UtrPage, s"$prefix.utr", UtrController.onPageLoad().url),
