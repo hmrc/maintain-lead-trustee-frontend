@@ -236,6 +236,7 @@ leadTrusteeDetails.cannotChange.p2 = If you need to update the lead trustee’s 
 leadtrustee.individualOrBusiness.title = Is the new lead trustee an individual or a business?
 leadtrustee.individualOrBusiness.heading = Is the new lead trustee an individual or a business?
 leadtrustee.individualOrBusiness.error.required = Select if the lead trustee is an individual or a business
+leadtrustee.individualOrBusiness.checkYourAnswersLabel = Is the new lead trustee an individual or a business?
 
 leadtrustee.individual.name.title = What is the new lead trustee’s name?
 leadtrustee.individual.name.heading = What is the new lead trustee’s name?
