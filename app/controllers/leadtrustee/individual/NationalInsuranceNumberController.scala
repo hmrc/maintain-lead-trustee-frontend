@@ -23,6 +23,7 @@ import handlers.ErrorHandler
 import models.BpMatchStatus.FullyMatched
 import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, TrustsIndividualCheckServiceResponse, UnsuccessfulMatchResponse, UserAnswers}
 import navigation.Navigator
+import pages.leadtrustee.IsReplacingLeadTrusteePage
 import pages.leadtrustee.individual.{BpMatchStatusPage, IndexPage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -81,16 +82,25 @@ class NationalInsuranceNumberController @Inject()(
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
-              matchingResponse <- service.matchLeadTrustee(updatedAnswers)
-              updatedAnswersWithMatched <- Future.fromTry {
-                if (matchingResponse == SuccessfulMatchResponse) {
-                  updatedAnswers.set(BpMatchStatusPage, FullyMatched)
-                } else {
-                  Success(updatedAnswers)
-                }
+              result <- updatedAnswers.get(IsReplacingLeadTrusteePage) match {
+                case Some(true) =>
+                  for {
+                    _ <- playbackRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
+                case _ =>
+                  for {
+                    matchingResponse <- service.matchLeadTrustee(updatedAnswers)
+                    updatedAnswersWithMatched <- Future.fromTry {
+                      if (matchingResponse == SuccessfulMatchResponse) {
+                        updatedAnswers.set(BpMatchStatusPage, FullyMatched)
+                      } else {
+                        Success(updatedAnswers)
+                      }
+                    }
+                    _ <- playbackRepository.set(updatedAnswersWithMatched)
+                    result <- handleMatchResponse(matchingResponse, updatedAnswersWithMatched)
+                  } yield result
               }
-              _ <- playbackRepository.set(updatedAnswersWithMatched)
-              result <- handleMatchResponse(matchingResponse, updatedAnswersWithMatched)
             } yield result
 
         )

@@ -19,6 +19,7 @@ package utils.print.checkYourAnswers
 import com.google.inject.Inject
 import controllers.leadtrustee.individual.routes._
 import models.UserAnswers
+import pages.leadtrustee.IndividualOrBusinessPage
 import pages.leadtrustee.individual._
 import play.api.i18n.Messages
 import queries.Gettable
@@ -47,6 +48,7 @@ class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowCo
       if (isLeadTrusteeMatched) bound.yesNoQuestionAllowEmptyAnswer else bound.yesNoQuestion
 
     def answerRows: Seq[AnswerRow] = Seq(
+      bound.enumQuestion(IndividualOrBusinessPage, "leadtrustee.individualOrBusiness", controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url, "individualOrBusiness"),
       bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
       bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
       inUkQuestion(CountryOfNationalityInTheUkYesNoPage, s"$prefix.countryOfNationalityInTheUkYesNo", CountryOfNationalityInTheUkYesNoController.onPageLoad().url, true),

@@ -20,7 +20,6 @@
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
-    link: Link,
     submitButton: SubmitButton
 )
 
@@ -40,12 +39,4 @@
     @formHelper(action = controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onSubmit(), Symbol("autoComplete") -> "off") {
         @submitButton(Some(messages("site.continue")))
     }
-
-    <p>
-        @link(
-            controllers.routes.AddATrusteeController.onPageLoad().url,
-            "answerNewQuestions.return.link",
-            "answerNewQuestions.return.link"
-        )
-    </p>
 }
