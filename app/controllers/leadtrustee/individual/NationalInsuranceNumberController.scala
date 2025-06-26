@@ -61,7 +61,7 @@ class NationalInsuranceNumberController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = false) map { ninos =>
+      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = request.userAnswers.get(IsReplacingLeadTrusteePage).getOrElse(false)) map { ninos =>
         val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
           case None => form(ninos)
           case Some(value) => form(ninos).fill(value)
@@ -74,7 +74,7 @@ class NationalInsuranceNumberController @Inject()(
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
 
-      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = false) flatMap { ninos =>
+      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = request.userAnswers.get(IsReplacingLeadTrusteePage).getOrElse(false)) flatMap { ninos =>
         form(ninos).bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
@@ -82,25 +82,16 @@ class NationalInsuranceNumberController @Inject()(
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
-              result <- updatedAnswers.get(IsReplacingLeadTrusteePage) match {
-                case Some(true) =>
-                  for {
-                    _ <- playbackRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
-                case _ =>
-                  for {
-                    matchingResponse <- service.matchLeadTrustee(updatedAnswers)
-                    updatedAnswersWithMatched <- Future.fromTry {
-                      if (matchingResponse == SuccessfulMatchResponse) {
-                        updatedAnswers.set(BpMatchStatusPage, FullyMatched)
-                      } else {
-                        Success(updatedAnswers)
-                      }
-                    }
-                    _ <- playbackRepository.set(updatedAnswersWithMatched)
-                    result <- handleMatchResponse(matchingResponse, updatedAnswersWithMatched)
-                  } yield result
+              matchingResponse <- service.matchLeadTrustee(updatedAnswers)
+              updatedAnswersWithMatched <- Future.fromTry {
+                if (matchingResponse == SuccessfulMatchResponse) {
+                  updatedAnswers.set(BpMatchStatusPage, FullyMatched)
+                } else {
+                  Success(updatedAnswers)
+                }
               }
+              _ <- playbackRepository.set(updatedAnswersWithMatched)
+              result <- handleMatchResponse(matchingResponse, updatedAnswersWithMatched)
             } yield result
 
         )
