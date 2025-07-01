@@ -310,7 +310,7 @@ addATrustee.maxedOut.paragraph=Gallwch ychwanegu ymddiriedolwr arall drwy dynnu 
 
 changeLeadTrustee.title = Newid y prif ymddiriedolwr
 changeLeadTrustee.heading = Newid y prif ymddiriedolwr
-changeLeadTrustee.p1 = Cyn y gallwch newid y prif ymddiriedolwr, mae’n rhaid i chi roi gwybod i CThEF pwy fydd yn dod y prif ymddiriedolwr newydd. Bydd angen i chi hefyd rhoi eu manylion.
+changeLeadTrustee.p1 = Cyn y gallwch newid y prif ymddiriedolwr, mae’n rhaid i chi roi gwybod i CThEF pwy fydd y prif ymddiriedolwr newydd. Bydd angen i chi hefyd rhoi ei fanylion.
 changeLeadTrustee.p2 = Gellir dewis y prif ymddiriedolwr newydd o blith yr ymddiriedolwyr presennol (os ydynt yn addas) neu gallwch ychwanegu ymddiriedolwr newydd. Gallant fod yn un o’r canlynol:
 changeLeadTrustee.bullet1 = unigolyn
 changeLeadTrustee.bullet2 = busnes
