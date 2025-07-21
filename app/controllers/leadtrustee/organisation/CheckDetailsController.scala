@@ -31,7 +31,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.PlaybackRepository
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelpers
 import viewmodels.AnswerSection
@@ -93,30 +93,46 @@ class CheckDetailsController @Inject()(
     Ok(view(section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-      val userAnswers = request.userAnswers
-      mapper.mapToLeadTrusteeOrganisation(userAnswers) match {
-        case Some(lt) =>
-          val transform = () => userAnswers.get(IndexPage) match {
-            case None =>
-              userAnswers.get(IsReplacingLeadTrusteePage) match {
-                case Some(true) =>
-                  logger.info(s"$logInfo Adding new lead trustee to replace existing")
-                  connector.demoteLeadTrustee(userAnswers.identifier, lt)
-                case _ =>
-                  logger.info(s"$logInfo Amending lead trustee")
-                  connector.amendLeadTrustee(userAnswers.identifier, lt)
-              }
-            case Some(index) =>
-              logger.info(s"$logInfo Promoting lead trustee")
-              connector.promoteTrustee(userAnswers.identifier, index, lt)
-          }
-          submitTransform(transform, userAnswers)
-        case _ =>
-          logger.error(s"$logInfo Unable to build lead trustee organisation from user answers. Cannot continue with submitting transform.")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
+//  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+//    implicit request =>
+//      val userAnswers = request.userAnswers
+//      mapper.mapToLeadTrusteeOrganisation(userAnswers) match {
+//        case Some(lt) =>
+//          val transform = () => userAnswers.get(IndexPage) match {
+//            case None =>
+//              userAnswers.get(IsReplacingLeadTrusteePage) match {
+//                case Some(true) =>
+//                  logger.info(s"$logInfo Adding new lead trustee to replace existing")
+//                  connector.demoteLeadTrustee(userAnswers.identifier, lt)
+//                case _ =>
+//                  logger.info(s"$logInfo Amending lead trustee")
+//                  connector.amendLeadTrustee(userAnswers.identifier, lt)
+//              }
+//            case Some(index) =>
+//              logger.info(s"$logInfo Promoting lead trustee")
+//              connector.promoteTrustee(userAnswers.identifier, index, lt)
+//          }
+//          submitTransform(transform, userAnswers)
+//        case _ =>
+//          logger.error(s"$logInfo Unable to build lead trustee organisation from user answers. Cannot continue with submitting transform.")
+//          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+//      }
+//  }
+
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    val userAnswers = request.userAnswers
+    val identifier = userAnswers.identifier
+    mapper.mapToLeadTrusteeOrganisation(userAnswers) match {
+      case Some(leadTrustee) =>
+        determineConnectorCall(userAnswers, identifier, leadTrustee).flatMap {
+          case Right(response) =>
+            submitTransform(() => Future.successful(response), userAnswers)
+          case Left(error) =>
+            logger.error(s"$logInfo $error")
+            errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))        }
+      case None =>
+        logger.error(s"$logInfo Unable to map lead trustee organisation from user answers")
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))    }
   }
 
   private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
@@ -129,5 +145,30 @@ class CheckDetailsController @Inject()(
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 
-
+  private def determineConnectorCall(
+                                      userAnswers: UserAnswers,
+                                      identifier: String,
+                                      leadTrustee: LeadTrusteeOrganisation
+                                    )(implicit hc: HeaderCarrier, request : DataRequest[AnyContent]): Future[Either[String, HttpResponse]] = {
+    val indexPage = userAnswers.get(IndexPage)
+    val isReplacing = userAnswers.get(IsReplacingLeadTrusteePage).getOrElse(false)
+    val call: Future[HttpResponse] = indexPage match {
+      case Some(index) =>
+        logger.info(s" $logInfo Promoting lead trustee at index $index")
+        connector.promoteTrustee(identifier, index, leadTrustee)
+      case None if isReplacing =>
+        logger.info(s" Demoting current lead trustee and adding new one")
+        connector.demoteLeadTrustee(identifier, leadTrustee)
+      case None =>
+        logger.info(s" Amending existing lead trustee")
+        connector.amendLeadTrustee(identifier, leadTrustee)
+    }
+    call.map { response =>
+      if (response.status == OK) Right(response)
+      else Left(s"Connector call failed with status ${response.status}")
+    }.recover {
+      case ex =>
+        Left(s"Connector call threw exception: ${ex.getMessage}")
+    }
+  }
 }
