@@ -122,6 +122,7 @@ class CheckDetailsController @Inject()(
   }
 
   private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
+    logger.info("[CheckDetailsController][submitTransform] Deleting lead trustee from user answers for Individual")
     for {
       _ <- transform()
       cleanedAnswers <- Future.fromTry(userAnswers.remove(IsReplacingLeadTrusteePage))

@@ -96,7 +96,6 @@ class CheckDetailsController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
       val userAnswers = request.userAnswers
-
       mapper.mapToLeadTrusteeOrganisation(userAnswers) match {
         case Some(lt) =>
           val transform = () => userAnswers.get(IndexPage) match {
@@ -121,6 +120,7 @@ class CheckDetailsController @Inject()(
   }
 
   private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
+    logger.info("[CheckDetailsController][submitTransform] Deleting lead trustee from user answers for Organisation")
     for {
       _ <- transform()
       cleanedAnswers <- Future.fromTry(userAnswers.remove(IsReplacingLeadTrusteePage))
@@ -128,4 +128,6 @@ class CheckDetailsController @Inject()(
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
+
+
 }
