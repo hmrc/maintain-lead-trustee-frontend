@@ -122,11 +122,10 @@ class CheckDetailsController @Inject()(
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 
-  private def connectorCall(
-                                      userAnswers: UserAnswers,
-                                      identifier: String,
-                                      leadTrustee: LeadTrusteeOrganisation
-                                    )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Either[String, HttpResponse]] = {
+  private def connectorCall(userAnswers: UserAnswers,
+                            identifier: String,
+                            leadTrustee: LeadTrusteeOrganisation
+                           )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Either[String, HttpResponse]] = {
     val indexPage = userAnswers.get(IndexPage)
     val call: Future[HttpResponse] = indexPage match {
       case Some(index) =>

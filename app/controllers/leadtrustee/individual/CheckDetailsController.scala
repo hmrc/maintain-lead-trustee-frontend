@@ -123,8 +123,7 @@ class CheckDetailsController @Inject()(
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
   }
 
-  private def connectorCall(
-                             userAnswers: UserAnswers,
+  private def connectorCall(userAnswers: UserAnswers,
                              identifier: String,
                              leadTrustee: LeadTrusteeIndividual
                            )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Either[String, HttpResponse]] = {
