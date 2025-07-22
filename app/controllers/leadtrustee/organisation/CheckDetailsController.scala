@@ -107,7 +107,7 @@ class CheckDetailsController @Inject()(
             errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         }
       case _ =>
-        logger.error(s"$logInfo [CheckDetailsController][onSubmit] Unable to map lead trustee organisation from user answers")
+        logger.error(s"$logInfo [CheckDetailsController][onSubmit] Unable to build lead trustee organisation from user answers. Cannot continue with submitting transform.")
         errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
     }
   }
