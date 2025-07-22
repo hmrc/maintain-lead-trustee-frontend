@@ -93,7 +93,8 @@ class CheckDetailsController @Inject()(
     Ok(view(section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+    implicit request =>
     val userAnswers = request.userAnswers
     val identifier = userAnswers.identifier
     mapper.mapToLeadTrusteeOrganisation(userAnswers) match {
@@ -105,7 +106,7 @@ class CheckDetailsController @Inject()(
             logger.error(s"$logInfo [CheckDetailsController][onSubmit] Failed to update the lead trustee due to : $error")
             errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         }
-      case None =>
+      case _ =>
         logger.error(s"$logInfo [CheckDetailsController][onSubmit] Unable to map lead trustee organisation from user answers")
         errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
     }
