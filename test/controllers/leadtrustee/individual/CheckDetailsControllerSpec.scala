@@ -270,6 +270,30 @@ class CheckDetailsControllerSpec extends SpecBase {
           status(result) mustEqual INTERNAL_SERVER_ERROR
         }
       }
+
+      "connector call" must {
+
+        "return InternalServerError" in {
+
+          val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+
+          val userAnswers = emptyUserAnswers
+
+          when(mockMapper.mapToLeadTrusteeIndividual(any())).thenReturn(Some(leadTrustee))
+          when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(
+              bind[TrustConnector].toInstance(mockTrustConnector),
+              bind[TrusteeMappers].toInstance(mockMapper)
+            ).build()
+
+          val request = FakeRequest(POST, onSubmitRoute.url)
+          val result = route(application, request).value
+
+          status(result) mustEqual INTERNAL_SERVER_ERROR
+        }
+      }
     }
   }
 }
