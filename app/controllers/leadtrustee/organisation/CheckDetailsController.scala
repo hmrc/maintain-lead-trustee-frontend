@@ -102,11 +102,11 @@ class CheckDetailsController @Inject()(
           case Right(response) =>
             submitTransform(() => Future.successful(response), userAnswers)
           case Left(error) =>
-            logger.error(s"$logInfo $error")
+            logger.error(s"$logInfo [CheckDetailsController][onSubmit] Failed to update the lead trustee due to : $error")
             errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         }
       case None =>
-        logger.error(s"$logInfo Unable to map lead trustee organisation from user answers")
+        logger.error(s"$logInfo [CheckDetailsController][onSubmit] Unable to map lead trustee organisation from user answers")
         errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
     }
   }
@@ -129,25 +129,25 @@ class CheckDetailsController @Inject()(
     val indexPage = userAnswers.get(IndexPage)
     val call: Future[HttpResponse] = indexPage match {
       case Some(index) =>
-        logger.info(s"$logInfo Promoting lead trustee at index $index")
+        logger.info(s"$logInfo [CheckDetailsController][connectorCall] Promoting lead trustee at index $index")
         connector.promoteTrustee(identifier, index, leadTrustee)
       case None =>
         userAnswers.get(IsReplacingLeadTrusteePage) match {
           case Some(true) =>
-            logger.info(s"$logInfo Adding new lead trustee to replace existing")
+            logger.info(s"$logInfo [CheckDetailsController][connectorCall] Adding new lead trustee to replace existing")
             connector.demoteLeadTrustee(userAnswers.identifier, leadTrustee)
           case _ =>
-            logger.info(s"$logInfo Amending lead trustee")
+            logger.info(s"$logInfo [CheckDetailsController][connectorCall] Amending lead trustee")
             connector.amendLeadTrustee(userAnswers.identifier, leadTrustee)
         }
     }
     call.map { response =>
       if (response.status == OK) Right(response)
       else
-        Left(s"$logInfo Connector call failed with status ${response.status}")
+        Left(s"$logInfo [CheckDetailsController][connectorCall] Connector call failed with status ${response.status}")
     } recover {
       case ex =>
-        Left(s"$logInfo Connector call failed with exception: ${ex.getMessage}")
+        Left(s"$logInfo [CheckDetailsController][connectorCall] Connector call failed with exception: ${ex.getMessage}")
     }
   }
 }
