@@ -94,32 +94,6 @@ class CheckDetailsController @Inject()(
     Ok(view(section))
   }
 
-//  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-//    implicit request =>
-//      val userAnswers = request.userAnswers
-//
-//      mapper.mapToLeadTrusteeIndividual(userAnswers) match {
-//        case Some(lt) =>
-//          val transform = () => userAnswers.get(IndexPage) match {
-//            case None =>
-//              userAnswers.get(IsReplacingLeadTrusteePage) match {
-//                case Some(true) =>
-//                  logger.info(s"$logInfo Adding new lead trustee to replace existing")
-//                  connector.demoteLeadTrustee(userAnswers.identifier, lt)
-//                case _ =>
-//                  logger.info(s"$logInfo Amending lead trustee")
-//                  connector.amendLeadTrustee(userAnswers.identifier, lt)
-//              }
-//            case Some(index) =>
-//              logger.info(s"$logInfo Promoting lead trustee")
-//              connector.promoteTrustee(userAnswers.identifier, index, lt)
-//          }
-//          submitTransform(transform, userAnswers)
-//        case _ =>
-//          logger.error(s"$logInfo Unable to build lead trustee individual from user answers. Cannot continue with submitting transform.")
-//          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-//      }
-//  }
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
       val userAnswers = request.userAnswers
