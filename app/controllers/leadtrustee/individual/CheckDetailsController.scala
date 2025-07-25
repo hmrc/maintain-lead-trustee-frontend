@@ -142,11 +142,13 @@ class CheckDetailsController @Inject()(
             connector.amendLeadTrustee(userAnswers.identifier, leadTrustee)
         }
     }
+
     call.map { response =>
-      if (response.status == OK) Right(response)
-      else
-        Left(s"$logInfo [CheckDetailsController][connectorCall] Connector call failed with status ${response.status}")
-    } recover {
+      response.status match {
+        case OK => Right(response)
+        case _ => Left(s"$logInfo [CheckDetailsController][connectorCall] Connector call failed with status ${response.status}")
+      }
+    }.recover {
       case ex =>
         Left(s"$logInfo [CheckDetailsController][connectorCall] Connector call failed with exception: ${ex.getMessage}")
     }
