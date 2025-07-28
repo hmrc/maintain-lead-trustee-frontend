@@ -31,7 +31,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.PlaybackRepository
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelpers
 import viewmodels.AnswerSection
@@ -97,36 +97,60 @@ class CheckDetailsController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
       val userAnswers = request.userAnswers
-
+      val identifier = userAnswers.identifier
       mapper.mapToLeadTrusteeIndividual(userAnswers) match {
-        case Some(lt) =>
-          val transform = () => userAnswers.get(IndexPage) match {
-            case None =>
-              userAnswers.get(IsReplacingLeadTrusteePage) match {
-                case Some(true) =>
-                  logger.info(s"$logInfo Adding new lead trustee to replace existing")
-                  connector.demoteLeadTrustee(userAnswers.identifier, lt)
-                case _ =>
-                  logger.info(s"$logInfo Amending lead trustee")
-                  connector.amendLeadTrustee(userAnswers.identifier, lt)
-              }
-            case Some(index) =>
-              logger.info(s"$logInfo Promoting lead trustee")
-              connector.promoteTrustee(userAnswers.identifier, index, lt)
+        case Some(leadTrustee) =>
+          connectorCall(userAnswers, identifier, leadTrustee).flatMap {
+            case Right(response) =>
+              submitTransform(() => Future.successful(response), userAnswers)
+            case Left(error) =>
+              logger.error(s"$logInfo [CheckDetailsController][onSubmit] Failed to update the lead trustee due to : $error")
+              errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
           }
-          submitTransform(transform, userAnswers)
         case _ =>
-          logger.error(s"$logInfo Unable to build lead trustee individual from user answers. Cannot continue with submitting transform.")
+          logger.error(s"$logInfo [CheckDetailsController][onSubmit] Unable to build lead trustee individual from user answers. Cannot continue with submitting transform.")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
   private def submitTransform(transform: () => Future[HttpResponse], userAnswers: UserAnswers): Future[Result] = {
+    logger.info("[CheckDetailsController][submitTransform] Deleting lead trustee from user answers for Individual")
     for {
       _ <- transform()
       cleanedAnswers <- Future.fromTry(userAnswers.remove(IsReplacingLeadTrusteePage))
       updatedUserAnswers <- Future.fromTry(cleanedAnswers.deleteAtPath(pages.leadtrustee.basePath))
       _ <- repository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+  }
+
+  private def connectorCall(userAnswers: UserAnswers,
+                             identifier: String,
+                             leadTrustee: LeadTrusteeIndividual
+                           )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Either[String, HttpResponse]] = {
+    val indexPage = userAnswers.get(IndexPage)
+    val call: Future[HttpResponse] = indexPage match {
+      case Some(index) =>
+        logger.info(s"$logInfo [CheckDetailsController][connectorCall] Promoting lead trustee at index $index")
+        connector.promoteTrustee(identifier, index, leadTrustee)
+      case None =>
+        userAnswers.get(IsReplacingLeadTrusteePage) match {
+          case Some(true) =>
+            logger.info(s"$logInfo [CheckDetailsController][connectorCall] Adding new lead trustee to replace existing")
+            connector.demoteLeadTrustee(userAnswers.identifier, leadTrustee)
+          case _ =>
+            logger.info(s"$logInfo [CheckDetailsController][connectorCall] Amending lead trustee")
+            connector.amendLeadTrustee(userAnswers.identifier, leadTrustee)
+        }
+    }
+
+    call.map { response =>
+      response.status match {
+        case OK => Right(response)
+        case _ => Left(s"$logInfo [CheckDetailsController][connectorCall] Connector call failed with status ${response.status}")
+      }
+    }.recover {
+      case ex =>
+        Left(s"$logInfo [CheckDetailsController][connectorCall] Connector call failed with exception: ${ex.getMessage}")
+    }
   }
 }
