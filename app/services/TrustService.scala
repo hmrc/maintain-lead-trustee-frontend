@@ -66,7 +66,12 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
   }
 
   override def getTrustee(identifier: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] = {
-    getTrustees(identifier).map(_.trustees(index))
+    getTrustees(identifier).flatMap{ trusteeDetails =>
+      trusteeDetails.trustees.lift(index) match {
+        case Some(trustee) => Future.successful(trustee)
+        case None => Future.failed(new IndexOutOfBoundsException(s"No index exists $index"))
+      }
+    }
   }
 
   override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)

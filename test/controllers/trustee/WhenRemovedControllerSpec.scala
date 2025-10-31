@@ -210,5 +210,23 @@ class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       application.stop()
     }
+
+    "throw IndexOutOfBoundsException when trying to remove index which doesn't exits" in {
+
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.failed(new IndexOutOfBoundsException(s"No index exists $index")))
+
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
+
+      val result = route(application, getRequest(index)).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+
+    }
   }
 }

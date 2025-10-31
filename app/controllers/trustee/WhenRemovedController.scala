@@ -18,7 +18,9 @@ package controllers.trustee
 
 import controllers.actions.StandardActionSets
 import forms.DateRemovedFromTrustFormProvider
+import handlers.ErrorHandler
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
+import play.api.i18n.Lang.logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
@@ -35,7 +37,8 @@ class WhenRemovedController @Inject()(
                                        trust: TrustService,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: WhenRemovedView,
-                                       trustService: TrustService
+                                       trustService: TrustService,
+                                       errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
@@ -51,6 +54,15 @@ class WhenRemovedController @Inject()(
           val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
 
           Ok(view(form, index, trusteeName))
+      }.recoverWith {
+        case iobe: IndexOutOfBoundsException =>
+          logger.warn(s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+        case _ =>
+          logger.error(s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove trustee as trustee was not found")
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 
