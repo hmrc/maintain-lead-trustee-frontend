@@ -473,6 +473,16 @@ class TrustServiceSpec extends AnyFreeSpec with Matchers with ScalaFutures {
       }
     }
 
+    "getTrustee throw IndexOutOfBoundsException when index not found" in {
+
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.successful(Trustees(Nil)))
+
+      assertThrows[IndexOutOfBoundsException]{
+        Await.result(service.getTrustee("1234567890", 0), Duration.Inf)
+      }
+    }
+
   }
 
 }
