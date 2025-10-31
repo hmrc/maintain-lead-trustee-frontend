@@ -60,11 +60,11 @@ class RemoveTrusteeController @Inject()(
           Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+          logger.warn(s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+          logger.error(s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
@@ -98,8 +98,8 @@ class RemoveTrusteeController @Inject()(
                 }
             } recoverWith {
               case _ =>
-                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-                  s" user cannot remove trustee as trustee was not found")
+                logger.error(s"[RemoveTrusteeController][onSubmit][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+                  s" trustee was not found")
                 errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
             }
           } else {
