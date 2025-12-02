@@ -58,7 +58,8 @@ class WhenRemovedController @Inject()(
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+          Future.successful(Redirect(controllers.trustee.routes.RemoveTrusteeController.showIndexOutofBoundError()))
+//          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         case _ =>
           logger.error(s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove trustee as trustee was not found")

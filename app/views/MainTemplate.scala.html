@@ -41,7 +41,8 @@
     scriptElem: Option[Html] = None,
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
-    showBackLink: Boolean = false
+    showBackLink: Boolean = false,
+    isTechnicalIssueReq: Boolean = true
 )(mainContent: Html)(implicit request: RequestHeader, messages: Messages)
 
 @headScripts = {
@@ -71,7 +72,9 @@
 
 @mainContentWithGetHelp = {
     @mainContent
-    @hmrcReportTechnicalIssueHelper()
+    @if(isTechnicalIssueReq){
+        @hmrcReportTechnicalIssueHelper()
+    }
 }
 
 @govukLayout(

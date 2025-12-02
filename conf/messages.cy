@@ -746,3 +746,7 @@ trustee.whenRemoved.error.invalid=Nodwch ddyddiad go iawn pan dynnwyd yr ymddiri
 trustee.whenRemoved.error.future=Mae’n rhaid i’r dyddiad y tynnwyd yr ymddiriedolwr o’r ymddiriedolaeth fod heddiw neu yn y gorffennol
 trustee.whenRemoved.error.past=Mae’n rhaid i’r dyddiad y tynnwyd yr ymddiriedolwr fod ar y dyddiad y cafodd ei ychwanegu, neu ar ôl hynny
 
+removedTrustee.error.title= Mae’r ymddiriedolwr wedi’i ddileu
+removedTrustee.error.heading= Mae’r ymddiriedolwr wedi’i ddileu
+removedTrustee.error.paragraph1= Gallwch barhau i fwrw golwg dros yr ymddiriedolwyr eraill neu ychwanegu ymddiriedolwr newydd.
+removedTrustee.error.continueBtn= Parhau

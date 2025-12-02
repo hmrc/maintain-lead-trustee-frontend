@@ -9,3 +9,7 @@ POST        /:index/remove                          controllers.trustee.RemoveTr
 
 GET         /:index/when-was-trustee-removed        controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
 POST        /:index/when-was-trustee-removed        controllers.trustee.WhenRemovedController.onSubmit(index: Int)
+
+
+GET         /removed-all-trustee                    controllers.trustee.RemoveTrusteeController.showIndexOutofBoundError()
+POST        /removed-all-trustee                    controllers.trustee.RemoveTrusteeController.submitIndexOutofBoundError()
