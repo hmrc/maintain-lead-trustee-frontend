@@ -225,7 +225,7 @@ class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.trustee.routes.RemoveTrusteeController.showIndexOutofBoundError.url
+      redirectLocation(result).value mustEqual controllers.trustee.routes.RemoveTrusteeController.viewIndexOutofBoundErrorPage().url
 
       application.stop()
 

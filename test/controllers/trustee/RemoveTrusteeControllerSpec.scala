@@ -33,7 +33,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import views.html.{RemoveIOBEView, RemoveIndexView}
+import views.html.{IndexOutOfBoundErrorView, RemoveIndexView}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -260,13 +260,13 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
         .overrides(bind[TrustConnector].toInstance(mockConnector))
         .build()
 
-      val request = FakeRequest(GET, routes.RemoveTrusteeController.showIndexOutofBoundError.url)
+      val request = FakeRequest(GET, routes.RemoveTrusteeController.viewIndexOutofBoundErrorPage().url)
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
-      val view = application.injector.instanceOf[RemoveIOBEView]
+      val view = application.injector.instanceOf[IndexOutOfBoundErrorView]
 
       contentAsString(result) mustEqual view()(request, messages).toString
 

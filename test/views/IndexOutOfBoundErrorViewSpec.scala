@@ -18,15 +18,15 @@ package views
 
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.RemoveIOBEView
+import views.html.IndexOutOfBoundErrorView
 
-class RemoveIOBEViewSpec extends ViewBehaviours {
+class IndexOutOfBoundErrorViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "removedTrustee.error"
   "removal screen" must {
 
     val application = applicationBuilder().build()
 
-    val view = application.injector.instanceOf[RemoveIOBEView]
+    val view = application.injector.instanceOf[IndexOutOfBoundErrorView]
 
     def applyView(): HtmlFormat.Appendable =
       view.apply()(fakeRequest, messages)
