@@ -10,6 +10,5 @@ POST        /:index/remove                          controllers.trustee.RemoveTr
 GET         /:index/when-was-trustee-removed        controllers.trustee.WhenRemovedController.onPageLoad(index: Int)
 POST        /:index/when-was-trustee-removed        controllers.trustee.WhenRemovedController.onSubmit(index: Int)
 
-
 GET         /view-iob-error                         controllers.trustee.RemoveTrusteeController.viewIndexOutofBoundErrorPage()
 POST        /view-iob-error                         controllers.trustee.RemoveTrusteeController.submitIndexOutofBoundError()
