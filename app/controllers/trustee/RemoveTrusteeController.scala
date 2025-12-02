@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.RemoveIndexView
+import views.html.{IndexOutOfBoundErrorView, RemoveIndexView}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +38,7 @@ class RemoveTrusteeController @Inject()(
                                          formProvider: RemoveIndexFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: RemoveIndexView,
+                                         iobErrorView : IndexOutOfBoundErrorView,
                                          errorHandler: ErrorHandler
                                        )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -108,4 +109,14 @@ class RemoveTrusteeController @Inject()(
         }
       )
   }
+
+
+  def viewIndexOutofBoundErrorPage(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+    implicit request =>
+      Future.successful(Ok(iobErrorView()))
+  }
+  def submitIndexOutofBoundError(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+      Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))
+  }
+
 }

@@ -748,3 +748,8 @@ leadTrustee.individual.matching.locked.subheading1 = Providing other information
 leadTrustee.individual.matching.locked.paragraph4 = To register {0} as the lead trustee, you need to provide their address, and
 leadTrustee.individual.matching.locked.paragraph4.a = provide their passport or id card details.
 leadTrustee.individual.matching.locked.trust_overview = Return to Trust Overview
+
+removedTrustee.error.title= The trustee has been removed
+removedTrustee.error.heading= The trustee has been removed
+removedTrustee.error.paragraph1= You can continue to view other trustees or to add a new trustee.
+removedTrustee.error.continueBtn= Continue

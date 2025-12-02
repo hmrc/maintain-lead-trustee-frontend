@@ -33,7 +33,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import views.html.RemoveIndexView
+import views.html.{IndexOutOfBoundErrorView, RemoveIndexView}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -249,6 +249,43 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
+
+      application.stop()
+    }
+
+
+    "return OK and the correct view for a GET for IOB Page" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
+
+      val request = FakeRequest(GET, routes.RemoveTrusteeController.viewIndexOutofBoundErrorPage().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      val view = application.injector.instanceOf[IndexOutOfBoundErrorView]
+
+      contentAsString(result) mustEqual view()(request, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to the add to page when clicked continue on IOB page" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
+
+      val request = FakeRequest(POST, routes.RemoveTrusteeController.submitIndexOutofBoundError.url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
 
       application.stop()
     }

@@ -223,7 +223,9 @@ class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val result = route(application, getRequest(index)).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.trustee.routes.RemoveTrusteeController.viewIndexOutofBoundErrorPage().url
 
       application.stop()
 
