@@ -53,6 +53,12 @@ class ActiveSessionRepositoryImpl @Inject()(val mongoComponent: MongoComponent,
         IndexOptions()
           .unique(false)
           .name("utr-index")
+      ),
+      IndexModel(
+        ascending("internalId"),
+        IndexOptions()
+          .unique(false)
+          .name("internal-id-index")
       )
     ), replaceIndexes = config.dropIndexes
 
