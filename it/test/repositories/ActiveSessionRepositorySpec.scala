@@ -18,21 +18,23 @@ package repositories
 
 import models.UtrSession
 import org.mongodb.scala.bson.BsonDocument
+import org.mongodb.scala.model.Indexes.ascending
+import org.mongodb.scala.model.{IndexModel, IndexOptions}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.test.MongoSupport
 
+import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ActiveSessionRepositorySpec extends AnyWordSpec with Matchers
-  with ScalaFutures with OptionValues with MongoSupport with MongoSuite with BeforeAndAfterEach {
+  with ScalaFutures with OptionValues with MongoSupport with MongoSuite with BeforeAndAfterEach with BaseMongoIndexSpec {
 
   override def beforeEach() = await(repository.collection.deleteMany(BsonDocument()).toFuture())
 
-  lazy val repository: ActiveSessionRepositoryImpl = new ActiveSessionRepositoryImpl(mongoComponent, config)
+  lazy val repository: ActiveSessionRepositoryImpl = new ActiveSessionRepositoryImpl(mongoComponent, config)(global)
 
   "a session repository" should {
 
@@ -76,5 +78,16 @@ class ActiveSessionRepositorySpec extends AnyWordSpec with Matchers
         repository.get(internalId).futureValue.value.utr mustBe "utr2"
         repository.get(internalId).futureValue.value.internalId mustBe internalId
     }
+  }
+
+  "have all expected indexes" in {
+    val expectedIndexes = Seq(
+      IndexModel(ascending("_id"), IndexOptions().name("_id_")),
+      IndexModel(ascending("updatedAt"), IndexOptions().name("session-updated-at-index").expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)),
+      IndexModel(ascending("utr"), IndexOptions().name("utr-index").unique(false)),
+      IndexModel(ascending("internalId"), IndexOptions().name("internal-id-index").unique(false))
+    )
+
+    assertIndexes(expectedIndexes, getIndexes(repository.collection))
   }
 }
