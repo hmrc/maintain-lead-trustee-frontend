@@ -32,28 +32,31 @@ import views.html.leadtrustee.organisation.UtrView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UtrController @Inject()(
-                               override val messagesApi: MessagesApi,
-                               registrationsRepository: PlaybackRepository,
-                               navigator: Navigator,
-                               standardActionSets: StandardActionSets,
-                               nameAction: NameRequiredAction,
-                               formProvider: UtrFormProvider,
-                               val controllerComponents: MessagesControllerComponents,
-                               view: UtrView,
-                               trustsService: TrustService
-                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UtrController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: UtrFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UtrView,
+  trustsService: TrustService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def form(utrs: List[String])(implicit request: LeadTrusteeNameRequest[AnyContent]): Form[String] =
     formProvider.apply("leadtrustee.organisation.utr", request.userAnswers.identifier, utrs)
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
-
-      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage), adding = false) map { utrs =>
-
+      trustsService.getBusinessUtrs(
+        request.userAnswers.identifier,
+        request.userAnswers.get(IndexPage),
+        adding = false
+      ) map { utrs =>
         val preparedForm = request.userAnswers.get(UtrPage) match {
-          case None => form(utrs)
+          case None        => form(utrs)
           case Some(value) => form(utrs).fill(value)
         }
 
@@ -61,21 +64,23 @@ class UtrController @Inject()(
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage), adding = false) flatMap { utrs =>
-        form(utrs).bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
-
-          value => {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    trustsService.getBusinessUtrs(
+      request.userAnswers.identifier,
+      request.userAnswers.get(IndexPage),
+      adding = false
+    ) flatMap { utrs =>
+      form(utrs)
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
+          value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
-              _ <- registrationsRepository.set(updatedAnswers)
+              _              <- registrationsRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(UtrPage, updatedAnswers))
-          }
         )
-      }
+    }
   }
+
 }

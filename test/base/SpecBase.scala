@@ -32,37 +32,41 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 
-trait SpecBase extends PlaySpec
-  with GuiceOneAppPerSuite
-  with TryValues
-  with ScalaFutures
-  with IntegrationPatience
-  with Mocked
-  with FakeTrustsApp
-  with OptionValues
-  with EitherValues {
+trait SpecBase
+    extends PlaySpec
+    with GuiceOneAppPerSuite
+    with TryValues
+    with ScalaFutures
+    with IntegrationPatience
+    with Mocked
+    with FakeTrustsApp
+    with OptionValues
+    with EitherValues {
 
   val defaultAppConfigurations: Map[String, Any] = Map(
-    "auditing.enabled" -> false,
-    "metrics.enabled" -> false,
+    "auditing.enabled"      -> false,
+    "metrics.enabled"       -> false,
     "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
   )
 
   final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val WELSH   = "cy"
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val userInternalId = "internalId"
 
-  def emptyUserAnswers: UserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", "sessionId", "newId", LocalDate.now())
+  def emptyUserAnswers: UserAnswers =
+    models.UserAnswers(userInternalId, "UTRUTRUTR", "sessionId", "newId", LocalDate.now())
 
   def bodyParsers: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
 
   val fakeNavigator = new FakeNavigator()
 
-  protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
-                                   affinityGroup: AffinityGroup = AffinityGroup.Organisation): GuiceApplicationBuilder =
+  protected def applicationBuilder(
+    userAnswers: Option[models.UserAnswers] = None,
+    affinityGroup: AffinityGroup = AffinityGroup.Organisation
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].toInstance(new FakeIdentifierAction(bodyParsers, affinityGroup)),
@@ -73,4 +77,5 @@ trait SpecBase extends PlaySpec
         bind[ActiveSessionRepository].toInstance(mockSessionRepository)
       )
       .configure(defaultAppConfigurations)
+
 }

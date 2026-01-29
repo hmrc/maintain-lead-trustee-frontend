@@ -30,11 +30,14 @@ class CountryOfNationalityInTheUkYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
-        .set(CountryOfNationalityPage, "FR").success.value
+        .set(CountryOfNationalityPage, "FR")
+        .success
+        .value
 
       val result = userAnswers.set(CountryOfNationalityInTheUkYesNoPage, true).success.value
 
       result.get(CountryOfNationalityPage) mustBe None
     }
   }
+
 }

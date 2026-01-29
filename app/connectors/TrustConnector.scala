@@ -27,40 +27,44 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
+class TrustConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
-  def getLeadTrustee(identifier: String)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LeadTrustee] = {
+  def getLeadTrustee(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LeadTrustee] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/$identifier/transformed/lead-trustee"
     http.get(url"$url").execute[LeadTrustee]
 
   }
 
-  def getTrustDetails(identifier: String)
-                     (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
+  def getTrustDetails(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
     val url: String = s"${config.trustsUrl}/trusts/trust-details/$identifier/transformed"
     http.get(url"$url").execute[TrustDetails]
 
   }
 
-  def addTrustee(identifier: String, trustee: Trustee)
-                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def addTrustee(identifier: String, trustee: Trustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/add/$identifier"
     http.post(url"$url").withBody(Json.toJson(trustee)).execute[HttpResponse]
 
   }
 
-  def amendLeadTrustee(identifier: String, leadTrustee: LeadTrustee)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def amendLeadTrustee(identifier: String, leadTrustee: LeadTrustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/amend-lead/$identifier"
     http.post(url"$url").withBody(Json.toJson(leadTrustee)).execute[HttpResponse]
 
   }
 
-  def demoteLeadTrustee(identifier: String, leadTrustee: LeadTrustee)
-                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def demoteLeadTrustee(identifier: String, leadTrustee: LeadTrustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val frontendJson = Json.toJson(leadTrustee)
-    val backendJson = frontendJson.as[JsObject] ++ Json.obj(
+    val backendJson  = frontendJson.as[JsObject] ++ Json.obj(
       "entityStart" -> LocalDate.now()
     )
 
@@ -69,36 +73,40 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
 
   }
 
-  def amendTrustee(identifier: String, index: Int, trustee: Trustee)
-                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def amendTrustee(identifier: String, index: Int, trustee: Trustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/amend/$identifier/$index"
     http.post(url"$url").withBody(Json.toJson(trustee)).execute[HttpResponse]
 
   }
 
-  def getTrustees(identifier: String)
-                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = {
+  def getTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/$identifier/transformed/trustee"
     http.get(url"$url").execute[Trustees]
 
   }
 
-  def removeTrustee(identifier: String, trustee: RemoveTrustee)
-                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/$identifier/remove"
     http.put(url"$url").withBody(Json.toJson(trustee)).execute[HttpResponse]
 
   }
 
-  def promoteTrustee(identifier: String, index: Int, newLeadTrustee: LeadTrustee)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def promoteTrustee(identifier: String, index: Int, newLeadTrustee: LeadTrustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url: String = s"${config.trustsUrl}/trusts/trustees/promote/$identifier/$index"
     http.post(url"$url").withBody(Json.toJson(newLeadTrustee)).execute[HttpResponse]
 
   }
 
-  def isTrust5mld(identifier: String)
-                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  def isTrust5mld(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val url: String = s"${config.trustsUrl}/trusts/$identifier/is-trust-5mld"
     http.get(url"$url").execute[Boolean]
 

@@ -36,4 +36,5 @@ class RegisteredInUkYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(UtrPage) mustBe None
     }
   }
+
 }

@@ -36,4 +36,5 @@ class Module extends AbstractModule {
     bind(classOf[TrustService]).to(classOf[TrustServiceImpl]).asEagerSingleton()
 
   }
+
 }

@@ -29,7 +29,7 @@ import views.html.trustee.organisation.AddressYesNoView
 class AddressYesNoControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("trustee.organisation.addressYesNo")
+  val form         = formProvider.withPrefix("trustee.organisation.addressYesNo")
 
   val onwardRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
 
@@ -40,7 +40,9 @@ class AddressYesNoControllerSpec extends SpecBase {
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -61,8 +63,12 @@ class AddressYesNoControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
-        .set(AddressYesNoPage, true).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(AddressYesNoPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -105,7 +111,9 @@ class AddressYesNoControllerSpec extends SpecBase {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -158,4 +166,5 @@ class AddressYesNoControllerSpec extends SpecBase {
     }
 
   }
+
 }

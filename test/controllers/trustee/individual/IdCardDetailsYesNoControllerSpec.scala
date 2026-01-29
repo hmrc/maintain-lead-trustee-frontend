@@ -39,7 +39,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase {
   private def form = formProvider.withPrefix("trustee.individual.idCardDetailsYesNo")
 
   def onwardRoute: Call = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  val name: Name        = Name("FirstName", None, "LastName")
 
   val mode: Mode = NormalMode
 
@@ -70,8 +70,12 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val newUserAnswers = userAnswers
-        .set(NamePage, name).success.value
-        .set(IdCardDetailsYesNoPage, true).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(IdCardDetailsYesNoPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
@@ -164,4 +168,5 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

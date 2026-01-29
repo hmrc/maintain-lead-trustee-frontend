@@ -26,21 +26,22 @@ import scala.util.Try
 class IndividualTrusteeToLeadTrusteeExtractor extends LeadTrusteeExtractor {
 
   override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityInTheUkYesNoPage
-  override def countryOfNationalityPage: QuestionPage[String] = CountryOfNationalityPage
+  override def countryOfNationalityPage: QuestionPage[String]         = CountryOfNationalityPage
 
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  override def ninoYesNoPage: QuestionPage[Boolean] = UkCitizenPage
-  override def ninoPage: QuestionPage[String] = NationalInsuranceNumberPage
+  override def ninoYesNoPage: QuestionPage[Boolean]                                = UkCitizenPage
+  override def ninoPage: QuestionPage[String]                                      = NationalInsuranceNumberPage
   override def passportOrIdCardDetailsPage: QuestionPage[CombinedPassportOrIdCard] = PassportOrIdCardDetailsPage
 
-  def extract(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
-    super.extract(userAnswers, Individual)
+  def extract(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] =
+    super
+      .extract(userAnswers, Individual)
       .flatMap(_.set(IndexPage, index))
       .flatMap(_.set(NamePage, trustee.name))
       .flatMap(answers => extractValue(trustee.dateOfBirth, DateOfBirthPage, answers))
@@ -49,6 +50,5 @@ class IndividualTrusteeToLeadTrusteeExtractor extends LeadTrusteeExtractor {
       .flatMap(answers => extractOptionalAddress(trustee.address, answers))
       .flatMap(answers => extractCountryOfResidence(trustee.countryOfResidence, answers))
       .flatMap(answers => extractValue(trustee.phoneNumber, TelephoneNumberPage, answers))
-  }
 
 }

@@ -28,9 +28,10 @@ import java.time.LocalDate
 class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "trustee.whenAdded"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, LocalDate.now())
+  override val form: Form[LocalDate] =
+    new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, LocalDate.now())
 
   "WhenAdded view" must {
 
@@ -58,4 +59,5 @@ class WhenAddedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

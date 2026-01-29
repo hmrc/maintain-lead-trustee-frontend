@@ -52,15 +52,17 @@ class DateOfBirthControllerSpec extends SpecBase {
 
   def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest(POST, dateOfBirthRoute)
     .withFormUrlEncodedBody(
-      "value.day" -> validAnswer.getDayOfMonth.toString,
+      "value.day"   -> validAnswer.getDayOfMonth.toString,
       "value.month" -> validAnswer.getMonthValue.toString,
-      "value.year" -> validAnswer.getYear.toString
+      "value.year"  -> validAnswer.getYear.toString
     )
 
   "DateOfBirth Controller" when {
 
     val baseAnswers = emptyUserAnswers
-      .set(NamePage, name).success.value
+      .set(NamePage, name)
+      .success
+      .value
 
     def form: Form[LocalDate] = formProvider.withConfig("leadtrustee.individual.dateOfBirth")
 
@@ -86,7 +88,9 @@ class DateOfBirthControllerSpec extends SpecBase {
         "lead trustee not matched" in {
 
           val userAnswers = baseAnswers
-            .set(DateOfBirthPage, validAnswer).success.value
+            .set(DateOfBirthPage, validAnswer)
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -105,9 +109,15 @@ class DateOfBirthControllerSpec extends SpecBase {
         "lead trustee matched" in {
 
           val userAnswers = baseAnswers
-            .set(DateOfBirthPage, validAnswer).success.value
-            .set(NationalInsuranceNumberPage, "nino").success.value
-            .set(BpMatchStatusPage, FullyMatched).success.value
+            .set(DateOfBirthPage, validAnswer)
+            .success
+            .value
+            .set(NationalInsuranceNumberPage, "nino")
+            .success
+            .value
+            .set(BpMatchStatusPage, FullyMatched)
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -190,4 +200,5 @@ class DateOfBirthControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

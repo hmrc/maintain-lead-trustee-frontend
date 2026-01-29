@@ -26,7 +26,7 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject() () {
 
   def nextPage(page: Page, userAnswers: UserAnswers): Call =
     nextPage(page, NormalMode, userAnswers)
@@ -37,19 +37,21 @@ class Navigator @Inject()() {
   private def normalRoutes(mode: Mode): Page => UserAnswers => Call =
     parameterisedNavigation orElse
       LeadTrusteeNavigator.routes orElse
-      TrusteeNavigator.routes(mode) orElse {
-      case _ => ua => controllers.routes.IndexController.onPageLoad(ua.identifier)
-    }
+      TrusteeNavigator.routes(mode) orElse { case _ =>
+        ua => controllers.routes.IndexController.onPageLoad(ua.identifier)
+      }
 
-  private def parameterisedNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case TrusteeTypePage => trusteeTypeNavigation
+  private def parameterisedNavigation: PartialFunction[Page, UserAnswers => Call] = { case TrusteeTypePage =>
+    trusteeTypeNavigation
   }
 
-  private def trusteeTypeNavigation(userAnswers: UserAnswers): Call = {
-    userAnswers.get(TrusteeTypePage).map {
-      case LeadTrustee => controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()
-      case Trustee => controllers.trustee.routes.IndividualOrBusinessController.onPageLoad()
-    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
-  }
+  private def trusteeTypeNavigation(userAnswers: UserAnswers): Call =
+    userAnswers
+      .get(TrusteeTypePage)
+      .map {
+        case LeadTrustee => controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad()
+        case Trustee     => controllers.trustee.routes.IndividualOrBusinessController.onPageLoad()
+      }
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
 
 }

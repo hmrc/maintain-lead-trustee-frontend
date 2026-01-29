@@ -34,25 +34,25 @@ import views.html.trustee.organisation.NonUkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NonUkAddressController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        playbackRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        formProvider: NonUkAddressFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: NonUkAddressView,
-                                        countryOptions: CountryOptionsNonUK
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NonUkAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: NonUkAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NonUkAddressView,
+  countryOptions: CountryOptionsNonUK
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[NonUkAddress] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -61,16 +61,17 @@ class NonUkAddressController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options(), request.trusteeName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
-            _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options(), request.trusteeName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
+              _              <- playbackRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
+        )
   }
+
 }

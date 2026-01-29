@@ -21,24 +21,27 @@ import play.api.i18n.Messages
 import viewmodels.AnswerSection
 import javax.inject.Inject
 
-class TrusteePrintHelpers @Inject()(trusteeIndividualPrintHelper: TrusteeIndividualPrintHelper,
-                                    trusteeOrganisationPrintHelper: TrusteeOrganisationPrintHelper,
-                                    leadTrusteeIndividualPrintHelper: LeadTrusteeIndividualPrintHelper,
-                                    leadTrusteeOrganisationPrintHelper: LeadTrusteeOrganisationPrintHelper) {
+class TrusteePrintHelpers @Inject() (
+  trusteeIndividualPrintHelper: TrusteeIndividualPrintHelper,
+  trusteeOrganisationPrintHelper: TrusteeOrganisationPrintHelper,
+  leadTrusteeIndividualPrintHelper: LeadTrusteeIndividualPrintHelper,
+  leadTrusteeOrganisationPrintHelper: LeadTrusteeOrganisationPrintHelper
+) {
 
-  def printIndividualTrustee(userAnswers: UserAnswers, adding: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def printIndividualTrustee(userAnswers: UserAnswers, adding: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection =
     trusteeIndividualPrintHelper.print(userAnswers, adding, name)
-  }
 
-  def printOrganisationTrustee(userAnswers: UserAnswers, adding: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def printOrganisationTrustee(userAnswers: UserAnswers, adding: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection =
     trusteeOrganisationPrintHelper.print(userAnswers, adding, name)
-  }
 
-  def printLeadIndividualTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {
+  def printLeadIndividualTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection =
     leadTrusteeIndividualPrintHelper.print(userAnswers, name)
-  }
 
-  def printLeadOrganisationTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection = {
+  def printLeadOrganisationTrustee(userAnswers: UserAnswers, name: String)(implicit messages: Messages): AnswerSection =
     leadTrusteeOrganisationPrintHelper.print(userAnswers, name)
-  }
+
 }

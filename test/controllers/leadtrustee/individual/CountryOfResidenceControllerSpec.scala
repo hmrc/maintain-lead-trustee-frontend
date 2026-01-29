@@ -32,10 +32,10 @@ import views.html.leadtrustee.individual.CountryOfResidenceView
 
 class CountryOfResidenceControllerSpec extends SpecBase {
 
-  private val form: Form[String] = new CountryFormProvider().withPrefix("leadtrustee.individual.countryOfResidence")
+  private val form: Form[String]      = new CountryFormProvider().withPrefix("leadtrustee.individual.countryOfResidence")
   private val onPageLoadRoute: String = routes.CountryOfResidenceController.onPageLoad().url
-  private val name: Name = Name("FirstName", None, "LastName")
-  private val onwardRoute = Call("GET", "/foo")
+  private val name: Name              = Name("FirstName", None, "LastName")
+  private val onwardRoute             = Call("GET", "/foo")
 
   private val validAnswer: String = "FR"
 
@@ -66,7 +66,9 @@ class CountryOfResidenceControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(CountryOfResidencePage, validAnswer).success.value
+        .set(CountryOfResidencePage, validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -89,7 +91,8 @@ class CountryOfResidenceControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(baseAnswers))
         .overrides(
           bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(POST, onPageLoadRoute)
         .withFormUrlEncodedBody(("value", validAnswer))
@@ -155,4 +158,5 @@ class CountryOfResidenceControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -32,17 +32,17 @@ trait UserAnswersGenerator extends TryValues {
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(TelephoneNumberPage.type, JsValue)] ::
-    arbitrary[(EmailAddressYesNoPage.type, JsValue)] ::
-    arbitrary[(EmailAddressPage.type, JsValue)] ::
-    arbitrary[(UkCitizenPage.type, JsValue)] ::
-    arbitrary[(UkAddressPage.type, JsValue)] ::
-    arbitrary[(PassportOrIdCardDetailsPage.type, JsValue)] ::
-    arbitrary[(NonUkAddressPage.type, JsValue)] ::
-    arbitrary[(NationalInsuranceNumberPage.type, JsValue)] ::
-    arbitrary[(NamePage.type, JsValue)] ::
-    arbitrary[(LiveInTheUkYesNoPage.type, JsValue)] ::
-    arbitrary[(DateOfBirthPage.type, JsValue)] ::
-    Nil
+      arbitrary[(EmailAddressYesNoPage.type, JsValue)] ::
+      arbitrary[(EmailAddressPage.type, JsValue)] ::
+      arbitrary[(UkCitizenPage.type, JsValue)] ::
+      arbitrary[(UkAddressPage.type, JsValue)] ::
+      arbitrary[(PassportOrIdCardDetailsPage.type, JsValue)] ::
+      arbitrary[(NonUkAddressPage.type, JsValue)] ::
+      arbitrary[(NationalInsuranceNumberPage.type, JsValue)] ::
+      arbitrary[(NamePage.type, JsValue)] ::
+      arbitrary[(LiveInTheUkYesNoPage.type, JsValue)] ::
+      arbitrary[(DateOfBirthPage.type, JsValue)] ::
+      Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 
@@ -50,24 +50,24 @@ trait UserAnswersGenerator extends TryValues {
 
     Arbitrary {
       for {
-        id <- nonEmptyString
-        utr <- nonEmptyString
+        id        <- nonEmptyString
+        utr       <- nonEmptyString
         sessionId <- nonEmptyString
-        data <- generators match {
-          case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
-          case _ => Gen.mapOf(oneOf(generators))
-        }
+        data      <- generators match {
+                       case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
+                       case _   => Gen.mapOf(oneOf(generators))
+                     }
       } yield UserAnswers(
         internalId = id,
         identifier = utr,
         sessionId = sessionId,
         newId = s"$id-$utr-$sessionId",
         whenTrustSetup = LocalDate.now(),
-        data = data.foldLeft(Json.obj()) {
-          case (obj, (path, value)) =>
-            obj.setObject(path.path, value).get
+        data = data.foldLeft(Json.obj()) { case (obj, (path, value)) =>
+          obj.setObject(path.path, value).get
         }
       )
     }
   }
+
 }

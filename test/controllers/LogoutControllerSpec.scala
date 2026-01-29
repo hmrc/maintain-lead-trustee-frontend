@@ -29,8 +29,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 class LogoutControllerSpec extends SpecBase {
 
   private val mockAuditConnector = Mockito.mock(classOf[AuditConnector])
-  private val appConfig = spy(app.injector.instanceOf[FrontendAppConfig])
-
+  private val appConfig          = spy(app.injector.instanceOf[FrontendAppConfig])
 
   private val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
     .overrides(
@@ -40,7 +39,6 @@ class LogoutControllerSpec extends SpecBase {
     .build()
 
   private val request = FakeRequest(GET, routes.LogoutController.logout().url)
-
 
   "logout should redirect to feedback and not audit, given appConfig.logoutAudit is false" in {
 

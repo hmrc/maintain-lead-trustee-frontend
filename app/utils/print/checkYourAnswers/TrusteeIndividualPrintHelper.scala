@@ -26,14 +26,14 @@ import play.api.i18n.Messages
 import utils.print.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
 
-class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class TrusteeIndividualPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
   def print(userAnswers: UserAnswers, adding: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, name)
 
     val changeLinkOrNone: (Boolean, String) => Option[String] =
-      (adding: Boolean, route: String) => if(adding) Some(route) else None
+      (adding: Boolean, route: String) => if (adding) Some(route) else None
 
     val prefix: String = "trustee.individual"
 
@@ -41,31 +41,106 @@ class TrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConver
       val mode: Mode = if (adding) NormalMode else CheckMode
       Seq(
         bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad(mode).url),
-        bound.yesNoQuestion(DateOfBirthYesNoPage, s"$prefix.dateOfBirthYesNo", DateOfBirthYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(
+          DateOfBirthYesNoPage,
+          s"$prefix.dateOfBirthYesNo",
+          DateOfBirthYesNoController.onPageLoad(mode).url
+        ),
         bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfNationalityYesNoPage, s"$prefix.countryOfNationalityYesNo", CountryOfNationalityYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfNationalityInTheUkYesNoPage, s"$prefix.countryOfNationalityInTheUkYesNo", CountryOfNationalityInTheUkYesNoController.onPageLoad(mode).url),
-        bound.countryQuestion(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, s"$prefix.countryOfNationality", CountryOfNationalityController.onPageLoad(mode).url),
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, s"$prefix.nationalInsuranceNumberYesNo", NationalInsuranceNumberYesNoController.onPageLoad(mode).url),
-        bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfResidenceYesNoPage, s"$prefix.countryOfResidenceYesNo", CountryOfResidenceYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url),
-        bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad(mode).url),
+        bound.yesNoQuestion(
+          CountryOfNationalityYesNoPage,
+          s"$prefix.countryOfNationalityYesNo",
+          CountryOfNationalityYesNoController.onPageLoad(mode).url
+        ),
+        bound.yesNoQuestion(
+          CountryOfNationalityInTheUkYesNoPage,
+          s"$prefix.countryOfNationalityInTheUkYesNo",
+          CountryOfNationalityInTheUkYesNoController.onPageLoad(mode).url
+        ),
+        bound.countryQuestion(
+          CountryOfNationalityInTheUkYesNoPage,
+          CountryOfNationalityPage,
+          s"$prefix.countryOfNationality",
+          CountryOfNationalityController.onPageLoad(mode).url
+        ),
+        bound.yesNoQuestion(
+          NationalInsuranceNumberYesNoPage,
+          s"$prefix.nationalInsuranceNumberYesNo",
+          NationalInsuranceNumberYesNoController.onPageLoad(mode).url
+        ),
+        bound.ninoQuestion(
+          NationalInsuranceNumberPage,
+          s"$prefix.nationalInsuranceNumber",
+          NationalInsuranceNumberController.onPageLoad(mode).url
+        ),
+        bound.yesNoQuestion(
+          CountryOfResidenceYesNoPage,
+          s"$prefix.countryOfResidenceYesNo",
+          CountryOfResidenceYesNoController.onPageLoad(mode).url
+        ),
+        bound.yesNoQuestion(
+          CountryOfResidenceInTheUkYesNoPage,
+          s"$prefix.countryOfResidenceInTheUkYesNo",
+          CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url
+        ),
+        bound.countryQuestion(
+          CountryOfResidenceInTheUkYesNoPage,
+          CountryOfResidencePage,
+          s"$prefix.countryOfResidence",
+          CountryOfResidenceController.onPageLoad(mode).url
+        ),
         bound.yesNoQuestion(AddressYesNoPage, s"$prefix.addressYesNo", AddressYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage, s"$prefix.liveInTheUkYesNo", LiveInTheUkYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(
+          LiveInTheUkYesNoPage,
+          s"$prefix.liveInTheUkYesNo",
+          LiveInTheUkYesNoController.onPageLoad(mode).url
+        ),
         bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad(mode).url),
         bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad(mode).url),
-        bound.yesNoQuestion(PassportDetailsYesNoPage, s"$prefix.passportDetailsYesNo", PassportDetailsYesNoController.onPageLoad(mode).url),
-        bound.passportDetailsQuestion(PassportDetailsPage, s"$prefix.passportDetails", PassportDetailsController.onPageLoad(mode).url),
-        bound.yesNoQuestion(IdCardDetailsYesNoPage, s"$prefix.idCardDetailsYesNo", IdCardDetailsYesNoController.onPageLoad(mode).url),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, s"$prefix.idCardDetails", IdCardDetailsController.onPageLoad(mode).url),
-        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, s"$prefix.passportOrIdCardDetailsYesNo", changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url), canEdit = adding),
-        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsController.onPageLoad(mode).url), canEdit = adding),
-        bound.enumQuestion(MentalCapacityYesNoPage, s"$prefix.mentalCapacityYesNo", MentalCapacityYesNoController.onPageLoad(mode).url, "site"),
-        if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
+        bound.yesNoQuestion(
+          PassportDetailsYesNoPage,
+          s"$prefix.passportDetailsYesNo",
+          PassportDetailsYesNoController.onPageLoad(mode).url
+        ),
+        bound.passportDetailsQuestion(
+          PassportDetailsPage,
+          s"$prefix.passportDetails",
+          PassportDetailsController.onPageLoad(mode).url
+        ),
+        bound.yesNoQuestion(
+          IdCardDetailsYesNoPage,
+          s"$prefix.idCardDetailsYesNo",
+          IdCardDetailsYesNoController.onPageLoad(mode).url
+        ),
+        bound.idCardDetailsQuestion(
+          IdCardDetailsPage,
+          s"$prefix.idCardDetails",
+          IdCardDetailsController.onPageLoad(mode).url
+        ),
+        bound.yesNoQuestion(
+          PassportOrIdCardDetailsYesNoPage,
+          s"$prefix.passportOrIdCardDetailsYesNo",
+          changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url),
+          canEdit = adding
+        ),
+        bound.passportOrIdCardDetailsQuestion(
+          PassportOrIdCardDetailsPage,
+          s"$prefix.passportOrIdCardDetails",
+          changeUrl = changeLinkOrNone(adding, PassportOrIdCardDetailsController.onPageLoad(mode).url),
+          canEdit = adding
+        ),
+        bound.enumQuestion(
+          MentalCapacityYesNoPage,
+          s"$prefix.mentalCapacityYesNo",
+          MentalCapacityYesNoController.onPageLoad(mode).url,
+          "site"
+        ),
+        if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url)
+        else None
       ).flatten
     }
 
     AnswerSection(headingKey = None, rows = answerRows)
   }
+
 }

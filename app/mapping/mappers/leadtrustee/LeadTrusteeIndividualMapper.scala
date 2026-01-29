@@ -32,23 +32,24 @@ class LeadTrusteeIndividualMapper extends LeadTrusteeMapper[LeadTrusteeIndividua
       DateOfBirthPage.path.read[LocalDate] and
       TelephoneNumberPage.path.read[String] and
       EmailAddressYesNoPage.path.read[Boolean].flatMap[Option[String]] {
-        case true => EmailAddressPage.path.read[String].map(Some(_))
-        case false => Reads( _=> JsSuccess(None))
+        case true  => EmailAddressPage.path.read[String].map(Some(_))
+        case false => Reads(_ => JsSuccess(None))
       } and
       UkCitizenPage.path.read[Boolean].flatMap {
-        case true => NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
+        case true  =>
+          NationalInsuranceNumberPage.path.read[String].map(NationalInsuranceNumber(_)).widen[IndividualIdentification]
         case false => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].widen[IndividualIdentification]
       } and
       readAddress and
       readCountryOfResidence and
       readCountryOfResidenceOrNationality(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage)
-    )(LeadTrusteeIndividual.apply _)
+  )(LeadTrusteeIndividual.apply _)
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
 }

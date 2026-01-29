@@ -32,23 +32,35 @@ import play.api.mvc.{AnyContent, Request}
 import scala.concurrent.Future
 
 class NameRequiredActionSpec extends AnyWordSpec with ScalaFutures with Matchers {
-  class Harness(messagesApi: MessagesApi) extends NameRequiredAction(scala.concurrent.ExecutionContext.global, messagesApi) {
+
+  class Harness(messagesApi: MessagesApi)
+      extends NameRequiredAction(scala.concurrent.ExecutionContext.global, messagesApi) {
     def callTransform[A](request: DataRequest[A]): Future[LeadTrusteeNameRequest[A]] = transform(request)
   }
 
   "Pulls the individual name from userAnswers into the Request" in {
-    val OUT = new Harness(Mockito.mock(classOf[MessagesApi]))
+    val OUT           = new Harness(Mockito.mock(classOf[MessagesApi]))
     val sourceRequest = Mockito.mock(classOf[DataRequest[AnyContent]])
 
-    val ua = UserAnswers("id",
+    val ua = UserAnswers(
+      "id",
       "UTRUTRUTR",
-      "sessionId", "newId",
+      "sessionId",
+      "newId",
       LocalDate.now(),
-      Json.obj().transform(pages.leadtrustee.individual.NamePage.path.json.put(Json.obj(
-      "firstName" -> "testFirstName",
-      "middleName" -> "testMiddleName",
-      "lastName" -> "testLastName"
-    ))).get)
+      Json
+        .obj()
+        .transform(
+          pages.leadtrustee.individual.NamePage.path.json.put(
+            Json.obj(
+              "firstName"  -> "testFirstName",
+              "middleName" -> "testMiddleName",
+              "lastName"   -> "testLastName"
+            )
+          )
+        )
+        .get
+    )
 
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>
@@ -57,14 +69,17 @@ class NameRequiredActionSpec extends AnyWordSpec with ScalaFutures with Matchers
   }
 
   "Pulls the org name from userAnswers into the Request" in {
-    val OUT = new Harness(Mockito.mock(classOf[MessagesApi]))
+    val OUT           = new Harness(Mockito.mock(classOf[MessagesApi]))
     val sourceRequest = Mockito.mock(classOf[DataRequest[AnyContent]])
 
-    val ua = UserAnswers("id",
+    val ua = UserAnswers(
+      "id",
       "UTRUTRUTR",
-      "sessionId", "newId",
+      "sessionId",
+      "newId",
       LocalDate.now(),
-      Json.obj().transform(pages.leadtrustee.organisation.NamePage.path.json.put(JsString("org name"))).get)
+      Json.obj().transform(pages.leadtrustee.organisation.NamePage.path.json.put(JsString("org name"))).get
+    )
 
     when(sourceRequest.userAnswers).thenReturn(ua)
     whenReady(OUT.callTransform(sourceRequest)) { transformedRequest =>
@@ -74,8 +89,8 @@ class NameRequiredActionSpec extends AnyWordSpec with ScalaFutures with Matchers
 
   "Provides default text when the name isn't in userAnswers" in {
     val sourceRequest = Mockito.mock(classOf[DataRequest[AnyContent]])
-    val messagesApi = Mockito.mock(classOf[MessagesApi])
-    val messages = Mockito.mock(classOf[Messages])
+    val messagesApi   = Mockito.mock(classOf[MessagesApi])
+    val messages      = Mockito.mock(classOf[Messages])
     when(messagesApi.preferred(any[Request[AnyContent]])).thenReturn(messages)
     when(messages("leadTrusteeName.defaultText")).thenReturn("defaultValue")
 
@@ -88,4 +103,5 @@ class NameRequiredActionSpec extends AnyWordSpec with ScalaFutures with Matchers
       transformedRequest.leadTrusteeName mustBe "defaultValue"
     }
   }
+
 }

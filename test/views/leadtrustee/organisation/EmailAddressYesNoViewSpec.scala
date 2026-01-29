@@ -26,7 +26,7 @@ import views.html.leadtrustee.organisation.EmailAddressYesNoView
 class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.organisation.emailAddressYesNo"
-  val name = "Lead Trustee"
+  val name             = "Lead Trustee"
 
   val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
 
@@ -41,6 +41,13 @@ class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.EmailAddressYesNoController.onSubmit().url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name),
+      routes.EmailAddressYesNoController.onSubmit().url
+    )
   }
+
 }

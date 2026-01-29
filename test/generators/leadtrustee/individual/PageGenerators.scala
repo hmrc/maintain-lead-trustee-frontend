@@ -53,4 +53,5 @@ trait PageGenerators {
 
   implicit lazy val arbitraryDateOfBirthPage: Arbitrary[DateOfBirthPage.type] =
     Arbitrary(DateOfBirthPage)
+
 }

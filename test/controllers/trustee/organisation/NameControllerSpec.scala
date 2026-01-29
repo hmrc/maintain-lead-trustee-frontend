@@ -61,7 +61,9 @@ class NameControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val answers = emptyUserAnswers
-        .set(NamePage, "My Trust").success.value
+        .set(NamePage, "My Trust")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -109,7 +111,7 @@ class NameControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(POST, nameRoute).withFormUrlEncodedBody(("value" -> ""))
+      val request = FakeRequest(POST, nameRoute).withFormUrlEncodedBody("value" -> "")
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -122,7 +124,7 @@ class NameControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, NormalMode)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -156,4 +158,5 @@ class NameControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

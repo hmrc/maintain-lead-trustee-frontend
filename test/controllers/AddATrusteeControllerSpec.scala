@@ -46,14 +46,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  lazy val getRoute: String = controllers.routes.AddATrusteeController.onPageLoad().url
-  lazy val submitAnotherRoute: String = controllers.routes.AddATrusteeController.submitAnother().url
-  lazy val submitYesNoRoute: String = controllers.routes.AddATrusteeController.submitOne().url
+  lazy val getRoute: String            = controllers.routes.AddATrusteeController.onPageLoad().url
+  lazy val submitAnotherRoute: String  = controllers.routes.AddATrusteeController.submitAnother().url
+  lazy val submitYesNoRoute: String    = controllers.routes.AddATrusteeController.submitOne().url
   lazy val submitCompleteRoute: String = controllers.routes.AddATrusteeController.submitComplete().url
 
   val mockStoreConnector: TrustsStoreConnector = Mockito.mock(classOf[TrustsStoreConnector])
 
-  val addTrusteeForm = new AddATrusteeFormProvider()()
+  val addTrusteeForm           = new AddATrusteeFormProvider()()
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addATrusteeYesNo")
 
   val trusteeRows: List[AddRow] = List(
@@ -80,23 +80,25 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
     typeLabel = "Lead Trustee Individual",
     changeLabel = "Change details",
     changeUrl = "/maintain-a-trust/trustees/lead-trustee/individual/check-details",
-    removeLabel =  None,
+    removeLabel = None,
     removeUrl = None
   ) +: trusteeRows
 
-  private val leadTrusteeIndividual = Some(LeadTrusteeIndividual(
-    bpMatchStatus = None,
-    name = Name(
-      firstName = "Lead First",
-      middleName = None,
-      lastName = "Last"
-    ),
-    dateOfBirth = LocalDate.parse("2010-10-10"),
-    phoneNumber = "+446565657",
-    email = None,
-    identification = NationalInsuranceNumber("JP121212A"),
-    address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
-  ))
+  private val leadTrusteeIndividual = Some(
+    LeadTrusteeIndividual(
+      bpMatchStatus = None,
+      name = Name(
+        firstName = "Lead First",
+        middleName = None,
+        lastName = "Last"
+      ),
+      dateOfBirth = LocalDate.parse("2010-10-10"),
+      phoneNumber = "+446565657",
+      email = None,
+      identification = NationalInsuranceNumber("JP121212A"),
+      address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
+    )
+  )
 
   private val trustee = TrusteeIndividual(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
@@ -112,32 +114,41 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = leadTrusteeIndividual) extends TrustService {
 
-    override def getLeadTrustee(identifier: String)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
+    override def getLeadTrustee(
+      identifier: String
+    )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
       ???
 
-    override def getAllTrustees(identifier: String)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
+    override def getAllTrustees(
+      identifier: String
+    )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
       Future.successful(AllTrustees(leadTrustee, data.trustees))
 
-    override def getTrustees(identifier: String)
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
+    override def getTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
       ???
 
-    override def getTrustee(identifier: String, index: Int)
-                           (implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] =
+    override def getTrustee(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[Trustee] =
       ???
 
-    override def removeTrustee(identifier: String, trustee: RemoveTrustee)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    override def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[HttpResponse] =
       ???
 
-    override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
-                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] =
       ???
 
-    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] =
       ???
 
   }
@@ -158,8 +169,11 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         val fakeService = new FakeService(Trustees(Nil))
 
         val application = applicationBuilder(userAnswers = None)
-          .overrides(bind(classOf[TrustService])
-            .toInstance(fakeService)).build()
+          .overrides(
+            bind(classOf[TrustService])
+              .toInstance(fakeService)
+          )
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -277,7 +291,10 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(request, messages).toString
+          view(addTrusteeForm, Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(
+            request,
+            messages
+          ).toString
 
         application.stop()
       }
@@ -297,7 +314,9 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -310,7 +329,8 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, submitAnotherRoute)
           .withFormUrlEncodedBody(("value", AddATrustee.NoComplete.toString))
@@ -400,7 +420,13 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm ,Nil, leadAndTrusteeRows, isLeadTrusteeDefined = true, heading = "The trust has 3 trustees")(request, messages).toString
+          view(
+            addTrusteeForm,
+            Nil,
+            leadAndTrusteeRows,
+            isLeadTrusteeDefined = true,
+            heading = "The trust has 3 trustees"
+          )(request, messages).toString
 
         application.stop()
       }
@@ -443,8 +469,12 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
       val mockTrustService = Mockito.mock(classOf[TrustService])
 
       val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
-        .set(NamePage, Name("First", None, "Last")).success.value
+        .set(IndividualOrBusinessPage, Individual)
+        .success
+        .value
+        .set(NamePage, Name("First", None, "Last"))
+        .success
+        .value
 
       reset(playbackRepository)
 
@@ -461,7 +491,9 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.trustee.routes.IndividualOrBusinessController
+        .onPageLoad()
+        .url
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
@@ -495,9 +527,14 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
       val content = contentAsString(result)
 
       content mustEqual
-        view(trusteeRows.inProgress, trusteeRows.complete, isLeadTrusteeDefined = true, "The trust has 26 trustees")(request, messages).toString
+        view(trusteeRows.inProgress, trusteeRows.complete, isLeadTrusteeDefined = true, "The trust has 26 trustees")(
+          request,
+          messages
+        ).toString
       content must include("You cannot add another trustee as you have entered a maximum of 26.")
-      content must include("You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.")
+      content must include(
+        "You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees."
+      )
 
       application.stop()
 
@@ -511,7 +548,8 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         .overrides(
           bind(classOf[TrustService]).toInstance(fakeService),
           bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(POST, submitCompleteRoute)
 
@@ -528,4 +566,5 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
   }
+
 }

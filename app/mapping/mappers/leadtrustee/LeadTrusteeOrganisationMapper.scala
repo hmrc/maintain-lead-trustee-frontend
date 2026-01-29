@@ -31,13 +31,13 @@ class LeadTrusteeOrganisationMapper extends LeadTrusteeMapper[LeadTrusteeOrganis
       UtrPage.path.readNullable[String] and
       readAddress and
       readCountryOfResidence
-    )(LeadTrusteeOrganisation.apply _)
+  )(LeadTrusteeOrganisation.apply _)
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
 }

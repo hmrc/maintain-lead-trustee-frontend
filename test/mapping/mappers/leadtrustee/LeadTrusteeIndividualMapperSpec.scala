@@ -26,22 +26,30 @@ import java.time.LocalDate
 
 class LeadTrusteeIndividualMapperSpec extends SpecBase {
 
-  private val name: Name = Name("First", None, "Last")
-  private val dateOfBirth: LocalDate = LocalDate.parse("1996-02-03")
-  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
-  private val country: String = "FR"
-  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
-  private val nino: String = "nino"
-  private val email: String = "email"
-  private val phone: String = "tel"
-  private val combined: CombinedPassportOrIdCard = CombinedPassportOrIdCard("FR", "1234567890", LocalDate.parse("2020-02-03"))
+  private val name: Name                         = Name("First", None, "Last")
+  private val dateOfBirth: LocalDate             = LocalDate.parse("1996-02-03")
+  private val ukAddress: UkAddress               = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val country: String                    = "FR"
+  private val nonUkAddress: NonUkAddress         = NonUkAddress("Line 1", "Line 2", None, country)
+  private val nino: String                       = "nino"
+  private val email: String                      = "email"
+  private val phone: String                      = "tel"
+
+  private val combined: CombinedPassportOrIdCard =
+    CombinedPassportOrIdCard("FR", "1234567890", LocalDate.parse("2020-02-03"))
 
   private val mapper: LeadTrusteeIndividualMapper = new LeadTrusteeIndividualMapper()
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(BpMatchStatusPage, FullyMatched).success.value
-    .set(NamePage, name).success.value
-    .set(DateOfBirthPage, dateOfBirth).success.value
+    .set(BpMatchStatusPage, FullyMatched)
+    .success
+    .value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(DateOfBirthPage, dateOfBirth)
+    .success
+    .value
 
   "Lead trustee individual mapper" must {
 
@@ -50,12 +58,24 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
       "transition from 4mld" when {
         "trustee has no 5mld questions UK nationality, and uk address" in {
           val userAnswers = baseAnswers
-            .set(UkCitizenPage, true).success.value
-            .set(NationalInsuranceNumberPage, nino).success.value
-            .set(UkAddressPage, ukAddress).success.value
-            .set(EmailAddressYesNoPage, true).success.value
-            .set(EmailAddressPage, email).success.value
-            .set(TelephoneNumberPage, phone).success.value
+            .set(UkCitizenPage, true)
+            .success
+            .value
+            .set(NationalInsuranceNumberPage, nino)
+            .success
+            .value
+            .set(UkAddressPage, ukAddress)
+            .success
+            .value
+            .set(EmailAddressYesNoPage, true)
+            .success
+            .value
+            .set(EmailAddressPage, email)
+            .success
+            .value
+            .set(TelephoneNumberPage, phone)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -74,12 +94,24 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has no 5mld questions UK nationality, and none uk address" in {
           val userAnswers = baseAnswers
-            .set(UkCitizenPage, true).success.value
-            .set(NationalInsuranceNumberPage, nino).success.value
-            .set(NonUkAddressPage, nonUkAddress).success.value
-            .set(EmailAddressYesNoPage, true).success.value
-            .set(EmailAddressPage, email).success.value
-            .set(TelephoneNumberPage, phone).success.value
+            .set(UkCitizenPage, true)
+            .success
+            .value
+            .set(NationalInsuranceNumberPage, nino)
+            .success
+            .value
+            .set(NonUkAddressPage, nonUkAddress)
+            .success
+            .value
+            .set(EmailAddressYesNoPage, true)
+            .success
+            .value
+            .set(EmailAddressPage, email)
+            .success
+            .value
+            .set(TelephoneNumberPage, phone)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -98,14 +130,30 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
       }
       "trustee has UK nationality, NINO, and UK residency/address" in {
         val userAnswers = baseAnswers
-          .set(CountryOfNationalityInTheUkYesNoPage, true).success.value
-          .set(UkCitizenPage, true).success.value
-          .set(NationalInsuranceNumberPage, nino).success.value
-          .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
-          .set(UkAddressPage, ukAddress).success.value
-          .set(EmailAddressYesNoPage, true).success.value
-          .set(EmailAddressPage, email).success.value
-          .set(TelephoneNumberPage, phone).success.value
+          .set(CountryOfNationalityInTheUkYesNoPage, true)
+          .success
+          .value
+          .set(UkCitizenPage, true)
+          .success
+          .value
+          .set(NationalInsuranceNumberPage, nino)
+          .success
+          .value
+          .set(CountryOfResidenceInTheUkYesNoPage, true)
+          .success
+          .value
+          .set(UkAddressPage, ukAddress)
+          .success
+          .value
+          .set(EmailAddressYesNoPage, true)
+          .success
+          .value
+          .set(EmailAddressPage, email)
+          .success
+          .value
+          .set(TelephoneNumberPage, phone)
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -124,15 +172,33 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
 
       "trustee has non-UK nationality, passport/ID card, and non-UK residency/address" in {
         val userAnswers = baseAnswers
-          .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
-          .set(CountryOfNationalityPage, country).success.value
-          .set(UkCitizenPage, false).success.value
-          .set(PassportOrIdCardDetailsPage, combined).success.value
-          .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
-          .set(CountryOfResidencePage, country).success.value
-          .set(NonUkAddressPage, nonUkAddress).success.value
-          .set(EmailAddressYesNoPage, false).success.value
-          .set(TelephoneNumberPage, phone).success.value
+          .set(CountryOfNationalityInTheUkYesNoPage, false)
+          .success
+          .value
+          .set(CountryOfNationalityPage, country)
+          .success
+          .value
+          .set(UkCitizenPage, false)
+          .success
+          .value
+          .set(PassportOrIdCardDetailsPage, combined)
+          .success
+          .value
+          .set(CountryOfResidenceInTheUkYesNoPage, false)
+          .success
+          .value
+          .set(CountryOfResidencePage, country)
+          .success
+          .value
+          .set(NonUkAddressPage, nonUkAddress)
+          .success
+          .value
+          .set(EmailAddressYesNoPage, false)
+          .success
+          .value
+          .set(TelephoneNumberPage, phone)
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -150,4 +216,5 @@ class LeadTrusteeIndividualMapperSpec extends SpecBase {
       }
     }
   }
+
 }

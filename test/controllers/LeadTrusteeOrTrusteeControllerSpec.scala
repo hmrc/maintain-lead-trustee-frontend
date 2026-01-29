@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class LeadTrusteeOrTrusteeControllerSpec extends SpecBase {
 
   val formProvider = new TrusteeTypeFormProvider()
-  val form = formProvider.withPrefix("leadTrusteeOrTrustee")
+  val form         = formProvider.withPrefix("leadTrusteeOrTrustee")
 
   lazy val leadTrusteeOrTrusteeRoute = routes.LeadTrusteeOrTrusteeController.onPageLoad().url
 
@@ -156,4 +156,5 @@ class LeadTrusteeOrTrusteeControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

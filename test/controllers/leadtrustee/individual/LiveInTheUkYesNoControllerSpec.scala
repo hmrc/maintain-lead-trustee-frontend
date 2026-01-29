@@ -35,14 +35,16 @@ import scala.concurrent.Future
 class LiveInTheUkYesNoControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
+  val form         = formProvider.withPrefix("leadtrustee.individual.liveInTheUkYesNo")
 
   lazy val liveInTheUkYesNoPageRoute = routes.LiveInTheUkYesNoController.onPageLoad().url
 
   val name = Name("Lead", None, "Trustee")
 
   override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "LiveInTheUkYesNoPage Controller" must {
 
@@ -162,4 +164,5 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

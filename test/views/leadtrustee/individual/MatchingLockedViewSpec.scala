@@ -24,10 +24,9 @@ import views.html.leadtrustee.individual.MatchingLockedView
 
 class MatchingLockedViewSpec extends LinkListViewBehaviours {
 
-  val prefix = "leadTrustee.individual.matching.locked"
-  val index = 0
+  val prefix                   = "leadTrustee.individual.matching.locked"
+  val index                    = 0
   val view: MatchingLockedView = viewFor[MatchingLockedView](Some(emptyUserAnswers))
-
 
   val trustOverviewLink: List[Link] = List(
     Link("Return to Trust Overview", frontendAppConfig.maintainATrustOverview)
@@ -47,4 +46,5 @@ class MatchingLockedViewSpec extends LinkListViewBehaviours {
       captionParam = ""
     )
   }
+
 }

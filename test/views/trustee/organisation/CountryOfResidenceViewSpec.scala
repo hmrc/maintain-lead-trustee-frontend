@@ -50,4 +50,5 @@ class CountryOfResidenceViewSpec extends SelectCountryViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

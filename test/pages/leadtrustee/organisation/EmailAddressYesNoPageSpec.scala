@@ -36,4 +36,5 @@ class EmailAddressYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(EmailAddressPage) mustBe None
     }
   }
+
 }

@@ -23,11 +23,13 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 sealed trait IdMatchResponse
 
-case class SuccessfulOrUnsuccessfulMatchResponse(id: String,
-                                                 idMatch: Boolean) extends IdMatchResponse
+case class SuccessfulOrUnsuccessfulMatchResponse(id: String, idMatch: Boolean) extends IdMatchResponse
 
 object SuccessfulOrUnsuccessfulMatchResponse {
-  implicit val format: Format[SuccessfulOrUnsuccessfulMatchResponse] = Json.format[SuccessfulOrUnsuccessfulMatchResponse]
+
+  implicit val format: Format[SuccessfulOrUnsuccessfulMatchResponse] =
+    Json.format[SuccessfulOrUnsuccessfulMatchResponse]
+
 }
 
 case class IdMatchErrorResponse(errors: Seq[String]) extends IdMatchResponse {
@@ -55,36 +57,37 @@ object IdMatchResponse extends Logging {
       } else {
         response.json.validate[IdMatchErrorResponse] match {
           case JsSuccess(idMatchErrors, _) => s"Errors: ${idMatchErrors.toString}"
-          case JsError(errors) => s"Unable to parse error messages: $errors"
+          case JsError(errors)             => s"Unable to parse error messages: $errors"
         }
       }
       s"[IdMatchResponse] $errorMessage"
     }
 
     response.status match {
-      case OK =>
+      case OK                  =>
         response.json.validate[SuccessfulOrUnsuccessfulMatchResponse] match {
           case JsSuccess(idMatchResponse, _) =>
             idMatchResponse
-          case JsError(errors) =>
+          case JsError(errors)               =>
             logger.warn(s"Unable to parse response: $errors")
             InternalServerErrorResponse
         }
-      case BAD_REQUEST =>
+      case BAD_REQUEST         =>
         logger.warn(errorLog)
         InvalidIdMatchResponse
-      case FORBIDDEN =>
+      case FORBIDDEN           =>
         logger.warn(errorLog)
         AttemptLimitExceededResponse
-      case NOT_FOUND =>
+      case NOT_FOUND           =>
         logger.warn(errorLog)
         NinoNotFoundResponse
       case SERVICE_UNAVAILABLE =>
         logger.error(errorLog)
         ServiceUnavailableResponse
-      case _ =>
+      case _                   =>
         logger.error(errorLog)
         InternalServerErrorResponse
     }
   }
+
 }

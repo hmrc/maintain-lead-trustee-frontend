@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class ChangeLeadTrusteeControllerSpec extends SpecBase {
 
-  lazy val changeLeadTrusteeRoute = routes.ChangeLeadTrusteeController.onPageLoad().url
+  lazy val changeLeadTrusteeRoute       = routes.ChangeLeadTrusteeController.onPageLoad().url
   lazy val changeLeadTrusteeSubmitRoute = routes.ChangeLeadTrusteeController.onSubmit().url
 
   val eligibleIndividual = TrusteeIndividual(
@@ -46,7 +46,7 @@ class ChangeLeadTrusteeControllerSpec extends SpecBase {
     mentalCapacityYesNo = Some(YesNoDontKnow.Yes)
   )
 
-  val ineligibleIndividual  = TrusteeIndividual(
+  val ineligibleIndividual = TrusteeIndividual(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
@@ -57,7 +57,7 @@ class ChangeLeadTrusteeControllerSpec extends SpecBase {
     mentalCapacityYesNo = Some(YesNoDontKnow.No)
   )
 
-  val eligibleOrganisation  = TrusteeOrganisation(
+  val eligibleOrganisation = TrusteeOrganisation(
     name = "Test Organisation",
     phoneNumber = None,
     email = None,
@@ -137,7 +137,9 @@ class ChangeLeadTrusteeControllerSpec extends SpecBase {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.leadtrustee.routes.IndividualOrBusinessController
+            .onPageLoad()
+            .url
 
           application.stop()
         }
@@ -161,7 +163,9 @@ class ChangeLeadTrusteeControllerSpec extends SpecBase {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url
+          redirectLocation(result).value mustEqual controllers.leadtrustee.routes.IndividualOrBusinessController
+            .onPageLoad()
+            .url
 
           application.stop()
         }
@@ -195,4 +199,5 @@ class ChangeLeadTrusteeControllerSpec extends SpecBase {
       }
     }
   }
+
 }

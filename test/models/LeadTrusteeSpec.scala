@@ -26,9 +26,9 @@ import java.time.LocalDate
 class LeadTrusteeSpec extends SpecBase {
 
   private val addressLine: String = "Line"
-  private val postcode: String = "AB1 1AB"
+  private val postcode: String    = "AB1 1AB"
 
-  private val tel: String = "tel"
+  private val tel: String   = "tel"
   private val email: String = "email@example.com"
 
   private val country: String = "FR"
@@ -37,12 +37,12 @@ class LeadTrusteeSpec extends SpecBase {
 
     "individual" when {
 
-      val firstName = "First"
-      val lastName = "Last"
-      val name = Name(firstName, None, lastName)
-      val dateOfBirth = "2008-02-01"
-      val nino = "nino"
-      val idDate: String = "2028-02-01"
+      val firstName        = "First"
+      val lastName         = "Last"
+      val name             = Name(firstName, None, lastName)
+      val dateOfBirth      = "2008-02-01"
+      val nino             = "nino"
+      val idDate: String   = "2028-02-01"
       val idNumber: String = "1234567890"
 
       "UK nationality/residency" in {
@@ -85,10 +85,12 @@ class LeadTrusteeSpec extends SpecBase {
           nationality = Some(GB)
         )
 
-        Json.toJson(result) mustBe json.transform(
-          __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
-            __.json.pick
-        ).get
+        Json.toJson(result) mustBe json
+          .transform(
+            __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
+              __.json.pick
+          )
+          .get
       }
 
       "non-UK nationality/residency and legally incapable" in {
@@ -136,17 +138,21 @@ class LeadTrusteeSpec extends SpecBase {
           nationality = Some(country)
         )
 
-        Json.toJson(result) mustBe json.transform(
-          __.json.update((__ \ "identification" \ "passport" \ "detailsType").json.put(Json.toJson(DetailsType.Combined))) andThen
-            __.json.pick
-        ).get
+        Json.toJson(result) mustBe json
+          .transform(
+            __.json.update(
+              (__ \ "identification" \ "passport" \ "detailsType").json.put(Json.toJson(DetailsType.Combined))
+            ) andThen
+              __.json.pick
+          )
+          .get
       }
     }
 
     "organisation" when {
 
       val name = "Amazon"
-      val utr = "utr"
+      val utr  = "utr"
 
       "UK country of residence" in {
 
@@ -179,10 +185,12 @@ class LeadTrusteeSpec extends SpecBase {
           countryOfResidence = Some(GB)
         )
 
-        Json.toJson(result) mustBe json.transform(
-          __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
-            __.json.pick
-        ).get
+        Json.toJson(result) mustBe json
+          .transform(
+            __.json.update((__ \ "identification" \ "address" \ "country").json.put(JsString("GB"))) andThen
+              __.json.pick
+          )
+          .get
       }
 
       "non-UK country of residence" in {
@@ -220,4 +228,5 @@ class LeadTrusteeSpec extends SpecBase {
       }
     }
   }
+
 }

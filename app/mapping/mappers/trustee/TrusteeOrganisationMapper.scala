@@ -35,24 +35,24 @@ class TrusteeOrganisationMapper extends TrusteeMapper[TrusteeOrganisation] {
       readCountryOfResidence and
       WhenAddedPage.path.read[LocalDate] and
       Reads(_ => JsSuccess(true))
-    )(TrusteeOrganisation.apply _)
+  )(TrusteeOrganisation.apply _)
 
   private def readIdentification: Reads[Option[TrustIdentificationOrgType]] = (
     Reads(_ => JsSuccess(None)) and
       UtrPage.path.readNullable[String] and
       readAddress
-    ).tupled
+  ).tupled
     .map {
-      case (None, None, None) => None
+      case (None, None, None)     => None
       case (safeId, utr, address) => Some(TrustIdentificationOrgType(safeId, utr, address))
     }
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = CountryOfResidenceYesNoPage
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
 }

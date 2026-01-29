@@ -26,7 +26,7 @@ import views.html.trustee.individual.NationalInsuranceNumberView
 class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
 
   val messageKeyPrefix = "trustee.individual.nationalInsuranceNumber"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   override val form: Form[String] = new NationalInsuranceNumberFormProvider().apply(messageKeyPrefix, Nil)
 
@@ -41,13 +41,10 @@ class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithTextFields(form, applyView,
-      messageKeyPrefix,
-      Some(name.displayName),
-      ""
-    )
+    behave like pageWithTextFields(form, applyView, messageKeyPrefix, Some(name.displayName), "")
 
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

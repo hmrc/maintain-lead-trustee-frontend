@@ -43,12 +43,11 @@ class DateOfBirthControllerSpec extends SpecBase {
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
   val trusteeName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  val name        = Name("FirstName", None, "LastName")
 
   lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(NormalMode).url
 
-  val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
-    .success.value
+  val userAnswersWithName = emptyUserAnswers.set(NamePage, name).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfBirthRoute)
@@ -82,8 +81,12 @@ class DateOfBirthControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DateOfBirthPage, validAnswer).success.value
-        .set(NamePage, name).success.value
+        .set(DateOfBirthPage, validAnswer)
+        .success
+        .value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -168,4 +171,5 @@ class DateOfBirthControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

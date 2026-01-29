@@ -31,41 +31,41 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.trustee.individual.CountryOfNationalityInTheUkYesNoView
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryOfNationalityInTheUkYesNoController @Inject()(
-                                                            val controllerComponents: MessagesControllerComponents,
-                                                            standardActionSets: StandardActionSets,
-                                                            formProvider: YesNoFormProvider,
-                                                            view: CountryOfNationalityInTheUkYesNoView,
-                                                            repository: PlaybackRepository,
-                                                            navigator: Navigator,
-                                                            nameAction: NameRequiredAction
-                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CountryOfNationalityInTheUkYesNoController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  standardActionSets: StandardActionSets,
+  formProvider: YesNoFormProvider,
+  view: CountryOfNationalityInTheUkYesNoView,
+  repository: PlaybackRepository,
+  navigator: Navigator,
+  nameAction: NameRequiredAction
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.countryOfNationalityInTheUkYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(CountryOfNationalityInTheUkYesNoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfNationalityInTheUkYesNoPage, value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(CountryOfNationalityInTheUkYesNoPage, mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfNationalityInTheUkYesNoPage, value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfNationalityInTheUkYesNoPage, mode, updatedAnswers))
-      )
-  }
 }

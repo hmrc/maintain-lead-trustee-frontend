@@ -30,63 +30,67 @@ import views.html.trustee.WhenRemovedView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhenRemovedController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       formProvider: DateRemovedFromTrustFormProvider,
-                                       trust: TrustService,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: WhenRemovedView,
-                                       trustService: TrustService,
-                                       errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class WhenRemovedController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  formProvider: DateRemovedFromTrustFormProvider,
+  trust: TrustService,
+  val controllerComponents: MessagesControllerComponents,
+  view: WhenRemovedView,
+  trustService: TrustService,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    trust
+      .getTrustee(request.userAnswers.identifier, index)
+      .map { trustee =>
+        val (trusteeName, entityStartDate) = trustee match {
+          case lti: TrusteeIndividual   => (lti.name.displayName, lti.entityStart)
+          case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
+        }
 
-      trust.getTrustee(request.userAnswers.identifier, index).map {
-        trustee =>
-          val (trusteeName, entityStartDate) = trustee match {
-            case lti: TrusteeIndividual => (lti.name.displayName, lti.entityStart)
-            case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
-          }
+        val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
 
-          val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
-
-          Ok(view(form, index, trusteeName))
-      }.recoverWith {
+        Ok(view(form, index, trusteeName))
+      }
+      .recoverWith {
         case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-        case _ =>
-          logger.error(s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove trustee as trustee was not found")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
-  }
-
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      trust.getTrustee(request.userAnswers.identifier, index).flatMap {
-        trustee =>
-          val (trusteeName, entityStartDate) = trustee match {
-            case lti: TrusteeIndividual => (lti.name.displayName, lti.entityStart)
-            case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
-          }
-
-          val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
-
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, index, trusteeName)))
-            },
-            value =>
-              for {
-                _ <- trustService.removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index, value))
-              } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          logger.warn(
+            s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+              s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException"
           )
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+        case _                               =>
+          logger.error(
+            s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+              s" user cannot remove trustee as trustee was not found"
+          )
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
+
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    trust.getTrustee(request.userAnswers.identifier, index).flatMap { trustee =>
+      val (trusteeName, entityStartDate) = trustee match {
+        case lti: TrusteeIndividual   => (lti.name.displayName, lti.entityStart)
+        case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
+      }
+
+      val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
+
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, trusteeName))),
+          value =>
+            for {
+              _ <-
+                trustService.removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index, value))
+            } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+        )
+    }
+  }
+
 }

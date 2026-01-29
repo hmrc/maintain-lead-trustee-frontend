@@ -42,4 +42,5 @@ class LeadTrusteeOrTrusteeViewSpec extends OptionsViewBehaviours {
 
     behave like pageWithOptions(form, applyView, TrusteeType.options)
   }
+
 }

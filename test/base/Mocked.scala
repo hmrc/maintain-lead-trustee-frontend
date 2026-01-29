@@ -25,8 +25,8 @@ import scala.concurrent.Future
 
 trait Mocked {
 
-  val playbackRepository: PlaybackRepository = Mockito.mock(classOf[PlaybackRepository])
-  val mockSessionRepository : ActiveSessionRepository = Mockito.mock(classOf[ActiveSessionRepository])
+  val playbackRepository: PlaybackRepository         = Mockito.mock(classOf[PlaybackRepository])
+  val mockSessionRepository: ActiveSessionRepository = Mockito.mock(classOf[ActiveSessionRepository])
 
   when(playbackRepository.set(any())).thenReturn(Future.successful(true))
   when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))

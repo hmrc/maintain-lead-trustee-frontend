@@ -40,6 +40,13 @@ class EmailAddressViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.EmailAddressController.onSubmit().url)
+    behave like stringPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some("Lead Trustee"),
+      routes.EmailAddressController.onSubmit().url
+    )
   }
+
 }

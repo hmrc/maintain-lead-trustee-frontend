@@ -34,8 +34,8 @@ class NonUkAddressControllerSpec extends SpecBase {
 
   val onwardRoute = routes.NonUkAddressController.onPageLoad(NormalMode).url
 
-  val name: String = "Trustee Name"
-  val fakeAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "DE")
+  val name: String                     = "Trustee Name"
+  val fakeAddress: NonUkAddress        = NonUkAddress("Line 1", "Line 2", None, "DE")
   val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
   "UkAddress Controller" must {
@@ -43,7 +43,9 @@ class NonUkAddressControllerSpec extends SpecBase {
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -64,8 +66,12 @@ class NonUkAddressControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
-        .set(NonUkAddressPage, fakeAddress).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(NonUkAddressPage, fakeAddress)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -94,7 +100,11 @@ class NonUkAddressControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, onwardRoute)
-          .withFormUrlEncodedBody(("line1", fakeAddress.line1), ("line2", fakeAddress.line2), ("country", fakeAddress.country))
+          .withFormUrlEncodedBody(
+            ("line1", fakeAddress.line1),
+            ("line2", fakeAddress.line2),
+            ("country", fakeAddress.country)
+          )
 
       val result = route(application, request).value
 
@@ -108,7 +118,9 @@ class NonUkAddressControllerSpec extends SpecBase {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -161,4 +173,5 @@ class NonUkAddressControllerSpec extends SpecBase {
     }
 
   }
+
 }

@@ -29,9 +29,11 @@ import views.html.trustee.individual.MentalCapacityYesNoView
 
 class MentalCapacityYesNoControllerSpec extends SpecBase {
 
-  private val form: Form[YesNoDontKnow] = new YesNoDontKnowFormProvider().withPrefix("trustee.individual.mentalCapacityYesNo")
-  private val name: Name = Name("FirstName", None, "LastName")
-  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val form: Form[YesNoDontKnow] =
+    new YesNoDontKnowFormProvider().withPrefix("trustee.individual.mentalCapacityYesNo")
+
+  private val name: Name                = Name("FirstName", None, "LastName")
+  private val baseAnswers: UserAnswers  = emptyUserAnswers.set(NamePage, name).success.value
 
   lazy val onPageLoadRoute: String = routes.MentalCapacityYesNoController.onPageLoad(NormalMode).url
 
@@ -80,7 +82,8 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(baseAnswers))
         .overrides(
           bind[Navigator].toInstance(new FakeNavigator)
-        ).build()
+        )
+        .build()
 
       val request =
         FakeRequest(POST, onPageLoadRoute)
@@ -149,4 +152,5 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

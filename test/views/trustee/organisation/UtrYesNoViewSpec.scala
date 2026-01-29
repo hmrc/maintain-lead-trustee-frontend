@@ -27,8 +27,8 @@ import views.html.trustee.organisation.UtrYesNoView
 class UtrYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.organisation.utrYesNo"
-  val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
-  val name = "Trustee Name"
+  val form             = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
+  val name             = "Trustee Name"
 
   "UtrYesNoPage view" must {
 
@@ -41,6 +41,13 @@ class UtrYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.UtrYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name),
+      routes.UtrYesNoController.onSubmit(NormalMode).url
+    )
   }
+
 }

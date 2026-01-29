@@ -33,42 +33,45 @@ import viewmodels.AnswerSection
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        nameAction: NameRequiredAction,
-                                        printHelper: TrusteePrintHelpers,
-                                        mapper: TrusteeMappers,
-                                        trustConnector: TrustConnector,
-                                        val appConfig: FrontendAppConfig,
-                                        errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  nameAction: NameRequiredAction,
+  printHelper: TrusteePrintHelpers,
+  mapper: TrusteeMappers,
+  trustConnector: TrustConnector,
+  val appConfig: FrontendAppConfig,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-    implicit request =>
-      val section: AnswerSection = printHelper.printIndividualTrustee(request.userAnswers, adding = true, request.trusteeName)
-      Ok(view(section))
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) { implicit request =>
+    val section: AnswerSection =
+      printHelper.printIndividualTrustee(request.userAnswers, adding = true, request.trusteeName)
+    Ok(view(section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-      trustConnector.getTrustees(request.userAnswers.identifier).flatMap { data =>
-        val mapperDetails = mapper.mapToTrusteeIndividual(request.userAnswers)
-        mapperDetails match {
-          case Some(trusteeDetails) =>
-            if (!data.trustees.contains(trusteeDetails)) {
-              trustConnector.addTrustee(request.userAnswers.identifier, trusteeDetails).map { _ =>
-                Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-              }
-            } else {
-              Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+    trustConnector.getTrustees(request.userAnswers.identifier).flatMap { data =>
+      val mapperDetails = mapper.mapToTrusteeIndividual(request.userAnswers)
+      mapperDetails match {
+        case Some(trusteeDetails) =>
+          if (!data.trustees.contains(trusteeDetails)) {
+            trustConnector.addTrustee(request.userAnswers.identifier, trusteeDetails).map { _ =>
+              Redirect(controllers.routes.AddATrusteeController.onPageLoad())
             }
-          case None =>
-            logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to submit trustee on check your answers")
-            errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-        }
+          } else {
+            Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad()))
+          }
+        case None                 =>
+          logger.error(
+            s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] unable to submit trustee on check your answers"
+          )
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
+    }
   }
+
 }

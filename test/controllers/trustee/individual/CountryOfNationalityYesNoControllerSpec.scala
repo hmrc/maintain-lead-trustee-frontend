@@ -30,10 +30,10 @@ import views.html.trustee.individual.CountryOfNationalityYesNoView
 
 class CountryOfNationalityYesNoControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustee.individual.countryOfNationalityYesNo")
+  private val form: Form[Boolean]     = new YesNoFormProvider().withPrefix("trustee.individual.countryOfNationalityYesNo")
   private val onPageLoadRoute: String = routes.CountryOfNationalityYesNoController.onPageLoad(NormalMode).url
-  private val name: Name = Name("FirstName", None, "LastName")
-  private val onwardRoute = Call("GET", "/foo")
+  private val name: Name              = Name("FirstName", None, "LastName")
+  private val onwardRoute             = Call("GET", "/foo")
 
   val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -83,7 +83,8 @@ class CountryOfNationalityYesNoControllerSpec extends SpecBase {
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-          ).build()
+          )
+          .build()
 
       val request =
         FakeRequest(POST, onPageLoadRoute)
@@ -115,7 +116,7 @@ class CountryOfNationalityYesNoControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, NormalMode, name.displayName)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -149,4 +150,5 @@ class CountryOfNationalityYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

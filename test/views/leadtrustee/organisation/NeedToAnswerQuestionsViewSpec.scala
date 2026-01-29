@@ -37,8 +37,9 @@ class NeedToAnswerQuestionsViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView)
 
-    //behave like pageWithDynamicHint(applyView, messageKeyPrefix, leadTrustee)
+    // behave like pageWithDynamicHint(applyView, messageKeyPrefix, leadTrustee)
 
     behave like pageWithASubmitButton(applyView)
   }
+
 }

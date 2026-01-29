@@ -38,7 +38,9 @@ class NameControllerSpec extends SpecBase {
   lazy val nameRoute = routes.NameController.onPageLoad().url
 
   val userAnswers = emptyUserAnswers
-    .set(RegisteredInUkYesNoPage, true).success.value
+    .set(RegisteredInUkYesNoPage, true)
+    .success
+    .value
 
   "Name Controller" must {
 
@@ -63,7 +65,9 @@ class NameControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val answers = userAnswers
-        .set(NamePage, "My Trust").success.value
+        .set(NamePage, "My Trust")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -111,7 +115,7 @@ class NameControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(POST, nameRoute).withFormUrlEncodedBody(("value" -> ""))
+      val request = FakeRequest(POST, nameRoute).withFormUrlEncodedBody("value" -> "")
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -124,7 +128,7 @@ class NameControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, true)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to TrusteeUtrYesNoPage when TrusteeUtrYesNo is not answered" in {
@@ -175,4 +179,5 @@ class NameControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

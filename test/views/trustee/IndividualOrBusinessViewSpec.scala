@@ -42,4 +42,5 @@ class IndividualOrBusinessViewSpec extends OptionsViewBehaviours {
 
     behave like pageWithOptions(form, applyView, IndividualOrBusiness.options)
   }
+
 }

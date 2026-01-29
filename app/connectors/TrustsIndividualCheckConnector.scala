@@ -26,11 +26,13 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustsIndividualCheckConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
+class TrustsIndividualCheckConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
   private val baseUrl: String = s"${config.trustsIndividualCheckUrl}/trusts-individual-check"
 
-  def matchLeadTrustee(body: IdMatchRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IdMatchResponse] = {
+  def matchLeadTrustee(
+    body: IdMatchRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IdMatchResponse] = {
     val url: String = s"$baseUrl/individual-check"
     http.post(url"$url").withBody(Json.toJson(body)).execute[IdMatchResponse]
   }
@@ -39,4 +41,5 @@ class TrustsIndividualCheckConnector @Inject()(http: HttpClientV2, config: Front
     val url: String = s"$baseUrl/$id/failed-attempts"
     http.get(url"$url").execute[Int]
   }
+
 }

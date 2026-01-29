@@ -26,154 +26,164 @@ import viewmodels.AnswerRow
 
 import java.time.LocalDate
 
-class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatters) {
+class AnswerRowConverter @Inject() (checkAnswersFormatters: CheckAnswersFormatters) {
 
-  def bind(userAnswers: UserAnswers, trusteeName: String)
-          (implicit messages: Messages): Bound = new Bound(userAnswers, trusteeName)
+  def bind(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages): Bound =
+    new Bound(userAnswers, trusteeName)
 
-  class Bound(userAnswers: UserAnswers, trusteeName: String)
-             (implicit messages: Messages) {
+  class Bound(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages) {
 
-    def nameQuestion(query: Gettable[Name],
-                     labelKey: String,
-                     changeUrl: String,
-                     canEdit: Boolean = true): Option[AnswerRow] = {
+    def nameQuestion(
+      query: Gettable[Name],
+      labelKey: String,
+      changeUrl: String,
+      canEdit: Boolean = true
+    ): Option[AnswerRow] = {
       val format = (x: Name) => HtmlFormat.escape(x.displayFullName)
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
-    def stringQuestion(query: Gettable[String],
-                       labelKey: String,
-                       changeUrl: String): Option[AnswerRow] = {
+    def stringQuestion(query: Gettable[String], labelKey: String, changeUrl: String): Option[AnswerRow] = {
       val format = (x: String) => HtmlFormat.escape(x)
       question(query, labelKey, format, changeUrl)
     }
 
-    def yesNoQuestion(query: Gettable[Boolean],
-                      labelKey: String,
-                      changeUrl: String,
-                      canEdit: Boolean = true): Option[AnswerRow] = {
+    def yesNoQuestion(
+      query: Gettable[Boolean],
+      labelKey: String,
+      changeUrl: String,
+      canEdit: Boolean = true
+    ): Option[AnswerRow] = {
       val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
-    def yesNoQuestion(query: Gettable[Boolean],
-                      labelKey: String,
-                      changeUrl: Option[String],
-                      canEdit: Boolean): Option[AnswerRow] = {
+    def yesNoQuestion(
+      query: Gettable[Boolean],
+      labelKey: String,
+      changeUrl: Option[String],
+      canEdit: Boolean
+    ): Option[AnswerRow] = {
       val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
-    def yesNoQuestionAllowEmptyAnswer(query: Gettable[Boolean],
-                                      labelKey: String,
-                                      changeUrl: String,
-                                      canEdit: Boolean = true): Option[AnswerRow] = {
+    def yesNoQuestionAllowEmptyAnswer(
+      query: Gettable[Boolean],
+      labelKey: String,
+      changeUrl: String,
+      canEdit: Boolean = true
+    ): Option[AnswerRow] =
       yesNoQuestion(query, labelKey, changeUrl, canEdit) orElse
         Some(answer(labelKey, Some(changeUrl), canEdit))
-    }
 
-    def dateQuestion(query: Gettable[LocalDate],
-                     labelKey: String,
-                     changeUrl: String,
-                     canEdit: Boolean = true): Option[AnswerRow] = {
+    def dateQuestion(
+      query: Gettable[LocalDate],
+      labelKey: String,
+      changeUrl: String,
+      canEdit: Boolean = true
+    ): Option[AnswerRow] = {
       val format = (x: LocalDate) => checkAnswersFormatters.formatDate(x)
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
-    def ninoQuestion(query: Gettable[String],
-                     labelKey: String,
-                     changeUrl: String,
-                     canEdit: Boolean = true): Option[AnswerRow] = {
+    def ninoQuestion(
+      query: Gettable[String],
+      labelKey: String,
+      changeUrl: String,
+      canEdit: Boolean = true
+    ): Option[AnswerRow] = {
       val format = (x: String) => checkAnswersFormatters.formatNino(x)
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
-    def addressQuestion[T <: Address](query: Gettable[T],
-                                      labelKey: String,
-                                      changeUrl: String)
-                                     (implicit reads: Reads[T]): Option[AnswerRow] = {
+    def addressQuestion[T <: Address](query: Gettable[T], labelKey: String, changeUrl: String)(implicit
+      reads: Reads[T]
+    ): Option[AnswerRow] = {
       val format = (x: T) => checkAnswersFormatters.formatAddress(x)
       question(query, labelKey, format, changeUrl)
     }
 
-    def passportOrIdCardDetailsQuestion(query: Gettable[CombinedPassportOrIdCard],
-                                        labelKey: String,
-                                        changeUrl: Option[String],
-                                        canEdit: Boolean = true): Option[AnswerRow] = {
+    def passportOrIdCardDetailsQuestion(
+      query: Gettable[CombinedPassportOrIdCard],
+      labelKey: String,
+      changeUrl: Option[String],
+      canEdit: Boolean = true
+    ): Option[AnswerRow] = {
       val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
       question(query, labelKey, format, changeUrl, canEdit)
     }
 
-    def passportDetailsQuestion(query: Gettable[Passport],
-                                labelKey: String,
-                                changeUrl: String): Option[AnswerRow] = {
+    def passportDetailsQuestion(query: Gettable[Passport], labelKey: String, changeUrl: String): Option[AnswerRow] = {
       val format = (x: Passport) => checkAnswersFormatters.formatPassportDetails(x)
       question(query, labelKey, format, changeUrl)
     }
 
-    def idCardDetailsQuestion(query: Gettable[IdCard],
-                              labelKey: String,
-                              changeUrl: String): Option[AnswerRow] = {
+    def idCardDetailsQuestion(query: Gettable[IdCard], labelKey: String, changeUrl: String): Option[AnswerRow] = {
       val format = (x: IdCard) => checkAnswersFormatters.formatIdCardDetails(x)
       question(query, labelKey, format, changeUrl)
     }
 
-    def countryQuestion(isUkQuery: Gettable[Boolean],
-                        query: Gettable[String],
-                        labelKey: String,
-                        changeUrl: String): Option[AnswerRow] = {
+    def countryQuestion(
+      isUkQuery: Gettable[Boolean],
+      query: Gettable[String],
+      labelKey: String,
+      changeUrl: String
+    ): Option[AnswerRow] =
       userAnswers.get(isUkQuery) flatMap {
         case false =>
           val format = (x: String) => checkAnswersFormatters.country(x)
           question(query, labelKey, format, changeUrl)
-        case _ =>
+        case _     =>
           None
       }
-    }
 
-    def enumQuestion[T](query: Gettable[T],
-                        labelKey: String,
-                        changeUrl: String,
-                        enumPrefix: String,
-                        canEdit: Boolean = true)
-                       (implicit messages:Messages, rds: Reads[T]): Option[AnswerRow] = {
+    def enumQuestion[T](
+      query: Gettable[T],
+      labelKey: String,
+      changeUrl: String,
+      enumPrefix: String,
+      canEdit: Boolean = true
+    )(implicit messages: Messages, rds: Reads[T]): Option[AnswerRow] = {
       val format = (x: T) => checkAnswersFormatters.formatEnum(enumPrefix, x)
       question(query, labelKey, format, changeUrl)
     }
 
-    private def question[T](query: Gettable[T],
-                            labelKey: String,
-                            format: T => Html,
-                            changeUrl: String,
-                            canEdit: Boolean = true)
-                           (implicit rds: Reads[T]): Option[AnswerRow] = {
+    private def question[T](
+      query: Gettable[T],
+      labelKey: String,
+      format: T => Html,
+      changeUrl: String,
+      canEdit: Boolean = true
+    )(implicit rds: Reads[T]): Option[AnswerRow] =
       userAnswers.get(query) map { x =>
         answer(labelKey, Some(changeUrl), canEdit, format(x))
       }
-    }
 
-    private def question[T](query: Gettable[T],
-                            labelKey: String,
-                            format: T => Html,
-                            changeUrl: Option[String],
-                            canEdit: Boolean)
-                           (implicit rds: Reads[T]): Option[AnswerRow] = {
+    private def question[T](
+      query: Gettable[T],
+      labelKey: String,
+      format: T => Html,
+      changeUrl: Option[String],
+      canEdit: Boolean
+    )(implicit rds: Reads[T]): Option[AnswerRow] =
       userAnswers.get(query) map { x =>
         answer(labelKey, changeUrl, canEdit, format(x))
       }
-    }
 
-    private def answer(labelKey: String,
-                       changeUrl: Option[String],
-                       canEdit: Boolean,
-                       format: Html = HtmlFormat.empty): AnswerRow = {
+    private def answer(
+      labelKey: String,
+      changeUrl: Option[String],
+      canEdit: Boolean,
+      format: Html = HtmlFormat.empty
+    ): AnswerRow =
       AnswerRow(
         label = messages(s"$labelKey.checkYourAnswersLabel", trusteeName),
         answer = format,
         changeUrl = changeUrl,
         canEdit = canEdit
       )
-    }
+
   }
+
 }

@@ -28,17 +28,18 @@ case object UtrYesNoPage extends QuestionPage[Boolean] {
 
   override def toString: String = "utrYesNo"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(true) =>
-        userAnswers.remove(AddressYesNoPage)
+      case Some(true)  =>
+        userAnswers
+          .remove(AddressYesNoPage)
           .flatMap(_.remove(AddressInTheUkYesNoPage))
           .flatMap(_.remove(UkAddressPage))
           .flatMap(_.remove(NonUkAddressPage))
       case Some(false) =>
         userAnswers.remove(UtrPage)
-      case _ =>
+      case _           =>
         super.cleanup(value, userAnswers)
     }
-  }
+
 }

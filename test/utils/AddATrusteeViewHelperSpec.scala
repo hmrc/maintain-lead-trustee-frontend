@@ -17,7 +17,9 @@
 package utils
 
 import base.SpecBase
-import models.{AllTrustees, Name, NationalInsuranceNumber, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation}
+import models.{
+  AllTrustees, Name, NationalInsuranceNumber, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation
+}
 import viewmodels.addAnother.AddRow
 
 import java.time.LocalDate
@@ -51,18 +53,33 @@ class AddATrusteeViewHelperSpec extends SpecBase {
       "generate Nil for no user answers" in {
         val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
         rows.inProgress mustBe Nil
-        rows.complete mustBe Nil
+        rows.complete   mustBe Nil
       }
 
       "generate rows from user answers for trustees" in {
         val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
-        rows.complete mustBe List(
-          AddRow(name = "First Last", typeLabel = "Trustee Individual", changeLabel = "Change details", changeUrl = "/maintain-a-trust/trustees/trustee/individual/0/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")),
-          AddRow(name = "Trustee Org", typeLabel = "Trustee Company", changeLabel = "Change details" , changeUrl = "/maintain-a-trust/trustees/trustee/organisation/1/check-details", removeLabel = Some("Remove"), removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove"))
+        rows.complete   mustBe List(
+          AddRow(
+            name = "First Last",
+            typeLabel = "Trustee Individual",
+            changeLabel = "Change details",
+            changeUrl = "/maintain-a-trust/trustees/trustee/individual/0/check-details",
+            removeLabel = Some("Remove"),
+            removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")
+          ),
+          AddRow(
+            name = "Trustee Org",
+            typeLabel = "Trustee Company",
+            changeLabel = "Change details",
+            changeUrl = "/maintain-a-trust/trustees/trustee/organisation/1/check-details",
+            removeLabel = Some("Remove"),
+            removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove")
+          )
         )
         rows.inProgress mustBe Nil
       }
 
     }
   }
+
 }

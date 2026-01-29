@@ -26,4 +26,5 @@ class ReplaceLeadTrusteeFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text(s"$messagePrefix.error.required")
     )
+
 }

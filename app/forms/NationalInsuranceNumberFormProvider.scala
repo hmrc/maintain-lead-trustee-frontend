@@ -34,4 +34,5 @@ class NationalInsuranceNumberFormProvider @Inject() extends Mappings {
           )
         )
     )
+
 }

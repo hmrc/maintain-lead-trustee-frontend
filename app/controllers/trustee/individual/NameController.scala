@@ -32,41 +32,39 @@ import views.html.trustee.individual.NameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameController @Inject()(
-                                override val messagesApi: MessagesApi,
-                                sessionRepository: PlaybackRepository,
-                                navigator: Navigator,
-                                standardActionSets: StandardActionSets,
-                                formProvider: IndividualNameFormProvider,
-                                val controllerComponents: MessagesControllerComponents,
-                                view: NameView
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NameController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: IndividualNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Name] = formProvider.withPrefix("trustee.individual.name")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(NamePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(NamePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
-            _ <- sessionRepository.set(updatedAnswers)
+            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(NamePage, mode, updatedAnswers))
       )
   }
+
 }

@@ -27,7 +27,7 @@ import views.html.trustee.individual.LiveInTheUkYesNoView
 class LiveInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.liveInTheUkYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -42,8 +42,15 @@ class LiveInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.LiveInTheUkYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name.displayName),
+      routes.LiveInTheUkYesNoController.onSubmit(NormalMode).url
+    )
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

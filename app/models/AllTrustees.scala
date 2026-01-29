@@ -24,6 +24,7 @@ case class AllTrustees(lead: Option[LeadTrustee], trustees: List[Trustee]) {
 
   def addToHeading(implicit mp: MessagesProvider): String = size match {
     case x if x > 1 => Messages("addATrustee.count.heading", x)
-    case _ => Messages("addATrustee.heading")
+    case _          => Messages("addATrustee.heading")
   }
+
 }

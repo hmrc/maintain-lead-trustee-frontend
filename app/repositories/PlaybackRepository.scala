@@ -36,51 +36,53 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PlaybackRepositoryImpl @Inject()(val mongoComponent: MongoComponent,
-                                       val config: FrontendAppConfig
-                                      )(implicit val ec: ExecutionContext)
-  extends PlayMongoRepository[UserAnswers](
-    collectionName = "user-answers",
-    mongoComponent = mongoComponent,
-    domainFormat = Format(UserAnswers.reads,UserAnswers.writes),
-    indexes = Seq(
-      IndexModel(
-        ascending("updatedAt"),
-        IndexOptions()
-          .unique(false)
-          .name("user-answers-updated-at-index")
-          .expireAfter(config.cachettlplaybackInSeconds, TimeUnit.SECONDS)),
-      IndexModel(
-        ascending("newId"),
-        IndexOptions()
-          .unique(false)
-          .name("internal-id-and-utr-and-sessionId-compound-index")
-      )
-    ), replaceIndexes = config.dropIndexes
-
-  ) with Logging with PlaybackRepository {
+class PlaybackRepositoryImpl @Inject() (val mongoComponent: MongoComponent, val config: FrontendAppConfig)(implicit
+  val ec: ExecutionContext
+) extends PlayMongoRepository[UserAnswers](
+      collectionName = "user-answers",
+      mongoComponent = mongoComponent,
+      domainFormat = Format(UserAnswers.reads, UserAnswers.writes),
+      indexes = Seq(
+        IndexModel(
+          ascending("updatedAt"),
+          IndexOptions()
+            .unique(false)
+            .name("user-answers-updated-at-index")
+            .expireAfter(config.cachettlplaybackInSeconds, TimeUnit.SECONDS)
+        ),
+        IndexModel(
+          ascending("newId"),
+          IndexOptions()
+            .unique(false)
+            .name("internal-id-and-utr-and-sessionId-compound-index")
+        )
+      ),
+      replaceIndexes = config.dropIndexes
+    )
+    with Logging
+    with PlaybackRepository {
 
   private def selector(internalId: String, utr: String, sessionId: String): Bson =
-    equal("newId" , s"$internalId-$utr-$sessionId")
+    equal("newId", s"$internalId-$utr-$sessionId")
 
   override def get(internalId: String, utr: String, sessionId: String): Future[Option[UserAnswers]] = {
 
-    val modifier = Updates.set("updatedAt",LocalDateTime.now)
+    val modifier = Updates.set("updatedAt", LocalDateTime.now)
 
     val updateOption = new FindOneAndUpdateOptions().upsert(false).returnDocument(ReturnDocument.BEFORE)
 
-    collection.findOneAndUpdate(selector(internalId,utr,sessionId),modifier,updateOption).toFutureOption()
+    collection.findOneAndUpdate(selector(internalId, utr, sessionId), modifier, updateOption).toFutureOption()
   }
 
   override def set(userAnswers: UserAnswers): Future[Boolean] = {
 
-    val select = selector(userAnswers.internalId,userAnswers.identifier,userAnswers.sessionId)
+    val select = selector(userAnswers.internalId, userAnswers.identifier, userAnswers.sessionId)
 
     val newUserAnswers = userAnswers.copy(updatedAt = LocalDateTime.now)
 
     val replaceOptions = new ReplaceOptions().upsert(true)
 
-    collection.replaceOne(select,newUserAnswers,replaceOptions).headOption().map(_.exists(_.wasAcknowledged()))
+    collection.replaceOne(select, newUserAnswers, replaceOptions).headOption().map(_.exists(_.wasAcknowledged()))
   }
 
 }

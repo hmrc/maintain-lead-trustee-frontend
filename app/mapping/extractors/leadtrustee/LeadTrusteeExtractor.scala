@@ -18,7 +18,10 @@ package mapping.extractors.leadtrustee
 
 import mapping.extractors.Extractor
 import models.Constants.GB
-import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, IndividualOrBusiness, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{
+  Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, IndividualOrBusiness, NationalInsuranceNumber,
+  NonUkAddress, Passport, UkAddress, UserAnswers
+}
 import pages.leadtrustee.IndividualOrBusinessPage
 import pages.{EmptyPage, QuestionPage}
 import play.api.libs.json.JsPath
@@ -27,63 +30,71 @@ import scala.util.{Success, Try}
 
 trait LeadTrusteeExtractor extends Extractor {
 
-  override def basePath: JsPath = pages.leadtrustee.basePath
+  override def basePath: JsPath                                             = pages.leadtrustee.basePath
   override def individualOrBusinessPage: QuestionPage[IndividualOrBusiness] = IndividualOrBusinessPage
 
-  override def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+  override def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] =
     address match {
       case Some(value) => extractAddress(value, answers)
-      case None => Success(answers)
+      case None        => Success(answers)
     }
-  }
 
-  override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
+  override def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] =
     address match {
-      case uk: UkAddress => Success(answers)
-        .flatMap(_.set(ukAddressPage, uk))
-      case nonUk: NonUkAddress => Success(answers)
-        .flatMap(_.set(nonUkAddressPage, nonUk))
+      case uk: UkAddress       =>
+        Success(answers)
+          .flatMap(_.set(ukAddressPage, uk))
+      case nonUk: NonUkAddress =>
+        Success(answers)
+          .flatMap(_.set(nonUkAddressPage, nonUk))
     }
-  }
 
-  override def extractCountryOfResidenceOrNationality(country: Option[String],
-                                                      answers: UserAnswers,
-                                                      yesNoPage: QuestionPage[Boolean],
-                                                      ukYesNoPage: QuestionPage[Boolean],
-                                                      page: QuestionPage[String]): Try[UserAnswers] = {
-      country match {
-        case Some(GB) => answers
+  override def extractCountryOfResidenceOrNationality(
+    country: Option[String],
+    answers: UserAnswers,
+    yesNoPage: QuestionPage[Boolean],
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Try[UserAnswers] =
+    country match {
+      case Some(GB)      =>
+        answers
           .set(ukYesNoPage, true)
           .flatMap(_.set(page, GB))
-        case Some(country) => answers
+      case Some(country) =>
+        answers
           .set(ukYesNoPage, false)
           .flatMap(_.set(page, country))
-        case None => Success(answers)
-      }
-  }
+      case None          => Success(answers)
+    }
 
-  def ninoYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ninoPage: QuestionPage[String] = new EmptyPage[String]
+  def ninoYesNoPage: QuestionPage[Boolean]                                = new EmptyPage[Boolean]
+  def ninoPage: QuestionPage[String]                                      = new EmptyPage[String]
   def passportOrIdCardDetailsPage: QuestionPage[CombinedPassportOrIdCard] = new EmptyPage[CombinedPassportOrIdCard]
 
-  def extractIndIdentification(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
+  def extractIndIdentification(
+    identification: Option[IndividualIdentification],
+    answers: UserAnswers
+  ): Try[UserAnswers] =
     identification map {
-      case NationalInsuranceNumber(nino) => answers
-        .set(ninoYesNoPage, true)
-        .flatMap(_.set(ninoPage, nino))
-      case p: Passport => answers
-        .set(ninoYesNoPage, false)
-        .flatMap(_.set(passportOrIdCardDetailsPage, p.asCombined))
-      case id: IdCard => answers
-        .set(ninoYesNoPage, false)
-        .flatMap(_.set(passportOrIdCardDetailsPage, id.asCombined))
-      case c: CombinedPassportOrIdCard => answers
-        .set(ninoYesNoPage, false)
-        .flatMap(_.set(passportOrIdCardDetailsPage, c))
-    } getOrElse {
+      case NationalInsuranceNumber(nino) =>
+        answers
+          .set(ninoYesNoPage, true)
+          .flatMap(_.set(ninoPage, nino))
+      case p: Passport                   =>
+        answers
+          .set(ninoYesNoPage, false)
+          .flatMap(_.set(passportOrIdCardDetailsPage, p.asCombined))
+      case id: IdCard                    =>
+        answers
+          .set(ninoYesNoPage, false)
+          .flatMap(_.set(passportOrIdCardDetailsPage, id.asCombined))
+      case c: CombinedPassportOrIdCard   =>
+        answers
+          .set(ninoYesNoPage, false)
+          .flatMap(_.set(passportOrIdCardDetailsPage, c))
+    } getOrElse
       answers
         .set(ninoYesNoPage, false)
-    }
-  }
 
 }

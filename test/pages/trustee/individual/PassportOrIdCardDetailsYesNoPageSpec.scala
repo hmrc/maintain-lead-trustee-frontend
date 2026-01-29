@@ -31,11 +31,16 @@ class PassportOrIdCardDetailsYesNoPageSpec extends PageBehaviours {
     "implement cleanup logic" when {
       "NO selected" in {
         val userAnswers = emptyUserAnswers
-          .set(PassportOrIdCardDetailsPage, arbitraryCombinedPassportOrIdCard.arbitrary.sample.get).success.value
-          .set(PassportOrIdCardDetailsYesNoPage, false).success.value
+          .set(PassportOrIdCardDetailsPage, arbitraryCombinedPassportOrIdCard.arbitrary.sample.get)
+          .success
+          .value
+          .set(PassportOrIdCardDetailsYesNoPage, false)
+          .success
+          .value
 
         userAnswers.get(PassportOrIdCardDetailsPage) mustBe None
       }
     }
   }
+
 }

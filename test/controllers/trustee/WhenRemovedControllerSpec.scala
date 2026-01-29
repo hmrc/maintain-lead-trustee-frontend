@@ -216,7 +216,6 @@ class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.failed(new IndexOutOfBoundsException(s"No index exists $index")))
 
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustConnector].toInstance(mockConnector))
         .build()
@@ -229,4 +228,5 @@ class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     }
   }
+
 }

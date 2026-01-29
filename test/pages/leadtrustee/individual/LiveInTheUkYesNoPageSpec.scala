@@ -45,4 +45,5 @@ class LiveInTheUkYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(UkAddressPage) mustNot be(defined)
     }
   }
+
 }

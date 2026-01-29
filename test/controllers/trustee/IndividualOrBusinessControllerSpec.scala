@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class IndividualOrBusinessControllerSpec extends SpecBase {
 
   val formProvider = new IndividualOrBusinessFormProvider()
-  val form = formProvider.withPrefix("trustee.individualOrBusiness")
+  val form         = formProvider.withPrefix("trustee.individualOrBusiness")
 
   lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad().url
 
@@ -156,4 +156,5 @@ class IndividualOrBusinessControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

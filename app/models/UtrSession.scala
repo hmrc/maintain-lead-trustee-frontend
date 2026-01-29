@@ -20,11 +20,7 @@ import java.time.LocalDateTime
 
 import play.api.libs.json.{OWrites, Reads, __}
 
-
-final case class UtrSession(internalId: String,
-                            utr: String,
-                            updatedAt: LocalDateTime = LocalDateTime.now
-                           )
+final case class UtrSession(internalId: String, utr: String, updatedAt: LocalDateTime = LocalDateTime.now)
 
 object UtrSession {
 
@@ -36,7 +32,7 @@ object UtrSession {
       (__ \ "internalId").read[String] and
         (__ \ "utr").read[String] and
         (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead)
-      ) (UtrSession.apply _)
+    )(UtrSession.apply _)
   }
 
   implicit lazy val writes: OWrites[UtrSession] = {
@@ -47,7 +43,7 @@ object UtrSession {
       (__ \ "internalId").write[String] and
         (__ \ "utr").write[String] and
         (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite)
-      ) (unlift(UtrSession.unapply))
+    )(unlift(UtrSession.unapply))
   }
 
 }

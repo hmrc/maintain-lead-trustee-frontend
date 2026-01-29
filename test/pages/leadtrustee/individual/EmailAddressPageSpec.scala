@@ -18,7 +18,6 @@ package pages.leadtrustee.individual
 
 import pages.behaviours.PageBehaviours
 
-
 class EmailAddressPageSpec extends PageBehaviours {
 
   "EmailAddressPage" must {
@@ -29,4 +28,5 @@ class EmailAddressPageSpec extends PageBehaviours {
 
     beRemovable[String](EmailAddressPage)
   }
+
 }

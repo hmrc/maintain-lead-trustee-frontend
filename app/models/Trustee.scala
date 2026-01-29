@@ -33,11 +33,11 @@ sealed trait Trustee {
 object Trustee {
 
   implicit val writes: Writes[Trustee] = Writes[Trustee] {
-    case trustee: TrusteeIndividual => Json.toJson(trustee)(TrusteeIndividual.writes)
+    case trustee: TrusteeIndividual   => Json.toJson(trustee)(TrusteeIndividual.writes)
     case trustee: TrusteeOrganisation => Json.toJson(trustee)(TrusteeOrganisation.formats)
   }
 
-  implicit val reads : Reads[Trustee] = Reads { data : JsValue =>
+  implicit val reads: Reads[Trustee] = Reads { data: JsValue =>
     val allErrors: Either[collection.Seq[(JsPath, collection.Seq[JsonValidationError])], Trustee] = for {
       indErrs <- (data \ INDIVIDUAL_TRUSTEE).validate[TrusteeIndividual].asEither.left
       orgErrs <- (data \ BUSINESS_TRUSTEE).validate[TrusteeOrganisation].asEither.left
@@ -45,7 +45,7 @@ object Trustee {
       orgErrs.map(pair => (pair._1, JsonValidationError("Failed to read as TrusteeOrganisation") +: pair._2))
 
     allErrors match {
-      case Right(t) => JsSuccess(t)
+      case Right(t)   => JsSuccess(t)
       case Left(errs) => JsError(errs)
     }
   }
@@ -58,29 +58,32 @@ object Trustee {
   def legallyIncapableWrites: Writes[YesNoDontKnow] = new Writes[YesNoDontKnow] {
     override def writes(o: YesNoDontKnow): JsValue = o match {
       case Yes => JsBoolean(false)
-      case No => JsBoolean(true)
-      case _ => JsNull
+      case No  => JsBoolean(true)
+      case _   => JsNull
     }
   }
+
 }
 
-case class TrusteeIndividual(name: Name,
-                             dateOfBirth: Option[LocalDate],
-                             phoneNumber: Option[String],
-                             identification: Option[IndividualIdentification],
-                             address: Option[Address],
-                             countryOfResidence: Option[String] = None,
-                             nationality: Option[String] = None,
-                             mentalCapacityYesNo: Option[YesNoDontKnow] = None,
-                             entityStart: LocalDate,
-                             provisional: Boolean) extends Trustee {
+case class TrusteeIndividual(
+  name: Name,
+  dateOfBirth: Option[LocalDate],
+  phoneNumber: Option[String],
+  identification: Option[IndividualIdentification],
+  address: Option[Address],
+  countryOfResidence: Option[String] = None,
+  nationality: Option[String] = None,
+  mentalCapacityYesNo: Option[YesNoDontKnow] = None,
+  entityStart: LocalDate,
+  provisional: Boolean
+) extends Trustee {
 
   override val `type`: String = INDIVIDUAL_TRUSTEE
 }
 
 object TrusteeIndividual {
 
-  def readNullableAtSubPath[T:Reads](subPath : JsPath) : Reads[Option[T]] = Reads (
+  def readNullableAtSubPath[T: Reads](subPath: JsPath): Reads[Option[T]] = Reads(
     _.transform(subPath.json.pick)
       .flatMap(_.validate[T])
       .map(Some(_))
@@ -98,7 +101,7 @@ object TrusteeIndividual {
       readMentalCapacity and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").read[Boolean]
-    )(TrusteeIndividual.apply _)
+  )(TrusteeIndividual.apply _)
 
   implicit val writes: Writes[TrusteeIndividual] = (
     (__ \ Symbol("name")).write[Name] and
@@ -111,17 +114,19 @@ object TrusteeIndividual {
       (__ \ Symbol("legallyIncapable")).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
-    )(unlift(TrusteeIndividual.unapply))
+  )(unlift(TrusteeIndividual.unapply))
 
 }
 
-case class TrusteeOrganisation(name: String,
-                               phoneNumber: Option[String] = None,
-                               email: Option[String] = None,
-                               identification: Option[TrustIdentificationOrgType],
-                               countryOfResidence: Option[String] = None,
-                               entityStart: LocalDate,
-                               provisional: Boolean) extends Trustee {
+case class TrusteeOrganisation(
+  name: String,
+  phoneNumber: Option[String] = None,
+  email: Option[String] = None,
+  identification: Option[TrustIdentificationOrgType],
+  countryOfResidence: Option[String] = None,
+  entityStart: LocalDate,
+  provisional: Boolean
+) extends Trustee {
 
   override val `type`: String = BUSINESS_TRUSTEE
 }
@@ -130,10 +135,7 @@ object TrusteeOrganisation {
   implicit val formats: Format[TrusteeOrganisation] = Json.format[TrusteeOrganisation]
 }
 
-
-case class TrustIdentificationOrgType(safeId: Option[String],
-                                      utr: Option[String],
-                                      address: Option[Address])
+case class TrustIdentificationOrgType(safeId: Option[String], utr: Option[String], address: Option[Address])
 
 object TrustIdentificationOrgType {
   implicit val formats: Format[TrustIdentificationOrgType] = Json.format[TrustIdentificationOrgType]

@@ -32,10 +32,8 @@ class AddATrusteeSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
 
       val gen = Gen.oneOf(AddATrustee.values.toSeq)
 
-      forAll(gen) {
-        addATrustee =>
-
-          JsString(addATrustee.toString).validate[AddATrustee].asOpt.value mustEqual addATrustee
+      forAll(gen) { addATrustee =>
+        JsString(addATrustee.toString).validate[AddATrustee].asOpt.value mustEqual addATrustee
       }
     }
 
@@ -43,10 +41,8 @@ class AddATrusteeSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
 
       val gen = arbitrary[String] suchThat (!AddATrustee.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[AddATrustee] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[AddATrustee] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,11 +50,10 @@ class AddATrusteeSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
 
       val gen = Gen.oneOf(AddATrustee.values.toSeq)
 
-      forAll(gen) {
-        addATrustee =>
-
-          Json.toJson(addATrustee) mustEqual JsString(addATrustee.toString)
+      forAll(gen) { addATrustee =>
+        Json.toJson(addATrustee) mustEqual JsString(addATrustee.toString)
       }
     }
   }
+
 }

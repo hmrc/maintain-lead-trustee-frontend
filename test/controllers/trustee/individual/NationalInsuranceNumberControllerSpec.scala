@@ -35,9 +35,9 @@ import views.html.trustee.individual.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
-class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfterEach{
+class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  val formProvider = new NationalInsuranceNumberFormProvider()
+  val formProvider       = new NationalInsuranceNumberFormProvider()
   val form: Form[String] = formProvider.apply("trustee.individual.nationalInsuranceNumber", Nil)
 
   val trusteeName: Name = Name("FirstName", None, "LastName")
@@ -85,8 +85,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
       "amending" in {
 
         val userAnswers = emptyUserAnswers
-          .set(IndexPage, index).success.value
-          .set(NamePage, trusteeName).success.value
+          .set(IndexPage, index)
+          .success
+          .value
+          .set(NamePage, trusteeName)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -112,8 +116,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, trusteeName).success.value
-        .set(NationalInsuranceNumberPage, "answer").success.value
+        .set(NamePage, trusteeName)
+        .success
+        .value
+        .set(NationalInsuranceNumberPage, "answer")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -141,7 +149,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
           .overrides(
             bind[Navigator].toInstance(fakeNavigator),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", "AA000000A"))
@@ -164,7 +173,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
           .overrides(
             bind[Navigator].toInstance(fakeNavigator),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", "AA000000A"))
@@ -236,4 +246,5 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
       application.stop()
     }
   }
+
 }

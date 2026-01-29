@@ -38,7 +38,7 @@ class UkAddressControllerSpec extends SpecBase {
 
   lazy val ukAddressRoute = routes.UkAddressController.onPageLoad().url
 
-  val name = "Org Name"
+  val name    = "Org Name"
   val address = UkAddress("line 1", "line 2", None, None, "AB11AB")
 
   val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
@@ -65,9 +65,8 @@ class UkAddressControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val application = applicationBuilder(userAnswers = Some(
-        userAnswers.set(UkAddressPage, address).success.value)
-      ).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers.set(UkAddressPage, address).success.value)).build()
 
       val request = FakeRequest(GET, ukAddressRoute)
 
@@ -95,7 +94,6 @@ class UkAddressControllerSpec extends SpecBase {
             bind[Navigator].toInstance(fakeNavigator)
           )
           .build()
-
 
       val request =
         FakeRequest(POST, ukAddressRoute)
@@ -129,7 +127,7 @@ class UkAddressControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, name)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -163,4 +161,5 @@ class UkAddressControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

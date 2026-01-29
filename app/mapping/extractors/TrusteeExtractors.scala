@@ -23,25 +23,23 @@ import models._
 import javax.inject.Inject
 import scala.util.Try
 
-class TrusteeExtractors @Inject()(trusteeIndividualExtractor: TrusteeIndividualExtractor,
-                                  trusteeOrganisationExtractor: TrusteeOrganisationExtractor,
-                                  leadTrusteeIndividualExtractor: LeadTrusteeIndividualExtractor,
-                                  leadTrusteeOrganisationExtractor: LeadTrusteeOrganisationExtractor) {
+class TrusteeExtractors @Inject() (
+  trusteeIndividualExtractor: TrusteeIndividualExtractor,
+  trusteeOrganisationExtractor: TrusteeOrganisationExtractor,
+  leadTrusteeIndividualExtractor: LeadTrusteeIndividualExtractor,
+  leadTrusteeOrganisationExtractor: LeadTrusteeOrganisationExtractor
+) {
 
-  def extractTrusteeIndividual(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] = {
+  def extractTrusteeIndividual(userAnswers: UserAnswers, trustee: TrusteeIndividual, index: Int): Try[UserAnswers] =
     trusteeIndividualExtractor.extract(userAnswers, trustee, index)
-  }
 
-  def extractTrusteeOrganisation(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] = {
+  def extractTrusteeOrganisation(userAnswers: UserAnswers, trustee: TrusteeOrganisation, index: Int): Try[UserAnswers] =
     trusteeOrganisationExtractor.extract(userAnswers, trustee, index)
-  }
 
-  def extractLeadTrusteeIndividual(userAnswers: UserAnswers, trustee: LeadTrusteeIndividual): Try[UserAnswers] = {
+  def extractLeadTrusteeIndividual(userAnswers: UserAnswers, trustee: LeadTrusteeIndividual): Try[UserAnswers] =
     leadTrusteeIndividualExtractor.extract(userAnswers, trustee)
-  }
 
-  def extractLeadTrusteeOrganisation(userAnswers: UserAnswers, trustee: LeadTrusteeOrganisation): Try[UserAnswers] = {
+  def extractLeadTrusteeOrganisation(userAnswers: UserAnswers, trustee: LeadTrusteeOrganisation): Try[UserAnswers] =
     leadTrusteeOrganisationExtractor.extract(userAnswers, trustee)
-  }
 
 }

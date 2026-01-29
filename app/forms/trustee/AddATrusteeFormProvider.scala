@@ -27,4 +27,5 @@ class AddATrusteeFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[AddATrustee]("addATrustee.error.required")
     )
+
 }

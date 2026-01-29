@@ -31,8 +31,8 @@ import java.time.LocalDate
 
 class TrusteeOrganisationPrintHelperSpec extends SpecBase {
 
-  val name: Name = Name("First", Some("Middle"), "Last")
-  val trusteeUkAddress: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  val name: Name                        = Name("First", Some("Middle"), "Last")
+  val trusteeUkAddress: UkAddress       = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
   val trusteeNonUkAddress: NonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
 
   "TrusteeIndividualPrintHelper" must {
@@ -42,15 +42,33 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
       val helper = injector.instanceOf[TrusteeOrganisationPrintHelper]
 
       val userAnswers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Business).success.value
-        .set(NamePage, name.displayName).success.value
-        .set(UtrYesNoPage, true).success.value
-        .set(UtrPage, "1234567890").success.value
-        .set(AddressYesNoPage, true).success.value
-        .set(AddressInTheUkYesNoPage, true).success.value
-        .set(UkAddressPage, trusteeUkAddress).success.value
-        .set(NonUkAddressPage, trusteeNonUkAddress).success.value
-        .set(WhenAddedPage, LocalDate.of(2020, 1, 1)).success.value
+        .set(IndividualOrBusinessPage, Business)
+        .success
+        .value
+        .set(NamePage, name.displayName)
+        .success
+        .value
+        .set(UtrYesNoPage, true)
+        .success
+        .value
+        .set(UtrPage, "1234567890")
+        .success
+        .value
+        .set(AddressYesNoPage, true)
+        .success
+        .value
+        .set(AddressInTheUkYesNoPage, true)
+        .success
+        .value
+        .set(UkAddressPage, trusteeUkAddress)
+        .success
+        .value
+        .set(NonUkAddressPage, trusteeNonUkAddress)
+        .success
+        .value
+        .set(WhenAddedPage, LocalDate.of(2020, 1, 1))
+        .success
+        .value
 
       "adding" in {
 
@@ -60,14 +78,46 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
-            AnswerRow(label = messages("trustee.organisation.name.checkYourAnswersLabel"), answer = Html("First Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName), answer = Html("1234567890"), changeUrl = Some(rts.UtrController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressInTheUkYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName), answer = Html("1 January 2020"), changeUrl = Some(addRts.WhenAddedController.onPageLoad().url))
+            AnswerRow(
+              label = messages("trustee.organisation.name.checkYourAnswersLabel"),
+              answer = Html("First Last"),
+              changeUrl = Some(rts.NameController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName),
+              answer = Html("Yes"),
+              changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName),
+              answer = Html("1234567890"),
+              changeUrl = Some(rts.UtrController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName),
+              answer = Html("Yes"),
+              changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName),
+              answer = Html("Yes"),
+              changeUrl = Some(rts.AddressInTheUkYesNoController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName),
+              answer = Html("value 1<br />value 2<br />AB1 1AB"),
+              changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName),
+              answer = Html("value 1<br />value 2<br />Germany"),
+              changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.whenAdded.checkYourAnswersLabel", name.displayName),
+              answer = Html("1 January 2020"),
+              changeUrl = Some(addRts.WhenAddedController.onPageLoad().url)
+            )
           )
         )
       }
@@ -80,16 +130,45 @@ class TrusteeOrganisationPrintHelperSpec extends SpecBase {
         result mustBe AnswerSection(
           headingKey = None,
           rows = Seq(
-            AnswerRow(label = messages("trustee.organisation.name.checkYourAnswersLabel"), answer = Html("First Last"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName), answer = Html("1234567890"), changeUrl = Some(rts.UtrController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.AddressInTheUkYesNoController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url))
+            AnswerRow(
+              label = messages("trustee.organisation.name.checkYourAnswersLabel"),
+              answer = Html("First Last"),
+              changeUrl = Some(rts.NameController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.utrYesNo.checkYourAnswersLabel", name.displayName),
+              answer = Html("Yes"),
+              changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.utr.checkYourAnswersLabel", name.displayName),
+              answer = Html("1234567890"),
+              changeUrl = Some(rts.UtrController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.addressYesNo.checkYourAnswersLabel", name.displayName),
+              answer = Html("Yes"),
+              changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.addressInTheUkYesNo.checkYourAnswersLabel", name.displayName),
+              answer = Html("Yes"),
+              changeUrl = Some(rts.AddressInTheUkYesNoController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.ukAddress.checkYourAnswersLabel", name.displayName),
+              answer = Html("value 1<br />value 2<br />AB1 1AB"),
+              changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)
+            ),
+            AnswerRow(
+              label = messages("trustee.organisation.nonUkAddress.checkYourAnswersLabel", name.displayName),
+              answer = Html("value 1<br />value 2<br />Germany"),
+              changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)
+            )
           )
         )
       }
     }
   }
+
 }

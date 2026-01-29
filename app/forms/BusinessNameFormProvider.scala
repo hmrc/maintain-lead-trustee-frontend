@@ -29,6 +29,9 @@ class BusinessNameFormProvider @Inject() extends Mappings {
           firstError(
             nonEmptyString("value", s"$prefix.error.required"),
             maxLength(56, s"$prefix.error.length"),
-            regexp(Validation.businessNameRegex, s"$prefix.error.invalidFormat"))
-    ))
+            regexp(Validation.businessNameRegex, s"$prefix.error.invalidFormat")
+          )
+        )
+    )
+
 }

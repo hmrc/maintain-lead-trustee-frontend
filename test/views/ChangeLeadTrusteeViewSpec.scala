@@ -31,4 +31,5 @@ class ChangeLeadTrusteeViewSpec extends ViewBehaviours {
 
     behave like normalPage(applyView, "changeLeadTrustee")
   }
+
 }

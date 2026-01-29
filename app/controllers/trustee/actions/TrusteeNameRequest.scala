@@ -21,6 +21,6 @@ import models.requests.DataRequest
 import play.api.mvc.WrappedRequest
 
 case class TrusteeNameRequest[T](request: DataRequest[T], trusteeName: String) extends WrappedRequest[T](request) {
-  val userAnswers:UserAnswers = request.userAnswers
-  val user = request.user
+  val userAnswers: UserAnswers = request.userAnswers
+  val user                     = request.user
 }

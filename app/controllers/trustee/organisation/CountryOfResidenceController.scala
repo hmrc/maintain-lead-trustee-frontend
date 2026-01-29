@@ -33,44 +33,44 @@ import views.html.trustee.organisation.CountryOfResidenceView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryOfResidenceController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              sessionRepository: PlaybackRepository,
-                                              navigator: Navigator,
-                                              standardActionSets: StandardActionSets,
-                                              nameAction: NameRequiredAction,
-                                              formProvider: CountryFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: CountryOfResidenceView,
-                                              val countryOptions: CountryOptionsNonUK
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CountryOfResidenceController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: CountryFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: CountryOfResidenceView,
+  val countryOptions: CountryOptionsNonUK
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withPrefix("trustee.organisation.countryOfResidence")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(CountryOfResidencePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, countryOptions.options(), request.trusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options(), request.trusteeName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidencePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(CountryOfResidencePage, mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options(), request.trusteeName))),
-
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidencePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfResidencePage, mode, updatedAnswers))
-        }
-      )
-  }
 }

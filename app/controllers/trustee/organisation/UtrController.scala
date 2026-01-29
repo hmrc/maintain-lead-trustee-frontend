@@ -34,53 +34,52 @@ import views.html.trustee.organisation.UtrView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UtrController @Inject()(
-                               override val messagesApi: MessagesApi,
-                               registrationsRepository: PlaybackRepository,
-                               navigator: Navigator,
-                               standardActionSets: StandardActionSets,
-                               nameAction: NameRequiredAction,
-                               formProvider: UtrFormProvider,
-                               val controllerComponents: MessagesControllerComponents,
-                               view: UtrView,
-                               trustsService: TrustService
-                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UtrController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: UtrFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UtrView,
+  trustsService: TrustService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def form(utrs: List[String])(implicit request: TrusteeNameRequest[AnyContent]): Form[String] =
     formProvider.apply("trustee.organisation.utr", request.userAnswers.identifier, utrs)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
       val index = request.userAnswers.get(IndexPage)
 
       trustsService.getBusinessUtrs(request.userAnswers.identifier, index, adding = index.isEmpty) map { utrs =>
         val preparedForm = request.userAnswers.get(UtrPage) match {
-          case None => form(utrs)
+          case None        => form(utrs)
           case Some(value) => form(utrs).fill(value)
         }
 
         Ok(view(preparedForm, mode, request.trusteeName))
       }
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
       val index = request.userAnswers.get(IndexPage)
 
       trustsService.getBusinessUtrs(request.userAnswers.identifier, index, adding = index.isEmpty) flatMap { utrs =>
-        form(utrs).bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
-
-          value => {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
-              _ <- registrationsRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers))
-          }
-        )
+        form(utrs)
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
+                _              <- registrationsRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers))
+          )
       }
-  }
+    }
+
 }

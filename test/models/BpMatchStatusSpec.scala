@@ -27,32 +27,33 @@ class BpMatchStatusSpec extends SpecBase {
     "deserialise and serialise" when {
 
       "FullyMatched" in {
-        val json = JsString("01")
+        val json          = JsString("01")
         val bpMatchStatus = json.as[BpMatchStatus]
-        bpMatchStatus mustBe FullyMatched
+        bpMatchStatus              mustBe FullyMatched
         Json.toJson(bpMatchStatus) mustBe json
       }
 
       "Unmatched" in {
-        val json = JsString("02")
+        val json          = JsString("02")
         val bpMatchStatus = json.as[BpMatchStatus]
-        bpMatchStatus mustBe Unmatched
+        bpMatchStatus              mustBe Unmatched
         Json.toJson(bpMatchStatus) mustBe json
       }
 
       "NoMatchAttempted" in {
-        val json = JsString("98")
+        val json          = JsString("98")
         val bpMatchStatus = json.as[BpMatchStatus]
-        bpMatchStatus mustBe NoMatchAttempted
+        bpMatchStatus              mustBe NoMatchAttempted
         Json.toJson(bpMatchStatus) mustBe json
       }
 
       "FailedToMatch" in {
-        val json = JsString("99")
+        val json          = JsString("99")
         val bpMatchStatus = json.as[BpMatchStatus]
-        bpMatchStatus mustBe FailedToMatch
+        bpMatchStatus              mustBe FailedToMatch
         Json.toJson(bpMatchStatus) mustBe json
       }
     }
   }
+
 }

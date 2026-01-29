@@ -34,8 +34,8 @@ class TrusteeSpec extends SpecBase {
     "individual" when {
 
       val firstName = "First"
-      val lastName = "Last"
-      val name = Name(firstName, None, lastName)
+      val lastName  = "Last"
+      val name      = Name(firstName, None, lastName)
 
       "UK nationality/residency and legally capable" in {
 
@@ -179,4 +179,5 @@ class TrusteeSpec extends SpecBase {
       }
     }
   }
+
 }

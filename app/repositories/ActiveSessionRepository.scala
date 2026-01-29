@@ -34,35 +34,37 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ActiveSessionRepositoryImpl @Inject()(val mongoComponent: MongoComponent,
-                                            val config: FrontendAppConfig
-                                           )(implicit val ec: ExecutionContext)
-  extends PlayMongoRepository[UtrSession](
-    collectionName = "session",
-    mongoComponent = mongoComponent,
-    domainFormat = Format(UtrSession.reads,UtrSession.writes),
-    indexes = Seq(
-      IndexModel(
-        ascending("updatedAt"),
-        IndexOptions()
-          .unique(false)
-          .name("session-updated-at-index")
-          .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)),
-      IndexModel(
-        ascending("utr"),
-        IndexOptions()
-          .unique(false)
-          .name("utr-index")
+class ActiveSessionRepositoryImpl @Inject() (val mongoComponent: MongoComponent, val config: FrontendAppConfig)(implicit
+  val ec: ExecutionContext
+) extends PlayMongoRepository[UtrSession](
+      collectionName = "session",
+      mongoComponent = mongoComponent,
+      domainFormat = Format(UtrSession.reads, UtrSession.writes),
+      indexes = Seq(
+        IndexModel(
+          ascending("updatedAt"),
+          IndexOptions()
+            .unique(false)
+            .name("session-updated-at-index")
+            .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)
+        ),
+        IndexModel(
+          ascending("utr"),
+          IndexOptions()
+            .unique(false)
+            .name("utr-index")
+        ),
+        IndexModel(
+          ascending("internalId"),
+          IndexOptions()
+            .unique(false)
+            .name("internal-id-index")
+        )
       ),
-      IndexModel(
-        ascending("internalId"),
-        IndexOptions()
-          .unique(false)
-          .name("internal-id-index")
-      )
-    ), replaceIndexes = config.dropIndexes
-
-  ) with Logging with ActiveSessionRepository {
+      replaceIndexes = config.dropIndexes
+    )
+    with Logging
+    with ActiveSessionRepository {
 
   override def get(internalId: String): Future[Option[UtrSession]] = {
 
@@ -79,9 +81,12 @@ class ActiveSessionRepositoryImpl @Inject()(val mongoComponent: MongoComponent,
 
     val selector = equal("internalId", session.internalId)
 
-    collection.replaceOne(selector, session.copy(updatedAt = LocalDateTime.now), ReplaceOptions().upsert(true))
-      .headOption().map(_.exists(_.wasAcknowledged()))
+    collection
+      .replaceOne(selector, session.copy(updatedAt = LocalDateTime.now), ReplaceOptions().upsert(true))
+      .headOption()
+      .map(_.exists(_.wasAcknowledged()))
   }
+
 }
 
 @ImplementedBy(classOf[ActiveSessionRepositoryImpl])

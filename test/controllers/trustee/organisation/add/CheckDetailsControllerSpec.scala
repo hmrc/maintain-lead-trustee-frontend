@@ -39,13 +39,12 @@ import views.html.trustee.organisation.add.CheckDetailsView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-
 class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
 
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private lazy val onPageLoadRoute = routes.CheckDetailsController.onPageLoad().url
-  private lazy val onSubmitRoute = routes.CheckDetailsController.onSubmit().url
+  private lazy val onSubmitRoute   = routes.CheckDetailsController.onSubmit().url
 
   private val name = "Amazon"
 
@@ -59,18 +58,18 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
     provisional = true
   )
 
-  val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
-  val mapper: TrusteeOrganisationMapper = Mockito.mock(classOf[TrusteeOrganisationMapper])
+  val mockConnector: TrustConnector               = Mockito.mock(classOf[TrustConnector])
+  val mapper: TrusteeOrganisationMapper           = Mockito.mock(classOf[TrusteeOrganisationMapper])
   val printHelper: TrusteeOrganisationPrintHelper = Mockito.mock(classOf[TrusteeOrganisationPrintHelper])
 
-  def createApplication(): Application = {
+  def createApplication(): Application =
     applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
       .overrides(
         bind[TrustConnector].toInstance(mockConnector),
         bind[TrusteeOrganisationPrintHelper].toInstance(printHelper),
-        bind[TrusteeOrganisationMapper].toInstance(mapper))
+        bind[TrusteeOrganisationMapper].toInstance(mapper)
+      )
       .build()
-  }
 
   override def beforeEach(): Unit = {
     reset(mockConnector)
@@ -83,7 +82,9 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
   }
 
   private val baseAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "CheckDetails Controller" must {
 
@@ -139,4 +140,5 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
       }
     }
   }
+
 }

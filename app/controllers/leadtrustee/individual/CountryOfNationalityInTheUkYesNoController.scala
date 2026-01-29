@@ -31,36 +31,33 @@ import views.html.leadtrustee.individual.CountryOfNationalityInTheUkYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryOfNationalityInTheUkYesNoController @Inject()(
-                                                            val controllerComponents: MessagesControllerComponents,
-                                                            standardActionSets: StandardActionSets,
-                                                            formProvider: YesNoFormProvider,
-                                                            view: CountryOfNationalityInTheUkYesNoView,
-                                                            repository: PlaybackRepository,
-                                                            navigator: Navigator,
-                                                            nameAction: NameRequiredAction
-                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CountryOfNationalityInTheUkYesNoController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  standardActionSets: StandardActionSets,
+  formProvider: YesNoFormProvider,
+  view: CountryOfNationalityInTheUkYesNoView,
+  repository: PlaybackRepository,
+  navigator: Navigator,
+  nameAction: NameRequiredAction
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.countryOfNationalityInTheUkYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(CountryOfNationalityInTheUkYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(CountryOfNationalityInTheUkYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.leadTrusteeName))
+    Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfNationalityInTheUkYesNoPage, value))
@@ -68,4 +65,5 @@ class CountryOfNationalityInTheUkYesNoController @Inject()(
           } yield Redirect(navigator.nextPage(CountryOfNationalityInTheUkYesNoPage, updatedAnswers))
       )
   }
+
 }

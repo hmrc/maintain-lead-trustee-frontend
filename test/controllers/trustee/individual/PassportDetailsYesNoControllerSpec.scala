@@ -39,7 +39,7 @@ class PassportDetailsYesNoControllerSpec extends SpecBase {
   private def form = formProvider.withPrefix("trustee.individual.passportDetailsYesNo")
 
   def onwardRoute: Call = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  val name: Name        = Name("FirstName", None, "LastName")
 
   val mode: Mode = NormalMode
 
@@ -70,8 +70,12 @@ class PassportDetailsYesNoControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val newUserAnswers = userAnswers
-        .set(NamePage, name).success.value
-        .set(PassportDetailsYesNoPage, true).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(PassportDetailsYesNoPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
@@ -164,4 +168,5 @@ class PassportDetailsYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -45,4 +45,5 @@ class AddressInTheUkYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(UkAddressPage) mustBe None
     }
   }
+
 }

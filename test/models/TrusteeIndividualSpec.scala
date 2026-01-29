@@ -30,8 +30,7 @@ class TrusteeIndividualSpec extends SpecBase with Matchers with OptionValues {
   "TrusteeIndividual reads" must {
 
     "parse the mental capacity question when trustee has mental capacity" in {
-      val json = Json.parse(
-        s"""
+      val json = Json.parse(s"""
           |{
           | "name": {
           |   "firstName": "John",
@@ -58,8 +57,7 @@ class TrusteeIndividualSpec extends SpecBase with Matchers with OptionValues {
     }
 
     "parse the mental capacity question when trustee does not have mental capacity" in {
-      val json = Json.parse(
-        s"""
+      val json = Json.parse(s"""
            |{
            | "name": {
            |   "firstName": "John",
@@ -86,8 +84,7 @@ class TrusteeIndividualSpec extends SpecBase with Matchers with OptionValues {
     }
 
     "parse the mental capacity question when mental capacity is not known" in {
-      val json = Json.parse(
-        s"""
+      val json = Json.parse(s"""
          |{
          | "name": {
          |   "firstName": "John",

@@ -33,19 +33,19 @@ import scala.concurrent.Future
 
 class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
 
-  private val sessionId = "sessionId"
+  private val sessionId  = "sessionId"
   private val identifier = emptyUserAnswers.identifier
-  private val id = s"$sessionId~$identifier"
+  private val id         = s"$sessionId~$identifier"
 
-  override implicit lazy val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+  implicit override lazy val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
-  private val firstName = "joe"
+  private val firstName            = "joe"
   private val firstNameCapitalised = "Joe"
-  private val lastName = "bloggs"
-  private val lastNameCapitalised = "Bloggs"
-  private val nino = "aa000000a"
-  private val ninoUpperCase = "AA000000A"
-  private val date = "1996-02-03"
+  private val lastName             = "bloggs"
+  private val lastNameCapitalised  = "Bloggs"
+  private val nino                 = "aa000000a"
+  private val ninoUpperCase        = "AA000000A"
+  private val date                 = "1996-02-03"
 
   private val idMatchRequest = IdMatchRequest(
     id = id,
@@ -55,7 +55,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
     birthDate = date
   )
 
-  private implicit val appConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit private val appConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   "TrustsIndividualCheck" when {
 
@@ -64,15 +64,21 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
       "sufficient data to assemble IdMatchRequest body" must {
 
         val userAnswers = emptyUserAnswers
-          .set(NamePage, Name(firstName, None, lastName)).success.value
-          .set(TrusteesDateOfBirthPage, LocalDate.parse(date)).success.value
-          .set(NationalInsuranceNumberPage, nino).success.value
+          .set(NamePage, Name(firstName, None, lastName))
+          .success
+          .value
+          .set(TrusteesDateOfBirthPage, LocalDate.parse(date))
+          .success
+          .value
+          .set(NationalInsuranceNumberPage, nino)
+          .success
+          .value
 
         "return SuccessfulMatchResponse" when {
           "successfully matched" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             when(mockConnector.matchLeadTrustee(any())(any(), any()))
               .thenReturn(Future.successful(SuccessfulOrUnsuccessfulMatchResponse(id, idMatch = true)))
@@ -91,7 +97,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           "unsuccessfully matched" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             when(mockConnector.matchLeadTrustee(any())(any(), any()))
               .thenReturn(Future.successful(SuccessfulOrUnsuccessfulMatchResponse(id, idMatch = false)))
@@ -107,7 +113,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           "NINO not found" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             when(mockConnector.matchLeadTrustee(any())(any(), any()))
               .thenReturn(Future.successful(NinoNotFoundResponse))
@@ -125,7 +131,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           "attempt limit exceeded" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             when(mockConnector.matchLeadTrustee(any())(any(), any()))
               .thenReturn(Future.successful(AttemptLimitExceededResponse))
@@ -143,7 +149,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           "service unavailable" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             when(mockConnector.matchLeadTrustee(any())(any(), any()))
               .thenReturn(Future.successful(ServiceUnavailableResponse))
@@ -162,7 +168,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           "invalid match ID" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             when(mockConnector.matchLeadTrustee(any())(any(), any()))
               .thenReturn(Future.successful(InvalidIdMatchResponse))
@@ -178,7 +184,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           "internal server error" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             when(mockConnector.matchLeadTrustee(any())(any(), any()))
               .thenReturn(Future.successful(InternalServerErrorResponse))
@@ -201,12 +207,18 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
             val date = "1500-01-01"
 
             val userAnswers = emptyUserAnswers
-              .set(NamePage, Name(firstName, None, lastName)).success.value
-              .set(TrusteesDateOfBirthPage, LocalDate.parse(date)).success.value
-              .set(NationalInsuranceNumberPage, nino).success.value
+              .set(NamePage, Name(firstName, None, lastName))
+              .success
+              .value
+              .set(TrusteesDateOfBirthPage, LocalDate.parse(date))
+              .success
+              .value
+              .set(NationalInsuranceNumberPage, nino)
+              .success
+              .value
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             val result = service.matchLeadTrustee(userAnswers)
 
@@ -219,7 +231,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           "missing data" in {
 
             val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-            val service = new TrustsIndividualCheckService(mockConnector)
+            val service       = new TrustsIndividualCheckService(mockConnector)
 
             val result = service.matchLeadTrustee(emptyUserAnswers)
 
@@ -240,7 +252,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
           val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-          val service = new TrustsIndividualCheckService(mockConnector)
+          val service       = new TrustsIndividualCheckService(mockConnector)
 
           val numberOfFailedAttempts = 1
 
@@ -262,7 +274,7 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
           implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = None)
 
           val mockConnector = Mockito.mock(classOf[TrustsIndividualCheckConnector])
-          val service = new TrustsIndividualCheckService(mockConnector)
+          val service       = new TrustsIndividualCheckService(mockConnector)
 
           val result = service.failedAttempts(identifier)
 
@@ -271,4 +283,5 @@ class TrustsIndividualCheckServiceSpec extends SpecBase with ScalaFutures {
       }
     }
   }
+
 }

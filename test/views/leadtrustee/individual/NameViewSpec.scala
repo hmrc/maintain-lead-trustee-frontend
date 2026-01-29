@@ -39,7 +39,6 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
       def applyView(form: Form[_]): HtmlFormat.Appendable =
         view.apply(form, readOnly = false)(fakeRequest, messages)
 
-
       behave like normalPage(applyView(form), messageKeyPrefix)
 
       behave like pageWithBackLink(applyView(form))
@@ -50,7 +49,8 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
         messageKeyPrefix,
         None,
         routes.NameController.onSubmit().url,
-        "firstName", "lastName"
+        "firstName",
+        "lastName"
       )
 
       behave like pageWithoutReadOnlyInput(applyView(form))
@@ -63,7 +63,6 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
       def applyView(form: Form[_]): HtmlFormat.Appendable =
         view.apply(form, readOnly = true)(fakeRequest, messages)
 
-
       behave like normalPage(applyView(form), messageKeyPrefix)
 
       behave like pageWithBackLink(applyView(form))
@@ -74,10 +73,12 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
         messageKeyPrefix,
         None,
         routes.NameController.onSubmit().url,
-        "firstName", "lastName"
+        "firstName",
+        "lastName"
       )
 
       behave like pageWithReadOnlyInput(applyView(form))
     }
   }
+
 }

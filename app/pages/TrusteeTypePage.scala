@@ -28,15 +28,14 @@ object TrusteeTypePage extends QuestionPage[TrusteeType] {
 
   override def toString: String = "trusteeType"
 
-  override def cleanup(value: Option[TrusteeType], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[TrusteeType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(LeadTrustee) =>
         userAnswers.deleteAtPath(pages.trustee.basePath)
-      case Some(Trustee) =>
+      case Some(Trustee)     =>
         userAnswers.deleteAtPath(pages.leadtrustee.basePath)
-      case _ =>
+      case _                 =>
         super.cleanup(value, userAnswers)
     }
-  }
 
 }

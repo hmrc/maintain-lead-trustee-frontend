@@ -27,17 +27,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]
 
+class DataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext)
+    extends DataRequiredAction with Logging {
 
-class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends DataRequiredAction with Logging {
-
-  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
 
     request.userAnswers match {
-      case None =>
-        logger.warn(s"[Authentication][UTR: ${request.userAnswers.map(_.identifier).getOrElse("No UTR")}] No user answers in session")
+      case None       =>
+        logger.warn(
+          s"[Authentication][UTR: ${request.userAnswers.map(_.identifier).getOrElse("No UTR")}] No user answers in session"
+        )
         Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad)))
       case Some(data) =>
         Future.successful(Right(DataRequest(request.request, data, request.user)))
     }
-  }
+
 }

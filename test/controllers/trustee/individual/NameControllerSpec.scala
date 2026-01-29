@@ -38,8 +38,8 @@ class NameControllerSpec extends SpecBase {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new IndividualNameFormProvider()
-  val form = formProvider.withPrefix("trustee.individual.name")
-  val trusteeName = Name("FirstName", None, "LastName")
+  val form         = formProvider.withPrefix("trustee.individual.name")
+  val trusteeName  = Name("FirstName", None, "LastName")
 
   lazy val nameRoute = routes.NameController.onPageLoad(NormalMode).url
 
@@ -64,7 +64,7 @@ class NameControllerSpec extends SpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val ua = emptyUserAnswers.set(NamePage, Name("FirstName", None, "LastName"))
+      val ua          = emptyUserAnswers.set(NamePage, Name("FirstName", None, "LastName"))
       val application = applicationBuilder(userAnswers = Some(ua.success.value)).build()
 
       val request = FakeRequest(GET, nameRoute)
@@ -93,7 +93,6 @@ class NameControllerSpec extends SpecBase {
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
-
 
       val request =
         FakeRequest(POST, nameRoute)
@@ -161,4 +160,5 @@ class NameControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

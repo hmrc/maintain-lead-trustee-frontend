@@ -47,19 +47,26 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
     "Lead trustee or trustee page -> Lead trustee -> Lead trustee individual or business page" in {
       val answers = emptyUserAnswers
-        .set(TrusteeTypePage, LeadTrustee).success.value
+        .set(TrusteeTypePage, LeadTrustee)
+        .success
+        .value
 
-      navigator.nextPage(TrusteeTypePage, answers)
+      navigator
+        .nextPage(TrusteeTypePage, answers)
         .mustBe(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
     }
 
     "Lead trustee or trustee page -> Trustee -> Trustee individual or business page" in {
       val answers = emptyUserAnswers
-        .set(TrusteeTypePage, Trustee).success.value
+        .set(TrusteeTypePage, Trustee)
+        .success
+        .value
 
-      navigator.nextPage(TrusteeTypePage, answers)
+      navigator
+        .nextPage(TrusteeTypePage, answers)
         .mustBe(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
     }
 
   }
+
 }

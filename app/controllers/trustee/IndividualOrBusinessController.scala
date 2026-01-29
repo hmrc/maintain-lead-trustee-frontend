@@ -30,36 +30,33 @@ import views.html.trustee.IndividualOrBusinessView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualOrBusinessController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                sessionRepository: PlaybackRepository,
-                                                navigator: Navigator,
-                                                standardActionSets: StandardActionSets,
-                                                formProvider: IndividualOrBusinessFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: IndividualOrBusinessView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IndividualOrBusinessController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: IndividualOrBusinessFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IndividualOrBusinessView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("trustee.individualOrBusiness")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(IndividualOrBusinessPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(IndividualOrBusinessPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm))
+    Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         (value: IndividualOrBusiness) =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IndividualOrBusinessPage, value))
@@ -67,4 +64,5 @@ class IndividualOrBusinessController @Inject()(
           } yield Redirect(navigator.nextPage(IndividualOrBusinessPage, updatedAnswers))
       )
   }
+
 }

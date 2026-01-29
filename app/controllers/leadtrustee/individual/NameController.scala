@@ -32,39 +32,36 @@ import views.html.leadtrustee.individual.NameView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameController @Inject()(
-                                override val messagesApi: MessagesApi,
-                                playbackRepository: PlaybackRepository,
-                                navigator: Navigator,
-                                standardActionSets: StandardActionSets,
-                                formProvider: IndividualNameFormProvider,
-                                val controllerComponents: MessagesControllerComponents,
-                                view: NameView
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NameController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: IndividualNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Name] = formProvider.withPrefix("leadtrustee.individual.name")
 
   private def isLeadTrusteeMatched(implicit request: DataRequest[_]) =
     request.userAnswers.isLeadTrusteeMatched
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(NamePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(NamePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, isLeadTrusteeMatched))
+    Ok(view(preparedForm, isLeadTrusteeMatched))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, isLeadTrusteeMatched))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, isLeadTrusteeMatched))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
@@ -72,4 +69,5 @@ class NameController @Inject()(
           } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
       )
   }
+
 }

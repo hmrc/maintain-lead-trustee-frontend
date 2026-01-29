@@ -39,13 +39,13 @@ import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase {
 
-  private val index = 0
-  private val name = Name("Joe", None, "Bloggs")
+  private val index           = 0
+  private val name            = Name("Joe", None, "Bloggs")
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
-  private lazy val onPageLoadRoute: Call = routes.CheckDetailsController.onPageLoad(index)
+  private lazy val onPageLoadRoute: Call        = routes.CheckDetailsController.onPageLoad(index)
   private lazy val onPageLoadUpdatedRoute: Call = routes.CheckDetailsController.onPageLoadUpdated(index)
-  private lazy val onSubmitRoute: Call = routes.CheckDetailsController.onSubmit(index)
+  private lazy val onSubmitRoute: Call          = routes.CheckDetailsController.onSubmit(index)
 
   private val trustee = TrusteeIndividual(
     name = name,
@@ -61,11 +61,13 @@ class CheckDetailsControllerSpec extends SpecBase {
   )
 
   private val baseAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   private val mockPrintHelper = Mockito.mock(classOf[TrusteePrintHelpers])
-  private val mockMapper = Mockito.mock(classOf[TrusteeMappers])
-  private val answerSection = AnswerSection(None, Nil)
+  private val mockMapper      = Mockito.mock(classOf[TrusteeMappers])
+  private val answerSection   = AnswerSection(None, Nil)
 
   "CheckDetails Controller" when {
 
@@ -82,7 +84,8 @@ class CheckDetailsControllerSpec extends SpecBase {
           .overrides(
             bind[TrustService].toInstance(mockTrustService),
             bind[TrusteePrintHelpers].toInstance(mockPrintHelper)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(GET, onPageLoadRoute.url)
 
@@ -174,13 +177,15 @@ class CheckDetailsControllerSpec extends SpecBase {
           val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
 
           when(mockMapper.mapToTrusteeIndividual(any())).thenReturn(Some(trustee))
-          when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+          when(mockTrustConnector.amendTrustee(any(), any(), any())(any(), any()))
+            .thenReturn(Future.successful(HttpResponse(OK, "")))
 
           val application = applicationBuilder(userAnswers = Some(baseAnswers))
             .overrides(
               bind[TrustConnector].toInstance(mockTrustConnector),
               bind[TrusteeMappers].toInstance(mockMapper)
-            ).build()
+            )
+            .build()
 
           val request = FakeRequest(POST, onSubmitRoute.url)
 
@@ -213,4 +218,5 @@ class CheckDetailsControllerSpec extends SpecBase {
       }
     }
   }
+
 }

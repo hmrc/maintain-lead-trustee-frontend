@@ -31,7 +31,8 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
       val min = LocalDate.of(1500, 1, 1)
       val max = LocalDate.now(ZoneOffset.UTC)
 
-      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", matchingLeadTrustee = false)
+      val form = new DateOfBirthFormProvider(frontendAppConfig)
+        .withConfig("leadtrustee.individual.dateOfBirth", matchingLeadTrustee = false)
 
       ".value" should {
 
@@ -44,12 +45,16 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
         behave like mandatoryDateField(form, "value", "leadtrustee.individual.dateOfBirth.error.required.all")
 
-        behave like dateFieldWithMax(form, "value",
+        behave like dateFieldWithMax(
+          form,
+          "value",
           max = max,
           FormError("value", "leadtrustee.individual.dateOfBirth.error.future", List("day", "month", "year"))
         )
 
-        behave like dateFieldWithMin(form, "value",
+        behave like dateFieldWithMin(
+          form,
+          "value",
           min = min,
           FormError("value", "leadtrustee.individual.dateOfBirth.error.past", List("day", "month", "year"))
         )
@@ -62,7 +67,8 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
       val min = LocalDate.of(1900, 1, 1)
       val max = LocalDate.now(ZoneOffset.UTC)
 
-      val form = new DateOfBirthFormProvider(frontendAppConfig).withConfig("leadtrustee.individual.dateOfBirth", matchingLeadTrustee = true)
+      val form = new DateOfBirthFormProvider(frontendAppConfig)
+        .withConfig("leadtrustee.individual.dateOfBirth", matchingLeadTrustee = true)
 
       ".value" should {
 
@@ -75,12 +81,16 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
         behave like mandatoryDateField(form, "value", "leadtrustee.individual.dateOfBirth.error.required.all")
 
-        behave like dateFieldWithMax(form, "value",
+        behave like dateFieldWithMax(
+          form,
+          "value",
           max = max,
           FormError("value", "leadtrustee.individual.dateOfBirth.error.future", List("day", "month", "year"))
         )
 
-        behave like dateFieldWithMin(form, "value",
+        behave like dateFieldWithMin(
+          form,
+          "value",
           min = min,
           FormError("value", "leadtrustee.individual.dateOfBirth.matching.error.past", List("day", "month", "year"))
         )
@@ -88,4 +98,5 @@ class DateOfBirthFormProviderSpec extends DateBehaviours with FakeTrustsApp {
       }
     }
   }
+
 }

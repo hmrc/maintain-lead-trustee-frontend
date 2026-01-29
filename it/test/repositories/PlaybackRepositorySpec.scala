@@ -30,8 +30,14 @@ import uk.gov.hmrc.mongo.test.MongoSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PlaybackRepositorySpec extends AnyWordSpec with Matchers
-  with ScalaFutures with OptionValues with MongoSupport with MongoSuite with BeforeAndAfterEach {
+class PlaybackRepositorySpec
+    extends AnyWordSpec
+    with Matchers
+    with ScalaFutures
+    with OptionValues
+    with MongoSupport
+    with MongoSuite
+    with BeforeAndAfterEach {
 
   override def beforeEach() = await(repository.collection.deleteMany(BsonDocument()).toFuture())
 
@@ -41,8 +47,8 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
 
     "must return None when no answer exists" in {
       val internalId = "Int-328969d0-557e-4559-sdba-074d0597107e"
-      val utr = "Testing"
-      val sessionId = "Test"
+      val utr        = "Testing"
+      val sessionId  = "Test"
 
       repository.get(internalId, utr, sessionId).futureValue mustBe None
     }
@@ -50,12 +56,12 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
   }
 
   "must return the userAnswers after insert" in {
-    val internalId = "Int-328969d0-557e-4559-sdba-074d0597107e"
-    val utr = "Testing"
-    val sessionId = "Test"
-    val newId = s"$internalId-$utr-$sessionId"
-    val trustStartDate = LocalDate.parse("2022-01-02")
-    val userAnswers: UserAnswers = UserAnswers(internalId,utr,sessionId,newId,trustStartDate)
+    val internalId               = "Int-328969d0-557e-4559-sdba-074d0597107e"
+    val utr                      = "Testing"
+    val sessionId                = "Test"
+    val newId                    = s"$internalId-$utr-$sessionId"
+    val trustStartDate           = LocalDate.parse("2022-01-02")
+    val userAnswers: UserAnswers = UserAnswers(internalId, utr, sessionId, newId, trustStartDate)
 
     repository.get(internalId, utr, sessionId).futureValue mustBe None
 
@@ -67,13 +73,13 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
   }
 
   "must return the userAnswers after update" in {
-    val internalId = "Int-328969d0-557e-4559-sdba-074d0597107e"
-    val utr = "Testing"
-    val sessionId = "Test"
-    val newId = s"$internalId-$utr-$sessionId"
-    val trustStartDate = LocalDate.parse("2022-01-02")
-    val userAnswers: UserAnswers = UserAnswers(internalId,utr,sessionId,newId,trustStartDate)
-    val userAnswers2 = userAnswers.copy(data = Json.obj("key" -> "123"), isUnderlyingData5mld = true)
+    val internalId               = "Int-328969d0-557e-4559-sdba-074d0597107e"
+    val utr                      = "Testing"
+    val sessionId                = "Test"
+    val newId                    = s"$internalId-$utr-$sessionId"
+    val trustStartDate           = LocalDate.parse("2022-01-02")
+    val userAnswers: UserAnswers = UserAnswers(internalId, utr, sessionId, newId, trustStartDate)
+    val userAnswers2             = userAnswers.copy(data = Json.obj("key" -> "123"), isUnderlyingData5mld = true)
 
     repository.get(internalId, utr, sessionId).futureValue mustBe None
 
@@ -82,7 +88,7 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
     val userAnswerstest = repository.get(internalId, utr, sessionId).futureValue
     userAnswerstest.map(_.copy(updatedAt = userAnswers.updatedAt)) mustBe Some(userAnswers)
 
-    //update
+    // update
 
     repository.set(userAnswers2).futureValue mustBe true
 

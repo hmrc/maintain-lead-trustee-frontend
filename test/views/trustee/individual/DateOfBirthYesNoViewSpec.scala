@@ -27,7 +27,7 @@ import views.html.trustee.individual.DateOfBirthYesNoView
 class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.dateOfBirthYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -42,8 +42,15 @@ class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.DateOfBirthYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name.displayName),
+      routes.DateOfBirthYesNoController.onSubmit(NormalMode).url
+    )
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

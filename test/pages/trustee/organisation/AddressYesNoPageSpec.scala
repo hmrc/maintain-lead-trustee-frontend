@@ -32,16 +32,23 @@ class AddressYesNoPageSpec extends PageBehaviours {
 
       "NO selected" in {
         val userAnswers = emptyUserAnswers
-          .set(AddressInTheUkYesNoPage, true).success.value
-          .set(UkAddressPage, arbitraryUkAddress.arbitrary.sample.get).success.value
-          .set(NonUkAddressPage, arbitraryNonUkAddress.arbitrary.sample.get).success.value
+          .set(AddressInTheUkYesNoPage, true)
+          .success
+          .value
+          .set(UkAddressPage, arbitraryUkAddress.arbitrary.sample.get)
+          .success
+          .value
+          .set(NonUkAddressPage, arbitraryNonUkAddress.arbitrary.sample.get)
+          .success
+          .value
 
         val result = userAnswers.set(AddressYesNoPage, false).success.value
 
         result.get(AddressInTheUkYesNoPage) mustBe None
-        result.get(UkAddressPage) mustBe None
-        result.get(NonUkAddressPage) mustBe None
+        result.get(UkAddressPage)           mustBe None
+        result.get(NonUkAddressPage)        mustBe None
       }
     }
   }
+
 }

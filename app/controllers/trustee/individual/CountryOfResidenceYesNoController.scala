@@ -32,41 +32,41 @@ import views.html.trustee.individual.CountryOfResidenceYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryOfResidenceYesNoController @Inject()(
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   sessionRepository: PlaybackRepository,
-                                                   navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   formProvider: YesNoFormProvider,
-                                                   view: CountryOfResidenceYesNoView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CountryOfResidenceYesNoController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  sessionRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  view: CountryOfResidenceYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("trustee.individual.countryOfResidenceYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(CountryOfResidenceYesNoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, request.trusteeName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidenceYesNoPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(CountryOfResidenceYesNoPage, mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.trusteeName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidenceYesNoPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CountryOfResidenceYesNoPage, mode, updatedAnswers))
-      )
-  }
 }

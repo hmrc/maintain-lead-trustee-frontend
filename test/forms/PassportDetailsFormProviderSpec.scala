@@ -22,10 +22,10 @@ import play.api.data.{Form, FormError}
 
 class PassportDetailsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "prefix.individual.passportDetails.country.error.required"
-  val lengthKey = "prefix.individual.passportDetails.country.error.length"
+  val requiredKey           = "prefix.individual.passportDetails.country.error.required"
+  val lengthKey             = "prefix.individual.passportDetails.country.error.length"
   val maxLengthCountryField = 100
-  val maxLengthNumberField = 30
+  val maxLengthNumberField  = 30
 
   val form: Form[Passport] = new PassportDetailsFormProvider(frontendAppConfig).withPrefix("prefix")
 
@@ -52,6 +52,5 @@ class PassportDetailsFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 
 }
