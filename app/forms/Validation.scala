@@ -29,9 +29,9 @@ object Validation {
    */
   val individualNameRegex = "^(?=.{1,99}$)([A-Za-z]([-'. ]{0,1}[A-Za-z ]+)*[A-Za-z]?)$"
 
-  val utrRegex                    = "^[0-9]*$"
+  val utrRegex = "^[0-9]*$"
 
-  val ninoRegex                   = """^(?i)[ \t]*[A-Z]{1}[ \t]*[ \t]*[A-Z]{1}[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*""" +
+  val ninoRegex = """^(?i)[ \t]*[A-Z]{1}[ \t]*[ \t]*[A-Z]{1}[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*""" +
     """[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[A-D]{1}[ \t]*$"""
 
   val telephoneRegex              = """^\+[0-9 ]{1,18}$|^[0-9 ]{1,19}$"""

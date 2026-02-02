@@ -37,7 +37,7 @@ class AuthenticationServiceSpec extends SpecBase with ScalaFutures with EitherVa
 
   private val utr = "0987654321"
 
-  private val agentEnrolment  =
+  private val agentEnrolment =
     Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)
 
   private val trustsEnrolment = Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)

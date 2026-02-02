@@ -26,14 +26,14 @@ import java.time.LocalDate
 
 class LeadTrusteeIndividualMapperSpec extends SpecBase {
 
-  private val name: Name                         = Name("First", None, "Last")
-  private val dateOfBirth: LocalDate             = LocalDate.parse("1996-02-03")
-  private val ukAddress: UkAddress               = UkAddress("Line 1", "Line 2", None, None, "postcode")
-  private val country: String                    = "FR"
-  private val nonUkAddress: NonUkAddress         = NonUkAddress("Line 1", "Line 2", None, country)
-  private val nino: String                       = "nino"
-  private val email: String                      = "email"
-  private val phone: String                      = "tel"
+  private val name: Name                 = Name("First", None, "Last")
+  private val dateOfBirth: LocalDate     = LocalDate.parse("1996-02-03")
+  private val ukAddress: UkAddress       = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val country: String            = "FR"
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
+  private val nino: String               = "nino"
+  private val email: String              = "email"
+  private val phone: String              = "tel"
 
   private val combined: CombinedPassportOrIdCard =
     CombinedPassportOrIdCard("FR", "1234567890", LocalDate.parse("2020-02-03"))
