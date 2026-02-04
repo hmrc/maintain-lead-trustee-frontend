@@ -30,10 +30,12 @@ import views.html.leadtrustee.individual.CountryOfResidenceInTheUkYesNoView
 
 class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("leadtrustee.individual.countryOfResidenceInTheUkYesNo")
+  private val form: Form[Boolean] =
+    new YesNoFormProvider().withPrefix("leadtrustee.individual.countryOfResidenceInTheUkYesNo")
+
   private val onPageLoadRoute: String = routes.CountryOfResidenceInTheUkYesNoController.onPageLoad().url
-  private val name: Name = Name("FirstName", None, "LastName")
-  private val onwardRoute: Call = Call("GET", "/foo")
+  private val name: Name              = Name("FirstName", None, "LastName")
+  private val onwardRoute: Call       = Call("GET", "/foo")
 
   private val validAnswer: Boolean = true
 
@@ -62,7 +64,9 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(CountryOfResidenceInTheUkYesNoPage, validAnswer).success.value
+        .set(CountryOfResidenceInTheUkYesNoPage, validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -85,7 +89,8 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(baseAnswers))
         .overrides(
           bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(POST, onPageLoadRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -151,4 +156,5 @@ class CountryOfResidenceInTheUkYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -30,6 +30,7 @@ class EmailAddressFormProvider @Inject() extends Mappings {
             maxLength(256, s"$prefix.error.length"),
             regexp(Validation.emailRegex, s"$prefix.error.invalid")
           )
-      )
+        )
     )
+
 }

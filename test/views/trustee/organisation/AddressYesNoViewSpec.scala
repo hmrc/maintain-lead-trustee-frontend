@@ -27,8 +27,8 @@ import views.html.trustee.organisation.AddressYesNoView
 class AddressYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.organisation.addressYesNo"
-  val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
-  val name = "Trustee Name"
+  val form             = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
+  val name             = "Trustee Name"
 
   "AddressYesNoPage view" must {
 
@@ -41,6 +41,13 @@ class AddressYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.AddressYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name),
+      routes.AddressYesNoController.onSubmit(NormalMode).url
+    )
   }
+
 }

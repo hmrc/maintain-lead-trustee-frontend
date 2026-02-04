@@ -53,9 +53,12 @@ class SessionExpiredControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).getOrElse("") mustEqual "http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9781%2Ftrusts-registration&origin=maintain-lead-trustee-frontend"
+      redirectLocation(result).getOrElse(
+        ""
+      ) mustEqual "http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9781%2Ftrusts-registration&origin=maintain-lead-trustee-frontend"
 
       application.stop()
     }
   }
+
 }

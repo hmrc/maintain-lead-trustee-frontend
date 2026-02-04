@@ -46,22 +46,25 @@ class WhenAddedControllerSpec extends SpecBase {
   private val onwardRoute = Call("GET", "/foo")
 
   private val validAnswer: LocalDate = LocalDate.parse("2000-01-01")
-  private val name: String = "Amazon"
+  private val name: String           = "Amazon"
 
   private lazy val onPageLoadRoute = routes.WhenAddedController.onPageLoad().url
-  private lazy val onSubmitRoute = routes.WhenAddedController.onPageLoad().url
+  private lazy val onSubmitRoute   = routes.WhenAddedController.onPageLoad().url
 
-  private val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
-    .set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers
+    .copy(whenTrustSetup = trustStartDate)
+    .set(NamePage, name)
+    .success
+    .value
 
   private def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, onPageLoadRoute)
 
   private def postRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest(POST, onSubmitRoute)
     .withFormUrlEncodedBody(
-      "value.day" -> validAnswer.getDayOfMonth.toString,
+      "value.day"   -> validAnswer.getDayOfMonth.toString,
       "value.month" -> validAnswer.getMonthValue.toString,
-      "value.year" -> validAnswer.getYear.toString
+      "value.year"  -> validAnswer.getYear.toString
     )
 
   "WhenAdded Controller" must {
@@ -85,7 +88,9 @@ class WhenAddedControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(WhenAddedPage, validAnswer).success.value
+        .set(WhenAddedPage, validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -166,4 +171,5 @@ class WhenAddedControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

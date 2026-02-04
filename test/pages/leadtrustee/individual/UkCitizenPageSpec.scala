@@ -47,4 +47,5 @@ class UkCitizenPageSpec extends PageBehaviours {
       userAnswers.get.get(NationalInsuranceNumberPage) mustNot be(defined)
     }
   }
+
 }

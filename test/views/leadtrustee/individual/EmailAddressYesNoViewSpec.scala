@@ -23,7 +23,6 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.leadtrustee.individual.EmailAddressYesNoView
 
-
 class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.emailAddressYesNo"
@@ -41,6 +40,13 @@ class EmailAddressYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.EmailAddressYesNoController.onSubmit().url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some("Lead Trustee"),
+      routes.EmailAddressYesNoController.onSubmit().url
+    )
   }
+
 }

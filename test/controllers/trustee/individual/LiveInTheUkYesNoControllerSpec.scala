@@ -38,10 +38,9 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("trustee.individual.liveInTheUkYesNo")
-  val trusteeName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
-
+  val form         = formProvider.withPrefix("trustee.individual.liveInTheUkYesNo")
+  val trusteeName  = "FirstName LastName"
+  val name         = Name("FirstName", None, "LastName")
 
   val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -167,4 +166,5 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -31,45 +31,44 @@ import views.html.leadtrustee.individual.UkCitizenView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UkCitizenController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     playbackRepository: PlaybackRepository,
-                                     navigator: Navigator,
-                                     standardActionSets: StandardActionSets,
-                                     nameAction: NameRequiredAction,
-                                     formProvider: YesNoFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: UkCitizenView
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UkCitizenController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UkCitizenView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.ukCitizen")
 
   private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
     request.userAnswers.isLeadTrusteeMatched
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(UkCitizenPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(UkCitizenPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
+    Ok(view(preparedForm, request.leadTrusteeName, isLeadTrusteeMatched))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
-
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkCitizenPage, value))
-            _ <- playbackRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(UkCitizenPage, updatedAnswers))
       )
   }
+
 }

@@ -31,7 +31,8 @@ class NeedToAnswerQuestionsControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(NamePage, leadTrustee).success.value)).build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(NamePage, leadTrustee).success.value)).build()
 
       val request = FakeRequest(GET, routes.NeedToAnswerQuestionsController.onPageLoad().url)
 
@@ -47,4 +48,5 @@ class NeedToAnswerQuestionsControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

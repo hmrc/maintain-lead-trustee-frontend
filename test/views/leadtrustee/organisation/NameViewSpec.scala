@@ -52,13 +52,13 @@ class NameViewSpec extends StringViewBehaviours {
 
   "Name view for a UK registered company" must {
 
-      def applyView(form: Form[_]): HtmlFormat.Appendable =
-        view.apply(form, true)(fakeRequest, messages)
+    def applyView(form: Form[_]): HtmlFormat.Appendable =
+      view.apply(form, true)(fakeRequest, messages)
 
-      "display hint text" in {
-        val doc = asDocument(applyView(form))
-        assertContainsText(doc, messages(s"$messageKeyPrefix.hint"))
-      }
+    "display hint text" in {
+      val doc = asDocument(applyView(form))
+      assertContainsText(doc, messages(s"$messageKeyPrefix.hint"))
+    }
   }
 
   "Name view for a non-UK registered company" must {
@@ -68,7 +68,7 @@ class NameViewSpec extends StringViewBehaviours {
 
     "hint text not displayed" in {
       val doc = asDocument(applyView(form))
-        assertNotRenderedByClass(doc, "form-hint")
+      assertNotRenderedByClass(doc, "form-hint")
     }
   }
 

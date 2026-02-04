@@ -43,7 +43,13 @@ class UkCitizenViewSpec extends YesNoViewBehaviours {
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
+      behave like yesNoPage(
+        form,
+        applyView,
+        messageKeyPrefix,
+        Some(name),
+        controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url
+      )
 
       behave like pageWithoutDisabledInput(applyView(form))
     }
@@ -59,9 +65,16 @@ class UkCitizenViewSpec extends YesNoViewBehaviours {
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url)
+      behave like yesNoPage(
+        form,
+        applyView,
+        messageKeyPrefix,
+        Some(name),
+        controllers.leadtrustee.individual.routes.UkCitizenController.onSubmit().url
+      )
 
       behave like pageWithDisabledInput(applyView(form))
     }
   }
+
 }

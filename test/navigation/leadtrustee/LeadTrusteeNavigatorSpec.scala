@@ -22,7 +22,7 @@ import navigation.Navigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.leadtrustee._
 
-class LeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
+class LeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   val navigator = new Navigator
 
@@ -30,18 +30,25 @@ class LeadTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks  {
 
     "Individual or business page -> Individual -> Name page" in {
       val answers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Individual).success.value
+        .set(IndividualOrBusinessPage, Individual)
+        .success
+        .value
 
-      navigator.nextPage(IndividualOrBusinessPage, answers)
+      navigator
+        .nextPage(IndividualOrBusinessPage, answers)
         .mustBe(controllers.leadtrustee.individual.routes.NameController.onPageLoad())
     }
 
     "Individual or business page -> Business -> Is UK registered business page" in {
       val answers = emptyUserAnswers
-        .set(IndividualOrBusinessPage, Business).success.value
+        .set(IndividualOrBusinessPage, Business)
+        .success
+        .value
 
-      navigator.nextPage(IndividualOrBusinessPage, answers)
+      navigator
+        .nextPage(IndividualOrBusinessPage, answers)
         .mustBe(controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad())
     }
   }
+
 }

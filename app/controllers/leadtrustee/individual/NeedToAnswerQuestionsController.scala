@@ -24,17 +24,16 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.leadtrustee.individual.NeedToAnswerQuestionsView
 
-class NeedToAnswerQuestionsController @Inject()(
-                                                 override val messagesApi: MessagesApi,
-                                                 nameAction: NameRequiredAction,
-                                                 standardActionSets: StandardActionSets,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: NeedToAnswerQuestionsView
-                                               ) extends FrontendBaseController with I18nSupport {
+class NeedToAnswerQuestionsController @Inject() (
+  override val messagesApi: MessagesApi,
+  nameAction: NameRequiredAction,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: NeedToAnswerQuestionsView
+) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-    implicit request =>
-      Ok(view(request.leadTrusteeName))
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) { implicit request =>
+    Ok(view(request.leadTrusteeName))
   }
 
   def onSubmit: Action[AnyContent] = Action {

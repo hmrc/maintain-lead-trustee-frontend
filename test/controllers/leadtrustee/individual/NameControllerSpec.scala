@@ -39,7 +39,7 @@ class NameControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new IndividualNameFormProvider()
+  val formProvider     = new IndividualNameFormProvider()
   val form: Form[Name] = formProvider.withPrefix("leadtrustee.individual.name")
 
   lazy val nameRoute: String = routes.NameController.onPageLoad().url
@@ -47,7 +47,9 @@ class NameControllerSpec extends SpecBase {
   val name: Name = Name("Lead", None, "Trustee")
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "Name Controller" must {
 
@@ -93,8 +95,12 @@ class NameControllerSpec extends SpecBase {
         "lead trustee matched" in {
 
           val userAnswers = baseAnswers
-            .set(NationalInsuranceNumberPage, "nino").success.value
-            .set(BpMatchStatusPage, FullyMatched).success.value
+            .set(NationalInsuranceNumberPage, "nino")
+            .success
+            .value
+            .set(BpMatchStatusPage, FullyMatched)
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -126,7 +132,6 @@ class NameControllerSpec extends SpecBase {
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
-
 
       val request =
         FakeRequest(POST, nameRoute)
@@ -160,7 +165,7 @@ class NameControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, readOnly = false)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -194,4 +199,5 @@ class NameControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

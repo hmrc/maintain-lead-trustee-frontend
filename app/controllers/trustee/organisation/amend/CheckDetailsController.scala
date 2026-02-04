@@ -39,45 +39,41 @@ import viewmodels.AnswerSection
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: PlaybackRepository,
-                                        trustService: TrustService,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        printHelper: TrusteePrintHelpers,
-                                        mapper: TrusteeMappers,
-                                        extractor: TrusteeExtractors,
-                                        trustConnector: TrustConnector,
-                                        nameAction: NameRequiredAction,
-                                        val appConfig: FrontendAppConfig,
-                                        errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  trustService: TrustService,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  printHelper: TrusteePrintHelpers,
+  mapper: TrusteeMappers,
+  extractor: TrusteeExtractors,
+  trustConnector: TrustConnector,
+  nameAction: NameRequiredAction,
+  val appConfig: FrontendAppConfig,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private def logInfo(implicit request: DataRequest[AnyContent]): String =
     s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]"
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      trustService.getTrustee(request.userAnswers.identifier, index).flatMap {
-        case org: TrusteeOrganisation =>
-          val answers = extractor.extractTrusteeOrganisation(request.userAnswers, org, index)
-          for {
-            updatedAnswers <- Future.fromTry(answers)
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield {
-            renderTrustee(updatedAnswers, index, org.name)
-          }
-        case _ =>
-          logger.error(s"$logInfo Expected trustee to be of type TrusteeOrganisation")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      } recoverWith  {
-        case e =>
-          logger.error(s"$logInfo Unable to retrieve trustee from trusts: ${e.getMessage}")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    trustService.getTrustee(request.userAnswers.identifier, index).flatMap {
+      case org: TrusteeOrganisation =>
+        val answers = extractor.extractTrusteeOrganisation(request.userAnswers, org, index)
+        for {
+          updatedAnswers <- Future.fromTry(answers)
+          _              <- sessionRepository.set(updatedAnswers)
+        } yield renderTrustee(updatedAnswers, index, org.name)
+      case _                        =>
+        logger.error(s"$logInfo Expected trustee to be of type TrusteeOrganisation")
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    } recoverWith { case e =>
+      logger.error(s"$logInfo Unable to retrieve trustee from trusts: ${e.getMessage}")
+      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
 
   def onPageLoadUpdated(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
@@ -85,8 +81,9 @@ class CheckDetailsController @Inject()(
       renderTrustee(request.userAnswers, index, request.trusteeName)(request.request)
   }
 
-  private def renderTrustee(userAnswers: UserAnswers, index: Int, name: String)
-                           (implicit request: DataRequest[AnyContent]): Result = {
+  private def renderTrustee(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: DataRequest[AnyContent]
+  ): Result = {
     val section: AnswerSection = printHelper.printOrganisationTrustee(
       userAnswers = userAnswers,
       adding = false,
@@ -96,25 +93,23 @@ class CheckDetailsController @Inject()(
     Ok(view(section, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      mapper.mapToTrusteeOrganisation(request.userAnswers) match {
-        case Some(t) =>
-          amendTrustee(request.userAnswers, t, index)
-        case _ =>
-          logger.error(s"$logInfo Unable to amend trustee")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    mapper.mapToTrusteeOrganisation(request.userAnswers) match {
+      case Some(t) =>
+        amendTrustee(request.userAnswers, t, index)
+      case _       =>
+        logger.error(s"$logInfo Unable to amend trustee")
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
 
-  private def amendTrustee(userAnswers: UserAnswers, t: Trustee, index: Int)
-                          (implicit hc: HeaderCarrier): Future[Result] = {
+  private def amendTrustee(userAnswers: UserAnswers, t: Trustee, index: Int)(implicit
+    hc: HeaderCarrier
+  ): Future[Result] =
     for {
-      _ <- trustConnector.amendTrustee(userAnswers.identifier, index, t)
+      _                  <- trustConnector.amendTrustee(userAnswers.identifier, index, t)
       updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.trustee.basePath))
-      _ <- sessionRepository.set(updatedUserAnswers)
+      _                  <- sessionRepository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-  }
 
 }

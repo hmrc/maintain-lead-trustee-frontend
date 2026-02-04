@@ -35,18 +35,20 @@ import scala.concurrent.Future
 class IndexControllerSpec extends SpecBase {
 
   "Index Controller" must {
-    val identifier = "1234567890"
-    val startDate = "2019-06-01"
-    val isTaxable = false
+    val identifier           = "1234567890"
+    val startDate            = "2019-06-01"
+    val isTaxable            = false
     val isUnderlyingData5mld = false
 
     "return OK and the correct view for a GET" in {
 
-      val mockTrustConnector = Mockito.mock(classOf[TrustConnector])
+      val mockTrustConnector     = Mockito.mock(classOf[TrustConnector])
       val mockTrustsStoreService = Mockito.mock(classOf[TrustsStoreService])
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), trustTaxable = Some(isTaxable))))
+        .thenReturn(
+          Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), trustTaxable = Some(isTaxable)))
+        )
 
       when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -58,7 +60,8 @@ class IndexControllerSpec extends SpecBase {
         .overrides(
           bind[TrustConnector].toInstance(mockTrustConnector),
           bind[TrustsStoreService].toInstance(mockTrustsStoreService)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
@@ -71,14 +74,15 @@ class IndexControllerSpec extends SpecBase {
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
-      uaCaptor.getValue.internalId mustBe "id"
-      uaCaptor.getValue.identifier mustBe identifier
+      uaCaptor.getValue.internalId     mustBe "id"
+      uaCaptor.getValue.identifier     mustBe identifier
       uaCaptor.getValue.whenTrustSetup mustBe LocalDate.parse(startDate)
-      uaCaptor.getValue.isTaxable mustBe isTaxable
+      uaCaptor.getValue.isTaxable      mustBe isTaxable
 
       verify(mockTrustsStoreService).updateTaskStatus(eqTo(identifier), eqTo(InProgress))(any(), any())
 
       application.stop()
     }
   }
+
 }

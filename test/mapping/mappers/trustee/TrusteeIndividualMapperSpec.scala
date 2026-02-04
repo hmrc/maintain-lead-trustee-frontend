@@ -27,24 +27,26 @@ import java.time.LocalDate
 
 class TrusteeIndividualMapperSpec extends SpecBase {
 
-  private val name: Name = Name("First", None, "Last")
-  private val dateOfBirth: LocalDate = LocalDate.parse("1996-02-03")
-  private val startDate: LocalDate = LocalDate.parse("2021-01-01")
-  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val name: Name                 = Name("First", None, "Last")
+  private val dateOfBirth: LocalDate     = LocalDate.parse("1996-02-03")
+  private val startDate: LocalDate       = LocalDate.parse("2021-01-01")
+  private val ukAddress: UkAddress       = UkAddress("Line 1", "Line 2", None, None, "postcode")
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "country")
-  private val nino: String = "nino"
+  private val nino: String               = "nino"
 
-  private val country = "FR"
-  private val number = "1234567890"
-  private val expirationDate = LocalDate.parse("2020-02-03")
-  private val passport: Passport = Passport(country, number, expirationDate)
-  private val idCard: IdCard = IdCard(country, number, expirationDate)
+  private val country                            = "FR"
+  private val number                             = "1234567890"
+  private val expirationDate                     = LocalDate.parse("2020-02-03")
+  private val passport: Passport                 = Passport(country, number, expirationDate)
+  private val idCard: IdCard                     = IdCard(country, number, expirationDate)
   private val combined: CombinedPassportOrIdCard = CombinedPassportOrIdCard(country, number, expirationDate)
 
   private val mapper: TrusteeIndividualMapper = new TrusteeIndividualMapper()
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "Trustee individual mapper" must {
 
@@ -54,11 +56,21 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has date of birth and a NINO" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, true).success.value
-            .set(DateOfBirthPage, dateOfBirth).success.value
-            .set(NationalInsuranceNumberYesNoPage, true).success.value
-            .set(NationalInsuranceNumberPage, nino).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, true)
+            .success
+            .value
+            .set(DateOfBirthPage, dateOfBirth)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, true)
+            .success
+            .value
+            .set(NationalInsuranceNumberPage, nino)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -75,10 +87,18 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has no identification" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(AddressYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(AddressYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -95,14 +115,30 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has UK address and passport" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(AddressYesNoPage, true).success.value
-            .set(LiveInTheUkYesNoPage, true).success.value
-            .set(UkAddressPage, ukAddress).success.value
-            .set(PassportDetailsYesNoPage, true).success.value
-            .set(PassportDetailsPage, passport).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(AddressYesNoPage, true)
+            .success
+            .value
+            .set(LiveInTheUkYesNoPage, true)
+            .success
+            .value
+            .set(UkAddressPage, ukAddress)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, true)
+            .success
+            .value
+            .set(PassportDetailsPage, passport)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -119,15 +155,33 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has non-UK address and ID card" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(AddressYesNoPage, true).success.value
-            .set(LiveInTheUkYesNoPage, false).success.value
-            .set(NonUkAddressPage, nonUkAddress).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, true).success.value
-            .set(IdCardDetailsPage, idCard).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(AddressYesNoPage, true)
+            .success
+            .value
+            .set(LiveInTheUkYesNoPage, false)
+            .success
+            .value
+            .set(NonUkAddressPage, nonUkAddress)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, true)
+            .success
+            .value
+            .set(IdCardDetailsPage, idCard)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -144,14 +198,30 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee only has address" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(AddressYesNoPage, true).success.value
-            .set(LiveInTheUkYesNoPage, true).success.value
-            .set(UkAddressPage, ukAddress).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(AddressYesNoPage, true)
+            .success
+            .value
+            .set(LiveInTheUkYesNoPage, true)
+            .success
+            .value
+            .set(UkAddressPage, ukAddress)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -168,14 +238,30 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has GB Residency" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(CountryOfResidenceYesNoPage, true).success.value
-            .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
-            .set(AddressYesNoPage, false).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfResidenceYesNoPage, true)
+            .success
+            .value
+            .set(CountryOfResidenceInTheUkYesNoPage, true)
+            .success
+            .value
+            .set(AddressYesNoPage, false)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -196,15 +282,33 @@ class TrusteeIndividualMapperSpec extends SpecBase {
         "trustee has US Residency" in {
 
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(CountryOfResidenceYesNoPage, true).success.value
-            .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
-            .set(CountryOfResidencePage, "US").success.value
-            .set(AddressYesNoPage, false).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfResidenceYesNoPage, true)
+            .success
+            .value
+            .set(CountryOfResidenceInTheUkYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfResidencePage, "US")
+            .success
+            .value
+            .set(AddressYesNoPage, false)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -224,14 +328,30 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has GB Nationality" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(CountryOfNationalityYesNoPage, true).success.value
-            .set(CountryOfNationalityInTheUkYesNoPage, true).success.value
-            .set(AddressYesNoPage, false).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfNationalityYesNoPage, true)
+            .success
+            .value
+            .set(CountryOfNationalityInTheUkYesNoPage, true)
+            .success
+            .value
+            .set(AddressYesNoPage, false)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -252,15 +372,33 @@ class TrusteeIndividualMapperSpec extends SpecBase {
         "trustee has US Nationality" in {
 
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(CountryOfNationalityYesNoPage, true).success.value
-            .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
-            .set(CountryOfNationalityPage, "US").success.value
-            .set(AddressYesNoPage, false).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfNationalityYesNoPage, true)
+            .success
+            .value
+            .set(CountryOfNationalityInTheUkYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfNationalityPage, "US")
+            .success
+            .value
+            .set(AddressYesNoPage, false)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -281,13 +419,27 @@ class TrusteeIndividualMapperSpec extends SpecBase {
         "trustee has Mental Capacity false" in {
 
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(MentalCapacityYesNoPage, Yes).success.value
-            .set(AddressYesNoPage, false).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(MentalCapacityYesNoPage, Yes)
+            .success
+            .value
+            .set(AddressYesNoPage, false)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -308,13 +460,27 @@ class TrusteeIndividualMapperSpec extends SpecBase {
         "trustee has Mental Capacity true" in {
 
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(MentalCapacityYesNoPage, No).success.value
-            .set(AddressYesNoPage, false).success.value
-            .set(PassportDetailsYesNoPage, false).success.value
-            .set(IdCardDetailsYesNoPage, false).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(MentalCapacityYesNoPage, No)
+            .success
+            .value
+            .set(AddressYesNoPage, false)
+            .success
+            .value
+            .set(PassportDetailsYesNoPage, false)
+            .success
+            .value
+            .set(IdCardDetailsYesNoPage, false)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -337,21 +503,51 @@ class TrusteeIndividualMapperSpec extends SpecBase {
 
         "trustee has address and combined passport/ID card" in {
           val userAnswers = baseAnswers
-            .set(DateOfBirthYesNoPage, false).success.value
-            .set(NationalInsuranceNumberYesNoPage, false).success.value
-            .set(AddressYesNoPage, true).success.value
-            .set(LiveInTheUkYesNoPage, false).success.value
-            .set(NonUkAddressPage, nonUkAddress).success.value
-            .set(PassportOrIdCardDetailsYesNoPage, true).success.value
-            .set(PassportOrIdCardDetailsPage, combined).success.value
-            .set(CountryOfResidenceYesNoPage, true).success.value
-            .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
-            .set(CountryOfResidencePage, "Spain").success.value
-            .set(CountryOfNationalityYesNoPage, true).success.value
-            .set(CountryOfNationalityInTheUkYesNoPage, false).success.value
-            .set(CountryOfNationalityPage, "Spain").success.value
-            .set(MentalCapacityYesNoPage, Yes).success.value
-            .set(WhenAddedPage, startDate).success.value
+            .set(DateOfBirthYesNoPage, false)
+            .success
+            .value
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .success
+            .value
+            .set(AddressYesNoPage, true)
+            .success
+            .value
+            .set(LiveInTheUkYesNoPage, false)
+            .success
+            .value
+            .set(NonUkAddressPage, nonUkAddress)
+            .success
+            .value
+            .set(PassportOrIdCardDetailsYesNoPage, true)
+            .success
+            .value
+            .set(PassportOrIdCardDetailsPage, combined)
+            .success
+            .value
+            .set(CountryOfResidenceYesNoPage, true)
+            .success
+            .value
+            .set(CountryOfResidenceInTheUkYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfResidencePage, "Spain")
+            .success
+            .value
+            .set(CountryOfNationalityYesNoPage, true)
+            .success
+            .value
+            .set(CountryOfNationalityInTheUkYesNoPage, false)
+            .success
+            .value
+            .set(CountryOfNationalityPage, "Spain")
+            .success
+            .value
+            .set(MentalCapacityYesNoPage, Yes)
+            .success
+            .value
+            .set(WhenAddedPage, startDate)
+            .success
+            .value
 
           val result = mapper.map(userAnswers).get
 
@@ -371,4 +567,5 @@ class TrusteeIndividualMapperSpec extends SpecBase {
       }
     }
   }
+
 }

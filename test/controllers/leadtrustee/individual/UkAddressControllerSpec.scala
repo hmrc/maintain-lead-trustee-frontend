@@ -38,12 +38,14 @@ class UkAddressControllerSpec extends SpecBase {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new UkAddressFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   val name = Name("Lead", None, "Trustee")
 
   override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
@@ -84,7 +86,10 @@ class UkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UkAddress("value 1", "value 2", None, None, "AB1 1AB")), name.displayName)(request, messages).toString
+        view(form.fill(UkAddress("value 1", "value 2", None, None, "AB1 1AB")), name.displayName)(
+          request,
+          messages
+        ).toString
 
       application.stop()
     }
@@ -101,7 +106,6 @@ class UkAddressControllerSpec extends SpecBase {
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
-
 
       val request =
         FakeRequest(POST, ukAddressRoute)
@@ -135,7 +139,7 @@ class UkAddressControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, name.displayName)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -169,4 +173,5 @@ class UkAddressControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

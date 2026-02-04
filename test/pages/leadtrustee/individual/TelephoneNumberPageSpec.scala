@@ -18,7 +18,6 @@ package pages.leadtrustee.individual
 
 import pages.behaviours.PageBehaviours
 
-
 class TelephoneNumberPageSpec extends PageBehaviours {
 
   "TelephoneNumberPage" must {
@@ -29,4 +28,5 @@ class TelephoneNumberPageSpec extends PageBehaviours {
 
     beRemovable[String](TelephoneNumberPage)
   }
+
 }

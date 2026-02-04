@@ -24,7 +24,7 @@ import java.time.{LocalDate, ZoneOffset}
 
 class DateRemovedFromTrustFormProviderSpec extends DateBehaviours {
 
-  private val max = LocalDate.now(ZoneOffset.UTC)
+  private val max            = LocalDate.now(ZoneOffset.UTC)
   private val trustStartDate = LocalDate.of(2020, 1, 1)
 
   val form = new DateRemovedFromTrustFormProvider().withPrefixAndEntityStartDate("trustee.whenRemoved", trustStartDate)
@@ -40,15 +40,20 @@ class DateRemovedFromTrustFormProviderSpec extends DateBehaviours {
 
     behave like mandatoryDateField(form, "value", "trustee.whenRemoved.error.required.all")
 
-    behave like dateFieldWithMax(form, "value",
+    behave like dateFieldWithMax(
+      form,
+      "value",
       max = max,
       FormError("value", "trustee.whenRemoved.error.future", List("day", "month", "year"))
     )
 
-    behave like dateFieldWithMin(form, "value",
+    behave like dateFieldWithMin(
+      form,
+      "value",
       min = trustStartDate,
       FormError("value", "trustee.whenRemoved.error.past", List("day", "month", "year"))
     )
 
   }
+
 }

@@ -30,15 +30,15 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
 
   "IndividualLeadTrusteeNavigator" when {
 
-    "Name page -> Date of birth page" in {
-      navigator.nextPage(NamePage, emptyUserAnswers)
+    "Name page -> Date of birth page" in
+      navigator
+        .nextPage(NamePage, emptyUserAnswers)
         .mustBe(DateOfBirthController.onPageLoad())
-    }
 
-    "Date of birth page -> UK nationality yes/no page" in {
-      navigator.nextPage(DateOfBirthPage, emptyUserAnswers)
+    "Date of birth page -> UK nationality yes/no page" in
+      navigator
+        .nextPage(DateOfBirthPage, emptyUserAnswers)
         .mustBe(CountryOfNationalityInTheUkYesNoController.onPageLoad())
-    }
 
     "UK nationality yes/no page" when {
       val page = CountryOfNationalityInTheUkYesNoPage
@@ -46,22 +46,24 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
       "-> YES -> NINO yes/no page" in {
         val answers = emptyUserAnswers.set(page, true).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(UkCitizenController.onPageLoad())
       }
 
       "-> NO -> Nationality page" in {
         val answers = emptyUserAnswers.set(page, false).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(CountryOfNationalityController.onPageLoad())
       }
     }
 
-    "Nationality page -> NINO yes/no page" in {
-      navigator.nextPage(CountryOfNationalityPage, emptyUserAnswers)
+    "Nationality page -> NINO yes/no page" in
+      navigator
+        .nextPage(CountryOfNationalityPage, emptyUserAnswers)
         .mustBe(UkCitizenController.onPageLoad())
-    }
 
     "NINO yes/no page" when {
       val page = UkCitizenPage
@@ -69,36 +71,43 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
       "-> YES -> NINO page" in {
         val answers = emptyUserAnswers.set(page, true).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(NationalInsuranceNumberController.onPageLoad())
       }
 
       "-> NO (When Adding or amending in session) -> Passport/ID card page" in {
         val answers = emptyUserAnswers.set(page, false).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(PassportOrIdCardController.onPageLoad())
       }
 
       "-> NO (When Amending from ETMP) -> UK residency yes/no page" in {
         val answers = emptyUserAnswers
-          .set(page, false).success.value
-          .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.now())).success.value
+          .set(page, false)
+          .success
+          .value
+          .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.now()))
+          .success
+          .value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
       }
     }
 
-    "NINO page -> UK residency yes/no page" in {
-      navigator.nextPage(NationalInsuranceNumberPage, emptyUserAnswers)
+    "NINO page -> UK residency yes/no page" in
+      navigator
+        .nextPage(NationalInsuranceNumberPage, emptyUserAnswers)
         .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
-    }
 
-    "Passport/ID card page -> UK residency yes/no page" in {
-      navigator.nextPage(PassportOrIdCardDetailsPage, emptyUserAnswers)
+    "Passport/ID card page -> UK residency yes/no page" in
+      navigator
+        .nextPage(PassportOrIdCardDetailsPage, emptyUserAnswers)
         .mustBe(CountryOfResidenceInTheUkYesNoController.onPageLoad())
-    }
 
     "UK residency yes/no page" when {
       val page = CountryOfResidenceInTheUkYesNoPage
@@ -106,32 +115,34 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
       "-> YES -> UK address page" in {
         val answers = emptyUserAnswers.set(page, true).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(UkAddressController.onPageLoad())
       }
 
       "-> NO -> Residency page" in {
         val answers = emptyUserAnswers.set(page, false).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(CountryOfResidenceController.onPageLoad())
       }
     }
 
-    "Residency page -> Non-UK address page" in {
-      navigator.nextPage(CountryOfResidencePage, emptyUserAnswers)
+    "Residency page -> Non-UK address page" in
+      navigator
+        .nextPage(CountryOfResidencePage, emptyUserAnswers)
         .mustBe(NonUkAddressController.onPageLoad())
-    }
 
-    "UK address page -> Email yes/no page" in {
-      navigator.nextPage(UkAddressPage, emptyUserAnswers)
+    "UK address page -> Email yes/no page" in
+      navigator
+        .nextPage(UkAddressPage, emptyUserAnswers)
         .mustBe(EmailAddressYesNoController.onPageLoad())
-    }
 
-    "Non-UK address page -> Email address yes/no page" in {
-      navigator.nextPage(NonUkAddressPage, emptyUserAnswers)
+    "Non-UK address page -> Email address yes/no page" in
+      navigator
+        .nextPage(NonUkAddressPage, emptyUserAnswers)
         .mustBe(EmailAddressYesNoController.onPageLoad())
-    }
 
     "Email address yes/no page" when {
       val page = EmailAddressYesNoPage
@@ -139,26 +150,29 @@ class IndividualLeadTrusteeNavigatorSpec extends SpecBase {
       "-> YES -> Email address page" in {
         val answers = emptyUserAnswers.set(page, true).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(EmailAddressController.onPageLoad())
       }
 
       "-> NO -> Telephone number page" in {
         val answers = emptyUserAnswers.set(page, false).success.value
 
-        navigator.nextPage(page, answers)
+        navigator
+          .nextPage(page, answers)
           .mustBe(TelephoneNumberController.onPageLoad())
       }
     }
 
-    "Email address page -> Telephone number page" in {
-      navigator.nextPage(EmailAddressPage, emptyUserAnswers)
+    "Email address page -> Telephone number page" in
+      navigator
+        .nextPage(EmailAddressPage, emptyUserAnswers)
         .mustBe(TelephoneNumberController.onPageLoad())
-    }
 
-    "Telephone number page -> Check details page" in {
-      navigator.nextPage(TelephoneNumberPage, emptyUserAnswers)
+    "Telephone number page -> Check details page" in
+      navigator
+        .nextPage(TelephoneNumberPage, emptyUserAnswers)
         .mustBe(CheckDetailsController.onPageLoadUpdated())
-    }
   }
+
 }

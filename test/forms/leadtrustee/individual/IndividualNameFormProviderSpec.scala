@@ -25,7 +25,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 class IndividualNameFormProviderSpec extends StringFieldBehaviours with OptionalFieldBehaviours {
 
   val messageKeyPrefix = "leadtrustee.individual.name"
-  val form = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
+  val form             = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
 
   val maxLength = 35
   val minLength = 1
@@ -40,20 +40,19 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
    * This method produces a Gen[String] that conforms to the individualNameRegex,
    * but is at least one character over the max allowed length
    */
-  private def validStringButOverMaxLength(maxLength: Int): Gen[String] = {
+  private def validStringButOverMaxLength(maxLength: Int): Gen[String] =
     for {
       firstChar <- Gen.alphaUpperChar
-      length <- Gen.choose(maxLength + 1, maxLength * 2)
-      chars <- Gen.listOfN(length, Gen.alphaChar)
+      length    <- Gen.choose(maxLength + 1, maxLength * 2)
+      chars     <- Gen.listOfN(length, Gen.alphaChar)
     } yield (firstChar :: chars).mkString
-  }
 
   ".firstName" must {
 
-    val fieldName = "firstName"
+    val fieldName   = "firstName"
     val requiredKey = s"$messageKeyPrefix.error.firstName.required"
-    val lengthKey = s"$messageKeyPrefix.error.firstName.length"
-    val capitalKey = s"$messageKeyPrefix.error.firstName.capitalLetter"
+    val lengthKey   = s"$messageKeyPrefix.error.firstName.length"
+    val capitalKey  = s"$messageKeyPrefix.error.firstName.capitalLetter"
 
     behave like fieldThatBindsValidData(
       form,
@@ -95,9 +94,9 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
 
   ".middleName" must {
 
-    val fieldName = "middleName"
-    val lengthKey = s"$messageKeyPrefix.error.middleName.length"
-    val maxLength = 35
+    val fieldName  = "middleName"
+    val lengthKey  = s"$messageKeyPrefix.error.middleName.length"
+    val maxLength  = 35
     val capitalKey = s"$messageKeyPrefix.error.middleName.capitalLetter"
 
     behave like fieldWithMaxLength(
@@ -139,10 +138,10 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
 
   ".lastName" must {
 
-    val fieldName = "lastName"
+    val fieldName   = "lastName"
     val requiredKey = s"$messageKeyPrefix.error.lastName.required"
-    val lengthKey = s"$messageKeyPrefix.error.lastName.length"
-    val capitalKey = s"$messageKeyPrefix.error.lastName.capitalLetter"
+    val lengthKey   = s"$messageKeyPrefix.error.lastName.length"
+    val capitalKey  = s"$messageKeyPrefix.error.lastName.capitalLetter"
 
     behave like fieldThatBindsValidData(
       form,
@@ -176,4 +175,5 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Optional
       requiredError = FormError(fieldName, capitalKey, Seq(fieldName))
     )
   }
+
 }

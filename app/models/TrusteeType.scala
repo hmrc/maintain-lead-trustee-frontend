@@ -26,14 +26,15 @@ object TrusteeType extends Enumerable.Implicits {
   case object Trustee extends WithName("trustee") with TrusteeType
 
   val values: List[TrusteeType] = List(
-    LeadTrustee, Trustee
+    LeadTrustee,
+    Trustee
   )
 
-  val options: List[RadioOption] = values.map {
-    value =>
-      RadioOption("trusteeType", value.toString)
+  val options: List[RadioOption] = values.map { value =>
+    RadioOption("trusteeType", value.toString)
   }
 
   implicit val enumerable: Enumerable[TrusteeType] =
     Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+
 }

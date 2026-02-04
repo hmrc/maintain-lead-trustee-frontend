@@ -26,59 +26,57 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustsIndividualCheckService @Inject()(connector: TrustsIndividualCheckConnector)
-                                            (implicit config: FrontendAppConfig) extends Logging {
+class TrustsIndividualCheckService @Inject() (connector: TrustsIndividualCheckConnector)(implicit
+  config: FrontendAppConfig
+) extends Logging {
 
-  def matchLeadTrustee(userAnswers: UserAnswers)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustsIndividualCheckServiceResponse] = {
+  def matchLeadTrustee(
+    userAnswers: UserAnswers
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TrustsIndividualCheckServiceResponse] = {
 
     val body: Option[IdMatchRequest] = for {
-      id <- generateId(userAnswers.identifier)
+      id   <- generateId(userAnswers.identifier)
       nino <- userAnswers.get(NationalInsuranceNumberPage)
       name <- userAnswers.get(NamePage)
-      dob <- userAnswers.get(TrusteesDateOfBirthPage)
-    } yield {
-      IdMatchRequest(
-        id = id,
-        nino = nino.toUpperCase,
-        surname = name.lastName.capitalize,
-        forename = name.firstName.capitalize,
-        birthDate = dob.toString
-      )
-    }
+      dob  <- userAnswers.get(TrusteesDateOfBirthPage)
+    } yield IdMatchRequest(
+      id = id,
+      nino = nino.toUpperCase,
+      surname = name.lastName.capitalize,
+      forename = name.firstName.capitalize,
+      birthDate = dob.toString
+    )
 
     body match {
       case Some(idMatchRequest) if idMatchRequest.isBirthDateAcceptable =>
         connector.matchLeadTrustee(idMatchRequest) map {
-          case SuccessfulOrUnsuccessfulMatchResponse(_, true) => SuccessfulMatchResponse
+          case SuccessfulOrUnsuccessfulMatchResponse(_, true)                         => SuccessfulMatchResponse
           case SuccessfulOrUnsuccessfulMatchResponse(_, false) | NinoNotFoundResponse => UnsuccessfulMatchResponse
-          case AttemptLimitExceededResponse => LockedMatchResponse
-          case ServiceUnavailableResponse => ServiceUnavailableErrorResponse
-          case _ => MatchingErrorResponse
+          case AttemptLimitExceededResponse                                           => LockedMatchResponse
+          case ServiceUnavailableResponse                                             => ServiceUnavailableErrorResponse
+          case _                                                                      => MatchingErrorResponse
         }
-      case Some(_) =>
+      case Some(_)                                                      =>
         logger.error(s"[matchLeadTrustee] date of birth is before ${config.minLeadTrusteeDob}")
         Future.successful(IssueBuildingPayloadResponse)
-      case _ =>
+      case _                                                            =>
         logger.error(s"[matchLeadTrustee] Unable to build request body.")
         Future.successful(IssueBuildingPayloadResponse)
     }
   }
 
-  def failedAttempts(identifier: String)
-                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] = {
+  def failedAttempts(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Int] =
 
     generateId(identifier) match {
       case Some(id) =>
         connector.failedAttempts(id)
-      case _ =>
+      case _        =>
         Future.failed(new Throwable("Failed to extract session ID from header carrier."))
     }
-  }
 
-  private def generateId(identifier: String)(implicit hc: HeaderCarrier): Option[String] = {
+  private def generateId(identifier: String)(implicit hc: HeaderCarrier): Option[String] =
     hc.sessionId map { sessionId =>
       s"${sessionId.value}~$identifier"
     }
-  }
+
 }

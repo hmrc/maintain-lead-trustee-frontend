@@ -15,6 +15,7 @@
  */
 
 package repositories
+
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.{IndexModel, IndexOptions, Indexes}
 import org.scalatest.Assertion
@@ -32,7 +33,7 @@ trait BaseMongoIndexSpec extends Matchers {
 
   def await[A](future: Future[A])(implicit timeout: Duration): A = Await.result(future, timeout)
 
-  protected implicit val ordering: Ordering[IndexModel] = Ordering.by((i: IndexModel) => i.toString)
+  implicit protected val ordering: Ordering[IndexModel] = Ordering.by((i: IndexModel) => i.toString)
 
   protected def getIndexes(collection: MongoCollection[_]): Seq[IndexModel] =
     await(
@@ -43,10 +44,10 @@ trait BaseMongoIndexSpec extends Matchers {
           val indexFields = document.get("key").map(_.asDocument().keySet().asScala).getOrElse(Set.empty[String]).toSeq
           val name        = document.getString("name")
           val isUnique    = document.getBoolean("unique", false)
-          val sorting =
+          val sorting     =
             document.get("key").map(_.asDocument().values().asScala.head.asInt32().getValue.toString).getOrElse("1")
-          val indexes = if (sorting == "1") Indexes.ascending(indexFields: _*) else Indexes.descending(indexFields: _*)
-          val options = IndexOptions().name(name).unique(isUnique)
+          val indexes     = if (sorting == "1") Indexes.ascending(indexFields: _*) else Indexes.descending(indexFields: _*)
+          val options     = IndexOptions().name(name).unique(isUnique)
           if (document.containsKey("expireAfterSeconds")) {
             val ttlSeconds = document.getInteger("expireAfterSeconds").longValue()
             options.expireAfter(ttlSeconds, TimeUnit.SECONDS)

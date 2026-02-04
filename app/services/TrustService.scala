@@ -31,87 +31,98 @@ trait TrustService {
 
   def getTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees]
 
-  def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+  def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse]
 
   def getTrustee(identifier: String, index: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee]
 
-  def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
-                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]]
 
-  def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
-                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]]
 
 }
 
-class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService {
+class TrustServiceImpl @Inject() (connector: TrustConnector) extends TrustService {
 
-  override def getAllTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] = {
+  override def getAllTrustees(
+    identifier: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
     for {
-      lead <- getLeadTrustee(identifier)
+      lead     <- getLeadTrustee(identifier)
       trustees <- getTrustees(identifier)
-    } yield {
-      AllTrustees(lead, trustees.trustees)
-    }
-  }
+    } yield AllTrustees(lead, trustees.trustees)
 
-  override def getLeadTrustee(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
+  override def getLeadTrustee(
+    identifier: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
     connector.getLeadTrustee(identifier).map(Some(_))
 
-  override def getTrustees(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustees] = {
+  override def getTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
     connector.getTrustees(identifier)
-  }
 
-  override def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse] = {
+  override def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] =
     connector.removeTrustee(identifier, trustee)
-  }
 
-  override def getTrustee(identifier: String, index: Int)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Trustee] = {
-    getTrustees(identifier).flatMap{ trusteeDetails =>
+  override def getTrustee(identifier: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Trustee] =
+    getTrustees(identifier).flatMap { trusteeDetails =>
       trusteeDetails.trustees.lift(index) match {
         case Some(trustee) => Future.successful(trustee)
-        case None => Future.failed(new IndexOutOfBoundsException(s"No index exists $index"))
+        case None          => Future.failed(new IndexOutOfBoundsException(s"No index exists $index"))
       }
     }
-  }
 
-  override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+  override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]] =
     getAllTrustees(identifier).map { all =>
-
       val leadTrusteeUtr: Option[String] = all.lead.flatMap {
         case x: LeadTrusteeOrganisation if index.isDefined || adding => x.utr
-        case _ => None
+        case _                                                       => None
       }
 
-      val trusteeUtrs: List[String] = all.trustees
-        .zipWithIndex
+      val trusteeUtrs: List[String] = all.trustees.zipWithIndex
         .filterNot(x => index.contains(x._2))
-        .collect {
-          case (TrusteeOrganisation(_, _, _, Some(TrustIdentificationOrgType(_, Some(utr), _)), _, _, _), _) => utr
+        .collect { case (TrusteeOrganisation(_, _, _, Some(TrustIdentificationOrgType(_, Some(utr), _)), _, _, _), _) =>
+          utr
         }
 
       leadTrusteeUtr.toList ++ trusteeUtrs
     }
-  }
 
-  override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
-                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+  override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]] =
     getAllTrustees(identifier).map { all =>
-
       val leadTrusteeNino: Option[String] = all.lead.flatMap {
-        case LeadTrusteeIndividual(_, _, _, _, _, NationalInsuranceNumber(nino), _, _, _) if index.isDefined || adding => Some(nino)
+        case LeadTrusteeIndividual(_, _, _, _, _, NationalInsuranceNumber(nino), _, _, _)
+            if index.isDefined || adding =>
+          Some(nino)
         case _ => None
       }
 
-      val trusteeNinos: List[String] = all.trustees
-        .zipWithIndex
+      val trusteeNinos: List[String] = all.trustees.zipWithIndex
         .filterNot(x => index.contains(x._2))
-        .collect {
-          case (TrusteeIndividual(_, _, _, Some(NationalInsuranceNumber(nino)), _, _, _, _, _, _), _) => nino
+        .collect { case (TrusteeIndividual(_, _, _, Some(NationalInsuranceNumber(nino)), _, _, _, _, _, _), _) =>
+          nino
         }
 
       leadTrusteeNino.toList ++ trusteeNinos
     }
-  }
 
 }

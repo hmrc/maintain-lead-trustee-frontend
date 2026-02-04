@@ -21,14 +21,11 @@ import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 
-case class IdMatchRequest(id: String,
-                          nino: String,
-                          surname: String,
-                          forename: String,
-                          birthDate: String) {
+case class IdMatchRequest(id: String, nino: String, surname: String, forename: String, birthDate: String) {
 
   def isBirthDateAcceptable(implicit config: FrontendAppConfig): Boolean =
     !LocalDate.parse(birthDate).isBefore(config.minLeadTrusteeDob)
+
 }
 
 object IdMatchRequest {

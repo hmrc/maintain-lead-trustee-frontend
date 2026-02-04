@@ -24,18 +24,22 @@ import play.api.mvc.Call
 
 trait LeadTrusteeNavigator {
 
-  def yesNoNav(fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): PartialFunction[Page, UserAnswers => Call] = {
-    case `fromPage` => ua =>
+  def yesNoNav(
+    fromPage: QuestionPage[Boolean],
+    yesCall: => Call,
+    noCall: => Call
+  ): PartialFunction[Page, UserAnswers => Call] = { case `fromPage` =>
+    ua =>
       ua.get(fromPage)
         .map(if (_) yesCall else noCall)
         .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
   }
 
-  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call =
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
-  }
+
 }
 
 object LeadTrusteeNavigator {
@@ -45,14 +49,17 @@ object LeadTrusteeNavigator {
       IndividualLeadTrusteeNavigator.routes orElse
       OrganisationLeadTrusteeNavigator.routes
 
-  private def parameterisedNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case IndividualOrBusinessPage => individualOrBusinessNavigation
+  private def parameterisedNavigation: PartialFunction[Page, UserAnswers => Call] = { case IndividualOrBusinessPage =>
+    individualOrBusinessNavigation
   }
 
-  private def individualOrBusinessNavigation(userAnswers: UserAnswers): Call = {
-    userAnswers.get(IndividualOrBusinessPage).map {
-      case Individual => controllers.leadtrustee.individual.routes.NameController.onPageLoad()
-      case Business => controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad()
-    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
-  }
+  private def individualOrBusinessNavigation(userAnswers: UserAnswers): Call =
+    userAnswers
+      .get(IndividualOrBusinessPage)
+      .map {
+        case Individual => controllers.leadtrustee.individual.routes.NameController.onPageLoad()
+        case Business   => controllers.leadtrustee.organisation.routes.RegisteredInUkYesNoController.onPageLoad()
+      }
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
+
 }

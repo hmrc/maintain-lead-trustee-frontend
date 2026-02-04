@@ -25,21 +25,23 @@ import scala.util.Try
 
 class LeadTrusteeOrganisationExtractor extends LeadTrusteeExtractor {
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = AddressInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
-  def extract(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] = {
-    super.extract(answers, Business)
+  def extract(answers: UserAnswers, leadOrganisation: LeadTrusteeOrganisation): Try[UserAnswers] =
+    super
+      .extract(answers, Business)
       .flatMap(answers => extractConditionalValue(leadOrganisation.utr, RegisteredInUkYesNoPage, UtrPage, answers))
       .flatMap(_.set(NamePage, leadOrganisation.name))
       .flatMap(answers => extractAddress(leadOrganisation.address, answers))
       .flatMap(answers => extractCountryOfResidence(leadOrganisation.countryOfResidence, answers))
-      .flatMap(answers => extractConditionalValue(leadOrganisation.email, EmailAddressYesNoPage, EmailAddressPage, answers))
+      .flatMap(answers =>
+        extractConditionalValue(leadOrganisation.email, EmailAddressYesNoPage, EmailAddressPage, answers)
+      )
       .flatMap(_.set(TelephoneNumberPage, leadOrganisation.phoneNumber))
-  }
 
 }

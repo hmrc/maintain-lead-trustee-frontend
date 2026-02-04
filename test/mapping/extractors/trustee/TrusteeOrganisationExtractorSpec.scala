@@ -30,8 +30,8 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
   private val index = 0
 
-  private val name: String = "Name"
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
+  private val name: String         = "Name"
+  private val date: LocalDate      = LocalDate.parse("1996-02-03")
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
 
   private val extractor = new TrusteeOrganisationExtractor()
@@ -57,17 +57,17 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage).get mustBe false
-          result.get(UtrPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe false
-          result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(CountryOfResidenceYesNoPage) mustBe None
+          result.get(IndividualOrBusinessPage).get       mustBe Business
+          result.get(NamePage).get                       mustBe name
+          result.get(UtrYesNoPage).get                   mustBe false
+          result.get(UtrPage)                            mustBe None
+          result.get(AddressYesNoPage).get               mustBe false
+          result.get(AddressInTheUkYesNoPage)            mustBe None
+          result.get(UkAddressPage)                      mustBe None
+          result.get(NonUkAddressPage)                   mustBe None
+          result.get(CountryOfResidenceYesNoPage)        mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
+          result.get(CountryOfResidencePage)             mustBe None
 
         }
 
@@ -84,18 +84,18 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage).get mustBe false
-          result.get(UtrPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(AddressInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(CountryOfResidenceYesNoPage) mustBe None
+          result.get(IndividualOrBusinessPage).get       mustBe Business
+          result.get(IndexPage).get                      mustBe index
+          result.get(NamePage).get                       mustBe name
+          result.get(UtrYesNoPage).get                   mustBe false
+          result.get(UtrPage)                            mustBe None
+          result.get(AddressYesNoPage).get               mustBe true
+          result.get(AddressInTheUkYesNoPage).get        mustBe true
+          result.get(UkAddressPage).get                  mustBe ukAddress
+          result.get(NonUkAddressPage)                   mustBe None
+          result.get(CountryOfResidenceYesNoPage)        mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
+          result.get(CountryOfResidencePage)             mustBe None
 
         }
 
@@ -117,18 +117,18 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage).get mustBe false
-          result.get(UtrPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe false
-          result.get(AddressInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(CountryOfResidenceYesNoPage).get mustBe false
+          result.get(IndexPage).get                      mustBe index
+          result.get(IndividualOrBusinessPage).get       mustBe Business
+          result.get(NamePage).get                       mustBe name
+          result.get(UtrYesNoPage).get                   mustBe false
+          result.get(UtrPage)                            mustBe None
+          result.get(AddressYesNoPage).get               mustBe false
+          result.get(AddressInTheUkYesNoPage)            mustBe None
+          result.get(UkAddressPage)                      mustBe None
+          result.get(NonUkAddressPage)                   mustBe None
+          result.get(CountryOfResidenceYesNoPage).get    mustBe false
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
+          result.get(CountryOfResidencePage)             mustBe None
 
         }
 
@@ -146,18 +146,18 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage).get mustBe false
-          result.get(UtrPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(AddressInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(CountryOfResidenceYesNoPage).get mustBe false
+          result.get(IndexPage).get                      mustBe index
+          result.get(IndividualOrBusinessPage).get       mustBe Business
+          result.get(NamePage).get                       mustBe name
+          result.get(UtrYesNoPage).get                   mustBe false
+          result.get(UtrPage)                            mustBe None
+          result.get(AddressYesNoPage).get               mustBe true
+          result.get(AddressInTheUkYesNoPage).get        mustBe true
+          result.get(UkAddressPage).get                  mustBe ukAddress
+          result.get(NonUkAddressPage)                   mustBe None
+          result.get(CountryOfResidenceYesNoPage).get    mustBe false
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
+          result.get(CountryOfResidencePage)             mustBe None
 
         }
 
@@ -175,15 +175,14 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfResidenceYesNoPage).get mustBe true
+          result.get(IndexPage).get                          mustBe index
+          result.get(IndividualOrBusinessPage).get           mustBe Business
+          result.get(NamePage).get                           mustBe name
+          result.get(CountryOfResidenceYesNoPage).get        mustBe true
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
-          result.get(CountryOfResidencePage).get mustBe GB
+          result.get(CountryOfResidencePage).get             mustBe GB
 
         }
-
 
         "has a country of residence in Spain" in {
 
@@ -199,12 +198,12 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(IndividualOrBusinessPage).get mustBe Business
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfResidenceYesNoPage).get mustBe true
+          result.get(IndexPage).get                          mustBe index
+          result.get(IndividualOrBusinessPage).get           mustBe Business
+          result.get(NamePage).get                           mustBe name
+          result.get(CountryOfResidenceYesNoPage).get        mustBe true
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
-          result.get(CountryOfResidencePage).get mustBe "Spain"
+          result.get(CountryOfResidencePage).get             mustBe "Spain"
 
         }
 
@@ -229,18 +228,18 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(IndividualOrBusinessPage).get mustBe Business
-        result.get(NamePage).get mustBe name
-        result.get(UtrYesNoPage) mustBe None
-        result.get(UtrPage) mustBe None
-        result.get(AddressYesNoPage) mustBe None
-        result.get(AddressInTheUkYesNoPage) mustBe None
-        result.get(UkAddressPage) mustBe None
-        result.get(NonUkAddressPage) mustBe None
-        result.get(CountryOfResidenceYesNoPage).get mustBe false
+        result.get(IndexPage).get                      mustBe index
+        result.get(IndividualOrBusinessPage).get       mustBe Business
+        result.get(NamePage).get                       mustBe name
+        result.get(UtrYesNoPage)                       mustBe None
+        result.get(UtrPage)                            mustBe None
+        result.get(AddressYesNoPage)                   mustBe None
+        result.get(AddressInTheUkYesNoPage)            mustBe None
+        result.get(UkAddressPage)                      mustBe None
+        result.get(NonUkAddressPage)                   mustBe None
+        result.get(CountryOfResidenceYesNoPage).get    mustBe false
         result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-        result.get(CountryOfResidencePage) mustBe None
+        result.get(CountryOfResidencePage)             mustBe None
 
       }
 
@@ -258,18 +257,18 @@ class TrusteeOrganisationExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(IndividualOrBusinessPage).get mustBe Business
-        result.get(NamePage).get mustBe name
-        result.get(UtrYesNoPage) mustBe None
-        result.get(UtrPage) mustBe None
-        result.get(AddressYesNoPage) mustBe None
-        result.get(AddressInTheUkYesNoPage) mustBe None
-        result.get(UkAddressPage) mustBe None
-        result.get(NonUkAddressPage) mustBe None
-        result.get(CountryOfResidenceYesNoPage).get mustBe true
+        result.get(IndexPage).get                          mustBe index
+        result.get(IndividualOrBusinessPage).get           mustBe Business
+        result.get(NamePage).get                           mustBe name
+        result.get(UtrYesNoPage)                           mustBe None
+        result.get(UtrPage)                                mustBe None
+        result.get(AddressYesNoPage)                       mustBe None
+        result.get(AddressInTheUkYesNoPage)                mustBe None
+        result.get(UkAddressPage)                          mustBe None
+        result.get(NonUkAddressPage)                       mustBe None
+        result.get(CountryOfResidenceYesNoPage).get        mustBe true
         result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
-        result.get(CountryOfResidencePage).get mustBe "Spain"
+        result.get(CountryOfResidencePage).get             mustBe "Spain"
 
       }
 

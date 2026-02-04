@@ -29,7 +29,7 @@ import views.html.trustee.organisation.AddressInTheUkYesNoView
 class AddressInTheUkYesNoControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("trustee.organisation.addressInTheUkYesNo")
+  val form         = formProvider.withPrefix("trustee.organisation.addressInTheUkYesNo")
 
   val onwardRoute = routes.AddressInTheUkYesNoController.onPageLoad(NormalMode).url
 
@@ -40,7 +40,9 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -61,8 +63,12 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
-        .set(AddressInTheUkYesNoPage, true).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(AddressInTheUkYesNoPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -105,7 +111,9 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -158,4 +166,5 @@ class AddressInTheUkYesNoControllerSpec extends SpecBase {
     }
 
   }
+
 }

@@ -26,9 +26,11 @@ import play.api.i18n.Messages
 import utils.print.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
 
-class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class TrusteeOrganisationPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def print(userAnswers: UserAnswers, adding: Boolean, trusteeName: String)(implicit messages: Messages): AnswerSection = {
+  def print(userAnswers: UserAnswers, adding: Boolean, trusteeName: String)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
@@ -40,18 +42,37 @@ class TrusteeOrganisationPrintHelper @Inject()(answerRowConverter: AnswerRowConv
         bound.stringQuestion(NamePage, s"$prefix.name", NameController.onPageLoad(mode).url),
         bound.yesNoQuestion(UtrYesNoPage, s"$prefix.utrYesNo", UtrYesNoController.onPageLoad(mode).url),
         bound.stringQuestion(UtrPage, s"$prefix.utr", UtrController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfResidenceYesNoPage, s"$prefix.countryOfResidenceYesNo", CountryOfResidenceYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url),
-        bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad(mode).url),
+        bound.yesNoQuestion(
+          CountryOfResidenceYesNoPage,
+          s"$prefix.countryOfResidenceYesNo",
+          CountryOfResidenceYesNoController.onPageLoad(mode).url
+        ),
+        bound.yesNoQuestion(
+          CountryOfResidenceInTheUkYesNoPage,
+          s"$prefix.countryOfResidenceInTheUkYesNo",
+          CountryOfResidenceInTheUkYesNoController.onPageLoad(mode).url
+        ),
+        bound.countryQuestion(
+          CountryOfResidenceInTheUkYesNoPage,
+          CountryOfResidencePage,
+          s"$prefix.countryOfResidence",
+          CountryOfResidenceController.onPageLoad(mode).url
+        ),
         bound.yesNoQuestion(AddressYesNoPage, s"$prefix.addressYesNo", AddressYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(AddressInTheUkYesNoPage, s"$prefix.addressInTheUkYesNo", AddressInTheUkYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(
+          AddressInTheUkYesNoPage,
+          s"$prefix.addressInTheUkYesNo",
+          AddressInTheUkYesNoController.onPageLoad(mode).url
+        ),
         bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad(mode).url),
         bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad(mode).url),
-        if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url) else None
+        if (adding) bound.dateQuestion(WhenAddedPage, "trustee.whenAdded", WhenAddedController.onPageLoad().url)
+        else None
       ).flatten
     }
 
     AnswerSection(headingKey = None, rows = answerRows)
 
   }
+
 }

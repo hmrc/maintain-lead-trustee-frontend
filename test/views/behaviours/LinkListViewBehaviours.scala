@@ -21,12 +21,10 @@ import viewmodels.Link
 
 trait LinkListViewBehaviours extends ViewBehaviours {
 
-  def linkList(view: HtmlFormat.Appendable,
-               expectedLinks: List[Link]): Unit = {
+  def linkList(view: HtmlFormat.Appendable, expectedLinks: List[Link]): Unit =
 
     "behave list a page with a link list" when {
-      "rendered" must {
-
+      "rendered" must
         expectedLinks.foreach { link =>
           s"${link.text}" must {
 
@@ -43,7 +41,6 @@ trait LinkListViewBehaviours extends ViewBehaviours {
             }
           }
         }
-      }
     }
-  }
+
 }

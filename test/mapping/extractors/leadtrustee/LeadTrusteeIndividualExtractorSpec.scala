@@ -28,14 +28,14 @@ import java.time.LocalDate
 
 class LeadTrusteeIndividualExtractorSpec extends SpecBase {
 
-  private val name: Name = Name("First", None, "Last")
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
-  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
-  private val country: String = "FR"
+  private val name: Name                 = Name("First", None, "Last")
+  private val date: LocalDate            = LocalDate.parse("1996-02-03")
+  private val ukAddress: UkAddress       = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val country: String            = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
-  private val phone: String = "tel"
-  private val email: String = "email"
-  private val nino: String = "nino"
+  private val phone: String              = "tel"
+  private val email: String              = "email"
+  private val nino: String               = "nino"
 
   private val extractor: LeadTrusteeIndividualExtractor = new LeadTrusteeIndividualExtractor()
 
@@ -61,23 +61,23 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(emptyUserAnswers, trustee).get
 
-        result.get(IndividualOrBusinessPage).get mustBe Individual
-        result.get(BpMatchStatusPage).get mustBe FullyMatched
-        result.get(NamePage).get mustBe name
-        result.get(DateOfBirthPage).get mustBe date
+        result.get(IndividualOrBusinessPage).get             mustBe Individual
+        result.get(BpMatchStatusPage).get                    mustBe FullyMatched
+        result.get(NamePage).get                             mustBe name
+        result.get(DateOfBirthPage).get                      mustBe date
         result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
-        result.get(CountryOfNationalityPage).get mustBe GB
-        result.get(UkCitizenPage).get mustBe true
-        result.get(NationalInsuranceNumberPage).get mustBe nino
-        result.get(PassportOrIdCardDetailsPage) mustBe None
-        result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
-        result.get(CountryOfResidencePage).get mustBe GB
-        result.get(LiveInTheUkYesNoPage) mustBe None
-        result.get(UkAddressPage).get mustBe ukAddress
-        result.get(NonUkAddressPage) mustBe None
-        result.get(EmailAddressYesNoPage).get mustBe false
-        result.get(EmailAddressPage) mustBe None
-        result.get(TelephoneNumberPage).get mustBe phone
+        result.get(CountryOfNationalityPage).get             mustBe GB
+        result.get(UkCitizenPage).get                        mustBe true
+        result.get(NationalInsuranceNumberPage).get          mustBe nino
+        result.get(PassportOrIdCardDetailsPage)              mustBe None
+        result.get(CountryOfResidenceInTheUkYesNoPage).get   mustBe true
+        result.get(CountryOfResidencePage).get               mustBe GB
+        result.get(LiveInTheUkYesNoPage)                     mustBe None
+        result.get(UkAddressPage).get                        mustBe ukAddress
+        result.get(NonUkAddressPage)                         mustBe None
+        result.get(EmailAddressYesNoPage).get                mustBe false
+        result.get(EmailAddressPage)                         mustBe None
+        result.get(TelephoneNumberPage).get                  mustBe phone
 
       }
 
@@ -99,25 +99,26 @@ class LeadTrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(emptyUserAnswers, trustee).get
 
-        result.get(IndividualOrBusinessPage).get mustBe Individual
-        result.get(BpMatchStatusPage).get mustBe FullyMatched
-        result.get(NamePage).get mustBe name
-        result.get(DateOfBirthPage).get mustBe date
+        result.get(IndividualOrBusinessPage).get             mustBe Individual
+        result.get(BpMatchStatusPage).get                    mustBe FullyMatched
+        result.get(NamePage).get                             mustBe name
+        result.get(DateOfBirthPage).get                      mustBe date
         result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
-        result.get(CountryOfNationalityPage).get mustBe country
-        result.get(UkCitizenPage).get mustBe false
-        result.get(NationalInsuranceNumberPage) mustBe None
-        result.get(PassportOrIdCardDetailsPage).get mustBe combined
-        result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
-        result.get(CountryOfResidencePage).get mustBe country
-        result.get(LiveInTheUkYesNoPage) mustBe None
-        result.get(UkAddressPage) mustBe None
-        result.get(NonUkAddressPage).get mustBe nonUkAddress
-        result.get(EmailAddressYesNoPage).get mustBe true
-        result.get(EmailAddressPage).get mustBe email
-        result.get(TelephoneNumberPage).get mustBe phone
+        result.get(CountryOfNationalityPage).get             mustBe country
+        result.get(UkCitizenPage).get                        mustBe false
+        result.get(NationalInsuranceNumberPage)              mustBe None
+        result.get(PassportOrIdCardDetailsPage).get          mustBe combined
+        result.get(CountryOfResidenceInTheUkYesNoPage).get   mustBe false
+        result.get(CountryOfResidencePage).get               mustBe country
+        result.get(LiveInTheUkYesNoPage)                     mustBe None
+        result.get(UkAddressPage)                            mustBe None
+        result.get(NonUkAddressPage).get                     mustBe nonUkAddress
+        result.get(EmailAddressYesNoPage).get                mustBe true
+        result.get(EmailAddressPage).get                     mustBe email
+        result.get(TelephoneNumberPage).get                  mustBe phone
 
       }
     }
   }
+
 }

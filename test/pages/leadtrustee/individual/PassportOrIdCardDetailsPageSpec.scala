@@ -19,7 +19,6 @@ package pages.leadtrustee.individual
 import models.CombinedPassportOrIdCard
 import pages.behaviours.PageBehaviours
 
-
 class PassportOrIdCardDetailsPageSpec extends PageBehaviours {
 
   "PassportDetailsPage" must {
@@ -30,4 +29,5 @@ class PassportOrIdCardDetailsPageSpec extends PageBehaviours {
 
     beRemovable[CombinedPassportOrIdCard](PassportOrIdCardDetailsPage)
   }
+
 }

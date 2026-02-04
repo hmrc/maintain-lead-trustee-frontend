@@ -26,7 +26,7 @@ import views.html.leadtrustee.organisation.EmailAddressView
 class EmailAddressViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "leadtrustee.organisation.emailAddress"
-  val name = "Lead Trustee"
+  val name             = "Lead Trustee"
 
   val form = new EmailAddressFormProvider().withPrefix(messageKeyPrefix)
 
@@ -43,4 +43,5 @@ class EmailAddressViewSpec extends StringViewBehaviours {
 
     behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.EmailAddressController.onSubmit().url)
   }
+
 }

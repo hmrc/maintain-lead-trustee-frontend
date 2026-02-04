@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class NonUkAddressControllerSpec extends SpecBase {
 
   val formProvider = new NonUkAddressFormProvider()
-  val form = formProvider()
+  val form         = formProvider()
 
   lazy val nonUkAddressRoute = routes.NonUkAddressController.onPageLoad().url
 
@@ -45,10 +45,14 @@ class NonUkAddressControllerSpec extends SpecBase {
   val name = Name("Lead", None, "Trustee")
 
   override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   val userAnswers = emptyUserAnswers
-    .set(NonUkAddressPage, NonUkAddress("value 1", "value 2", None, "the country")).success.value
+    .set(NonUkAddressPage, NonUkAddress("value 1", "value 2", None, "the country"))
+    .success
+    .value
 
   "NonUkAddress Controller" must {
 
@@ -83,7 +87,11 @@ class NonUkAddressControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(NonUkAddress("value 1", "value 2", None, "the country")), countryOptions.options(), name.displayName)(request, messages).toString
+        view(
+          form.fill(NonUkAddress("value 1", "value 2", None, "the country")),
+          countryOptions.options(),
+          name.displayName
+        )(request, messages).toString
 
       application.stop()
     }
@@ -130,7 +138,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, countryOptions.options(), name.displayName)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -164,4 +172,5 @@ class NonUkAddressControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

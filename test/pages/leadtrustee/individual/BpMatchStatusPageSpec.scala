@@ -29,4 +29,5 @@ class BpMatchStatusPageSpec extends PageBehaviours {
 
     beRemovable[BpMatchStatus](BpMatchStatusPage)
   }
+
 }

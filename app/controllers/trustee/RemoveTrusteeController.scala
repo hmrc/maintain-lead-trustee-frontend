@@ -31,15 +31,16 @@ import views.html.RemoveIndexView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveTrusteeController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         standardActionSets: StandardActionSets,
-                                         trust: TrustService,
-                                         formProvider: RemoveIndexFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: RemoveIndexView,
-                                         errorHandler: ErrorHandler
-                                       )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RemoveTrusteeController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  trust: TrustService,
+  formProvider: RemoveIndexFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveIndexView,
+  errorHandler: ErrorHandler
+)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveTrusteeController.onSubmit(index)
@@ -48,64 +49,63 @@ class RemoveTrusteeController @Inject()(
 
   private val form = formProvider.apply(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      trust.getTrustee(request.userAnswers.identifier, index).map {
-        trustee =>
-          val trusteeName = trustee match {
-            case lti: TrusteeIndividual => lti.name.displayName
-            case lto: TrusteeOrganisation => lto.name
-          }
-          Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-        case _ =>
-          logger.error(s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove trustee as trustee was not found")
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trust.getTrustee(request.userAnswers.identifier, index).map { trustee =>
+      val trusteeName = trustee match {
+        case lti: TrusteeIndividual   => lti.name.displayName
+        case lto: TrusteeOrganisation => lto.name
       }
+      Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+      case _                               =>
+        logger.error(
+          s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove trustee as trustee was not found"
+        )
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trust.getTrustee(request.userAnswers.identifier, index).map {
-            trustee =>
-              val trusteeName = trustee match {
-                case lti: TrusteeIndividual => lti.name.displayName
-                case lto: TrusteeOrganisation => lto.name
-              }
-              BadRequest(view(messagesPrefix, formWithErrors, index, trusteeName, formRoute(index)))
-          }
-        },
-        value => {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
+          trust.getTrustee(request.userAnswers.identifier, index).map { trustee =>
+            val trusteeName = trustee match {
+              case lti: TrusteeIndividual   => lti.name.displayName
+              case lto: TrusteeOrganisation => lto.name
+            }
+            BadRequest(view(messagesPrefix, formWithErrors, index, trusteeName, formRoute(index)))
+          },
+        value =>
           if (value) {
 
-            trust.getTrustee(request.userAnswers.identifier, index).flatMap {
-              trustee =>
-                if (trustee.isNewlyAdded) {
-                  for {
-                    _ <- trust.removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index))
-                  } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-                } else {
-                  Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
-                }
-            } recoverWith {
-              case _ =>
-                logger.error(s"[RemoveTrusteeController][onSubmit][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-                  s" trustee was not found")
-                errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+            trust.getTrustee(request.userAnswers.identifier, index).flatMap { trustee =>
+              if (trustee.isNewlyAdded) {
+                for {
+                  _ <- trust.removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index))
+                } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+              } else {
+                Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
+              }
+            } recoverWith { case _ =>
+              logger.error(
+                s"[RemoveTrusteeController][onSubmit][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+                  s" trustee was not found"
+              )
+              errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
             }
           } else {
             Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))
           }
-        }
       )
   }
+
 }

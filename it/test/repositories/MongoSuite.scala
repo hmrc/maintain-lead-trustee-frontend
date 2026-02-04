@@ -24,15 +24,16 @@ import play.api.inject.guice.GuiceApplicationBuilder
 
 trait MongoSuite extends ScalaFutures {
 
-  implicit val defaultPatience: PatienceConfig = PatienceConfig(timeout = Span(30, Seconds), interval = Span(500, Millis))
+  implicit val defaultPatience: PatienceConfig =
+    PatienceConfig(timeout = Span(30, Seconds), interval = Span(500, Millis))
 
   val defaultAppConfigurations: Map[String, Any] = Map(
-    "auditing.enabled" -> false,
-    "metrics.enabled" -> false,
+    "auditing.enabled"      -> false,
+    "metrics.enabled"       -> false,
     "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
   )
 
-  val application : Application = new GuiceApplicationBuilder()
+  val application: Application = new GuiceApplicationBuilder()
     .configure(defaultAppConfigurations)
     .build()
 

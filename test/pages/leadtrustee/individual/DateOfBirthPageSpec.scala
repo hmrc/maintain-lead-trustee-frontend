@@ -35,4 +35,5 @@ class DateOfBirthPageSpec extends PageBehaviours {
 
     beRemovable[LocalDate](DateOfBirthPage)
   }
+
 }

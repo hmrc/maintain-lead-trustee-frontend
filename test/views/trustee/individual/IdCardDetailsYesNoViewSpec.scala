@@ -27,8 +27,8 @@ import views.html.trustee.individual.IdCardDetailsYesNoView
 class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustee.individual.idCardDetailsYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
-  val mode: Mode = NormalMode
+  val name: Name       = Name("First", Some("Middle"), "Last")
+  val mode: Mode       = NormalMode
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -43,8 +43,15 @@ class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.IdCardDetailsYesNoController.onSubmit(mode).url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name.displayName),
+      routes.IdCardDetailsYesNoController.onSubmit(mode).url
+    )
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

@@ -28,9 +28,9 @@ import views.html.leadtrustee.organisation.RegisteredInUkYesNoView
 class RegisteredInUkYesNoControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.organisation.registeredInUkYesNo")
+  val form         = formProvider.withPrefix("leadtrustee.organisation.registeredInUkYesNo")
 
-  val index = 0
+  val index            = 0
   val emptyTrusteeName = ""
 
   val onwardRoute = routes.RegisteredInUkYesNoController.onPageLoad().url
@@ -60,7 +60,9 @@ class RegisteredInUkYesNoControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(RegisteredInUkYesNoPage, true).success.value
+        .set(RegisteredInUkYesNoPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -155,4 +157,5 @@ class RegisteredInUkYesNoControllerSpec extends SpecBase {
     }
 
   }
+
 }

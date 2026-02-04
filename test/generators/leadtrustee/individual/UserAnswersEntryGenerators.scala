@@ -24,7 +24,7 @@ import pages.leadtrustee.individual._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
-  this : Generators =>
+  this: Generators =>
 
   implicit lazy val arbitraryTelephoneNumberUserAnswersEntry: Arbitrary[(TelephoneNumberPage.type, JsValue)] =
     Arbitrary {
@@ -82,7 +82,8 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryNationalInsuranceNumberUserAnswersEntry: Arbitrary[(NationalInsuranceNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryNationalInsuranceNumberUserAnswersEntry
+    : Arbitrary[(NationalInsuranceNumberPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[NationalInsuranceNumberPage.type]

@@ -31,64 +31,76 @@ import java.time.LocalDate
 
 class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  val navigator = new Navigator
-  val index = 0
-  val nino = "nino"
+  val navigator                              = new Navigator
+  val index                                  = 0
+  val nino                                   = "nino"
   val passportOrId: CombinedPassportOrIdCard = CombinedPassportOrIdCard("FR", "num", LocalDate.parse("2020-01-01"))
 
   "Individual trustee navigator" when {
 
     "adding for a taxable" must {
 
-      val mode = NormalMode
+      val mode        = NormalMode
       val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
-      "Name page -> Do you know date of birth page" in {
-        navigator.nextPage(NamePage, mode, baseAnswers)
+      "Name page -> Do you know date of birth page" in
+        navigator
+          .nextPage(NamePage, mode, baseAnswers)
           .mustBe(rts.DateOfBirthYesNoController.onPageLoad(mode))
-      }
 
       "Do you know date of birth page" when {
         val page = DateOfBirthYesNoPage
 
         "-> Yes -> Date of birth page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.DateOfBirthController.onPageLoad(mode))
         }
 
         "-> No -> Do you know country of nationality page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityYesNoController.onPageLoad(mode))
         }
       }
 
-      "Date of birth page -> Do you know country of nationality page" in {
-        navigator.nextPage(DateOfBirthPage, mode, baseAnswers)
+      "Date of birth page -> Do you know country of nationality page" in
+        navigator
+          .nextPage(DateOfBirthPage, mode, baseAnswers)
           .mustBe(rts.CountryOfNationalityYesNoController.onPageLoad(mode))
-      }
 
       "Do you know country of nationality page" when {
         val page = CountryOfNationalityYesNoPage
 
         "-> Yes -> UK country of nationality yes/no page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Do you know NINO page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NationalInsuranceNumberYesNoController.onPageLoad(mode))
         }
       }
@@ -98,59 +110,74 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> Do you know NINO page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NationalInsuranceNumberYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Country of nationality page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityController.onPageLoad(mode))
         }
       }
 
-      "Country of nationality page -> Do you know NINO page" in {
-        navigator.nextPage(CountryOfNationalityPage, mode, baseAnswers)
+      "Country of nationality page -> Do you know NINO page" in
+        navigator
+          .nextPage(CountryOfNationalityPage, mode, baseAnswers)
           .mustBe(rts.NationalInsuranceNumberYesNoController.onPageLoad(mode))
-      }
 
       "Do you know NINO page" when {
         val page = NationalInsuranceNumberYesNoPage
 
         "-> Yes -> NINO page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NationalInsuranceNumberController.onPageLoad(mode))
         }
 
         "-> No -> Do you know county of residence page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
         }
       }
 
-      "NINO page -> Do you know county of residence page" in {
-        navigator.nextPage(NationalInsuranceNumberPage, mode, baseAnswers)
+      "NINO page -> Do you know county of residence page" in
+        navigator
+          .nextPage(NationalInsuranceNumberPage, mode, baseAnswers)
           .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
-      }
 
       "Do you know country of residence page" when {
         val page = CountryOfResidenceYesNoPage
 
         "-> Yes -> Is country of residence in UK page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
         }
 
@@ -158,10 +185,15 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO known" must {
             "-> Mental capacity page" in {
               val answers = baseAnswers
-                .set(NationalInsuranceNumberPage, nino).success.value
-                .set(page, false).success.value
+                .set(NationalInsuranceNumberPage, nino)
+                .success
+                .value
+                .set(page, false)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
             }
           }
@@ -169,9 +201,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO not known" must {
             "-> Do you know address page" in {
               val answers = baseAnswers
-                .set(page, false).success.value
+                .set(page, false)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
           }
@@ -185,10 +220,15 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO known" must {
             "-> Mental capacity page" in {
               val answers = baseAnswers
-                .set(NationalInsuranceNumberPage, nino).success.value
-                .set(page, true).success.value
+                .set(NationalInsuranceNumberPage, nino)
+                .success
+                .value
+                .set(page, true)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
             }
           }
@@ -196,9 +236,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO not known" must {
             "-> Do you know address page" in {
               val answers = baseAnswers
-                .set(page, true).success.value
+                .set(page, true)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
           }
@@ -206,9 +249,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> No -> Country of residence page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceController.onPageLoad(mode))
         }
       }
@@ -219,18 +265,21 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         "NINO known" must {
           "-> Mental capacity page" in {
             val answers = baseAnswers
-              .set(NationalInsuranceNumberPage, nino).success.value
+              .set(NationalInsuranceNumberPage, nino)
+              .success
+              .value
 
-            navigator.nextPage(page, mode, answers)
+            navigator
+              .nextPage(page, mode, answers)
               .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
 
         "NINO not known" must {
-          "-> Do you know address page" in {
-            navigator.nextPage(page, mode, baseAnswers)
+          "-> Do you know address page" in
+            navigator
+              .nextPage(page, mode, baseAnswers)
               .mustBe(rts.AddressYesNoController.onPageLoad(mode))
-          }
         }
       }
 
@@ -239,17 +288,23 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> Is address in UK page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.LiveInTheUkYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Mental capacity page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
         }
       }
@@ -259,35 +314,44 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> UK address page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.UkAddressController.onPageLoad(mode))
         }
 
         "-> No -> Non-UK address page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NonUkAddressController.onPageLoad(mode))
         }
       }
 
       "UK address page" when {
         "combined passport/id card details not present" must {
-          "-> Do you know passport details yes/no page" in {
-            navigator.nextPage(UkAddressPage, mode, baseAnswers)
+          "-> Do you know passport details yes/no page" in
+            navigator
+              .nextPage(UkAddressPage, mode, baseAnswers)
               .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
-          }
         }
 
         "combined passport/id card details yes/no present" must {
           "-> Do you know passport or ID card details yes/no page" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsYesNoPage, false).success.value
+              .set(PassportOrIdCardDetailsYesNoPage, false)
+              .success
+              .value
 
-            navigator.nextPage(UkAddressPage, mode, answers)
+            navigator
+              .nextPage(UkAddressPage, mode, answers)
               .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
           }
         }
@@ -295,9 +359,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         "combined passport/id card details present" must {
           "-> Do you know passport or ID card details yes/no page" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsPage, passportOrId).success.value
+              .set(PassportOrIdCardDetailsPage, passportOrId)
+              .success
+              .value
 
-            navigator.nextPage(UkAddressPage, mode, answers)
+            navigator
+              .nextPage(UkAddressPage, mode, answers)
               .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
           }
         }
@@ -305,18 +372,21 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Non-UK address page" when {
         "combined passport/id card details not present" must {
-          "-> Do you know passport details yes/no page" in {
-            navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
+          "-> Do you know passport details yes/no page" in
+            navigator
+              .nextPage(NonUkAddressPage, mode, baseAnswers)
               .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
-          }
         }
 
         "combined passport/id card details yes/no present" must {
           "-> Do you know passport or ID card details yes/no page" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsYesNoPage, false).success.value
+              .set(PassportOrIdCardDetailsYesNoPage, false)
+              .success
+              .value
 
-            navigator.nextPage(NonUkAddressPage, mode, answers)
+            navigator
+              .nextPage(NonUkAddressPage, mode, answers)
               .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
           }
         }
@@ -324,9 +394,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         "combined passport/id card details present" must {
           "-> Do you know passport or ID card details yes/no page" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsPage, passportOrId).success.value
+              .set(PassportOrIdCardDetailsPage, passportOrId)
+              .success
+              .value
 
-            navigator.nextPage(NonUkAddressPage, mode, answers)
+            navigator
+              .nextPage(NonUkAddressPage, mode, answers)
               .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
           }
         }
@@ -337,113 +410,137 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes Passport details page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.PassportDetailsController.onPageLoad(mode))
         }
 
         "-> No -> Do you know ID card details page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.IdCardDetailsYesNoController.onPageLoad(mode))
         }
       }
 
-      "Passport details page -> Mental capacity page" in {
-        navigator.nextPage(PassportDetailsPage, mode, baseAnswers)
+      "Passport details page -> Mental capacity page" in
+        navigator
+          .nextPage(PassportDetailsPage, mode, baseAnswers)
           .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
-      }
 
       "Do you know ID card details page" when {
         val page = IdCardDetailsYesNoPage
 
         "-> Yes -> ID card details page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.IdCardDetailsController.onPageLoad(mode))
         }
 
         "-> No -> Mental capacity page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
         }
       }
 
-      "ID card details page -> Mental capacity page" in {
-        navigator.nextPage(IdCardDetailsPage, mode, baseAnswers)
+      "ID card details page -> Mental capacity page" in
+        navigator
+          .nextPage(IdCardDetailsPage, mode, baseAnswers)
           .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
-      }
 
-      "Mental Capacity page -> When added page" in {
-        navigator.nextPage(MentalCapacityYesNoPage, mode, baseAnswers)
+      "Mental Capacity page -> When added page" in
+        navigator
+          .nextPage(MentalCapacityYesNoPage, mode, baseAnswers)
           .mustBe(addRts.WhenAddedController.onPageLoad())
-      }
 
-      "When added page -> Check your answers page" in {
-        navigator.nextPage(WhenAddedPage, mode, baseAnswers)
+      "When added page -> Check your answers page" in
+        navigator
+          .nextPage(WhenAddedPage, mode, baseAnswers)
           .mustBe(addRts.CheckDetailsController.onPageLoad())
-      }
     }
 
     "amending for a taxable" must {
 
-      val mode = CheckMode
+      val mode                     = CheckMode
       val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true).set(IndexPage, index).success.value
 
-      "Name page -> Do you know date of birth page" in {
-        navigator.nextPage(NamePage, mode, baseAnswers)
+      "Name page -> Do you know date of birth page" in
+        navigator
+          .nextPage(NamePage, mode, baseAnswers)
           .mustBe(rts.DateOfBirthYesNoController.onPageLoad(mode))
-      }
 
       "Do you know date of birth page" when {
         val page = DateOfBirthYesNoPage
 
         "-> Yes -> Date of birth page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.DateOfBirthController.onPageLoad(mode))
         }
 
         "-> No -> Do you know country of nationality page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityYesNoController.onPageLoad(mode))
         }
       }
 
-      "Date of birth page -> Do you know country of nationality page" in {
-        navigator.nextPage(DateOfBirthPage, mode, baseAnswers)
+      "Date of birth page -> Do you know country of nationality page" in
+        navigator
+          .nextPage(DateOfBirthPage, mode, baseAnswers)
           .mustBe(rts.CountryOfNationalityYesNoController.onPageLoad(mode))
-      }
 
       "Do you know country of nationality page" when {
         val page = CountryOfNationalityYesNoPage
 
         "-> Yes -> UK country of nationality yes/no page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Do you know NINO page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NationalInsuranceNumberYesNoController.onPageLoad(mode))
         }
       }
@@ -453,59 +550,74 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> Do you know NINO page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NationalInsuranceNumberYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Country of nationality page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityController.onPageLoad(mode))
         }
       }
 
-      "Country of nationality page -> Do you know NINO page" in {
-        navigator.nextPage(CountryOfNationalityPage, mode, baseAnswers)
+      "Country of nationality page -> Do you know NINO page" in
+        navigator
+          .nextPage(CountryOfNationalityPage, mode, baseAnswers)
           .mustBe(rts.NationalInsuranceNumberYesNoController.onPageLoad(mode))
-      }
 
       "Do you know NINO page" when {
         val page = NationalInsuranceNumberYesNoPage
 
         "-> Yes -> NINO page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NationalInsuranceNumberController.onPageLoad(mode))
         }
 
         "-> No -> Do you know county of residence page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
         }
       }
 
-      "NINO page -> Do you know county of residence page" in {
-        navigator.nextPage(NationalInsuranceNumberPage, mode, baseAnswers)
+      "NINO page -> Do you know county of residence page" in
+        navigator
+          .nextPage(NationalInsuranceNumberPage, mode, baseAnswers)
           .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
-      }
 
       "Do you know country of residence page" when {
         val page = CountryOfResidenceYesNoPage
 
         "-> Yes -> Is country of residence in UK page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
         }
 
@@ -513,10 +625,15 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO known" must {
             "-> Mental capacity page" in {
               val answers = baseAnswers
-                .set(NationalInsuranceNumberPage, nino).success.value
-                .set(page, false).success.value
+                .set(NationalInsuranceNumberPage, nino)
+                .success
+                .value
+                .set(page, false)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
             }
           }
@@ -524,9 +641,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO not known" must {
             "-> Do you know address page" in {
               val answers = baseAnswers
-                .set(page, false).success.value
+                .set(page, false)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
           }
@@ -540,10 +660,15 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO known" must {
             "-> Mental capacity page" in {
               val answers = baseAnswers
-                .set(NationalInsuranceNumberPage, nino).success.value
-                .set(page, true).success.value
+                .set(NationalInsuranceNumberPage, nino)
+                .success
+                .value
+                .set(page, true)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
             }
           }
@@ -551,9 +676,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           "NINO not known" must {
             "-> Do you know address page" in {
               val answers = baseAnswers
-                .set(page, true).success.value
+                .set(page, true)
+                .success
+                .value
 
-              navigator.nextPage(page, mode, answers)
+              navigator
+                .nextPage(page, mode, answers)
                 .mustBe(rts.AddressYesNoController.onPageLoad(mode))
             }
           }
@@ -561,9 +689,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> No -> Country of residence page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceController.onPageLoad(mode))
         }
       }
@@ -574,18 +705,21 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         "NINO known" must {
           "-> Mental capacity page" in {
             val answers = baseAnswers
-              .set(NationalInsuranceNumberPage, nino).success.value
+              .set(NationalInsuranceNumberPage, nino)
+              .success
+              .value
 
-            navigator.nextPage(page, mode, answers)
+            navigator
+              .nextPage(page, mode, answers)
               .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
 
         "NINO not known" must {
-          "-> Do you know address page" in {
-            navigator.nextPage(page, mode, baseAnswers)
+          "-> Do you know address page" in
+            navigator
+              .nextPage(page, mode, baseAnswers)
               .mustBe(rts.AddressYesNoController.onPageLoad(mode))
-          }
         }
       }
 
@@ -594,17 +728,23 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> Is address in UK page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.LiveInTheUkYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Mental capacity page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
         }
       }
@@ -614,35 +754,44 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> UK address page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.UkAddressController.onPageLoad(mode))
         }
 
         "-> No -> Non-UK address page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.NonUkAddressController.onPageLoad(mode))
         }
       }
 
       "UK address page" when {
         "combined passport/id card details not present" must {
-          "-> Do you know passport details yes/no page" in {
-            navigator.nextPage(UkAddressPage, mode, baseAnswers)
+          "-> Do you know passport details yes/no page" in
+            navigator
+              .nextPage(UkAddressPage, mode, baseAnswers)
               .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
-          }
         }
 
         "combined passport/id card details yes/no present" must {
           "-> Mental capacity" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsYesNoPage, false).success.value
+              .set(PassportOrIdCardDetailsYesNoPage, false)
+              .success
+              .value
 
-            navigator.nextPage(UkAddressPage, mode, answers)
+            navigator
+              .nextPage(UkAddressPage, mode, answers)
               .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
@@ -650,9 +799,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         "combined passport/id card details present" must {
           "-> Mental capacity" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsPage, passportOrId).success.value
+              .set(PassportOrIdCardDetailsPage, passportOrId)
+              .success
+              .value
 
-            navigator.nextPage(UkAddressPage, mode, answers)
+            navigator
+              .nextPage(UkAddressPage, mode, answers)
               .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
@@ -660,18 +812,21 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Non-UK address page" when {
         "combined passport/id card details not present" must {
-          "-> Do you know passport details yes/no page" in {
-            navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
+          "-> Do you know passport details yes/no page" in
+            navigator
+              .nextPage(NonUkAddressPage, mode, baseAnswers)
               .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
-          }
         }
 
         "combined passport/id card details yes/no present" must {
           "-> Mental capacity" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsYesNoPage, true).success.value
+              .set(PassportOrIdCardDetailsYesNoPage, true)
+              .success
+              .value
 
-            navigator.nextPage(NonUkAddressPage, mode, answers)
+            navigator
+              .nextPage(NonUkAddressPage, mode, answers)
               .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
@@ -679,9 +834,12 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         "combined passport/id card details present" must {
           "-> Mental capacity" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsPage, passportOrId).success.value
+              .set(PassportOrIdCardDetailsPage, passportOrId)
+              .success
+              .value
 
-            navigator.nextPage(NonUkAddressPage, mode, answers)
+            navigator
+              .nextPage(NonUkAddressPage, mode, answers)
               .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
@@ -692,64 +850,82 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes Passport details page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.PassportDetailsController.onPageLoad(mode))
         }
 
         "-> No -> Do you know ID card details page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.IdCardDetailsYesNoController.onPageLoad(mode))
         }
       }
 
-      "Passport details page -> Mental capacity page" in {
-        navigator.nextPage(PassportDetailsPage, mode, baseAnswers)
+      "Passport details page -> Mental capacity page" in
+        navigator
+          .nextPage(PassportDetailsPage, mode, baseAnswers)
           .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
-      }
 
       "Do you know ID card details page" when {
         val page = IdCardDetailsYesNoPage
 
         "-> Yes -> ID card details page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.IdCardDetailsController.onPageLoad(mode))
         }
 
         "-> No -> Mental capacity page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
         }
       }
 
-      "ID card details page -> Mental capacity page" in {
-        navigator.nextPage(IdCardDetailsPage, mode, baseAnswers)
+      "ID card details page -> Mental capacity page" in
+        navigator
+          .nextPage(IdCardDetailsPage, mode, baseAnswers)
           .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
-      }
 
       "Mental Capacity Yes/No page -> Yes -> Check details" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes)
+          .success
+          .value
 
-        navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
+        navigator
+          .nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
       }
 
       "Mental Capacity Yes/No page -> No -> Check details" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, YesNoDontKnow.No).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.No)
+          .success
+          .value
 
-        navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
+        navigator
+          .nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(amendRts.CheckDetailsController.onPageLoadUpdated(index))
       }
 
@@ -757,55 +933,67 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
     "adding for a non taxable" must {
 
-      val mode = NormalMode
+      val mode        = NormalMode
       val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
 
-      "Name page -> Do you know date of birth page" in {
-        navigator.nextPage(NamePage, mode, baseAnswers)
+      "Name page -> Do you know date of birth page" in
+        navigator
+          .nextPage(NamePage, mode, baseAnswers)
           .mustBe(rts.DateOfBirthYesNoController.onPageLoad(mode))
-      }
 
       "Do you know date of birth page" when {
         val page = DateOfBirthYesNoPage
 
         "-> Yes -> Date of birth page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.DateOfBirthController.onPageLoad(mode))
         }
 
         "-> No -> Do you know country of nationality page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityYesNoController.onPageLoad(mode))
         }
       }
 
-      "Date of birth page -> Do you know country of nationality page" in {
-        navigator.nextPage(DateOfBirthPage, mode, baseAnswers)
+      "Date of birth page -> Do you know country of nationality page" in
+        navigator
+          .nextPage(DateOfBirthPage, mode, baseAnswers)
           .mustBe(rts.CountryOfNationalityYesNoController.onPageLoad(mode))
-      }
 
       "Do you know country of nationality page" when {
         val page = CountryOfNationalityYesNoPage
 
         "-> Yes -> UK country of nationality yes/no page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityInTheUkYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Do you know country of residency page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
         }
       }
@@ -815,42 +1003,54 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> Do you know country of residency page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Country of nationality page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfNationalityController.onPageLoad(mode))
         }
       }
 
-      "Country of nationality page -> Do you know country of residency page" in {
-        navigator.nextPage(CountryOfNationalityPage, mode, baseAnswers)
+      "Country of nationality page -> Do you know country of residency page" in
+        navigator
+          .nextPage(CountryOfNationalityPage, mode, baseAnswers)
           .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
-      }
 
       "Do you know country of residence page" when {
         val page = CountryOfResidenceYesNoPage
 
         "-> Yes -> Is country of residence in UK page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Mental capacity page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
         }
       }
@@ -860,35 +1060,42 @@ class IndividualTrusteeNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
         "-> Yes -> Mental capacity page" in {
           val answers = baseAnswers
-            .set(page, true).success.value
+            .set(page, true)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
         }
 
         "-> No -> Country of residence page" in {
           val answers = baseAnswers
-            .set(page, false).success.value
+            .set(page, false)
+            .success
+            .value
 
-          navigator.nextPage(page, mode, answers)
+          navigator
+            .nextPage(page, mode, answers)
             .mustBe(rts.CountryOfResidenceController.onPageLoad(mode))
         }
       }
 
-      "Country of residence page -> Mental capacity page" in {
-        navigator.nextPage(CountryOfResidencePage, mode, baseAnswers)
+      "Country of residence page -> Mental capacity page" in
+        navigator
+          .nextPage(CountryOfResidencePage, mode, baseAnswers)
           .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
-      }
 
-      "Mental Capacity page -> When added page" in {
-        navigator.nextPage(MentalCapacityYesNoPage, mode, baseAnswers)
+      "Mental Capacity page -> When added page" in
+        navigator
+          .nextPage(MentalCapacityYesNoPage, mode, baseAnswers)
           .mustBe(addRts.WhenAddedController.onPageLoad())
-      }
 
-      "When added page -> Check your answers page" in {
-        navigator.nextPage(WhenAddedPage, mode, baseAnswers)
+      "When added page -> Check your answers page" in
+        navigator
+          .nextPage(WhenAddedPage, mode, baseAnswers)
           .mustBe(addRts.CheckDetailsController.onPageLoad())
-      }
     }
   }
+
 }

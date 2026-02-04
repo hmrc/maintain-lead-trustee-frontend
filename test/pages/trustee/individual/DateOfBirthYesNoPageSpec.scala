@@ -31,11 +31,16 @@ class DateOfBirthYesNoPageSpec extends PageBehaviours {
     "implement cleanup logic" when {
       "NO selected" in {
         val userAnswers = emptyUserAnswers
-          .set(DateOfBirthPage, arbitraryLocalDate.arbitrary.sample.get).success.value
-          .set(DateOfBirthYesNoPage, false).success.value
+          .set(DateOfBirthPage, arbitraryLocalDate.arbitrary.sample.get)
+          .success
+          .value
+          .set(DateOfBirthYesNoPage, false)
+          .success
+          .value
 
         userAnswers.get(DateOfBirthPage) mustBe None
       }
     }
   }
+
 }

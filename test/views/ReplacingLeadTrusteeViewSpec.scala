@@ -48,7 +48,7 @@ class ReplacingLeadTrusteeViewSpec extends StringViewBehaviours {
 
   }
 
-  for (option <- radioOptions) {
+  for (option <- radioOptions)
 
     s"rendered with a value of '${option.value}'" must {
 
@@ -58,10 +58,9 @@ class ReplacingLeadTrusteeViewSpec extends StringViewBehaviours {
 
         assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = true)
 
-        for (unselectedOption <- radioOptions.filterNot(o => o == option)) {
+        for (unselectedOption <- radioOptions.filterNot(o => o == option))
           assertContainsRadioButton(doc, unselectedOption.id, "value", unselectedOption.value, isChecked = false)
-        }
       }
     }
-  }
+
 }

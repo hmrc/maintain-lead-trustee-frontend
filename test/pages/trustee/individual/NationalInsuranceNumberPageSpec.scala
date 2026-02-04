@@ -28,4 +28,5 @@ class NationalInsuranceNumberPageSpec extends PageBehaviours {
 
     beRemovable[String](NationalInsuranceNumberPage)
   }
+
 }

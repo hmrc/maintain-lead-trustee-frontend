@@ -33,18 +33,24 @@ class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
 
       "YES selected" in {
         val userAnswers = emptyUserAnswers
-          .set(CountryOfResidencePage, "FR").success.value
-          .set(NonUkAddressPage, NonUkAddress("Line 1", "Line 2", None, "FR")).success.value
+          .set(CountryOfResidencePage, "FR")
+          .success
+          .value
+          .set(NonUkAddressPage, NonUkAddress("Line 1", "Line 2", None, "FR"))
+          .success
+          .value
 
         val result = userAnswers.set(CountryOfResidenceInTheUkYesNoPage, true).success.value
 
         result.get(CountryOfResidencePage) mustBe None
-        result.get(NonUkAddressPage) mustBe None
+        result.get(NonUkAddressPage)       mustBe None
       }
 
       "NO selected" in {
         val userAnswers = emptyUserAnswers
-          .set(UkAddressPage, UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")).success.value
+          .set(UkAddressPage, UkAddress("Line 1", "Line 2", None, None, "AB1 1AB"))
+          .success
+          .value
 
         val result = userAnswers.set(CountryOfResidenceInTheUkYesNoPage, false).success.value
 
@@ -52,4 +58,5 @@ class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
       }
     }
   }
+
 }

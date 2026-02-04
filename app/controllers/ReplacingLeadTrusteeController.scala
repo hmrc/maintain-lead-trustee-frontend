@@ -40,107 +40,99 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class ReplacingLeadTrusteeController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                playbackRepository: PlaybackRepository,
-                                                trust: TrustService,
-                                                standardActionSets: StandardActionSets,
-                                                formProvider: ReplaceLeadTrusteeFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: ReplacingLeadTrusteeView,
-                                                errorHandler: ErrorHandler,
-                                                individualTrusteeToLeadTrusteeExtractor: IndividualTrusteeToLeadTrusteeExtractor,
-                                                organisationTrusteeToLeadTrusteeExtractor: OrganisationTrusteeToLeadTrusteeExtractor
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class ReplacingLeadTrusteeController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  trust: TrustService,
+  standardActionSets: StandardActionSets,
+  formProvider: ReplaceLeadTrusteeFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ReplacingLeadTrusteeView,
+  errorHandler: ErrorHandler,
+  individualTrusteeToLeadTrusteeExtractor: IndividualTrusteeToLeadTrusteeExtractor,
+  organisationTrusteeToLeadTrusteeExtractor: OrganisationTrusteeToLeadTrusteeExtractor
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messageKeyPrefix: String = "replacingLeadTrustee"
 
   private val form: Form[String] = formProvider.withPrefix(messageKeyPrefix)
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      trust.getAllTrustees(request.userAnswers.identifier) map {
-        case AllTrustees(leadTrustee, trustees) =>
-          val existingOptions = generateRadioOptions(trustees)
-          Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions))
-      } recoverWith {
-        recovery
-      }
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    trust.getAllTrustees(request.userAnswers.identifier) map { case AllTrustees(leadTrustee, trustees) =>
+      val existingOptions = generateRadioOptions(trustees)
+      Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions))
+    } recoverWith
+      recovery
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      trust.getAllTrustees(request.userAnswers.identifier) flatMap {
-        case AllTrustees(leadTrustee, trustees) =>
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              val existingOptions = generateRadioOptions(trustees)
-              Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions)))
-            },
-            {
-              case "addNew" =>
-                val updatedAnswers = request.userAnswers.set(IsReplacingLeadTrusteePage, true)
-                for {
-                  ua <- Future.fromTry(updatedAnswers)
-                  _ <- playbackRepository.set(ua)
-                } yield {
-                  Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
-                }
-              case  indexString =>
-                val index = indexString.toInt
-                trustees(index) match {
-                  case trustee: TrusteeIndividual =>
-                    val extractedAnswers = individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                    populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
-                  case trustee: TrusteeOrganisation =>
-                    val extractedAnswers = organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                    populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
-                }
-            }
-          )
-      } recoverWith {
-        recovery
-      }
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    trust.getAllTrustees(request.userAnswers.identifier) flatMap { case AllTrustees(leadTrustee, trustees) =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val existingOptions = generateRadioOptions(trustees)
+            Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions)))
+          },
+          {
+            case "addNew"    =>
+              val updatedAnswers = request.userAnswers.set(IsReplacingLeadTrusteePage, true)
+              for {
+                ua <- Future.fromTry(updatedAnswers)
+                _  <- playbackRepository.set(ua)
+              } yield Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+            case indexString =>
+              val index = indexString.toInt
+              trustees(index) match {
+                case trustee: TrusteeIndividual   =>
+                  val extractedAnswers =
+                    individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                  populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
+                case trustee: TrusteeOrganisation =>
+                  val extractedAnswers =
+                    organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+                  populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
+              }
+          }
+        )
+    } recoverWith
+      recovery
   }
 
-  private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] = {
-    trustees
-      .zipWithIndex
+  private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] =
+    trustees.zipWithIndex
       .filter(_._1 match {
         case trustee: TrusteeIndividual => trustee.mentalCapacityYesNo.contains(Yes)
-        case _: TrusteeOrganisation => true
+        case _: TrusteeOrganisation     => true
       })
       .map { x =>
         val name = x._1 match {
-          case trustee: TrusteeIndividual => trustee.name.displayName
+          case trustee: TrusteeIndividual   => trustee.name.displayName
           case trustee: TrusteeOrganisation => trustee.name
         }
         RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
       }
-  }
 
-  private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String = {
+  private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String =
     leadTrustee match {
-      case Some(individual: LeadTrusteeIndividual) => individual.name.displayName
+      case Some(individual: LeadTrusteeIndividual)     => individual.name.displayName
       case Some(organisation: LeadTrusteeOrganisation) => organisation.name
-      case None => request.messages(messagesApi)("leadTrusteeName.defaultText")
+      case None                                        => request.messages(messagesApi)("leadTrusteeName.defaultText")
     }
-  }
 
-  private def populateUserAnswersAndRedirect(extractedAnswers: Try[UserAnswers],
-                                             redirectUrl: Call): Future[Result] = {
+  private def populateUserAnswersAndRedirect(extractedAnswers: Try[UserAnswers], redirectUrl: Call): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(extractedAnswers)
-      _ <- playbackRepository.set(updatedAnswers)
+      _              <- playbackRepository.set(updatedAnswers)
     } yield Redirect(redirectUrl)
-  }
 
   private def recovery(implicit request: DataRequest[AnyContent]): PartialFunction[Throwable, Future[Result]] = {
     case e =>
-      logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-        s" Problem getting trustees: ${e.getMessage}")
+      logger.error(
+        s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+          s" Problem getting trustees: ${e.getMessage}"
+      )
 
       errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }

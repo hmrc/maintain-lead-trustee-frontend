@@ -20,6 +20,7 @@ import models.UserAnswers
 import models.requests.DataRequest
 import play.api.mvc.WrappedRequest
 
-case class LeadTrusteeNameRequest[T](request: DataRequest[T], leadTrusteeName: String) extends WrappedRequest[T](request){
-  val userAnswers:UserAnswers = request.userAnswers
+case class LeadTrusteeNameRequest[T](request: DataRequest[T], leadTrusteeName: String)
+    extends WrappedRequest[T](request) {
+  val userAnswers: UserAnswers = request.userAnswers
 }

@@ -33,11 +33,15 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with BeforeAndAfter
 
   private val name: Name = Name("FirstName", None, "LastName")
   private val mode: Mode = NormalMode
-  private val index = 0
+  private val index      = 0
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(IndexPage, index).success.value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(IndexPage, index)
+    .success
+    .value
 
   private lazy val passportOrIdCardDetailsRoute: String =
     routes.PassportOrIdCardDetailsController.onPageLoad(mode).url
@@ -93,12 +97,12 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with BeforeAndAfter
 
       val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
         .withFormUrlEncodedBody(
-          "country" -> validData.countryOfIssue,
-          "number" -> validData.number,
-          "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
+          "country"          -> validData.countryOfIssue,
+          "number"           -> validData.number,
+          "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
           "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-          "expiryDate.year" -> validData.expirationDate.getYear.toString,
-          "detailsType" -> validData.detailsType.toString
+          "expiryDate.year"  -> validData.expirationDate.getYear.toString,
+          "detailsType"      -> validData.detailsType.toString
         )
 
       val result = route(application, request).value
@@ -143,4 +147,5 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with BeforeAndAfter
       application.stop()
     }
   }
+
 }

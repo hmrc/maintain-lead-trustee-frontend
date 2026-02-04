@@ -24,27 +24,27 @@ import scala.util.{Success, Try}
 
 trait Extractor {
 
-  def extract(answers: UserAnswers, individualOrBusiness: IndividualOrBusiness): Try[UserAnswers] = {
-    answers.deleteAtPath(basePath)
+  def extract(answers: UserAnswers, individualOrBusiness: IndividualOrBusiness): Try[UserAnswers] =
+    answers
+      .deleteAtPath(basePath)
       .flatMap(_.set(individualOrBusinessPage, individualOrBusiness))
-  }
 
   def basePath: JsPath
   def individualOrBusinessPage: QuestionPage[IndividualOrBusiness]
 
-  def ukAddressYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukAddressPage: QuestionPage[UkAddress] = new EmptyPage[UkAddress]
+  def ukAddressYesNoPage: QuestionPage[Boolean]    = new EmptyPage[Boolean]
+  def ukAddressPage: QuestionPage[UkAddress]       = new EmptyPage[UkAddress]
   def nonUkAddressPage: QuestionPage[NonUkAddress] = new EmptyPage[NonUkAddress]
 
   def extractOptionalAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers]
 
   def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers]
 
-  def countryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def countryOfNationalityYesNoPage: QuestionPage[Boolean]   = new EmptyPage[Boolean]
   def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def countryOfNationalityPage: QuestionPage[String] = new EmptyPage[String]
+  def countryOfNationalityPage: QuestionPage[String]         = new EmptyPage[String]
 
-  def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = countryOfNationality,
       answers = answers,
@@ -52,13 +52,12 @@ trait Extractor {
       ukYesNoPage = ukCountryOfNationalityYesNoPage,
       page = countryOfNationalityPage
     )
-  }
 
   def countryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
   def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean]
   def countryOfResidencePage: QuestionPage[String]
 
-  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = countryOfResidence,
       answers = answers,
@@ -66,36 +65,37 @@ trait Extractor {
       ukYesNoPage = ukCountryOfResidenceYesNoPage,
       page = countryOfResidencePage
     )
-  }
 
-  def extractCountryOfResidenceOrNationality(country: Option[String],
-                                             answers: UserAnswers,
-                                             yesNoPage: QuestionPage[Boolean],
-                                             ukYesNoPage: QuestionPage[Boolean],
-                                             page: QuestionPage[String]): Try[UserAnswers]
+  def extractCountryOfResidenceOrNationality(
+    country: Option[String],
+    answers: UserAnswers,
+    yesNoPage: QuestionPage[Boolean],
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Try[UserAnswers]
 
-  def extractValue[T](optionalValue: Option[T],
-                      page: QuestionPage[T],
-                      answers: UserAnswers)
-                     (implicit wts: Writes[T]): Try[UserAnswers] = {
+  def extractValue[T](optionalValue: Option[T], page: QuestionPage[T], answers: UserAnswers)(implicit
+    wts: Writes[T]
+  ): Try[UserAnswers] =
     optionalValue match {
       case Some(value) => answers.set(page, value)
-      case _ => Success(answers)
+      case _           => Success(answers)
     }
-  }
 
-  def extractConditionalValue[T](optionalValue: Option[T],
-                                 yesNoPage: QuestionPage[Boolean],
-                                 page: QuestionPage[T],
-                                 answers: UserAnswers)
-                                (implicit wts: Writes[T]): Try[UserAnswers] = {
+  def extractConditionalValue[T](
+    optionalValue: Option[T],
+    yesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[T],
+    answers: UserAnswers
+  )(implicit wts: Writes[T]): Try[UserAnswers] =
     optionalValue match {
-      case Some(value) => answers
-        .set(yesNoPage, true)
-        .flatMap(_.set(page, value))
-      case None => answers
-        .set(yesNoPage, false)
+      case Some(value) =>
+        answers
+          .set(yesNoPage, true)
+          .flatMap(_.set(page, value))
+      case None        =>
+        answers
+          .set(yesNoPage, false)
     }
-  }
 
 }

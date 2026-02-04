@@ -26,16 +26,18 @@ import java.time.LocalDate
 
 class TrusteeOrganisationMapperSpec extends SpecBase {
 
-  private val name: String = "Name"
-  private val startDate: LocalDate = LocalDate.parse("2021-01-01")
-  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val name: String               = "Name"
+  private val startDate: LocalDate       = LocalDate.parse("2021-01-01")
+  private val ukAddress: UkAddress       = UkAddress("Line 1", "Line 2", None, None, "postcode")
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "country")
-  private val utr: String = "utr"
+  private val utr: String                = "utr"
 
   private val mapper: TrusteeOrganisationMapper = new TrusteeOrganisationMapper()
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "Trustee organisation mapper" must {
 
@@ -43,8 +45,12 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has UTR" in {
         val userAnswers = baseAnswers
-          .set(UtrPage, utr).success.value
-          .set(WhenAddedPage, startDate).success.value
+          .set(UtrPage, utr)
+          .success
+          .value
+          .set(WhenAddedPage, startDate)
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -60,10 +66,18 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has UK address" in {
         val userAnswers = baseAnswers
-          .set(AddressYesNoPage, true).success.value
-          .set(AddressInTheUkYesNoPage, true).success.value
-          .set(UkAddressPage, ukAddress).success.value
-          .set(WhenAddedPage, startDate).success.value
+          .set(AddressYesNoPage, true)
+          .success
+          .value
+          .set(AddressInTheUkYesNoPage, true)
+          .success
+          .value
+          .set(UkAddressPage, ukAddress)
+          .success
+          .value
+          .set(WhenAddedPage, startDate)
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -79,10 +93,18 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has non-UK address" in {
         val userAnswers = baseAnswers
-          .set(AddressYesNoPage, true).success.value
-          .set(AddressInTheUkYesNoPage, false).success.value
-          .set(NonUkAddressPage, nonUkAddress).success.value
-          .set(WhenAddedPage, startDate).success.value
+          .set(AddressYesNoPage, true)
+          .success
+          .value
+          .set(AddressInTheUkYesNoPage, false)
+          .success
+          .value
+          .set(NonUkAddressPage, nonUkAddress)
+          .success
+          .value
+          .set(WhenAddedPage, startDate)
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -98,8 +120,12 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has no UTR or address" in {
         val userAnswers = baseAnswers
-          .set(AddressYesNoPage, false).success.value
-          .set(WhenAddedPage, startDate).success.value
+          .set(AddressYesNoPage, false)
+          .success
+          .value
+          .set(WhenAddedPage, startDate)
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -115,10 +141,18 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has GB Residency" in {
         val userAnswers = baseAnswers
-          .set(AddressYesNoPage, false).success.value
-          .set(WhenAddedPage, startDate).success.value
-          .set(CountryOfResidenceYesNoPage, true).success.value
-          .set(CountryOfResidenceInTheUkYesNoPage, true).success.value
+          .set(AddressYesNoPage, false)
+          .success
+          .value
+          .set(WhenAddedPage, startDate)
+          .success
+          .value
+          .set(CountryOfResidenceYesNoPage, true)
+          .success
+          .value
+          .set(CountryOfResidenceInTheUkYesNoPage, true)
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -136,11 +170,21 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
       "trustee has US Residency" in {
         val userAnswers = baseAnswers
-          .set(AddressYesNoPage, false).success.value
-          .set(WhenAddedPage, startDate).success.value
-          .set(CountryOfResidenceYesNoPage, true).success.value
-          .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
-          .set(CountryOfResidencePage, "US").success.value
+          .set(AddressYesNoPage, false)
+          .success
+          .value
+          .set(WhenAddedPage, startDate)
+          .success
+          .value
+          .set(CountryOfResidenceYesNoPage, true)
+          .success
+          .value
+          .set(CountryOfResidenceInTheUkYesNoPage, false)
+          .success
+          .value
+          .set(CountryOfResidencePage, "US")
+          .success
+          .value
 
         val result = mapper.map(userAnswers).get
 
@@ -158,4 +202,5 @@ class TrusteeOrganisationMapperSpec extends SpecBase {
 
     }
   }
+
 }

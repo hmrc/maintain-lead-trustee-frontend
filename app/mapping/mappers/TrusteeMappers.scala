@@ -22,25 +22,23 @@ import models._
 
 import javax.inject.Inject
 
-class TrusteeMappers @Inject()(trusteeIndividualMapper: TrusteeIndividualMapper,
-                               trusteeOrganisationMapper: TrusteeOrganisationMapper,
-                               leadTrusteeIndividualMapper: LeadTrusteeIndividualMapper,
-                               leadTrusteeOrganisationMapper: LeadTrusteeOrganisationMapper) {
+class TrusteeMappers @Inject() (
+  trusteeIndividualMapper: TrusteeIndividualMapper,
+  trusteeOrganisationMapper: TrusteeOrganisationMapper,
+  leadTrusteeIndividualMapper: LeadTrusteeIndividualMapper,
+  leadTrusteeOrganisationMapper: LeadTrusteeOrganisationMapper
+) {
 
-  def mapToTrusteeIndividual(userAnswers: UserAnswers): Option[TrusteeIndividual] = {
+  def mapToTrusteeIndividual(userAnswers: UserAnswers): Option[TrusteeIndividual] =
     trusteeIndividualMapper.map(userAnswers)
-  }
 
-  def mapToTrusteeOrganisation(userAnswers: UserAnswers): Option[TrusteeOrganisation] = {
+  def mapToTrusteeOrganisation(userAnswers: UserAnswers): Option[TrusteeOrganisation] =
     trusteeOrganisationMapper.map(userAnswers)
-  }
 
-  def mapToLeadTrusteeIndividual(userAnswers: UserAnswers): Option[LeadTrusteeIndividual] = {
+  def mapToLeadTrusteeIndividual(userAnswers: UserAnswers): Option[LeadTrusteeIndividual] =
     leadTrusteeIndividualMapper.map(userAnswers)
-  }
 
-  def mapToLeadTrusteeOrganisation(userAnswers: UserAnswers): Option[LeadTrusteeOrganisation] = {
+  def mapToLeadTrusteeOrganisation(userAnswers: UserAnswers): Option[LeadTrusteeOrganisation] =
     leadTrusteeOrganisationMapper.map(userAnswers)
-  }
 
 }

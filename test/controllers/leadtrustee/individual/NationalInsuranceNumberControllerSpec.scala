@@ -37,7 +37,8 @@ import scala.concurrent.Future
 
 class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  val form: Form[String] = new NationalInsuranceNumberFormProvider().apply("leadtrustee.individual.nationalInsuranceNumber", Nil)
+  val form: Form[String] =
+    new NationalInsuranceNumberFormProvider().apply("leadtrustee.individual.nationalInsuranceNumber", Nil)
 
   val name: Name = Name("Lead", None, "Trustee")
 
@@ -46,7 +47,9 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
   lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad().url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   val mockTrustsService: TrustServiceImpl = Mockito.mock(classOf[TrustServiceImpl])
 
@@ -140,8 +143,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
         "lead trustee matched" in {
 
           val userAnswers = emptyUserAnswers
-            .set(NationalInsuranceNumberPage, nino).success.value
-            .set(BpMatchStatusPage, FullyMatched).success.value
+            .set(NationalInsuranceNumberPage, nino)
+            .success
+            .value
+            .set(BpMatchStatusPage, FullyMatched)
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -173,14 +180,17 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
           .thenReturn(Future.successful(SuccessfulMatchResponse))
 
         val userAnswers = emptyUserAnswers
-          .set(NationalInsuranceNumberPage, nino).success.value
+          .set(NationalInsuranceNumberPage, nino)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator()),
             bind[TrustsIndividualCheckService].toInstance(mockService),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", nino))
@@ -211,13 +221,16 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
           .thenReturn(Future.successful(1))
 
         val userAnswers = emptyUserAnswers
-          .set(NationalInsuranceNumberPage, nino).success.value
+          .set(NationalInsuranceNumberPage, nino)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[TrustsIndividualCheckService].toInstance(mockService),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", nino))
@@ -246,13 +259,16 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
           .thenReturn(Future.successful(LockedMatchResponse))
 
         val userAnswers = emptyUserAnswers
-          .set(NationalInsuranceNumberPage, nino).success.value
+          .set(NationalInsuranceNumberPage, nino)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[TrustsIndividualCheckService].toInstance(mockService),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", nino))
@@ -282,13 +298,16 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
           .thenReturn(Future.successful(IssueBuildingPayloadResponse))
 
         val userAnswers = emptyUserAnswers
-          .set(NationalInsuranceNumberPage, nino).success.value
+          .set(NationalInsuranceNumberPage, nino)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[TrustsIndividualCheckService].toInstance(mockService),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", nino))
@@ -312,13 +331,16 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
           .thenReturn(Future.successful(ServiceUnavailableErrorResponse))
 
         val userAnswers = emptyUserAnswers
-          .set(NationalInsuranceNumberPage, nino).success.value
+          .set(NationalInsuranceNumberPage, nino)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[TrustsIndividualCheckService].toInstance(mockService),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", nino))
@@ -389,4 +411,5 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with BeforeAndAfter
       application.stop()
     }
   }
+
 }

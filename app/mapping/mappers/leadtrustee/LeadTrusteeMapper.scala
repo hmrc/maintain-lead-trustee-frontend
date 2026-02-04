@@ -31,8 +31,8 @@ trait LeadTrusteeMapper[T] extends Mapper[T] {
   def nonUkAddressPage: QuestionPage[NonUkAddress]
 
   def readAddress: Reads[Address] = {
-    lazy val ukAddress: Reads[Address] = ukAddressPage.path.read[UkAddress].widen[Address]
-    lazy val nonUkAddress: Reads[Address]  = nonUkAddressPage.path.read[NonUkAddress].widen[Address]
+    lazy val ukAddress: Reads[Address]    = ukAddressPage.path.read[UkAddress].widen[Address]
+    lazy val nonUkAddress: Reads[Address] = nonUkAddressPage.path.read[NonUkAddress].widen[Address]
 
     ukAddress orElse nonUkAddress
   }
@@ -41,17 +41,17 @@ trait LeadTrusteeMapper[T] extends Mapper[T] {
 
   def countryOfResidencePage: QuestionPage[String]
 
-  def readCountryOfResidence: Reads[Option[String]] = {
+  def readCountryOfResidence: Reads[Option[String]] =
     readCountryOfResidenceOrNationality(ukCountryOfResidenceYesNoPage, countryOfResidencePage)
-  }
 
-  def readCountryOfResidenceOrNationality(ukYesNoPage: QuestionPage[Boolean],
-                                          page: QuestionPage[String]): Reads[Option[String]] = {
+  def readCountryOfResidenceOrNationality(
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Reads[Option[String]] =
     ukYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => Reads(_ => JsSuccess(Some(GB)))
+      case Some(true)  => Reads(_ => JsSuccess(Some(GB)))
       case Some(false) => page.path.read[String].map(Some(_))
-      case _ => Reads(_ => JsSuccess(None))
+      case _           => Reads(_ => JsSuccess(None))
     }
-  }
 
 }

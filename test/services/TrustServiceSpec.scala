@@ -43,7 +43,11 @@ class TrustServiceSpec extends AnyFreeSpec with Matchers with ScalaFutures {
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val trusteeInd: TrusteeIndividual = TrusteeIndividual(
-    name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+    name = Name(
+      firstName = "1234567890 QwErTyUiOp ,.(/)&'- name",
+      middleName = None,
+      lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"
+    ),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     phoneNumber = None,
     identification = Some(NationalInsuranceNumber("JS123456A")),
@@ -137,18 +141,18 @@ class TrustServiceSpec extends AnyFreeSpec with Matchers with ScalaFutures {
 
     "remove a trustee" in {
 
-      when(mockConnector.removeTrustee(any(),any())(any(), any()))
+      when(mockConnector.removeTrustee(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val service = new TrustServiceImpl(mockConnector)
 
-      val trustee : RemoveTrustee = RemoveTrustee(
+      val trustee: RemoveTrustee = RemoveTrustee(
         `type` = INDIVIDUAL_TRUSTEE,
         index = 0,
         endDate = LocalDate.now()
       )
 
-      implicit val hc : HeaderCarrier = HeaderCarrier()
+      implicit val hc: HeaderCarrier = HeaderCarrier()
 
       val result = service.removeTrustee("1234567890", trustee)
 
@@ -157,7 +161,6 @@ class TrustServiceSpec extends AnyFreeSpec with Matchers with ScalaFutures {
       }
 
     }
-
 
     "get trustee" in {
 
@@ -478,7 +481,7 @@ class TrustServiceSpec extends AnyFreeSpec with Matchers with ScalaFutures {
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.successful(Trustees(Nil)))
 
-      assertThrows[IndexOutOfBoundsException]{
+      assertThrows[IndexOutOfBoundsException] {
         Await.result(service.getTrustee("1234567890", 0), Duration.Inf)
       }
     }

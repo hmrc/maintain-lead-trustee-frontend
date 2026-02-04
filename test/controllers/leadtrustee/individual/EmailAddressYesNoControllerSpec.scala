@@ -38,12 +38,14 @@ class EmailAddressYesNoControllerSpec extends SpecBase {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.emailAddressYesNo")
+  val form         = formProvider.withPrefix("leadtrustee.individual.emailAddressYesNo")
 
   val name = Name("Lead", None, "Trustee")
 
   override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   lazy val emailAddressYesNoRoute = routes.EmailAddressYesNoController.onPageLoad().url
 
@@ -167,4 +169,5 @@ class EmailAddressYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

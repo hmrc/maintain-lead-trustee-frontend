@@ -35,8 +35,8 @@ import scala.concurrent.Future
 class IndividualOrBusinessControllerSpec extends SpecBase {
 
   val formProvider = new IndividualOrBusinessFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individualOrBusiness")
-  val index = 0
+  val form         = formProvider.withPrefix("leadtrustee.individualOrBusiness")
+  val index        = 0
 
   lazy val IndividualOrBusinessRoute = routes.IndividualOrBusinessController.onPageLoad().url
 
@@ -145,4 +145,5 @@ class IndividualOrBusinessControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
     }
   }
+
 }

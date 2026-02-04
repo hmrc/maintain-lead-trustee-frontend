@@ -32,7 +32,7 @@ class IndividualNameFormProvider @Inject() extends Mappings {
 
   def withPrefix(prefix: String): Form[Name] = Form(
     mapping(
-      "firstName" -> text(s"$prefix.error.firstName.required")
+      "firstName"  -> text(s"$prefix.error.firstName.required")
         .verifying(
           firstError(
             nonEmptyString("firstName", s"$prefix.error.firstName.required"),
@@ -41,23 +41,24 @@ class IndividualNameFormProvider @Inject() extends Mappings {
             startsWithCapitalLetter("firstName", s"$prefix.error.firstName.capitalLetter")
           )
         ),
-      "middleName" -> optional(text()
-        .transform(trimWhitespace, identity[String])
-        .verifying(
-          Constraint[String] { value: String =>
-            if (value.nonEmpty) {
-              firstError(
-                regexp(individualNameRegex, s"$prefix.error.middleName.invalid"),
-                maxLength(maxFieldCharacters, s"$prefix.error.middleName.length"),
-                startsWithCapitalLetter("middleName", s"$prefix.error.middleName.capitalLetter")
-              )(value)
-            } else {
-              Valid
+      "middleName" -> optional(
+        text()
+          .transform(trimWhitespace, identity[String])
+          .verifying(
+            Constraint[String] { value: String =>
+              if (value.nonEmpty) {
+                firstError(
+                  regexp(individualNameRegex, s"$prefix.error.middleName.invalid"),
+                  maxLength(maxFieldCharacters, s"$prefix.error.middleName.length"),
+                  startsWithCapitalLetter("middleName", s"$prefix.error.middleName.capitalLetter")
+                )(value)
+              } else {
+                Valid
+              }
             }
-          }
-        )
+          )
       ).transform(emptyToNone, identity[Option[String]]),
-      "lastName" -> text(s"$prefix.error.lastName.required")
+      "lastName"   -> text(s"$prefix.error.lastName.required")
         .verifying(
           firstError(
             nonEmptyString("lastName", s"$prefix.error.lastName.required"),
@@ -68,4 +69,5 @@ class IndividualNameFormProvider @Inject() extends Mappings {
         )
     )(Name.apply)(Name.unapply)
   )
+
 }

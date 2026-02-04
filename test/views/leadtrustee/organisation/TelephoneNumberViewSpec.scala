@@ -42,11 +42,18 @@ class TelephoneNumberViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.TelephoneNumberController.onSubmit().url)
+    behave like stringPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name),
+      routes.TelephoneNumberController.onSubmit().url
+    )
 
     "display hint text" in {
       val doc = asDocument(applyView(form))
       assertContainsText(doc, messages(s"site.telephone_number.hint"))
     }
   }
+
 }

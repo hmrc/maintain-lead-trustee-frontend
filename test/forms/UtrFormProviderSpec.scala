@@ -23,11 +23,11 @@ class UtrFormProviderSpec extends StringFieldBehaviours {
 
   val prefix = "trustee.organisation.utr"
 
-  val requiredKey = s"$prefix.error.required"
-  val lengthKey = s"$prefix.error.length"
-  val notUniqueKey = s"$prefix.error.notUnique"
+  val requiredKey       = s"$prefix.error.required"
+  val lengthKey         = s"$prefix.error.length"
+  val notUniqueKey      = s"$prefix.error.notUnique"
   val sameAsTrustUtrKey = s"$prefix.error.sameAsTrustUtr"
-  val utrLength = 10
+  val utrLength         = 10
 
   val form: Form[String] = new UtrFormProvider().apply(prefix, "utr", Nil)
 
@@ -71,4 +71,5 @@ class UtrFormProviderSpec extends StringFieldBehaviours {
     )
 
   }
+
 }

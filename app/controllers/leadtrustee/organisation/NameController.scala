@@ -29,36 +29,35 @@ import views.html.leadtrustee.organisation.NameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameController @Inject()(
-                                override val messagesApi: MessagesApi,
-                                playbackRepository: PlaybackRepository,
-                                navigator: Navigator,
-                                standardActionSets: StandardActionSets,
-                                formProvider: BusinessNameFormProvider,
-                                val controllerComponents: MessagesControllerComponents,
-                                view: NameView
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NameController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: BusinessNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadtrustee.organisation.name")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(NamePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(NamePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      request.userAnswers.get(RegisteredInUkYesNoPage) map { answer =>
-        Ok(view(preparedForm, answer))
-      } getOrElse Redirect(routes.RegisteredInUkYesNoController.onPageLoad())
+    request.userAnswers.get(RegisteredInUkYesNoPage) map { answer =>
+      Ok(view(preparedForm, answer))
+    } getOrElse Redirect(routes.RegisteredInUkYesNoController.onPageLoad())
 
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
         formWithErrors =>
           Future.successful {
             request.userAnswers.get(RegisteredInUkYesNoPage) map { answer =>
@@ -68,8 +67,9 @@ class NameController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
-            _ <- playbackRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
       )
   }
+
 }

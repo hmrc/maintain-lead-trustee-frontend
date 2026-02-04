@@ -30,37 +30,34 @@ import views.html.leadtrustee.individual.EmailAddressYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailAddressYesNoController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         playbackRepository: PlaybackRepository,
-                                         navigator: Navigator,
-                                         standardActionSets: StandardActionSets,
-                                         nameAction: NameRequiredAction,
-                                         formProvider: YesNoFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: EmailAddressYesNoView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class EmailAddressYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: EmailAddressYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadtrustee.individual.emailAddressYesNo")
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(EmailAddressYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(EmailAddressYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.leadTrusteeName))
+    Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
-
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(EmailAddressYesNoPage, value))
@@ -68,4 +65,5 @@ class EmailAddressYesNoController @Inject()(
           } yield Redirect(navigator.nextPage(EmailAddressYesNoPage, updatedAnswers))
       )
   }
+
 }

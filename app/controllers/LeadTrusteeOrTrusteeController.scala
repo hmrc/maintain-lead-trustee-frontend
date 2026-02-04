@@ -32,38 +32,33 @@ import views.html.LeadTrusteeOrTrusteeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LeadTrusteeOrTrusteeController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                sessionRepository: PlaybackRepository,
-                                                navigator: Navigator,
-                                                standardActionSets: StandardActionSets,
-                                                formProvider: TrusteeTypeFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: LeadTrusteeOrTrusteeView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class LeadTrusteeOrTrusteeController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: TrusteeTypeFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: LeadTrusteeOrTrusteeView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[TrusteeType] = formProvider.withPrefix("leadTrusteeOrTrustee")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(TrusteeTypePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(TrusteeTypePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm))
+    Ok(view(preparedForm))
   }
 
-
-
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         (value: TrusteeType) =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrusteeTypePage, value))
@@ -71,4 +66,5 @@ class LeadTrusteeOrTrusteeController @Inject()(
           } yield Redirect(navigator.nextPage(TrusteeTypePage, updatedAnswers))
       )
   }
+
 }

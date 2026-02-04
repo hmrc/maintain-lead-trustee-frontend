@@ -28,28 +28,27 @@ import views.html.leadtrustee.individual.MatchingLockedView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MatchingLockedController @Inject()(
-                                          val controllerComponents: MessagesControllerComponents,
-                                          playbackRepository: PlaybackRepository,
-                                          view: MatchingLockedView,
-                                          nameRequiredAction: NameRequiredAction,
-                                          standardActionSets: StandardActionSets
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class MatchingLockedController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  playbackRepository: PlaybackRepository,
+  view: MatchingLockedView,
+  nameRequiredAction: NameRequiredAction,
+  standardActionSets: StandardActionSets
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def actions() =
     standardActionSets.identifiedUserWithData andThen nameRequiredAction
 
-  def onPageLoad(): Action[AnyContent] = actions() {
-    implicit request =>
-      Ok(view(request.leadTrusteeName))
+  def onPageLoad(): Action[AnyContent] = actions() { implicit request =>
+    Ok(view(request.leadTrusteeName))
   }
 
   def continue(): Action[AnyContent] = actions().async { implicit request =>
-      for {
-        ninoYesNoSet <- Future.fromTry(request.userAnswers.set(UkCitizenPage, false))
-        _ <- playbackRepository.set(ninoYesNoSet)
-      } yield {
-        Redirect(routes.PassportOrIdCardController.onPageLoad())
-      }
+    for {
+      ninoYesNoSet <- Future.fromTry(request.userAnswers.set(UkCitizenPage, false))
+      _            <- playbackRepository.set(ninoYesNoSet)
+    } yield Redirect(routes.PassportOrIdCardController.onPageLoad())
   }
+
 }

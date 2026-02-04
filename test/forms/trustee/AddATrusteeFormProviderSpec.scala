@@ -26,13 +26,13 @@ class AddATrusteeFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "addATrustee.error.required"
 
     behave like optionsField[AddATrustee](
       form,
       fieldName,
-      validValues  = AddATrustee.values.toSet,
+      validValues = AddATrustee.values.toSet,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
@@ -42,4 +42,5 @@ class AddATrusteeFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

@@ -27,7 +27,7 @@ import views.html.trustee.organisation.UtrView
 class UtrViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "trustee.organisation.utr"
-  val name = "Trustee Name"
+  val name             = "Trustee Name"
 
   val form: Form[String] = new UtrFormProvider().apply(messageKeyPrefix, "utr", Nil)
 
@@ -44,4 +44,5 @@ class UtrViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
   }
+
 }

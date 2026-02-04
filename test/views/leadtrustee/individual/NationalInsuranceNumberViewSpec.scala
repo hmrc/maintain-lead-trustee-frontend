@@ -44,7 +44,13 @@ class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.NationalInsuranceNumberController.onSubmit().url)
+      behave like stringPage(
+        form,
+        applyView,
+        messageKeyPrefix,
+        Some(name),
+        routes.NationalInsuranceNumberController.onSubmit().url
+      )
 
       behave like pageWithoutReadOnlyInput(applyView(form))
     }
@@ -60,9 +66,16 @@ class NationalInsuranceNumberViewSpec extends StringViewBehaviours {
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.NationalInsuranceNumberController.onSubmit().url)
+      behave like stringPage(
+        form,
+        applyView,
+        messageKeyPrefix,
+        Some(name),
+        routes.NationalInsuranceNumberController.onSubmit().url
+      )
 
       behave like pageWithReadOnlyInput(applyView(form))
     }
   }
+
 }

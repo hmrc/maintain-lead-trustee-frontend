@@ -40,11 +40,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
   private val messageKeyPrefix: String = "replacingLeadTrustee"
-  private val form: Form[TrusteeType] = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
+  private val form: Form[TrusteeType]  = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
 
   private lazy val replacingLeadTrusteeRoute: String = routes.ReplacingLeadTrusteeController.onPageLoad().url
 
-  private val date: LocalDate = LocalDate.parse("2019-02-28")
+  private val date: LocalDate      = LocalDate.parse("2019-02-28")
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
 
   private val leadTrusteeIndividual = LeadTrusteeIndividual(
@@ -57,34 +57,44 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
     address = ukAddress
   )
 
-  private class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = Some(leadTrusteeIndividual)) extends TrustService {
+  private class FakeService(data: Trustees, leadTrustee: Option[LeadTrustee] = Some(leadTrusteeIndividual))
+      extends TrustService {
 
-    override def getLeadTrustee(identifier: String)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
+    override def getLeadTrustee(
+      identifier: String
+    )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
       ???
 
-    override def getAllTrustees(identifier: String)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
+    override def getAllTrustees(
+      identifier: String
+    )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AllTrustees] =
       Future.successful(AllTrustees(leadTrustee, data.trustees))
 
-    override def getTrustees(identifier: String)
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
+    override def getTrustees(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustees] =
       ???
 
-    override def getTrustee(identifier: String, index: Int)
-                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Trustee] =
+    override def getTrustee(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[Trustee] =
       ???
 
-    override def removeTrustee(identifier: String, trustee: RemoveTrustee)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    override def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[HttpResponse] =
       ???
 
-    override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)
-                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] =
       ???
 
-    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] =
       ???
 
   }
@@ -289,7 +299,9 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController.onPageLoad().url
+        redirectLocation(result).value mustBe controllers.leadtrustee.individual.routes.NeedToAnswerQuestionsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -323,7 +335,9 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad().url
+        redirectLocation(
+          result
+        ).value mustBe controllers.leadtrustee.organisation.routes.NeedToAnswerQuestionsController.onPageLoad().url
 
         application.stop()
       }
@@ -356,7 +370,9 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url
+        redirectLocation(result).value mustBe controllers.leadtrustee.routes.IndividualOrBusinessController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -422,7 +438,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         application.stop()
       }
 
-      //should never happen
+      // should never happen
       "no lead trustee" in {
 
         val fakeService = new FakeService(Trustees(Nil), None)
@@ -480,4 +496,5 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

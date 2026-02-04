@@ -118,7 +118,9 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with Matchers with Opt
               .willReturn(
                 aResponse()
                   .withStatus(Status.FORBIDDEN)
-                  .withBody(Json.stringify(Json.toJson(IdMatchErrorResponse(Seq("Individual check - retry limit reached (3)")))))
+                  .withBody(
+                    Json.stringify(Json.toJson(IdMatchErrorResponse(Seq("Individual check - retry limit reached (3)"))))
+                  )
               )
           )
 
@@ -135,7 +137,11 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with Matchers with Opt
               .willReturn(
                 aResponse()
                   .withStatus(Status.NOT_FOUND)
-                  .withBody(Json.stringify(Json.toJson(IdMatchErrorResponse(Seq("Dependent service indicated that no data can be found")))))
+                  .withBody(
+                    Json.stringify(
+                      Json.toJson(IdMatchErrorResponse(Seq("Dependent service indicated that no data can be found")))
+                    )
+                  )
               )
           )
 
@@ -199,4 +205,5 @@ class TrustsIndividualCheckConnectorSpec extends SpecBase with Matchers with Opt
       }
     }
   }
+
 }

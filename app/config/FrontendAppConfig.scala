@@ -26,31 +26,31 @@ import java.time.LocalDate
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration,
-                                   contactFrontendConfig: ContactFrontendConfig) {
+class FrontendAppConfig @Inject() (configuration: Configuration, contactFrontendConfig: ContactFrontendConfig) {
 
-  final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val ENGLISH         = "en"
+  final val WELSH           = "cy"
   final val UK_COUNTRY_CODE = "GB"
 
-  val appName: String = configuration.get[String]("appName")
+  val appName: String                = configuration.get[String]("appName")
   val maintainATrustOverview: String = configuration.get[String]("urls.maintainATrustOverview")
 
   private def loadConfig(key: String) = configuration.get[String](key)
 
-  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
+  val betaFeedbackUrl =
+    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
-  lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
+  lazy val locationCanonicalList: String   = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = loadConfig("location.canonical.list.allCY")
 
-  lazy val loginUrl: String = configuration.get[String]("urls.login")
+  lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val logoutUrl: String = configuration.get[String]("urls.logout")
+  lazy val logoutUrl: String        = configuration.get[String]("urls.logout")
 
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
 
-  lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
+  lazy val trustsUrl: String    = configuration.get[Service]("microservice.services.trusts").baseUrl
   lazy val trustAuthUrl: String = configuration.get[Service]("microservice.services.trusts-auth").baseUrl
 
   lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl
@@ -59,7 +59,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
-  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
+  lazy val timeoutLength: Int   = configuration.get[Int]("timeout.length")
 
   private def getInt(path: String): Int = configuration.get[Int](path)
 
@@ -70,11 +70,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
       getInt(s"dates.$entry.day")
     )
 
-  lazy val minDate: LocalDate = getDate("minimum")
-  lazy val maxDate: LocalDate = getDate("maximum")
+  lazy val minDate: LocalDate           = getDate("minimum")
+  lazy val maxDate: LocalDate           = getDate("maximum")
   lazy val minLeadTrusteeDob: LocalDate = getDate("minLeadTrusteeDob")
 
-  lazy val trustsIndividualCheckUrl: String = configuration.get[Service]("microservice.services.trusts-individual-check").baseUrl
+  lazy val trustsIndividualCheckUrl: String =
+    configuration.get[Service]("microservice.services.trusts-individual-check").baseUrl
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang(ENGLISH),
@@ -89,7 +90,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {
       case WELSH => "urls.welshHelpline"
-      case _ => "urls.trustsHelpline"
+      case _     => "urls.trustsHelpline"
     }
     configuration.get[String](path)
   }
@@ -98,6 +99,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
 
   val cachettlSessionInSeconds: Long = configuration.get[Long]("mongodb.session.ttlSeconds")
 
-  val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(true)
+  val dropIndexes: Boolean =
+    configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(true)
 
 }

@@ -26,6 +26,6 @@ object RemoveTrustee {
 
   implicit val formats: Format[RemoveTrustee] = Json.format[RemoveTrustee]
 
-  def apply(`type`: String, index: Int): RemoveTrustee =  RemoveTrustee(`type`, index, LocalDate.now)
+  def apply(`type`: String, index: Int): RemoveTrustee = RemoveTrustee(`type`, index, LocalDate.now)
 
 }

@@ -44,7 +44,7 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private lazy val onPageLoadRoute = routes.CheckDetailsController.onPageLoad().url
-  private lazy val onSubmitRoute = routes.CheckDetailsController.onSubmit().url
+  private lazy val onSubmitRoute   = routes.CheckDetailsController.onSubmit().url
 
   private val name = Name("Joe", None, "Bloggs")
 
@@ -61,18 +61,18 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
     provisional = true
   )
 
-  val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
-  val mapper: TrusteeIndividualMapper = Mockito.mock(classOf[TrusteeIndividualMapper])
+  val mockConnector: TrustConnector             = Mockito.mock(classOf[TrustConnector])
+  val mapper: TrusteeIndividualMapper           = Mockito.mock(classOf[TrusteeIndividualMapper])
   val printHelper: TrusteeIndividualPrintHelper = Mockito.mock(classOf[TrusteeIndividualPrintHelper])
 
-  def createApplication(): Application = {
+  def createApplication(): Application =
     applicationBuilder(userAnswers = Some(baseAnswers), affinityGroup = Agent)
       .overrides(
         bind[TrustConnector].toInstance(mockConnector),
         bind[TrusteeIndividualPrintHelper].toInstance(printHelper),
-        bind[TrusteeIndividualMapper].toInstance(mapper))
+        bind[TrusteeIndividualMapper].toInstance(mapper)
+      )
       .build()
-  }
 
   override def beforeEach(): Unit = {
     reset(mockConnector)
@@ -85,17 +85,19 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
   }
 
   private val baseAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "CheckDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
       val answerSection: AnswerSection = AnswerSection(None, Nil)
       when(printHelper.print(any(), any(), any())(any())).thenReturn(answerSection)
-      val application = createApplication()
-      val request = FakeRequest(GET, onPageLoadRoute)
-      val result = route(application, request).value
-      val view = application.injector.instanceOf[CheckDetailsView]
+      val application                  = createApplication()
+      val request                      = FakeRequest(GET, onPageLoadRoute)
+      val result                       = route(application, request).value
+      val view                         = application.injector.instanceOf[CheckDetailsView]
       status(result) mustEqual OK
       contentAsString(result) mustEqual
         view(answerSection)(request, messages).toString
@@ -104,8 +106,8 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
     "redirect to the 'add a trustee' page when submitted" in {
       val application = createApplication()
       when(mapper.map(any())).thenReturn(Some(trustee))
-      val request = FakeRequest(POST, onSubmitRoute)
-      val result = route(application, request).value
+      val request     = FakeRequest(POST, onSubmitRoute)
+      val result      = route(application, request).value
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
       application.stop()
@@ -115,8 +117,8 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
       "mapper fails" in {
         val application = createApplication()
         when(mapper.map(any())).thenReturn(None)
-        val request = FakeRequest(POST, onSubmitRoute)
-        val result = route(application, request).value
+        val request     = FakeRequest(POST, onSubmitRoute)
+        val result      = route(application, request).value
         status(result) mustEqual INTERNAL_SERVER_ERROR
       }
     }
@@ -124,12 +126,13 @@ class CheckDetailsControllerSpec extends SpecBase with ScalaFutures with BeforeA
     "redirect to the AddATrusteePage when trustee details are not in the list" in {
       val application = createApplication()
       when(mapper.map(any())).thenReturn(Some(trustee))
-      val request = FakeRequest(POST, onSubmitRoute)
-      val result = route(application, request).value
+      val request     = FakeRequest(POST, onSubmitRoute)
+      val result      = route(application, request).value
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).get mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
 
     }
   }
+
 }

@@ -43,14 +43,18 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelG
           "ID",
           "UTRUTRUTR",
           "sessionId",
-           newId = s"ID-UTRUTRUTR-sessionId",
+          newId = s"ID-UTRUTRUTR-sessionId",
           LocalDate.of(1999, 10, 20),
           json
         )
 
-        ua.deleteAtPath(JsPath \ "field" \ "innerfield") mustBe Success(ua.copy(data = Json.obj(
-          "field" -> Json.obj()
-        )))
+        ua.deleteAtPath(JsPath \ "field" \ "innerfield") mustBe Success(
+          ua.copy(data =
+            Json.obj(
+              "field" -> Json.obj()
+            )
+          )
+        )
       }
     }
 
@@ -60,8 +64,12 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelG
         "lead trustee fully matched with a NINO" in {
 
           val userAnswers = emptyUserAnswers
-            .set(BpMatchStatusPage, FullyMatched).success.value
-            .set(NationalInsuranceNumberPage, "nino").success.value
+            .set(BpMatchStatusPage, FullyMatched)
+            .success
+            .value
+            .set(NationalInsuranceNumberPage, "nino")
+            .success
+            .value
 
           userAnswers.isLeadTrusteeMatched mustEqual true
         }
@@ -72,16 +80,20 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with ModelG
 
           val gen = arbitrary[(BpMatchStatus, Option[String])]
 
-          forAll(gen.suchThat(x => !(x._1 == FullyMatched && x._2.isDefined))) {
-            x =>
-              val userAnswers = emptyUserAnswers
-                .set(BpMatchStatusPage, x._1).success.value
-                .set(NationalInsuranceNumberPage, x._2).success.value
+          forAll(gen.suchThat(x => !(x._1 == FullyMatched && x._2.isDefined))) { x =>
+            val userAnswers = emptyUserAnswers
+              .set(BpMatchStatusPage, x._1)
+              .success
+              .value
+              .set(NationalInsuranceNumberPage, x._2)
+              .success
+              .value
 
-              userAnswers.isLeadTrusteeMatched mustEqual false
+            userAnswers.isLeadTrusteeMatched mustEqual false
           }
         }
       }
     }
   }
+
 }

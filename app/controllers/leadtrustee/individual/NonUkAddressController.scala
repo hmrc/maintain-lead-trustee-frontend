@@ -31,38 +31,36 @@ import views.html.leadtrustee.individual.NonUkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NonUkAddressController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      playbackRepository: PlaybackRepository,
-                                      navigator: Navigator,
-                                      standardActionSets: StandardActionSets,
-                                      nameAction: NameRequiredAction,
-                                      formProvider: NonUkAddressFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: NonUkAddressView,
-                                      countryOptions: CountryOptionsNonUK
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NonUkAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: NonUkAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NonUkAddressView,
+  countryOptions: CountryOptionsNonUK
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, countryOptions.options(), request.leadTrusteeName))
+    Ok(view(preparedForm, countryOptions.options(), request.leadTrusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), request.leadTrusteeName))),
-
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
@@ -70,4 +68,5 @@ class NonUkAddressController @Inject()(
           } yield Redirect(navigator.nextPage(NonUkAddressPage, updatedAnswers))
       )
   }
+
 }

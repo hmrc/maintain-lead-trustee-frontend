@@ -33,8 +33,12 @@ class MatchingLockedControllerSpec extends SpecBase {
   private val name: Name = Name("Joe", None, "Bloggs")
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(NationalInsuranceNumberPage, "AA000000A").success.value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(NationalInsuranceNumberPage, "AA000000A")
+    .success
+    .value
 
   "MatchingLockedController" when {
 
@@ -127,4 +131,5 @@ class MatchingLockedControllerSpec extends SpecBase {
     }
 
   }
+
 }

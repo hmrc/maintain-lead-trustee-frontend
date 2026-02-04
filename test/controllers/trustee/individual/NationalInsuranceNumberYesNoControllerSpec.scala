@@ -35,9 +35,9 @@ import scala.concurrent.Future
 class NationalInsuranceNumberYesNoControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("trustee.individual.nationalInsuranceNumberYesNo")
-  val trusteeName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  val form         = formProvider.withPrefix("trustee.individual.nationalInsuranceNumberYesNo")
+  val trusteeName  = "FirstName LastName"
+  val name         = Name("FirstName", None, "LastName")
 
   val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -160,4 +160,5 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

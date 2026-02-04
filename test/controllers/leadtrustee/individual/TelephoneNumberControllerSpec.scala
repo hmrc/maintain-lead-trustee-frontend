@@ -38,12 +38,14 @@ class TelephoneNumberControllerSpec extends SpecBase {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new TelephoneNumberFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.individual.telephoneNumber")
+  val form         = formProvider.withPrefix("leadtrustee.individual.telephoneNumber")
 
   val name = Name("Lead", None, "Trustee")
 
   override val emptyUserAnswers = super.emptyUserAnswers
-      .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   lazy val telephoneNumberRoute = routes.TelephoneNumberController.onPageLoad().url
 
@@ -166,4 +168,5 @@ class TelephoneNumberControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

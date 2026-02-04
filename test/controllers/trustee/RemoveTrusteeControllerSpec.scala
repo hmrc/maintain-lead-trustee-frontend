@@ -38,16 +38,17 @@ import views.html.RemoveIndexView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures with BeforeAndAfterEach {
+class RemoveTrusteeControllerSpec
+    extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures with BeforeAndAfterEach {
 
   val messagesPrefix = "removeATrusteeYesNo"
 
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
   lazy val formRoute: Call = routes.RemoveTrusteeController.onSubmit(0)
 
-  lazy val content : String = "First 1 Last 1"
+  lazy val content: String = "First 1 Last 1"
 
   val mockConnector: TrustConnector = Mockito.mock(classOf[TrustConnector])
 
@@ -95,7 +96,10 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(messagesPrefix, form, index, content, formRoute)(request, messages).toString
+      contentAsString(result) mustEqual view(messagesPrefix, form, index, content, formRoute)(
+        request,
+        messages
+      ).toString
 
       application.stop()
     }
@@ -253,4 +257,5 @@ class RemoveTrusteeControllerSpec extends SpecBase with ScalaCheckPropertyChecks
       application.stop()
     }
   }
+
 }

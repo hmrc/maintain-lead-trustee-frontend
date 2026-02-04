@@ -40,7 +40,7 @@ class NonUkAddressControllerSpec extends SpecBase {
   val form = new NonUkAddressFormProvider().apply()
 
   def onwardRoute = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  val name: Name  = Name("FirstName", None, "LastName")
 
   val userAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -73,8 +73,12 @@ class NonUkAddressControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val newUserAnswers = userAnswers
-        .set(NonUkAddressPage, validData).success.value
-        .set(NamePage, name).success.value
+        .set(NonUkAddressPage, validData)
+        .success
+        .value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(newUserAnswers)).build()
 
@@ -167,4 +171,5 @@ class NonUkAddressControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -39,7 +39,7 @@ class UkCitizenControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("leadtrustee.individual.ukCitizen")
 
   val name: Name = Name("Lead", None, "Trustee")
@@ -47,7 +47,9 @@ class UkCitizenControllerSpec extends SpecBase {
   lazy val ukCitizenRoute: String = routes.UkCitizenController.onPageLoad().url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "UkCitizen Controller" must {
 
@@ -95,9 +97,15 @@ class UkCitizenControllerSpec extends SpecBase {
         "lead trustee matched" in {
 
           val userAnswers = emptyUserAnswers
-            .set(UkCitizenPage, true).success.value
-            .set(NationalInsuranceNumberPage, "nino").success.value
-            .set(BpMatchStatusPage, FullyMatched).success.value
+            .set(UkCitizenPage, true)
+            .success
+            .value
+            .set(NationalInsuranceNumberPage, "nino")
+            .success
+            .value
+            .set(BpMatchStatusPage, FullyMatched)
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -197,4 +205,5 @@ class UkCitizenControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

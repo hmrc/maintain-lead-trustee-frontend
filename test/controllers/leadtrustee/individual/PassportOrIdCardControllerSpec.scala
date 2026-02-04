@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  val formProvider = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
+  val formProvider                         = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig)
   val form: Form[CombinedPassportOrIdCard] = formProvider.withPrefix("leadtrustee.individual.passportOrIdCardDetails")
 
   lazy val passportDetailsRoute: String = routes.PassportOrIdCardController.onPageLoad().url
@@ -45,9 +45,12 @@ class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
   val countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, Name("Lead", None, "Trustee")).success.value
+    .set(NamePage, Name("Lead", None, "Trustee"))
+    .success
+    .value
 
-  private val validData: CombinedPassportOrIdCard = CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
+  private val validData: CombinedPassportOrIdCard =
+    CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
 
   override def beforeEach(): Unit = {
     reset(playbackRepository)
@@ -99,17 +102,17 @@ class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
       "number has changed" in {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .overrides(bind[Navigator].toInstance(fakeNavigator))
-            .build()
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
 
         val request = FakeRequest(POST, passportDetailsRoute)
           .withFormUrlEncodedBody(
-            "country" -> validData.countryOfIssue,
-            "number" -> validData.number,
-            "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
+            "country"          -> validData.countryOfIssue,
+            "number"           -> validData.number,
+            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
             "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-            "expiryDate.year" -> validData.expirationDate.getYear.toString,
-            "detailsType" -> validData.detailsType.toString
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString,
+            "detailsType"      -> validData.detailsType.toString
           )
 
         val result = route(application, request).value
@@ -138,12 +141,12 @@ class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
 
           val request = FakeRequest(POST, passportDetailsRoute)
             .withFormUrlEncodedBody(
-              "country" -> vd.countryOfIssue,
-              "number" -> vd.number,
-              "expiryDate.day" -> vd.expirationDate.getDayOfMonth.toString,
+              "country"          -> vd.countryOfIssue,
+              "number"           -> vd.number,
+              "expiryDate.day"   -> vd.expirationDate.getDayOfMonth.toString,
               "expiryDate.month" -> vd.expirationDate.getMonthValue.toString,
-              "expiryDate.year" -> vd.expirationDate.getYear.toString,
-              "detailsType" -> vd.detailsType.toString
+              "expiryDate.year"  -> vd.expirationDate.getYear.toString,
+              "detailsType"      -> vd.detailsType.toString
             )
 
           val result = route(application, request).value
@@ -170,12 +173,12 @@ class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
 
           val request = FakeRequest(POST, passportDetailsRoute)
             .withFormUrlEncodedBody(
-              "country" -> vd.countryOfIssue,
-              "number" -> vd.number,
-              "expiryDate.day" -> vd.expirationDate.getDayOfMonth.toString,
+              "country"          -> vd.countryOfIssue,
+              "number"           -> vd.number,
+              "expiryDate.day"   -> vd.expirationDate.getDayOfMonth.toString,
               "expiryDate.month" -> vd.expirationDate.getMonthValue.toString,
-              "expiryDate.year" -> vd.expirationDate.getYear.toString,
-              "detailsType" -> vd.detailsType.toString
+              "expiryDate.year"  -> vd.expirationDate.getYear.toString,
+              "detailsType"      -> vd.detailsType.toString
             )
 
           val result = route(application, request).value
@@ -200,12 +203,12 @@ class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
 
           val request = FakeRequest(POST, passportDetailsRoute)
             .withFormUrlEncodedBody(
-              "country" -> "changed country",
-              "number" -> validData.number,
-              "expiryDate.day" -> validData.expirationDate.plusDays(1).getDayOfMonth.toString,
+              "country"          -> "changed country",
+              "number"           -> validData.number,
+              "expiryDate.day"   -> validData.expirationDate.plusDays(1).getDayOfMonth.toString,
               "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-              "expiryDate.year" -> validData.expirationDate.getYear.toString,
-              "detailsType" -> validData.detailsType.toString
+              "expiryDate.year"  -> validData.expirationDate.getYear.toString,
+              "detailsType"      -> validData.detailsType.toString
             )
 
           val result = route(application, request).value
@@ -276,4 +279,5 @@ class PassportOrIdCardControllerSpec extends SpecBase with BeforeAndAfterEach {
       application.stop()
     }
   }
+
 }

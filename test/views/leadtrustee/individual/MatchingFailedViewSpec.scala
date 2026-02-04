@@ -22,8 +22,8 @@ import views.html.leadtrustee.individual.MatchingFailedView
 
 class MatchingFailedViewSpec extends ViewBehaviours {
 
-  val prefix = "leadTrustee.individual.matching.failed"
-  val index = 0
+  val prefix                   = "leadTrustee.individual.matching.failed"
+  val index                    = 0
   val view: MatchingFailedView = viewFor[MatchingFailedView](Some(emptyUserAnswers))
 
   "FailedMatching View" when {
@@ -33,14 +33,19 @@ class MatchingFailedViewSpec extends ViewBehaviours {
       val numberOfFailedAttempts: Int = 2
 
       def applyView: HtmlFormat.Appendable =
-        view.apply(numberOfFailedAttempts, frontendAppConfig.maxMatchingAttempts - numberOfFailedAttempts)(fakeRequest, messages)
+        view.apply(numberOfFailedAttempts, frontendAppConfig.maxMatchingAttempts - numberOfFailedAttempts)(
+          fakeRequest,
+          messages
+        )
 
       behave like normalPageTitleWithCaption(
         view = applyView,
         messageKeyPrefix = prefix,
         messageKeyParam = "",
         captionParam = numberOfFailedAttempts.toString,
-        expectedGuidanceKeys = "paragraph1", "paragraph2.part1", "paragraph2.part2.singular"
+        expectedGuidanceKeys = "paragraph1",
+        "paragraph2.part1",
+        "paragraph2.part2.singular"
       )
 
       "show number of remaining attempts in bold" in {
@@ -57,14 +62,19 @@ class MatchingFailedViewSpec extends ViewBehaviours {
       val numberOfFailedAttempts: Int = 1
 
       def applyView: HtmlFormat.Appendable =
-        view.apply(numberOfFailedAttempts, frontendAppConfig.maxMatchingAttempts - numberOfFailedAttempts)(fakeRequest, messages)
+        view.apply(numberOfFailedAttempts, frontendAppConfig.maxMatchingAttempts - numberOfFailedAttempts)(
+          fakeRequest,
+          messages
+        )
 
       behave like normalPageTitleWithCaption(
         view = applyView,
         messageKeyPrefix = prefix,
         messageKeyParam = "",
         captionParam = numberOfFailedAttempts.toString,
-        expectedGuidanceKeys = "paragraph1", "paragraph2.part1", "paragraph2.part2.plural"
+        expectedGuidanceKeys = "paragraph1",
+        "paragraph2.part1",
+        "paragraph2.part2.plural"
       )
 
       "show number of remaining attempts in bold" in {
@@ -77,4 +87,5 @@ class MatchingFailedViewSpec extends ViewBehaviours {
 
     }
   }
+
 }

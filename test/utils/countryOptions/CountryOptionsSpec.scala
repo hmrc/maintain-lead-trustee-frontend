@@ -28,12 +28,14 @@ class CountryOptionsSpec extends SpecBase {
     "build correctly the English InputOptions with all country list and country code" in {
 
       val application = applicationBuilder()
-        .configure(Map(
-          "location.canonical.list.all" -> "countries-canonical-list-test.json"
-        ))
+        .configure(
+          Map(
+            "location.canonical.list.all" -> "countries-canonical-list-test.json"
+          )
+        )
         .build()
 
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi       = app.injector.instanceOf[MessagesApi]
       implicit val messages = MessagesImpl(lang = Lang(ENGLISH), messagesApi = messagesApi)
 
       val countryOption: CountryOptions = application.injector.instanceOf[CountryOptions]
@@ -45,12 +47,14 @@ class CountryOptionsSpec extends SpecBase {
     "build correctly the Welsh InputOptions with all country list and country code" in {
 
       val application = applicationBuilder()
-        .configure(Map(
-          "location.canonical.list.allCY" -> "countries-canonical-list-test-cy.json"
-        ))
+        .configure(
+          Map(
+            "location.canonical.list.allCY" -> "countries-canonical-list-test-cy.json"
+          )
+        )
         .build()
 
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi       = app.injector.instanceOf[MessagesApi]
       implicit val messages = MessagesImpl(lang = Lang(WELSH), messagesApi = messagesApi)
 
       val countryOption: CountryOptions = application.injector.instanceOf[CountryOptions]
@@ -62,9 +66,11 @@ class CountryOptionsSpec extends SpecBase {
     "throw the error if the country json does not exist" in {
 
       val application = applicationBuilder()
-        .configure(Map(
-          "location.canonical.list.all" -> "countries-canonical-test.json"
-        ))
+        .configure(
+          Map(
+            "location.canonical.list.all" -> "countries-canonical-test.json"
+          )
+        )
         .build()
 
       an[ConfigException.BadValue] shouldBe thrownBy {
@@ -74,4 +80,5 @@ class CountryOptionsSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -41,7 +41,7 @@ class NonUkAddressControllerSpec extends SpecBase {
 
   val countryOptions = injector.instanceOf[CountryOptionsNonUK]
 
-  val name = "Org Name"
+  val name    = "Org Name"
   val address = NonUkAddress("line 1", "line 2", None, "DE")
 
   val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
@@ -68,9 +68,8 @@ class NonUkAddressControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val application = applicationBuilder(userAnswers = Some(
-        userAnswers.set(NonUkAddressPage, address).success.value)
-      ).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers.set(NonUkAddressPage, address).success.value)).build()
 
       val request = FakeRequest(GET, nonUkAddressRoute)
 
@@ -98,7 +97,6 @@ class NonUkAddressControllerSpec extends SpecBase {
             bind[Navigator].toInstance(fakeNavigator)
           )
           .build()
-
 
       val request =
         FakeRequest(POST, nonUkAddressRoute)
@@ -132,7 +130,7 @@ class NonUkAddressControllerSpec extends SpecBase {
       contentAsString(result) mustEqual
         view(boundForm, countryOptions.options(), name)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -166,4 +164,5 @@ class NonUkAddressControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

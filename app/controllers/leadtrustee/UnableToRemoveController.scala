@@ -28,27 +28,29 @@ import views.html.leadtrustee.UnableToRemoveView
 
 import scala.concurrent.ExecutionContext
 
-class UnableToRemoveController @Inject()(
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: UnableToRemoveView,
-                                          service: TrustService,
-                                          standardActionSets: StandardActionSets
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class UnableToRemoveController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  view: UnableToRemoveView,
+  service: TrustService,
+  standardActionSets: StandardActionSets
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      service.getLeadTrustee(request.userAnswers.identifier) map {
-        case Some(lt) =>
-          lt match {
-            case trustee: LeadTrusteeIndividual =>
-              Ok(view(trustee.name.displayName))
-            case trustee: LeadTrusteeOrganisation =>
-              Ok(view(trustee.name))
-          }
-        case None =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}] no lead trustee in user answers to remove")
-          Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-      }
+  def onPageLoad: Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    service.getLeadTrustee(request.userAnswers.identifier) map {
+      case Some(lt) =>
+        lt match {
+          case trustee: LeadTrusteeIndividual   =>
+            Ok(view(trustee.name.displayName))
+          case trustee: LeadTrusteeOrganisation =>
+            Ok(view(trustee.name))
+        }
+      case None     =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}] no lead trustee in user answers to remove"
+        )
+        Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+    }
   }
+
 }

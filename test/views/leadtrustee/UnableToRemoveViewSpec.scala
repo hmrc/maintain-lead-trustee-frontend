@@ -23,7 +23,7 @@ import views.html.leadtrustee.UnableToRemoveView
 class UnableToRemoveViewSpec extends OptionsViewBehaviours {
 
   val messageKeyPrefix = "unableToRemove"
-  val name = "Test Name"
+  val name             = "Test Name"
 
   "UnableToRemoveView" must {
 
@@ -37,4 +37,5 @@ class UnableToRemoveViewSpec extends OptionsViewBehaviours {
     behave like pageWithBackLink(applyView())
 
   }
+
 }

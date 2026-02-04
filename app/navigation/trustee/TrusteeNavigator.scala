@@ -24,11 +24,11 @@ import play.api.mvc.Call
 
 trait TrusteeNavigator {
 
-  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call =
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
-  }
+
 }
 
 object TrusteeNavigator {
@@ -42,10 +42,13 @@ object TrusteeNavigator {
     case IndividualOrBusinessPage => individualOrBusinessNavigation(_, mode)
   }
 
-  private def individualOrBusinessNavigation(userAnswers: UserAnswers, mode: Mode): Call = {
-    userAnswers.get(IndividualOrBusinessPage).map {
-      case Individual => controllers.trustee.individual.routes.NameController.onPageLoad(mode)
-      case Business => controllers.trustee.organisation.routes.NameController.onPageLoad(mode)
-    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
-  }
+  private def individualOrBusinessNavigation(userAnswers: UserAnswers, mode: Mode): Call =
+    userAnswers
+      .get(IndividualOrBusinessPage)
+      .map {
+        case Individual => controllers.trustee.individual.routes.NameController.onPageLoad(mode)
+        case Business   => controllers.trustee.organisation.routes.NameController.onPageLoad(mode)
+      }
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
+
 }

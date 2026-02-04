@@ -18,7 +18,6 @@ package pages.leadtrustee.organisation
 
 import pages.behaviours.PageBehaviours
 
-
 class UtrPageSpec extends PageBehaviours {
 
   "UtrPage" must {
@@ -29,4 +28,5 @@ class UtrPageSpec extends PageBehaviours {
 
     beRemovable[String](UtrPage)
   }
+
 }

@@ -21,13 +21,12 @@ import play.api.i18n.Messages
 
 object DateErrorFormatter {
 
-  def formatArgs(args: Seq[Any])(implicit messages: Messages): Seq[String] = {
+  def formatArgs(args: Seq[Any])(implicit messages: Messages): Seq[String] =
     args.map(arg => messages(s"date.$arg").toLowerCase)
-  }
 
-  def addErrorClass(error: Option[FormError], dateArg: String): String = {
-    if(error.isDefined){
-      if(error.get.args.contains(dateArg) || error.get.args.isEmpty) {
+  def addErrorClass(error: Option[FormError], dateArg: String): String =
+    if (error.isDefined) {
+      if (error.get.args.contains(dateArg) || error.get.args.isEmpty) {
         s"govuk-input--error"
       } else {
         ""
@@ -35,5 +34,5 @@ object DateErrorFormatter {
     } else {
       ""
     }
-  }
+
 }

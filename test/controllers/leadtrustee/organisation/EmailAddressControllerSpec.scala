@@ -34,12 +34,14 @@ import scala.concurrent.Future
 class EmailAddressControllerSpec extends SpecBase {
 
   val formProvider = new EmailAddressFormProvider()
-  val form = formProvider.withPrefix("leadtrustee.organisation.emailAddress")
+  val form         = formProvider.withPrefix("leadtrustee.organisation.emailAddress")
 
   val name = "Lead trustee"
 
   override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   lazy val emailAddressRoute = routes.EmailAddressController.onPageLoad().url
 
@@ -159,4 +161,5 @@ class EmailAddressControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -29,4 +29,5 @@ class IdCardDetailsPageSpec extends PageBehaviours {
 
     beRemovable[IdCard](IdCardDetailsPage)
   }
+
 }

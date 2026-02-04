@@ -32,7 +32,9 @@ class LiveInTheUkYesNoPageSpec extends PageBehaviours {
 
       "YES selected" in {
         val userAnswers = emptyUserAnswers
-          .set(NonUkAddressPage, arbitraryNonUkAddress.arbitrary.sample.get).success.value
+          .set(NonUkAddressPage, arbitraryNonUkAddress.arbitrary.sample.get)
+          .success
+          .value
 
         val result = userAnswers.set(LiveInTheUkYesNoPage, true).success.value
 
@@ -41,7 +43,9 @@ class LiveInTheUkYesNoPageSpec extends PageBehaviours {
 
       "NO selected" in {
         val userAnswers = emptyUserAnswers
-          .set(UkAddressPage, arbitraryUkAddress.arbitrary.sample.get).success.value
+          .set(UkAddressPage, arbitraryUkAddress.arbitrary.sample.get)
+          .success
+          .value
 
         val result = userAnswers.set(LiveInTheUkYesNoPage, false).success.value
 
@@ -49,4 +53,5 @@ class LiveInTheUkYesNoPageSpec extends PageBehaviours {
       }
     }
   }
+
 }

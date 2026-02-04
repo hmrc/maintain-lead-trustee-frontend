@@ -30,28 +30,34 @@ object OrganisationLeadTrusteeNavigator extends LeadTrusteeNavigator {
       conditionalNavigation
 
   private def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case UtrPage => _ => CountryOfResidenceInTheUkYesNoController.onPageLoad()
-    case CountryOfResidencePage => _ => NonUkAddressController.onPageLoad()
+    case UtrPage                          => _ => CountryOfResidenceInTheUkYesNoController.onPageLoad()
+    case CountryOfResidencePage           => _ => NonUkAddressController.onPageLoad()
     case UkAddressPage | NonUkAddressPage => _ => EmailAddressYesNoController.onPageLoad()
-    case EmailAddressPage => _ => TelephoneNumberController.onPageLoad()
-    case TelephoneNumberPage => _ => CheckDetailsController.onPageLoadUpdated()
+    case EmailAddressPage                 => _ => TelephoneNumberController.onPageLoad()
+    case TelephoneNumberPage              => _ => CheckDetailsController.onPageLoadUpdated()
   }
 
   private def yesNoNavigation: PartialFunction[Page, UserAnswers => Call] =
     yesNoNav(RegisteredInUkYesNoPage, NameController.onPageLoad(), NameController.onPageLoad()) orElse
-      yesNoNav(CountryOfResidenceInTheUkYesNoPage, UkAddressController.onPageLoad(), CountryOfResidenceController.onPageLoad()) orElse
+      yesNoNav(
+        CountryOfResidenceInTheUkYesNoPage,
+        UkAddressController.onPageLoad(),
+        CountryOfResidenceController.onPageLoad()
+      ) orElse
       yesNoNav(AddressInTheUkYesNoPage, UkAddressController.onPageLoad(), NonUkAddressController.onPageLoad()) orElse
       yesNoNav(EmailAddressYesNoPage, EmailAddressController.onPageLoad(), TelephoneNumberController.onPageLoad())
 
-  private def conditionalNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => navigateToUtrQuestionIfUkRegistered
+  private def conditionalNavigation: PartialFunction[Page, UserAnswers => Call] = { case NamePage =>
+    navigateToUtrQuestionIfUkRegistered
   }
 
-  private def navigateToUtrQuestionIfUkRegistered(userAnswers: UserAnswers): Call = {
-    userAnswers.get(RegisteredInUkYesNoPage).map {
-      case true => UtrController.onPageLoad()
-      case false => CountryOfResidenceInTheUkYesNoController.onPageLoad()
-    }.getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
-  }
+  private def navigateToUtrQuestionIfUkRegistered(userAnswers: UserAnswers): Call =
+    userAnswers
+      .get(RegisteredInUkYesNoPage)
+      .map {
+        case true  => UtrController.onPageLoad()
+        case false => CountryOfResidenceInTheUkYesNoController.onPageLoad()
+      }
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
 
 }

@@ -27,4 +27,5 @@ class TrusteeTypeFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[TrusteeType](s"$messagePrefix.error.required")
     )
+
 }

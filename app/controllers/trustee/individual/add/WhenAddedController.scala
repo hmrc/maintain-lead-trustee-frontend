@@ -31,39 +31,36 @@ import views.html.trustee.individual.add.WhenAddedView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhenAddedController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     sessionRepository: PlaybackRepository,
-                                     navigator: Navigator,
-                                     standardActionSets: StandardActionSets,
-                                     nameAction: NameRequiredAction,
-                                     formProvider: DateAddedToTrustFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: WhenAddedView
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class WhenAddedController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: DateAddedToTrustFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: WhenAddedView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) { implicit request =>
+    val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
 
-      val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
+    val preparedForm = request.userAnswers.get(WhenAddedPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(WhenAddedPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.trusteeName))
+    Ok(view(preparedForm, request.trusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+    val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
 
-      val form = formProvider.withPrefixAndTrustStartDate("trustee.whenAdded", request.userAnswers.whenTrustSetup)
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
-
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.trusteeName))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenAddedPage, value))
@@ -71,4 +68,5 @@ class WhenAddedController @Inject()(
           } yield Redirect(navigator.nextPage(WhenAddedPage, NormalMode, updatedAnswers))
       )
   }
+
 }

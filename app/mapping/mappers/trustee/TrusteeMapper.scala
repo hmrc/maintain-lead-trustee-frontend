@@ -30,13 +30,12 @@ trait TrusteeMapper[T] extends Mapper[T] {
 
   def nonUkAddressPage: QuestionPage[NonUkAddress]
 
-  def readAddress: Reads[Option[Address]] = {
+  def readAddress: Reads[Option[Address]] =
     ukAddressYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => ukAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
+      case Some(true)  => ukAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
       case Some(false) => nonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
-      case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
+      case _           => Reads(_ => JsSuccess(None)).widen[Option[Address]]
     }
-  }
 
   def countryOfResidenceYesNoPage: QuestionPage[Boolean]
 
@@ -44,19 +43,25 @@ trait TrusteeMapper[T] extends Mapper[T] {
 
   def countryOfResidencePage: QuestionPage[String]
 
-  def readCountryOfResidence: Reads[Option[String]] = {
-    readCountryOfResidenceOrNationality(countryOfResidenceYesNoPage, ukCountryOfResidenceYesNoPage, countryOfResidencePage)
-  }
+  def readCountryOfResidence: Reads[Option[String]] =
+    readCountryOfResidenceOrNationality(
+      countryOfResidenceYesNoPage,
+      ukCountryOfResidenceYesNoPage,
+      countryOfResidencePage
+    )
 
-  def readCountryOfResidenceOrNationality(yesNoPage: QuestionPage[Boolean],
-                                          ukYesNoPage: QuestionPage[Boolean],
-                                          page: QuestionPage[String]): Reads[Option[String]] = {
+  def readCountryOfResidenceOrNationality(
+    yesNoPage: QuestionPage[Boolean],
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Reads[Option[String]] =
     yesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-      case Some(true) => ukYesNoPage.path.read[Boolean].flatMap {
-        case true => Reads(_ => JsSuccess(Some(GB)))
-        case false => page.path.read[String].map(Some(_))
-      }
-      case _ => Reads(_ => JsSuccess(None))
+      case Some(true) =>
+        ukYesNoPage.path.read[Boolean].flatMap {
+          case true  => Reads(_ => JsSuccess(Some(GB)))
+          case false => page.path.read[String].map(Some(_))
+        }
+      case _          => Reads(_ => JsSuccess(None))
     }
-  }
+
 }

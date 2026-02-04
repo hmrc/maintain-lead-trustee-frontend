@@ -21,7 +21,10 @@ import controllers.leadtrustee.actions.{LeadTrusteeNameRequest, NameRequiredActi
 import forms.NationalInsuranceNumberFormProvider
 import handlers.ErrorHandler
 import models.BpMatchStatus.FullyMatched
-import models.{LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, TrustsIndividualCheckServiceResponse, UnsuccessfulMatchResponse, UserAnswers}
+import models.{
+  LockedMatchResponse, ServiceNotIn5mldModeResponse, SuccessfulMatchResponse, TrustsIndividualCheckServiceResponse,
+  UnsuccessfulMatchResponse, UserAnswers
+}
 import navigation.Navigator
 import pages.leadtrustee.IsReplacingLeadTrusteePage
 import pages.leadtrustee.individual.{BpMatchStatusPage, IndexPage, NationalInsuranceNumberPage}
@@ -37,33 +40,39 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Success
 
-class NationalInsuranceNumberController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   playbackRepository: PlaybackRepository,
-                                                   navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   service: TrustsIndividualCheckService,
-                                                   formProvider: NationalInsuranceNumberFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   errorHandler: ErrorHandler,
-                                                   view: NationalInsuranceNumberView,
-                                                   trustsService: TrustService
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NationalInsuranceNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  service: TrustsIndividualCheckService,
+  formProvider: NationalInsuranceNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  errorHandler: ErrorHandler,
+  view: NationalInsuranceNumberView,
+  trustsService: TrustService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  private def form(ninos: List[String]): Form[String] = formProvider.apply("leadtrustee.individual.nationalInsuranceNumber", ninos)
+  private def form(ninos: List[String]): Form[String] =
+    formProvider.apply("leadtrustee.individual.nationalInsuranceNumber", ninos)
 
-  private def index(implicit request: LeadTrusteeNameRequest[AnyContent]): Option[Int] = request.userAnswers.get(IndexPage)
+  private def index(implicit request: LeadTrusteeNameRequest[AnyContent]): Option[Int] =
+    request.userAnswers.get(IndexPage)
 
   private def isLeadTrusteeMatched(implicit request: LeadTrusteeNameRequest[_]) =
     request.userAnswers.isLeadTrusteeMatched
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
-
-      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = request.userAnswers.get(IsReplacingLeadTrusteePage).getOrElse(false)) map { ninos =>
+      trustsService.getIndividualNinos(
+        request.userAnswers.identifier,
+        index,
+        adding = request.userAnswers.get(IsReplacingLeadTrusteePage).getOrElse(false)
+      ) map { ninos =>
         val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
-          case None => form(ninos)
+          case None        => form(ninos)
           case Some(value) => form(ninos).fill(value)
         }
 
@@ -71,44 +80,48 @@ class NationalInsuranceNumberController @Inject()(
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      trustsService.getIndividualNinos(request.userAnswers.identifier, index, adding = request.userAnswers.get(IsReplacingLeadTrusteePage).getOrElse(false)) flatMap { ninos =>
-        form(ninos).bindFromRequest().fold(
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    trustsService.getIndividualNinos(
+      request.userAnswers.identifier,
+      index,
+      adding = request.userAnswers.get(IsReplacingLeadTrusteePage).getOrElse(false)
+    ) flatMap { ninos =>
+      form(ninos)
+        .bindFromRequest()
+        .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName, isLeadTrusteeMatched))),
-
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
-              matchingResponse <- service.matchLeadTrustee(updatedAnswers)
+              updatedAnswers            <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
+              matchingResponse          <- service.matchLeadTrustee(updatedAnswers)
               updatedAnswersWithMatched <- Future.fromTry {
-                if (matchingResponse == SuccessfulMatchResponse) {
-                  updatedAnswers.set(BpMatchStatusPage, FullyMatched)
-                } else {
-                  Success(updatedAnswers)
-                }
-              }
-              _ <- playbackRepository.set(updatedAnswersWithMatched)
-              result <- handleMatchResponse(matchingResponse, updatedAnswersWithMatched)
+                                             if (matchingResponse == SuccessfulMatchResponse) {
+                                               updatedAnswers.set(BpMatchStatusPage, FullyMatched)
+                                             } else {
+                                               Success(updatedAnswers)
+                                             }
+                                           }
+              _                         <- playbackRepository.set(updatedAnswersWithMatched)
+              result                    <- handleMatchResponse(matchingResponse, updatedAnswersWithMatched)
             } yield result
-
         )
-      }
+    }
   }
 
-  private def handleMatchResponse(matchResponse: TrustsIndividualCheckServiceResponse, updatedAnswersWithMatched: UserAnswers)
-                                 (implicit requestHeader: RequestHeader) : Future[Result] = {
+  private def handleMatchResponse(
+    matchResponse: TrustsIndividualCheckServiceResponse,
+    updatedAnswersWithMatched: UserAnswers
+  )(implicit requestHeader: RequestHeader): Future[Result] =
     matchResponse match {
       case SuccessfulMatchResponse | ServiceNotIn5mldModeResponse =>
         Future.successful(Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswersWithMatched)))
-      case UnsuccessfulMatchResponse =>
+      case UnsuccessfulMatchResponse                              =>
         Future.successful(Redirect(routes.MatchingFailedController.onPageLoad()))
-      case LockedMatchResponse =>
+      case LockedMatchResponse                                    =>
         Future.successful(Redirect(routes.MatchingLockedController.onPageLoad()))
-      case _ =>
+      case _                                                      =>
         errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
     }
-  }
+
 }

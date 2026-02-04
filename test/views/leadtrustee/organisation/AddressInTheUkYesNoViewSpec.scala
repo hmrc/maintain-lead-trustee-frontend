@@ -40,6 +40,13 @@ class AddressInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some("Lead Trustee"), routes.AddressInTheUkYesNoController.onSubmit().url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some("Lead Trustee"),
+      routes.AddressInTheUkYesNoController.onSubmit().url
+    )
   }
+
 }

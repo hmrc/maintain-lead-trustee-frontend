@@ -25,10 +25,10 @@ class BusinessNameFormProviderSpec extends StringFieldBehaviours {
 
   val prefix = "leadtrustee.organisation.name"
 
-  val requiredKey = s"$prefix.error.required"
-  val lengthKey = s"$prefix.error.length"
+  val requiredKey      = s"$prefix.error.required"
+  val lengthKey        = s"$prefix.error.length"
   val invalidFormatKey = s"$prefix.error.invalidFormat"
-  val maxLength = 56
+  val maxLength        = 56
 
   val form = new BusinessNameFormProvider().withPrefix(prefix)
 
@@ -69,4 +69,5 @@ class BusinessNameFormProviderSpec extends StringFieldBehaviours {
       error = FormError(fieldName, invalidFormatKey, Seq(Validation.businessNameRegex))
     )
   }
+
 }

@@ -34,4 +34,5 @@ object BpMatchStatus extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[BpMatchStatus] =
     Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+
 }

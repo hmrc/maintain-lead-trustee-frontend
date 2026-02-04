@@ -26,19 +26,19 @@ import queries.Gettable
 import utils.print.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
 
-class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class LeadTrusteeIndividualPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
   def print(userAnswers: UserAnswers, trusteeName: String)(implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, trusteeName)
 
     val adding: Boolean = userAnswers.get(PassportOrIdCardDetailsPage) match {
-      case Some(value) if (!value.detailsType.isProvisional) => false
-      case _ => true
+      case Some(value) if !value.detailsType.isProvisional => false
+      case _                                               => true
     }
 
     val changeLinkOrNone: (Boolean, String) => Option[String] =
-      (adding: Boolean, route: String) => if(adding) Some(route) else None
+      (adding: Boolean, route: String) => if (adding) Some(route) else None
 
     val prefix: String = "leadtrustee.individual"
 
@@ -48,24 +48,78 @@ class LeadTrusteeIndividualPrintHelper @Inject()(answerRowConverter: AnswerRowCo
       if (isLeadTrusteeMatched) bound.yesNoQuestionAllowEmptyAnswer else bound.yesNoQuestion
 
     def answerRows: Seq[AnswerRow] = Seq(
-      bound.enumQuestion(IndividualOrBusinessPage, "leadtrustee.individualOrBusiness", controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url, "individualOrBusiness"),
+      bound.enumQuestion(
+        IndividualOrBusinessPage,
+        "leadtrustee.individualOrBusiness",
+        controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad().url,
+        "individualOrBusiness"
+      ),
       bound.nameQuestion(NamePage, s"$prefix.name", NameController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
-      bound.dateQuestion(DateOfBirthPage, s"$prefix.dateOfBirth", DateOfBirthController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
-      inUkQuestion(CountryOfNationalityInTheUkYesNoPage, s"$prefix.countryOfNationalityInTheUkYesNo", CountryOfNationalityInTheUkYesNoController.onPageLoad().url, true),
-      bound.countryQuestion(CountryOfNationalityInTheUkYesNoPage, CountryOfNationalityPage, s"$prefix.countryOfNationality", CountryOfNationalityController.onPageLoad().url),
-      bound.yesNoQuestion(UkCitizenPage, s"$prefix.ukCitizen", Some(UkCitizenController.onPageLoad().url), canEdit = !isLeadTrusteeMatched),
-      bound.ninoQuestion(NationalInsuranceNumberPage, s"$prefix.nationalInsuranceNumber", NationalInsuranceNumberController.onPageLoad().url, canEdit = !isLeadTrusteeMatched),
-      bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, s"$prefix.passportOrIdCardDetails", changeLinkOrNone(adding, PassportOrIdCardController.onPageLoad().url), canEdit = adding),
-      inUkQuestion(CountryOfResidenceInTheUkYesNoPage, s"$prefix.countryOfResidenceInTheUkYesNo", CountryOfResidenceInTheUkYesNoController.onPageLoad().url, true),
-      bound.countryQuestion(CountryOfResidenceInTheUkYesNoPage, CountryOfResidencePage, s"$prefix.countryOfResidence", CountryOfResidenceController.onPageLoad().url),
-      bound.yesNoQuestion(LiveInTheUkYesNoPage, s"$prefix.liveInTheUkYesNo", LiveInTheUkYesNoController.onPageLoad().url),
+      bound.dateQuestion(
+        DateOfBirthPage,
+        s"$prefix.dateOfBirth",
+        DateOfBirthController.onPageLoad().url,
+        canEdit = !isLeadTrusteeMatched
+      ),
+      inUkQuestion(
+        CountryOfNationalityInTheUkYesNoPage,
+        s"$prefix.countryOfNationalityInTheUkYesNo",
+        CountryOfNationalityInTheUkYesNoController.onPageLoad().url,
+        true
+      ),
+      bound.countryQuestion(
+        CountryOfNationalityInTheUkYesNoPage,
+        CountryOfNationalityPage,
+        s"$prefix.countryOfNationality",
+        CountryOfNationalityController.onPageLoad().url
+      ),
+      bound.yesNoQuestion(
+        UkCitizenPage,
+        s"$prefix.ukCitizen",
+        Some(UkCitizenController.onPageLoad().url),
+        canEdit = !isLeadTrusteeMatched
+      ),
+      bound.ninoQuestion(
+        NationalInsuranceNumberPage,
+        s"$prefix.nationalInsuranceNumber",
+        NationalInsuranceNumberController.onPageLoad().url,
+        canEdit = !isLeadTrusteeMatched
+      ),
+      bound.passportOrIdCardDetailsQuestion(
+        PassportOrIdCardDetailsPage,
+        s"$prefix.passportOrIdCardDetails",
+        changeLinkOrNone(adding, PassportOrIdCardController.onPageLoad().url),
+        canEdit = adding
+      ),
+      inUkQuestion(
+        CountryOfResidenceInTheUkYesNoPage,
+        s"$prefix.countryOfResidenceInTheUkYesNo",
+        CountryOfResidenceInTheUkYesNoController.onPageLoad().url,
+        true
+      ),
+      bound.countryQuestion(
+        CountryOfResidenceInTheUkYesNoPage,
+        CountryOfResidencePage,
+        s"$prefix.countryOfResidence",
+        CountryOfResidenceController.onPageLoad().url
+      ),
+      bound.yesNoQuestion(
+        LiveInTheUkYesNoPage,
+        s"$prefix.liveInTheUkYesNo",
+        LiveInTheUkYesNoController.onPageLoad().url
+      ),
       bound.addressQuestion(UkAddressPage, s"$prefix.ukAddress", UkAddressController.onPageLoad().url),
       bound.addressQuestion(NonUkAddressPage, s"$prefix.nonUkAddress", NonUkAddressController.onPageLoad().url),
-      bound.yesNoQuestion(EmailAddressYesNoPage, s"$prefix.emailAddressYesNo", EmailAddressYesNoController.onPageLoad().url),
+      bound.yesNoQuestion(
+        EmailAddressYesNoPage,
+        s"$prefix.emailAddressYesNo",
+        EmailAddressYesNoController.onPageLoad().url
+      ),
       bound.stringQuestion(EmailAddressPage, s"$prefix.emailAddress", EmailAddressController.onPageLoad().url),
       bound.stringQuestion(TelephoneNumberPage, s"$prefix.telephoneNumber", TelephoneNumberController.onPageLoad().url)
     ).flatten
 
     AnswerSection(headingKey = None, rows = answerRows)
   }
+
 }

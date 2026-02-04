@@ -37,7 +37,6 @@ class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, Seq.empty, "Lead Trustee")(fakeRequest, messages)
 
-
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, "Lead Trustee")
 
     behave like pageWithBackLink(applyView(form))
@@ -48,7 +47,9 @@ class NonUkAddressViewSpec extends QuestionViewBehaviours[NonUkAddress] {
       messageKeyPrefix,
       Some("Lead Trustee"),
       routes.NonUkAddressController.onSubmit().url,
-      "line1", "line2"
+      "line1",
+      "line2"
     )
   }
+
 }

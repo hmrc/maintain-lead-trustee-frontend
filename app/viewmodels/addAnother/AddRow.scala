@@ -16,5 +16,11 @@
 
 package viewmodels.addAnother
 
-case class AddRow(name: String, typeLabel: String, changeLabel : String, changeUrl: String, removeLabel: Option[String], removeUrl: Option[String])
-
+case class AddRow(
+  name: String,
+  typeLabel: String,
+  changeLabel: String,
+  changeUrl: String,
+  removeLabel: Option[String],
+  removeUrl: Option[String]
+)

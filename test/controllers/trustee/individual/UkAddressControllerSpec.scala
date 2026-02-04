@@ -69,8 +69,12 @@ class UkAddressControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, trusteeName).success.value
-        .set(UkAddressPage, validAnswer).success.value
+        .set(NamePage, trusteeName)
+        .success
+        .value
+        .set(UkAddressPage, validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -100,7 +104,6 @@ class UkAddressControllerSpec extends SpecBase {
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
-
 
       val request =
         FakeRequest(POST, ukAddressControllerRoute)
@@ -171,4 +174,5 @@ class UkAddressControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

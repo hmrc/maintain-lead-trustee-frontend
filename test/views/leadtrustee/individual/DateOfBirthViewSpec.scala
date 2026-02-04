@@ -66,4 +66,5 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
       behave like pageWithReadOnlyInput(applyView(form))
     }
   }
+
 }

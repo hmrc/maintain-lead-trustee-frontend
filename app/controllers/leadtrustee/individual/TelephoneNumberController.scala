@@ -30,37 +30,34 @@ import views.html.leadtrustee.individual.TelephoneNumberView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TelephoneNumberController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        playbackRepository: PlaybackRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        nameAction: NameRequiredAction,
-                                        formProvider: TelephoneNumberFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: TelephoneNumberView
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TelephoneNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: TelephoneNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TelephoneNumberView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("leadtrustee.individual.telephoneNumber")
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(TelephoneNumberPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(TelephoneNumberPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.leadTrusteeName))
+    Ok(view(preparedForm, request.leadTrusteeName))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
-
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.leadTrusteeName))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TelephoneNumberPage, value))
@@ -68,4 +65,5 @@ class TelephoneNumberController @Inject()(
           } yield Redirect(navigator.nextPage(TelephoneNumberPage, updatedAnswers))
       )
   }
+
 }

@@ -27,7 +27,7 @@ import views.html.trustee.individual.NameView
 class NameViewSpec extends QuestionViewBehaviours[Name] {
 
   val messageKeyPrefix = "trustee.individual.name"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   override val form: Form[Name] = new IndividualNameFormProvider().withPrefix(messageKeyPrefix)
 
@@ -58,4 +58,5 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

@@ -31,11 +31,11 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
   private val index: Int = 0
 
-  private val name: Name = Name("First", None, "Last")
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
-  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  private val name: Name                 = Name("First", None, "Last")
+  private val date: LocalDate            = LocalDate.parse("1996-02-03")
+  private val ukAddress: UkAddress       = UkAddress("Line 1", "Line 2", None, None, "postcode")
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "country")
-  private val nino: String = "nino"
+  private val nino: String               = "nino"
 
   private val extractor: TrusteeIndividualExtractor = new TrusteeIndividualExtractor()
 
@@ -57,29 +57,29 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndividualOrBusinessPage).get mustBe Individual
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe false
-          result.get(DateOfBirthPage) mustBe None
+          result.get(IndividualOrBusinessPage).get         mustBe Individual
+          result.get(NamePage).get                         mustBe name
+          result.get(DateOfBirthYesNoPage).get             mustBe false
+          result.get(DateOfBirthPage)                      mustBe None
           result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(CountryOfResidenceYesNoPage) mustBe None
-          result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
-          result.get(CountryOfNationalityYesNoPage) mustBe None
+          result.get(NationalInsuranceNumberPage)          mustBe None
+          result.get(CountryOfResidenceYesNoPage)          mustBe None
+          result.get(CountryOfResidenceInTheUkYesNoPage)   mustBe None
+          result.get(CountryOfResidencePage)               mustBe None
+          result.get(CountryOfNationalityYesNoPage)        mustBe None
           result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
-          result.get(CountryOfNationalityPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe false
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(MentalCapacityYesNoPage) mustBe None
+          result.get(CountryOfNationalityPage)             mustBe None
+          result.get(AddressYesNoPage).get                 mustBe false
+          result.get(LiveInTheUkYesNoPage)                 mustBe None
+          result.get(UkAddressPage)                        mustBe None
+          result.get(NonUkAddressPage)                     mustBe None
+          result.get(PassportDetailsYesNoPage)             mustBe None
+          result.get(PassportDetailsPage)                  mustBe None
+          result.get(IdCardDetailsYesNoPage)               mustBe None
+          result.get(IdCardDetailsPage)                    mustBe None
+          result.get(PassportOrIdCardDetailsYesNoPage)     mustBe None
+          result.get(PassportOrIdCardDetailsPage)          mustBe None
+          result.get(MentalCapacityYesNoPage)              mustBe None
         }
 
         "has no country of residence but does have an address" in {
@@ -96,21 +96,21 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfResidenceYesNoPage) mustBe None
+          result.get(IndexPage).get                      mustBe index
+          result.get(NamePage).get                       mustBe name
+          result.get(CountryOfResidenceYesNoPage)        mustBe None
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(LiveInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(PassportDetailsYesNoPage).get mustBe false
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage).get mustBe false
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(CountryOfResidencePage)             mustBe None
+          result.get(AddressYesNoPage).get               mustBe true
+          result.get(LiveInTheUkYesNoPage).get           mustBe true
+          result.get(UkAddressPage).get                  mustBe ukAddress
+          result.get(NonUkAddressPage)                   mustBe None
+          result.get(PassportDetailsYesNoPage).get       mustBe false
+          result.get(PassportDetailsPage)                mustBe None
+          result.get(IdCardDetailsYesNoPage).get         mustBe false
+          result.get(IdCardDetailsPage)                  mustBe None
+          result.get(PassportOrIdCardDetailsYesNoPage)   mustBe None
+          result.get(PassportOrIdCardDetailsPage)        mustBe None
         }
       }
 
@@ -130,28 +130,28 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(IndividualOrBusinessPage).get mustBe Individual
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe false
-          result.get(DateOfBirthPage) mustBe None
+          result.get(IndexPage).get                        mustBe index
+          result.get(IndividualOrBusinessPage).get         mustBe Individual
+          result.get(NamePage).get                         mustBe name
+          result.get(DateOfBirthYesNoPage).get             mustBe false
+          result.get(DateOfBirthPage)                      mustBe None
           result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(CountryOfResidenceYesNoPage).get mustBe false
-          result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
-          result.get(CountryOfNationalityYesNoPage).get mustBe false
+          result.get(NationalInsuranceNumberPage)          mustBe None
+          result.get(CountryOfResidenceYesNoPage).get      mustBe false
+          result.get(CountryOfResidenceInTheUkYesNoPage)   mustBe None
+          result.get(CountryOfResidencePage)               mustBe None
+          result.get(CountryOfNationalityYesNoPage).get    mustBe false
           result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
-          result.get(CountryOfNationalityPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe false
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(MentalCapacityYesNoPage) mustBe None
+          result.get(CountryOfNationalityPage)             mustBe None
+          result.get(AddressYesNoPage).get                 mustBe false
+          result.get(LiveInTheUkYesNoPage)                 mustBe None
+          result.get(UkAddressPage)                        mustBe None
+          result.get(NonUkAddressPage)                     mustBe None
+          result.get(PassportDetailsYesNoPage)             mustBe None
+          result.get(PassportDetailsPage)                  mustBe None
+          result.get(IdCardDetailsYesNoPage)               mustBe None
+          result.get(IdCardDetailsPage)                    mustBe None
+          result.get(MentalCapacityYesNoPage)              mustBe None
         }
 
         "has no country of residence but does have an address" in {
@@ -166,24 +166,23 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
             provisional = true
           )
 
-
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfResidenceYesNoPage).get mustBe false
+          result.get(IndexPage).get                      mustBe index
+          result.get(NamePage).get                       mustBe name
+          result.get(CountryOfResidenceYesNoPage).get    mustBe false
           result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-          result.get(CountryOfResidencePage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(LiveInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(PassportDetailsYesNoPage).get mustBe false
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage).get mustBe false
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(CountryOfResidencePage)             mustBe None
+          result.get(AddressYesNoPage).get               mustBe true
+          result.get(LiveInTheUkYesNoPage).get           mustBe true
+          result.get(UkAddressPage).get                  mustBe ukAddress
+          result.get(NonUkAddressPage)                   mustBe None
+          result.get(PassportDetailsYesNoPage).get       mustBe false
+          result.get(PassportDetailsPage)                mustBe None
+          result.get(IdCardDetailsYesNoPage).get         mustBe false
+          result.get(IdCardDetailsPage)                  mustBe None
+          result.get(PassportOrIdCardDetailsYesNoPage)   mustBe None
+          result.get(PassportOrIdCardDetailsPage)        mustBe None
         }
 
         "has a country of residence in GB" in {
@@ -200,15 +199,15 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfResidenceYesNoPage).get mustBe true
+          result.get(IndexPage).get                          mustBe index
+          result.get(NamePage).get                           mustBe name
+          result.get(CountryOfResidenceYesNoPage).get        mustBe true
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe true
-          result.get(CountryOfResidencePage).get mustBe GB
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(CountryOfResidencePage).get             mustBe GB
+          result.get(PassportDetailsYesNoPage)               mustBe None
+          result.get(PassportDetailsPage)                    mustBe None
+          result.get(IdCardDetailsYesNoPage)                 mustBe None
+          result.get(IdCardDetailsPage)                      mustBe None
         }
 
         "has a country of residence in Spain" in {
@@ -225,15 +224,15 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfResidenceYesNoPage).get mustBe true
+          result.get(IndexPage).get                          mustBe index
+          result.get(NamePage).get                           mustBe name
+          result.get(CountryOfResidenceYesNoPage).get        mustBe true
           result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
-          result.get(CountryOfResidencePage).get mustBe "Spain"
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(CountryOfResidencePage).get             mustBe "Spain"
+          result.get(PassportDetailsYesNoPage)               mustBe None
+          result.get(PassportDetailsPage)                    mustBe None
+          result.get(IdCardDetailsYesNoPage)                 mustBe None
+          result.get(IdCardDetailsPage)                      mustBe None
         }
 
         "has a country of nationality in GB" in {
@@ -250,15 +249,15 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfNationalityYesNoPage).get mustBe true
+          result.get(IndexPage).get                            mustBe index
+          result.get(NamePage).get                             mustBe name
+          result.get(CountryOfNationalityYesNoPage).get        mustBe true
           result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe true
-          result.get(CountryOfNationalityPage).get mustBe GB
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(CountryOfNationalityPage).get             mustBe GB
+          result.get(PassportDetailsYesNoPage)                 mustBe None
+          result.get(PassportDetailsPage)                      mustBe None
+          result.get(IdCardDetailsYesNoPage)                   mustBe None
+          result.get(IdCardDetailsPage)                        mustBe None
         }
 
         "has a country of nationality in Spain" in {
@@ -275,15 +274,15 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(CountryOfNationalityYesNoPage).get mustBe true
+          result.get(IndexPage).get                            mustBe index
+          result.get(NamePage).get                             mustBe name
+          result.get(CountryOfNationalityYesNoPage).get        mustBe true
           result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
-          result.get(CountryOfNationalityPage).get mustBe "Spain"
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(CountryOfNationalityPage).get             mustBe "Spain"
+          result.get(PassportDetailsYesNoPage)                 mustBe None
+          result.get(PassportDetailsPage)                      mustBe None
+          result.get(IdCardDetailsYesNoPage)                   mustBe None
+          result.get(IdCardDetailsPage)                        mustBe None
         }
 
         "has a mental capacity" in {
@@ -301,13 +300,13 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
+          result.get(IndexPage).get               mustBe index
+          result.get(NamePage).get                mustBe name
           result.get(MentalCapacityYesNoPage).get mustBe Yes
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(PassportDetailsYesNoPage)    mustBe None
+          result.get(PassportDetailsPage)         mustBe None
+          result.get(IdCardDetailsYesNoPage)      mustBe None
+          result.get(IdCardDetailsPage)           mustBe None
         }
 
         "has an NINO" in {
@@ -326,14 +325,14 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
+          result.get(IndexPage).get                        mustBe index
+          result.get(NamePage).get                         mustBe name
           result.get(NationalInsuranceNumberYesNoPage).get mustBe true
-          result.get(NationalInsuranceNumberPage).get mustBe nino
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(NationalInsuranceNumberPage).get      mustBe nino
+          result.get(PassportDetailsYesNoPage)             mustBe None
+          result.get(PassportDetailsPage)                  mustBe None
+          result.get(IdCardDetailsYesNoPage)               mustBe None
+          result.get(IdCardDetailsPage)                    mustBe None
         }
 
         "has passport details" in {
@@ -352,14 +351,14 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(PassportDetailsYesNoPage).get mustBe true
-          result.get(PassportDetailsPage).get mustBe passport
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(IndexPage).get                    mustBe index
+          result.get(NamePage).get                     mustBe name
+          result.get(PassportDetailsYesNoPage).get     mustBe true
+          result.get(PassportDetailsPage).get          mustBe passport
+          result.get(IdCardDetailsYesNoPage)           mustBe None
+          result.get(IdCardDetailsPage)                mustBe None
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(PassportOrIdCardDetailsPage)      mustBe None
         }
 
         "has ID Card details" in {
@@ -378,14 +377,14 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(PassportDetailsYesNoPage).get mustBe false
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage).get mustBe true
-          result.get(IdCardDetailsPage).get mustBe idCard
+          result.get(IndexPage).get                    mustBe index
+          result.get(NamePage).get                     mustBe name
+          result.get(PassportDetailsYesNoPage).get     mustBe false
+          result.get(PassportDetailsPage)              mustBe None
+          result.get(IdCardDetailsYesNoPage).get       mustBe true
+          result.get(IdCardDetailsPage).get            mustBe idCard
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(PassportOrIdCardDetailsPage)      mustBe None
         }
 
         "has passport or ID card details" in {
@@ -404,14 +403,14 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
           val result = extractor.extract(baseAnswers, trustee, index).get
 
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
+          result.get(IndexPage).get                        mustBe index
+          result.get(NamePage).get                         mustBe name
+          result.get(PassportDetailsYesNoPage)             mustBe None
+          result.get(PassportDetailsPage)                  mustBe None
+          result.get(IdCardDetailsYesNoPage)               mustBe None
+          result.get(IdCardDetailsPage)                    mustBe None
           result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
-          result.get(PassportOrIdCardDetailsPage).get mustBe combined
+          result.get(PassportOrIdCardDetailsPage).get      mustBe combined
         }
 
       }
@@ -433,19 +432,19 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(NamePage).get mustBe name
-        result.get(CountryOfResidenceYesNoPage).get mustBe false
-        result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-        result.get(CountryOfResidencePage) mustBe None
-        result.get(CountryOfNationalityYesNoPage).get mustBe false
+        result.get(IndexPage).get                        mustBe index
+        result.get(NamePage).get                         mustBe name
+        result.get(CountryOfResidenceYesNoPage).get      mustBe false
+        result.get(CountryOfResidenceInTheUkYesNoPage)   mustBe None
+        result.get(CountryOfResidencePage)               mustBe None
+        result.get(CountryOfNationalityYesNoPage).get    mustBe false
         result.get(CountryOfNationalityInTheUkYesNoPage) mustBe None
-        result.get(CountryOfNationalityPage) mustBe None
-        result.get(MentalCapacityYesNoPage) mustBe None
-        result.get(PassportDetailsYesNoPage) mustBe None
-        result.get(PassportDetailsPage) mustBe None
-        result.get(IdCardDetailsYesNoPage) mustBe None
-        result.get(IdCardDetailsPage) mustBe None
+        result.get(CountryOfNationalityPage)             mustBe None
+        result.get(MentalCapacityYesNoPage)              mustBe None
+        result.get(PassportDetailsYesNoPage)             mustBe None
+        result.get(PassportDetailsPage)                  mustBe None
+        result.get(IdCardDetailsYesNoPage)               mustBe None
+        result.get(IdCardDetailsPage)                    mustBe None
       }
 
       "has a country of residence and nationality in Spain" in {
@@ -463,18 +462,18 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(NamePage).get mustBe name
-        result.get(CountryOfResidenceYesNoPage).get mustBe true
-        result.get(CountryOfResidenceInTheUkYesNoPage).get mustBe false
-        result.get(CountryOfResidencePage).get mustBe "Spain"
-        result.get(CountryOfNationalityYesNoPage).get mustBe true
+        result.get(IndexPage).get                            mustBe index
+        result.get(NamePage).get                             mustBe name
+        result.get(CountryOfResidenceYesNoPage).get          mustBe true
+        result.get(CountryOfResidenceInTheUkYesNoPage).get   mustBe false
+        result.get(CountryOfResidencePage).get               mustBe "Spain"
+        result.get(CountryOfNationalityYesNoPage).get        mustBe true
         result.get(CountryOfNationalityInTheUkYesNoPage).get mustBe false
-        result.get(CountryOfNationalityPage).get mustBe "Spain"
-        result.get(PassportDetailsYesNoPage) mustBe None
-        result.get(PassportDetailsPage) mustBe None
-        result.get(IdCardDetailsYesNoPage) mustBe None
-        result.get(IdCardDetailsPage) mustBe None
+        result.get(CountryOfNationalityPage).get             mustBe "Spain"
+        result.get(PassportDetailsYesNoPage)                 mustBe None
+        result.get(PassportDetailsPage)                      mustBe None
+        result.get(IdCardDetailsYesNoPage)                   mustBe None
+        result.get(IdCardDetailsPage)                        mustBe None
       }
 
       "has an address" in {
@@ -491,16 +490,16 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(NamePage).get mustBe name
-        result.get(AddressYesNoPage) mustBe None
-        result.get(LiveInTheUkYesNoPage) mustBe None
-        result.get(UkAddressPage) mustBe None
-        result.get(NonUkAddressPage) mustBe None
+        result.get(IndexPage).get            mustBe index
+        result.get(NamePage).get             mustBe name
+        result.get(AddressYesNoPage)         mustBe None
+        result.get(LiveInTheUkYesNoPage)     mustBe None
+        result.get(UkAddressPage)            mustBe None
+        result.get(NonUkAddressPage)         mustBe None
         result.get(PassportDetailsYesNoPage) mustBe None
-        result.get(PassportDetailsPage) mustBe None
-        result.get(IdCardDetailsYesNoPage) mustBe None
-        result.get(IdCardDetailsPage) mustBe None
+        result.get(PassportDetailsPage)      mustBe None
+        result.get(IdCardDetailsYesNoPage)   mustBe None
+        result.get(IdCardDetailsPage)        mustBe None
       }
 
       "has a mental capacity" in {
@@ -518,13 +517,13 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(NamePage).get mustBe name
+        result.get(IndexPage).get               mustBe index
+        result.get(NamePage).get                mustBe name
         result.get(MentalCapacityYesNoPage).get mustBe Yes
-        result.get(PassportDetailsYesNoPage) mustBe None
-        result.get(PassportDetailsPage) mustBe None
-        result.get(IdCardDetailsYesNoPage) mustBe None
-        result.get(IdCardDetailsPage) mustBe None
+        result.get(PassportDetailsYesNoPage)    mustBe None
+        result.get(PassportDetailsPage)         mustBe None
+        result.get(IdCardDetailsYesNoPage)      mustBe None
+        result.get(IdCardDetailsPage)           mustBe None
       }
 
       "has an NINO" in {
@@ -543,14 +542,14 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(NamePage).get mustBe name
+        result.get(IndexPage).get                    mustBe index
+        result.get(NamePage).get                     mustBe name
         result.get(NationalInsuranceNumberYesNoPage) mustBe None
-        result.get(NationalInsuranceNumberPage) mustBe None
-        result.get(PassportDetailsYesNoPage) mustBe None
-        result.get(PassportDetailsPage) mustBe None
-        result.get(IdCardDetailsYesNoPage) mustBe None
-        result.get(IdCardDetailsPage) mustBe None
+        result.get(NationalInsuranceNumberPage)      mustBe None
+        result.get(PassportDetailsYesNoPage)         mustBe None
+        result.get(PassportDetailsPage)              mustBe None
+        result.get(IdCardDetailsYesNoPage)           mustBe None
+        result.get(IdCardDetailsPage)                mustBe None
       }
 
       "has a Passport or Card Details" in {
@@ -569,15 +568,16 @@ class TrusteeIndividualExtractorSpec extends SpecBase {
 
         val result = extractor.extract(baseAnswers, trustee, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(NamePage).get mustBe name
-        result.get(PassportDetailsYesNoPage) mustBe None
-        result.get(PassportDetailsPage) mustBe None
-        result.get(IdCardDetailsYesNoPage) mustBe None
-        result.get(IdCardDetailsPage) mustBe None
+        result.get(IndexPage).get                    mustBe index
+        result.get(NamePage).get                     mustBe name
+        result.get(PassportDetailsYesNoPage)         mustBe None
+        result.get(PassportDetailsPage)              mustBe None
+        result.get(IdCardDetailsYesNoPage)           mustBe None
+        result.get(IdCardDetailsPage)                mustBe None
         result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-        result.get(PassportOrIdCardDetailsPage) mustBe None
+        result.get(PassportOrIdCardDetailsPage)      mustBe None
       }
     }
   }
+
 }

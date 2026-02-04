@@ -16,7 +16,6 @@
 
 package controllers.leadtrustee
 
-
 import java.time.LocalDate
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
@@ -32,7 +31,7 @@ import views.html.leadtrustee.UnableToRemoveView
 
 import scala.concurrent.Future
 
-class UnableToRemoveControllerSpec extends SpecBase   {
+class UnableToRemoveControllerSpec extends SpecBase {
 
   "UnableToRemoveController" must {
 
@@ -40,7 +39,7 @@ class UnableToRemoveControllerSpec extends SpecBase   {
 
     "return OK and the correct view for a GET" in {
 
-      val mockTrustService= Mockito.mock(classOf[TrustService])
+      val mockTrustService = Mockito.mock(classOf[TrustService])
 
       val lt = LeadTrusteeIndividual(
         bpMatchStatus = Some(FullyMatched),
@@ -50,12 +49,13 @@ class UnableToRemoveControllerSpec extends SpecBase   {
         None,
         identification = CombinedPassportOrIdCard("Great Briton", "12345678654", LocalDate.parse("1970-09-24")),
         address = UkAddress("Test Line 1", "Test Line 2", None, None, "AB1 1BA")
-
       )
 
       when(mockTrustService.getLeadTrustee(any())(any(), any())).thenReturn(Future.successful(Some(lt)))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustService].toInstance(mockTrustService)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .build()
 
       val request = FakeRequest(GET, routes.UnableToRemoveController.onPageLoad().url)
 
@@ -94,5 +94,5 @@ class UnableToRemoveControllerSpec extends SpecBase   {
       application.stop()
     }
   }
-}
 
+}

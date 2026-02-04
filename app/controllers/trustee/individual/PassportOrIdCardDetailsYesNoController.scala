@@ -26,18 +26,18 @@ import pages.trustee.individual.amend.IndexPage
 
 import javax.inject.Inject
 
-class PassportOrIdCardDetailsYesNoController @Inject()(
-                                                        override val messagesApi: MessagesApi,
-                                                        standardActionSets: StandardActionSets,
-                                                        nameAction: NameRequiredAction,
-                                                        val controllerComponents: MessagesControllerComponents
-                                                      )() extends FrontendBaseController with I18nSupport {
+class PassportOrIdCardDetailsYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  val controllerComponents: MessagesControllerComponents
+)() extends FrontendBaseController with I18nSupport {
 
   private def route()(implicit request: TrusteeNameRequest[AnyContent]) =
     request.userAnswers.get(IndexPage) match {
       case Some(index) =>
         Redirect(amend.routes.CheckDetailsController.onPageLoadUpdated(index))
-      case None =>
+      case None        =>
         Redirect(controllers.routes.SessionExpiredController.onPageLoad)
     }
 
@@ -50,4 +50,5 @@ class PassportOrIdCardDetailsYesNoController @Inject()(
     implicit request =>
       route()
   }
+
 }

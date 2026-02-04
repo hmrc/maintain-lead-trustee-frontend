@@ -35,15 +35,16 @@ import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase {
 
-  val formProvider = new UtrFormProvider()
+  val formProvider       = new UtrFormProvider()
   val form: Form[String] = formProvider.apply("trustee.organisation.utr", "utr", Nil)
 
   val onwardRoute: String = routes.UtrController.onPageLoad(NormalMode).url
 
-  val name: String = "Trustee Name"
+  val name: String    = "Trustee Name"
   val fakeUtr: String = "1234567890"
 
   val mockTrustsService: TrustServiceImpl = Mockito.mock(classOf[TrustServiceImpl])
+
   when(mockTrustsService.getBusinessUtrs(any(), any(), any())(any(), any()))
     .thenReturn(Future.successful(Nil))
 
@@ -52,7 +53,9 @@ class UtrControllerSpec extends SpecBase {
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -75,8 +78,12 @@ class UtrControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
-        .set(UtrPage, fakeUtr).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(UtrPage, fakeUtr)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -104,7 +111,8 @@ class UtrControllerSpec extends SpecBase {
         .overrides(
           bind[Navigator].toInstance(fakeNavigator),
           bind[TrustServiceImpl].toInstance(mockTrustsService)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(POST, onwardRoute)
         .withFormUrlEncodedBody(("value", fakeUtr))
@@ -121,7 +129,9 @@ class UtrControllerSpec extends SpecBase {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -174,4 +184,5 @@ class UtrControllerSpec extends SpecBase {
     }
 
   }
+
 }

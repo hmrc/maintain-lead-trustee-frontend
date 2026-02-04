@@ -33,14 +33,17 @@ import scala.concurrent.Future
 
 class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase {
 
-  private val name = Name("FirstName", None, "LastName")
+  private val name       = Name("FirstName", None, "LastName")
   private val mode: Mode = NormalMode
-  private val index = 0
-
+  private val index      = 0
 
   val userAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(IndexPage, index).success.value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(IndexPage, index)
+    .success
+    .value
 
   lazy val passportOrIdCardDetailsYesNoRoute = routes.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url
 
@@ -136,4 +139,5 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

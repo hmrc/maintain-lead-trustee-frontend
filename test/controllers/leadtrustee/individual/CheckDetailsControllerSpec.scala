@@ -39,9 +39,9 @@ import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase {
 
-  private lazy val onPageLoadRoute: Call = routes.CheckDetailsController.onPageLoad()
+  private lazy val onPageLoadRoute: Call        = routes.CheckDetailsController.onPageLoad()
   private lazy val onPageLoadUpdatedRoute: Call = routes.CheckDetailsController.onPageLoadUpdated()
-  private lazy val onSubmitRoute: Call = routes.CheckDetailsController.onSubmit()
+  private lazy val onSubmitRoute: Call          = routes.CheckDetailsController.onSubmit()
 
   private val ukAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
 
@@ -67,8 +67,8 @@ class CheckDetailsControllerSpec extends SpecBase {
   )
 
   private val mockPrintHelper = Mockito.mock(classOf[TrusteePrintHelpers])
-  private val mockMapper = Mockito.mock(classOf[TrusteeMappers])
-  private val answerSection = AnswerSection(None, Nil)
+  private val mockMapper      = Mockito.mock(classOf[TrusteeMappers])
+  private val answerSection   = AnswerSection(None, Nil)
 
   "CheckDetails Controller" when {
 
@@ -85,7 +85,8 @@ class CheckDetailsControllerSpec extends SpecBase {
           .overrides(
             bind[TrustConnector].toInstance(mockTrustsConnector),
             bind[TrusteePrintHelpers].toInstance(mockPrintHelper)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(GET, onPageLoadRoute.url)
 
@@ -173,16 +174,18 @@ class CheckDetailsControllerSpec extends SpecBase {
               val userAnswers = emptyUserAnswers
 
               when(mockMapper.mapToLeadTrusteeIndividual(any())).thenReturn(Some(leadTrustee))
-              when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+              when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any()))
+                .thenReturn(Future.successful(HttpResponse(OK, "")))
 
               val application = applicationBuilder(userAnswers = Some(userAnswers))
                 .overrides(
                   bind[TrustConnector].toInstance(mockTrustConnector),
                   bind[TrusteeMappers].toInstance(mockMapper)
-                ).build()
+                )
+                .build()
 
               val request = FakeRequest(POST, onSubmitRoute.url)
-              val result = route(application, request).value
+              val result  = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
               redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
@@ -200,16 +203,18 @@ class CheckDetailsControllerSpec extends SpecBase {
               val userAnswers = emptyUserAnswers.set(IsReplacingLeadTrusteePage, true).success.value
 
               when(mockMapper.mapToLeadTrusteeIndividual(any())).thenReturn(Some(leadTrustee))
-              when(mockTrustConnector.demoteLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+              when(mockTrustConnector.demoteLeadTrustee(any(), any())(any(), any()))
+                .thenReturn(Future.successful(HttpResponse(OK, "")))
 
               val application = applicationBuilder(userAnswers = Some(userAnswers))
                 .overrides(
                   bind[TrustConnector].toInstance(mockTrustConnector),
                   bind[TrusteeMappers].toInstance(mockMapper)
-                ).build()
+                )
+                .build()
 
               val request = FakeRequest(POST, onSubmitRoute.url)
-              val result = route(application, request).value
+              val result  = route(application, request).value
 
               status(result) mustEqual SEE_OTHER
               redirectLocation(result).value mustEqual controllers.routes.AddATrusteeController.onPageLoad().url
@@ -230,13 +235,15 @@ class CheckDetailsControllerSpec extends SpecBase {
             val userAnswers = emptyUserAnswers.set(IndexPage, index).success.value
 
             when(mockMapper.mapToLeadTrusteeIndividual(any())).thenReturn(Some(leadTrustee))
-            when(mockTrustConnector.promoteTrustee(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+            when(mockTrustConnector.promoteTrustee(any(), any(), any())(any(), any()))
+              .thenReturn(Future.successful(HttpResponse(OK, "")))
 
             val application = applicationBuilder(userAnswers = Some(userAnswers))
               .overrides(
                 bind[TrustConnector].toInstance(mockTrustConnector),
                 bind[TrusteeMappers].toInstance(mockMapper)
-              ).build()
+              )
+              .build()
 
             val request = FakeRequest(POST, onSubmitRoute.url)
 
@@ -280,20 +287,23 @@ class CheckDetailsControllerSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
 
           when(mockMapper.mapToLeadTrusteeIndividual(any())).thenReturn(Some(leadTrustee))
-          when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+          when(mockTrustConnector.amendLeadTrustee(any(), any())(any(), any()))
+            .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
               bind[TrustConnector].toInstance(mockTrustConnector),
               bind[TrusteeMappers].toInstance(mockMapper)
-            ).build()
+            )
+            .build()
 
           val request = FakeRequest(POST, onSubmitRoute.url)
-          val result = route(application, request).value
+          val result  = route(application, request).value
 
           status(result) mustEqual INTERNAL_SERVER_ERROR
         }
       }
     }
   }
+
 }

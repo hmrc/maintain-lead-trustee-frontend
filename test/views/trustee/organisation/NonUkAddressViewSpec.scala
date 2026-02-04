@@ -29,7 +29,7 @@ import views.html.trustee.organisation.NonUkAddressView
 class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
   val messageKeyPrefix = "trustee.organisation.nonUkAddress"
-  val name: String = "Trustee Name"
+  val name: String     = "Trustee Name"
 
   override val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
 
@@ -55,4 +55,5 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }
