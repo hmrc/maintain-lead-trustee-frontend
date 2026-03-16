@@ -1,18 +1,18 @@
 import sbt.*
 
 object AppDependencies {
-  val bootstrapVersion = "10.5.0"
-  val mongoVersion     = "2.11.0"
+  val bootstrapVersion = "10.7.0"
+  val mongoVersion     = "2.12.0"
 
-  val compile: Seq[ModuleID] = Seq(
+  private val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30"                    % mongoVersion,
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-30"            % bootstrapVersion,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "12.27.0",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping-play-30" % "3.4.0",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "12.32.0",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping-play-30" % "3.5.0",
     "uk.gov.hmrc"       %% "domain-play-30"                        % "11.0.0"
   )
 
-  val test: Seq[ModuleID] = Seq(
+  private val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"          %% "bootstrap-test-play-30"  % bootstrapVersion,
     "uk.gov.hmrc.mongo"    %% "hmrc-mongo-test-play-30" % mongoVersion,
     "org.scalatestplus"    %% "scalacheck-1-17"         % "3.2.18.0",
