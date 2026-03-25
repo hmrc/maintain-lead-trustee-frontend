@@ -10,6 +10,7 @@ ThisBuild / majorVersion := 0
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin, SbtSassify)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .settings(CodeCoverageSettings())
   .settings(
     name := appName,
     RoutesKeys.routesImport += "models._",
