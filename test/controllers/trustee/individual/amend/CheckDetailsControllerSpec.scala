@@ -33,6 +33,7 @@ import services.TrustService
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.checkYourAnswers.TrusteePrintHelpers
 import viewmodels.AnswerSection
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.trustee.individual.amend.CheckDetailsView
 
 import scala.concurrent.Future
@@ -97,6 +98,30 @@ class CheckDetailsControllerSpec extends SpecBase {
 
         contentAsString(result) mustEqual
           view(answerSection, index)(request, messages).toString
+      }
+
+      "return Not Found and the out of bounds page when getTrustee throws IndexOutOfBoundsException" in {
+
+        val mockTrustService = Mockito.mock(classOf[TrustService])
+        when(mockTrustService.getTrustee(any(), any())(any(), any()))
+          .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
+
+        val application = applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
+          .build()
+
+        val request = FakeRequest(GET, onPageLoadRoute.url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
+
+        status(result) mustEqual NOT_FOUND
+
+        contentAsString(result) mustEqual
+          view()(request, messages).toString
+
+        application.stop()
       }
 
       "return INTERNAL_SERVER_ERROR" when {

@@ -262,7 +262,7 @@ class RemoveTrusteeControllerSpec
       application.stop()
     }
 
-    "return Not Found for a {PST}, showing the out of bounds page on an IndexOutOfBoundsException" in {
+    "return Not Found for a POST, showing the out of bounds page on an IndexOutOfBoundsException" in {
 
       val index = 0
 
@@ -274,6 +274,7 @@ class RemoveTrusteeControllerSpec
         .build()
 
       val request = FakeRequest(POST, routes.RemoveTrusteeController.onSubmit(index).url)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 

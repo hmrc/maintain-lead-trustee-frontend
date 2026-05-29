@@ -748,3 +748,10 @@ leadTrustee.individual.matching.locked.subheading1 = Providing other information
 leadTrustee.individual.matching.locked.paragraph4 = To register {0} as the lead trustee, you need to provide their address, and
 leadTrustee.individual.matching.locked.paragraph4.a = provide their passport or id card details.
 leadTrustee.individual.matching.locked.trust_overview = Return to Trust Overview
+
+outOfBoundsPageNotFound.title = Page not found
+outOfBoundsPageNotFound.heading = Page not found
+outOfBoundsPageNotFound.p1 = The page you are looking for cannot be found.
+outOfBoundsPageNotFound.p2 = To continue making changes to your trust you can:
+outOfBoundsPageNotFound.bullet1 = go to the trust overview
+outOfBoundsPageNotFound.bullet2 = add or change details for a trustee

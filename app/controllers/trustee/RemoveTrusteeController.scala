@@ -94,7 +94,7 @@ class RemoveTrusteeController @Inject() (
           }
       )
       .recoverWith {
-        recoverIndexAndGenericException("Trustee", index, request.userAnswers.identifier, "onPageLoad")
+        recoverIndexAndGenericException("Trustee", index, request.userAnswers.identifier, "onSubmit")
       }
   }
 
