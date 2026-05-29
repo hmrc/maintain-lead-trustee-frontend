@@ -34,10 +34,10 @@ class IndexAndGenericExceptionRecoverySpec extends SpecBase with ScalaFutures {
   implicit private val rh: RequestHeader = FakeRequest()
 
   private val view: OutOfBoundsPageNotFoundView = injector.instanceOf[OutOfBoundsPageNotFoundView]
-  private val handler: ErrorHandler = injector.instanceOf[ErrorHandler]
+  private val handler: ErrorHandler             = injector.instanceOf[ErrorHandler]
 
   private class TestRecovery
-    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
+      extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
     override val controllerComponents: MessagesControllerComponents =
       injector.instanceOf[MessagesControllerComponents]
@@ -57,7 +57,7 @@ class IndexAndGenericExceptionRecoverySpec extends SpecBase with ScalaFutures {
 
     "be defined for IndexOutOfBoundsException and any other Throwable" in {
       pf.isDefinedAt(new IndexOutOfBoundsException("")) mustBe true
-      pf.isDefinedAt(new RuntimeException("")) mustBe true
+      pf.isDefinedAt(new RuntimeException(""))          mustBe true
     }
 
     "return Not Found and the out of bounds page on an IndexOutOfBoundsException" in {
