@@ -16,15 +16,16 @@
 
 package controllers.trustee
 
-import controllers.actions.StandardActionSets
+import controllers.actions.{IndexAndGenericExceptionRecovery, StandardActionSets}
 import forms.DateRemovedFromTrustFormProvider
 import handlers.ErrorHandler
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
-import play.api.i18n.Lang.logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.trustee.WhenRemovedView
 
 import javax.inject.Inject
@@ -37,10 +38,11 @@ class WhenRemovedController @Inject() (
   trust: TrustService,
   val controllerComponents: MessagesControllerComponents,
   view: WhenRemovedView,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   trustService: TrustService,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
     trust
@@ -56,41 +58,35 @@ class WhenRemovedController @Inject() (
         Ok(view(form, index, trusteeName))
       }
       .recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(
-            s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-              s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException"
-          )
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-        case _                               =>
-          logger.error(
-            s"[WhenRemovedController][onPageLoad] [Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-              s" user cannot remove trustee as trustee was not found"
-          )
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+        recoverIndexAndGenericException("Trustee", index, request.userAnswers.identifier, "onPageLoad")
       }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
-    trust.getTrustee(request.userAnswers.identifier, index).flatMap { trustee =>
-      val (trusteeName, entityStartDate) = trustee match {
-        case lti: TrusteeIndividual   => (lti.name.displayName, lti.entityStart)
-        case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
+    trust
+      .getTrustee(request.userAnswers.identifier, index)
+      .flatMap { trustee =>
+        val (trusteeName, entityStartDate) = trustee match {
+          case lti: TrusteeIndividual   => (lti.name.displayName, lti.entityStart)
+          case lto: TrusteeOrganisation => (lto.name, lto.entityStart)
+        }
+
+        val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
+
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, trusteeName))),
+            value =>
+              for {
+                _ <- trustService
+                       .removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index, value))
+              } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
+          )
       }
-
-      val form = formProvider.withPrefixAndEntityStartDate("trustee.whenRemoved", entityStartDate)
-
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, trusteeName))),
-          value =>
-            for {
-              _ <-
-                trustService.removeTrustee(request.userAnswers.identifier, RemoveTrustee(trustee.`type`, index, value))
-            } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
-        )
-    }
+      .recoverWith {
+        recoverIndexAndGenericException("Trustee", index, request.userAnswers.identifier, "onSubmit")
+      }
   }
 
 }

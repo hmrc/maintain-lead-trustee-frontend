@@ -32,6 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{TrustService, TrustServiceImpl}
 import uk.gov.hmrc.http.HttpResponse
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.trustee.WhenRemovedView
 
 import java.time.{LocalDate, ZoneOffset}
@@ -211,7 +212,7 @@ class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
       application.stop()
     }
 
-    "throw IndexOutOfBoundsException when trying to remove index which doesn't exits" in {
+    "return Not Found for a GET, showing the out of bounds page on an IndexOutOfBoundsException" in {
 
       when(mockConnector.getTrustees(any())(any(), any()))
         .thenReturn(Future.failed(new IndexOutOfBoundsException(s"No index exists $index")))
@@ -222,11 +223,39 @@ class WhenRemovedControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val result = route(application, getRequest(index)).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
+
+      status(result) mustEqual NOT_FOUND
+
+      contentAsString(result) mustEqual
+        view()(getRequest(index), messages).toString
 
       application.stop()
 
     }
+
+    "return Not Found for a POST, showing the out of bounds page on an IndexOutOfBoundsException" in {
+
+      when(mockConnector.getTrustees(any())(any(), any()))
+        .thenReturn(Future.failed(new IndexOutOfBoundsException(s"No index exists $index")))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
+
+      val result = route(application, postRequest(index)).value
+
+      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
+
+      status(result) mustEqual NOT_FOUND
+
+      contentAsString(result) mustEqual
+        view()(postRequest(index), messages).toString
+
+      application.stop()
+
+    }
+
   }
 
 }
