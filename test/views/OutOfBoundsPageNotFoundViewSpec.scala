@@ -42,14 +42,15 @@ class OutOfBoundsPageNotFoundViewSpec extends ViewBehaviours {
 
       val overviewLink = links.get(0)
 
-      overviewLink.text() mustBe messages(s"$messageKeyPrefix.bullet1")
+      overviewLink.text()       mustBe messages(s"$messageKeyPrefix.bullet1")
       overviewLink.attr("href") mustBe frontendAppConfig.maintainATrustOverview
 
       val addTrusteeLink = links.get(1)
 
-      addTrusteeLink.text() mustBe messages(s"$messageKeyPrefix.bullet2")
+      addTrusteeLink.text()       mustBe messages(s"$messageKeyPrefix.bullet2")
       addTrusteeLink.attr("href") mustBe
         controllers.routes.AddATrusteeController.onPageLoad().url
     }
   }
+
 }
