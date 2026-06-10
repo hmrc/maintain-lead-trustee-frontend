@@ -51,10 +51,7 @@ trait IndexAndGenericExceptionRecovery {
 
       Future.successful(NotFound(outOfBoundsView()))
     case e                            =>
-      logger.error(
-        s"${logStart(identifier, callingMethod)}: error at index $index: ${e.getMessage}",
-        e
-      )
+      logger.error(s"${logStart(identifier, callingMethod)}: error at index $index: ${e.getMessage}", e)
 
       errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
   }
