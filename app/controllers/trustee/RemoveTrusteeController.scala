@@ -16,7 +16,7 @@
 
 package controllers.trustee
 
-import controllers.actions.StandardActionSets
+import controllers.actions.{IndexAndGenericExceptionRecovery, StandardActionSets}
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
 import models.{RemoveTrustee, TrusteeIndividual, TrusteeOrganisation}
@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.RemoveIndexView
+import views.html.{OutOfBoundsPageNotFoundView, RemoveIndexView}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,9 +38,10 @@ class RemoveTrusteeController @Inject() (
   formProvider: RemoveIndexFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveIndexView,
-  errorHandler: ErrorHandler
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
+  val errorHandler: ErrorHandler
 )(implicit val ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private def formRoute(index: Int): Call =
     controllers.trustee.routes.RemoveTrusteeController.onSubmit(index)
@@ -50,26 +51,18 @@ class RemoveTrusteeController @Inject() (
   private val form = formProvider.apply(messagesPrefix)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
-    trust.getTrustee(request.userAnswers.identifier, index).map { trustee =>
-      val trusteeName = trustee match {
-        case lti: TrusteeIndividual   => lti.name.displayName
-        case lto: TrusteeOrganisation => lto.name
+    trust
+      .getTrustee(request.userAnswers.identifier, index)
+      .map { trustee =>
+        val trusteeName = trustee match {
+          case lti: TrusteeIndividual   => lti.name.displayName
+          case lto: TrusteeOrganisation => lto.name
+        }
+        Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
       }
-      Ok(view(messagesPrefix, form, index, trusteeName, formRoute(index)))
-    } recoverWith {
-      case iobe: IndexOutOfBoundsException =>
-        logger.warn(
-          s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot remove trustee as trustee was not found ${iobe.getMessage}: IndexOutOfBoundsException"
-        )
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      case _                               =>
-        logger.error(
-          s"[RemoveTrusteeController][onPageLoad][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove trustee as trustee was not found"
-        )
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
+      .recoverWith {
+        recoverIndexAndGenericException("Trustee", index, request.userAnswers.identifier, "onPageLoad")
+      }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
@@ -95,17 +88,14 @@ class RemoveTrusteeController @Inject() (
               } else {
                 Future.successful(Redirect(controllers.trustee.routes.WhenRemovedController.onPageLoad(index).url))
               }
-            } recoverWith { case _ =>
-              logger.error(
-                s"[RemoveTrusteeController][onSubmit][Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-                  s" trustee was not found"
-              )
-              errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
             }
           } else {
             Future.successful(Redirect(controllers.routes.AddATrusteeController.onPageLoad().url))
           }
       )
+      .recoverWith {
+        recoverIndexAndGenericException("Trustee", index, request.userAnswers.identifier, "onSubmit")
+      }
   }
 
 }

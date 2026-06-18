@@ -34,6 +34,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.checkYourAnswers.TrusteePrintHelpers
 import viewmodels.AnswerSection
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.trustee.individual.amend.CheckDetailsView
 
 import javax.inject.Inject
@@ -46,15 +47,16 @@ class CheckDetailsController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: CheckDetailsView,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   printHelper: TrusteePrintHelpers,
   mapper: TrusteeMappers,
   extractor: TrusteeExtractors,
   trustConnector: TrustConnector,
   nameAction: NameRequiredAction,
   val appConfig: FrontendAppConfig,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private def logInfo(implicit request: DataRequest[AnyContent]): String =
     s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]"
@@ -72,10 +74,10 @@ class CheckDetailsController @Inject() (
         case _                      =>
           logger.error(s"$logInfo Expected trustee to be of type TrusteeIndividual")
           errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      } recoverWith { case e =>
-      logger.error(s"$logInfo Unable to retrieve trustee from trusts: ${e.getMessage}")
-      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
+      }
+      .recoverWith {
+        recoverIndexAndGenericException("TrusteeIndividual", index, request.userAnswers.identifier, "onPageLoad")
+      }
   }
 
   def onPageLoadUpdated(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {

@@ -746,3 +746,9 @@ trustee.whenRemoved.error.invalid=Nodwch ddyddiad go iawn pan dynnwyd yr ymddiri
 trustee.whenRemoved.error.future=Mae’n rhaid i’r dyddiad y tynnwyd yr ymddiriedolwr o’r ymddiriedolaeth fod heddiw neu yn y gorffennol
 trustee.whenRemoved.error.past=Mae’n rhaid i’r dyddiad y tynnwyd yr ymddiriedolwr fod ar y dyddiad y cafodd ei ychwanegu, neu ar ôl hynny
 
+outOfBoundsPageNotFound.title = Heb ddod o hyd i’r dudalen
+outOfBoundsPageNotFound.heading = Heb ddod o hyd i’r dudalen
+outOfBoundsPageNotFound.p1 = Ni ellir dod o hyd i’r dudalen yr ydych yn chwilio amdani.
+outOfBoundsPageNotFound.p2 = Er mwyn parhau i gofrestru ymddiriedolaeth gallwch wneud y canlynol:
+outOfBoundsPageNotFound.bullet1 = mynd i drosolwg yr ymddiriedolaeth
+outOfBoundsPageNotFound.bullet2 = ychwanegu neu newid manylion ar gyfer ymddiriedolwr
