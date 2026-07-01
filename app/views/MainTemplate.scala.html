@@ -15,22 +15,15 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
-@import resources._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 
 @this(
     appConfig: FrontendAppConfig,
-    govukLayout: GovukLayout,
-    hmrcHead: HmrcHead,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    hmrcStandardFooter: HmrcStandardFooter,
-    hmrcStandardHeader: HmrcStandardHeader,
-    standardBetaBanner: StandardBetaBanner,
-    hmrcScripts: HmrcScripts,
-    stylesheets: Stylesheets,
+    hmrcStandardPage: HmrcStandardPage,
     govukBackLink: GovukBackLink,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     autocompleteCss: HmrcAccessibleAutocompleteCss,
@@ -60,16 +53,13 @@
             keepAliveButtonText = Some(messages("timeout.keep-alive-button"))
         )
     }
-
-    @stylesheets()
     @autocompleteCss()
 }
 
 @beforeContentBlock = {
-    @hmrcLanguageSelectHelper()
     @if(showBackLink) {
         @govukBackLink(BackLink(
-            attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
+            attributes = Map("id" -> "back-link", "data-module" -> "hmrc-back-link"), classes="js-enabled", href="#", content = HtmlContent(messages("site.back"))
         ))
     }
 }
@@ -79,18 +69,17 @@
     @hmrcReportTechnicalIssueHelper()
 }
 
-@govukLayout(
+@hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(breadcrumbTitle(title)),
-    headBlock = Some(hmrcHead(
-        headBlock = Some(headScripts)
-    )),
-    headerBlock = Some(hmrcStandardHeader(
+    serviceName = Some(messages("service.name")),
+    serviceURLs = ServiceURLs(
         serviceUrl = Some(appConfig.loginContinueUrl),
         signOutUrl = if(canSignOut) Some(controllers.routes.LogoutController.logout().url) else None,
-        phaseBanner = None,
-        isWelshTranslationAvailable = true
-    )),
-    beforeContentBlock = Some(beforeContentBlock),
-    scriptsBlock = Some(hmrcScripts(Some(autocompleteJavascript()))),
-    footerBlock = Some(hmrcStandardFooter())
-)(mainContentWithGetHelp)
+    ),
+    isWelshTranslationAvailable = true,
+    templateOverrides = TemplateOverrides(
+        additionalHeadBlock = Some(headScripts),
+        beforeContentBlock = Some(beforeContentBlock),
+        additionalScriptsBlock = Some(autocompleteJavascript())
+    )
+))(mainContentWithGetHelp)
