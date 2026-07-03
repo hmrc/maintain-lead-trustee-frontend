@@ -1,0 +1,68 @@
+$govuk-include-default-font-face: false;
+
+@import "lib/govuk-frontend/dist/govuk/base";
+@import "lib/govuk-frontend/dist/govuk/core/typography";
+
+$govuk-global-styles: true;
+
+// ----------------
+// Hide the back link when body does not have .js-enabled
+//
+// ----------------
+
+body:not(.js-enabled) {
+    .govuk-back-link {
+        display: none;
+        visibility: hidden;
+        width: 0;
+        height: 0;
+    }
+}
+
+// ----------------
+// Trusts Add-to-list pattern as a 4th column
+// this ensures the second column moves down correctly underneath on mobile devices
+// ----------------
+@include govuk-media-query($until: desktop) {
+  .hmrc-add-to-a-list__identifier__second {
+    position: absolute;
+    top: inherit;
+    left: 0;
+  }
+}
+
+// provides padding between the 1st and 2nd column unless on mobile
+@include govuk-media-query($from: tablet) {
+    .hmrc-add-to-a-list__identifier__first {
+        padding-right: govuk-spacing(4)
+    }
+}
+
+// Fallback break for long names
+.hmrc-add-to-a-list__identifier__first {
+    word-break: break-all;
+}
+
+// ----------------
+// HMRC Add-to-list pattern - wrapping for unbreakable text
+// taken from govuk-frontend summary list
+// https://github.com/alphagov/govuk-frontend/blob/main/src/govuk/components/summary-list/_index.scss#L47
+// ----------------
+.hmrc-add-to-a-list__identifier {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+p {
+  @extend .govuk-body;
+}
+
+h2 {
+ @extend .govuk-heading-m
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-summary-list__value {
+    width: 50%;
+  }
+}
