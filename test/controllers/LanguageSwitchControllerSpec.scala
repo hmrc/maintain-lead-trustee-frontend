@@ -24,7 +24,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 class LanguageSwitchControllerSpec extends SpecBase {
 
@@ -35,10 +34,9 @@ class LanguageSwitchControllerSpec extends SpecBase {
   private val fakeUrl: String = "fakeUrl"
 
   private lazy val config: Configuration = injector.instanceOf[Configuration]
-  private lazy val contactConfig         = injector.instanceOf[ContactFrontendConfig]
 
   def frontendAppConfig(languageToggleEnabled: Boolean = true): FrontendAppConfig =
-    new FrontendAppConfig(config, contactConfig) {
+    new FrontendAppConfig(config) {
       override lazy val languageTranslationEnabled: Boolean = languageToggleEnabled
     }
 
@@ -92,31 +90,6 @@ class LanguageSwitchControllerSpec extends SpecBase {
 
           application.stop()
         }
-      }
-    }
-
-    "language toggle disabled" must {
-
-      "default to English" in {
-
-        val application = new GuiceApplicationBuilder()
-          .overrides(bind[FrontendAppConfig].toInstance(frontendAppConfig(false)))
-          .configure(defaultAppConfigurations)
-          .build()
-
-        val requestHeaders: Headers = new Headers(Seq(("Referer", fakeUrl)))
-
-        val request = FakeRequest(GET, switchLanguageRoute(english)).withHeaders(requestHeaders)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual fakeUrl
-
-        cookies(result).find(_.name == "PLAY_LANG").get.value mustEqual "en"
-
-        application.stop()
       }
     }
 
