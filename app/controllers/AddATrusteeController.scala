@@ -85,10 +85,12 @@ class AddATrusteeController @Inject() (
             )
           )
         }
-    } recoverWith { case _ =>
+    } recoverWith { case e =>
       logger.error(
         s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" user cannot maintain trustees due to there being a problem getting trustees from trusts"
+          s" user cannot maintain trustees due to there being a problem getting trustees from trusts" +
+          s"with error message ${e.getMessage}",
+        e
       )
 
       errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
