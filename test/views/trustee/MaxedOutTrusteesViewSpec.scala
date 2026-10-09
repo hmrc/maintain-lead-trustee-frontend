@@ -21,6 +21,8 @@ import viewmodels.addAnother.{AddRow, TrusteeRows}
 import views.behaviours.ViewBehaviours
 import views.html.trustee.MaxedOutTrusteesView
 
+import scala.jdk.CollectionConverters._
+
 class MaxedOutTrusteesViewSpec extends ViewBehaviours {
 
   private val view: MaxedOutTrusteesView = viewFor[MaxedOutTrusteesView](Some(emptyUserAnswers))
@@ -49,7 +51,7 @@ class MaxedOutTrusteesViewSpec extends ViewBehaviours {
     lackingMentalCapacity = Seq(trusteeRow("James Smith", 1))
   )
 
-  private val heading = messages("addATrustee.count.heading", 26)
+  private val heading = "The trust has 26 trustees"
 
   private val applyView: HtmlFormat.Appendable = view(rows, heading)(fakeRequest, messages)
 
@@ -59,31 +61,43 @@ class MaxedOutTrusteesViewSpec extends ViewBehaviours {
 
     behave like pageWithASubmitButton(applyView)
 
-    "use the trustee count as the H1" in {
-      val doc = asDocument(applyView)
+    val doc = asDocument(applyView)
 
-      assertPageTitleEqualsMessage(doc, "addATrustee.count.heading", 26)
+    "show the trustee count as the page title and H1" in {
+      doc.title mustBe "The trust has 26 trustees - Trustees - Manage a trust - GOV.UK"
+
+      doc.getElementsByTag("h1").asScala.map(_.text).toSeq mustBe Seq("The trust has 26 trustees")
     }
 
     "show the same trustee summary as the add a trustee page, including trustees who lack mental capacity" in {
-      val doc = asDocument(applyView)
+      assertContainsTextForId(
+        doc,
+        "p--leadTrusteeContact",
+        "This is the person or business HMRC will contact to discuss the trust or send official documents to. The lead trustee is responsible for keeping the trust’s details up to date."
+      )
 
-      assertRenderedById(doc, "p--leadTrusteeContact")
-      assertRenderedById(doc, "data-list--otherTrustees")
-      assertRenderedById(doc, "heading--lackMentalCapacity")
+      assertContainsTextForId(doc, "data-list-heading--otherTrustees", "Other trustees")
+
+      assertContainsTextForId(
+        doc,
+        "heading--lackMentalCapacity",
+        "You believe that these trustees lack mental capacity"
+      )
     }
 
     "send 'change the lead trustee' through ChangeLeadTrusteeController, so users with no eligible trustees skip the radio page" in {
-      val doc = asDocument(applyView)
-
       doc.getElementById("link--changeLeadTrustee").attr("href") mustBe
         controllers.routes.ChangeLeadTrusteeController.onPageLoad().url
     }
 
-    "explain the maximum has been reached, without asking to add another trustee" in {
-      val doc = asDocument(applyView)
+    "explain in an inset that the maximum has been reached" in {
+      doc.select(".govuk-inset-text li").asScala.map(_.text).toSeq mustBe Seq(
+        "You cannot add another trustee as you have entered a maximum of 26.",
+        "You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees."
+      )
+    }
 
-      assertContainsMessages(doc, "addATrustee.maxedOut", "addATrustee.maxedOut.paragraph")
+    "not ask to add another trustee, and submit to complete the trustees section" in {
       assertNotRenderedByCssSelector(doc, "input[type=radio]")
       doc.select("form").attr("action") mustBe controllers.routes.AddATrusteeController.submitComplete().url
     }

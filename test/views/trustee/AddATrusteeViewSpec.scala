@@ -25,6 +25,7 @@ import views.behaviours.ViewBehaviours
 import views.html.trustee.AddATrusteeView
 
 import java.time.LocalDate
+import scala.jdk.CollectionConverters._
 
 class AddATrusteeViewSpec extends ViewBehaviours {
 
@@ -56,10 +57,12 @@ class AddATrusteeViewSpec extends ViewBehaviours {
     lackingMentalCapacity = Seq(trusteeRow("James Smith", 1))
   )
 
-  private val heading = messages("addATrustee.count.heading", rows.size)
+  private val heading = "The trust has 3 trustees"
 
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
     view(form, rows, heading)(fakeRequest, messages)
+
+  private val requiredError = "Select yes if you want to add a new trustee"
 
   "AddATrustee view" must {
 
@@ -67,35 +70,62 @@ class AddATrusteeViewSpec extends ViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
 
-    "use the trustee count as the browser title and H1" in {
+    "show the trustee count as the page title and H1" in {
       val doc = asDocument(applyView(form))
 
-      assertEqualsMessage(doc, "title", "addATrustee.count.heading", rows.size)
-      assertPageTitleEqualsMessage(doc, "addATrustee.count.heading", rows.size)
+      doc.title                                            mustBe "The trust has 3 trustees - Trustees - Manage a trust - GOV.UK"
+      doc.getElementsByTag("h1").asScala.map(_.text).toSeq mustBe Seq("The trust has 3 trustees")
     }
 
     "show the trustee summary, including trustees who lack mental capacity" in {
       val doc = asDocument(applyView(form))
 
-      assertRenderedById(doc, "p--allTrusteesSameResponsibilities")
-      assertRenderedById(doc, "p--leadTrusteeContact")
-      assertRenderedById(doc, "data-list--otherTrustees")
-      assertRenderedById(doc, "heading--lackMentalCapacity")
+      assertContainsTextForId(
+        doc,
+        "p--allTrusteesSameResponsibilities",
+        "All trustees have the same legal responsibilities."
+      )
+
+      assertContainsTextForId(
+        doc,
+        "p--leadTrusteeContact",
+        "This is the person or business HMRC will contact to discuss the trust or send official documents to. The lead trustee is responsible for keeping the trust’s details up to date."
+      )
+
+      assertContainsTextForId(doc, "data-list-heading--otherTrustees", "Other trustees")
+      assertContainsTextForId(
+        doc,
+        "heading--lackMentalCapacity",
+        "You believe that these trustees lack mental capacity"
+      )
     }
 
     "ask whether the user wants to add a new trustee, and submit to AddATrusteeController" in {
       val doc = asDocument(applyView(form))
 
-      doc.select("legend").text()                      mustBe messages("addATrustee.additional-content")
-      doc.select("input[type=radio][name=value]").size mustBe AddATrustee.options.size
-      doc.select("form").attr("action")                mustBe controllers.routes.AddATrusteeController.submitAnother().url
+      doc.select("legend").text mustBe "Do you want to add a new trustee?"
+
+      doc.select(".govuk-radios__label").asScala.map(_.text).toSeq mustBe Seq(
+        "Yes, I want to add them now",
+        "No, all the trustees are up to date"
+      )
+
+      doc.select("input[type=radio][name=value]").asScala.map(_.attr("value")).toSeq mustBe Seq(
+        "add-them-now",
+        "no-complete"
+      )
+
+      doc.select("form").attr("action") mustBe controllers.routes.AddATrusteeController.submitAnother().url
     }
 
-    "show the error summary and prefix the title when the question has not been answered" in {
+    "show the error summary, the error on the question, and prefix the title when the question has not been answered" in {
       val doc = asDocument(applyView(form.bind(Map("value" -> ""))))
 
-      assertRenderedByCssSelector(doc, ".govuk-error-summary")
-      doc.title() must startWith(messages("error.browser.title.prefix"))
+      doc.title mustBe "Error: The trust has 3 trustees - Trustees - Manage a trust - GOV.UK"
+
+      doc.select(".govuk-error-summary__title").text                       mustBe "There is a problem"
+      doc.select(".govuk-error-summary__list a").asScala.map(_.text).toSeq mustBe Seq(requiredError)
+      doc.select(".govuk-error-message").asScala.map(_.ownText.trim).toSeq mustBe Seq(requiredError)
     }
   }
 
@@ -114,7 +144,8 @@ class AddATrusteeViewSpec extends ViewBehaviours {
     )
 
     val leadOnlyHeading = AllTrustees(Some(lead), Nil).addToHeading
-    val doc             =
+
+    val doc =
       asDocument(view(form, TrusteeRows(Some(leadTrusteeRow), Nil, Nil), leadOnlyHeading)(fakeRequest, messages))
 
     "show 'The trust has 1 trustee' as the H1" in {
