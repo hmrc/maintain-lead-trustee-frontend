@@ -22,7 +22,6 @@ import controllers.leadtrustee.organisation.{routes => ltoRts}
 import forms.ReplaceLeadTrusteeFormProvider
 import handlers.ErrorHandler
 import mapping.extractors.leadtrustee._
-import models.YesNoDontKnow.Yes
 import models._
 import models.requests.DataRequest
 import pages.leadtrustee.IsReplacingLeadTrusteePage
@@ -59,59 +58,84 @@ class ReplacingLeadTrusteeController @Inject() (
   private val form: Form[String] = formProvider.withPrefix(messageKeyPrefix)
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
-    trust.getAllTrustees(request.userAnswers.identifier) map { case AllTrustees(leadTrustee, trustees) =>
-      val existingOptions = generateRadioOptions(trustees)
-      Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions))
-    } recoverWith
-      recovery
+    trust
+      .getAllTrustees(request.userAnswers.identifier)
+      .map { case AllTrustees(leadTrustee, trustees) =>
+        val existingOptions                  = generateRadioOptions(trustees)
+        val hasTrusteesLackingMentalCapacity = trustees.exists(_.lacksMentalCapacity)
+
+        Ok(view(form, getLeadTrusteeName(leadTrustee), existingOptions, hasTrusteesLackingMentalCapacity))
+      }
+      .recoverWith(recovery)
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
-    trust.getAllTrustees(request.userAnswers.identifier) flatMap { case AllTrustees(leadTrustee, trustees) =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            val existingOptions = generateRadioOptions(trustees)
-            Future.successful(BadRequest(view(formWithErrors, getLeadTrusteeName(leadTrustee), existingOptions)))
-          },
-          {
-            case "addNew"    =>
-              val updatedAnswers = request.userAnswers.set(IsReplacingLeadTrusteePage, true)
-              for {
-                ua <- Future.fromTry(updatedAnswers)
-                _  <- playbackRepository.set(ua)
-              } yield Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
-            case indexString =>
-              val index = indexString.toInt
-              trustees(index) match {
-                case trustee: TrusteeIndividual   =>
-                  val extractedAnswers =
-                    individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltiRts.NeedToAnswerQuestionsController.onPageLoad())
-                case trustee: TrusteeOrganisation =>
-                  val extractedAnswers =
-                    organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
-                  populateUserAnswersAndRedirect(extractedAnswers, ltoRts.NeedToAnswerQuestionsController.onPageLoad())
-              }
-          }
-        )
-    } recoverWith
-      recovery
+    trust
+      .getAllTrustees(request.userAnswers.identifier)
+      .flatMap { case AllTrustees(leadTrustee, trustees) =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+              val existingOptions                  = generateRadioOptions(trustees)
+              val hasTrusteesLackingMentalCapacity = trustees.exists(_.lacksMentalCapacity)
+
+              Future.successful(
+                BadRequest(
+                  view(
+                    formWithErrors,
+                    getLeadTrusteeName(leadTrustee),
+                    existingOptions,
+                    hasTrusteesLackingMentalCapacity
+                  )
+                )
+              )
+            },
+            {
+              case "addNew"    =>
+                val updatedAnswers = request.userAnswers.set(IsReplacingLeadTrusteePage, true)
+                for {
+                  ua <- Future.fromTry(updatedAnswers)
+                  _  <- playbackRepository.set(ua)
+                } yield Redirect(controllers.leadtrustee.routes.IndividualOrBusinessController.onPageLoad())
+              case indexString =>
+                val index = indexString.toInt
+                trustees(index) match {
+                  case trustee: TrusteeIndividual   =>
+                    val extractedAnswers =
+                      individualTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+
+                    populateUserAnswersAndRedirect(
+                      extractedAnswers,
+                      ltiRts.NeedToAnswerQuestionsController.onPageLoad()
+                    )
+                  case trustee: TrusteeOrganisation =>
+                    val extractedAnswers =
+                      organisationTrusteeToLeadTrusteeExtractor.extract(request.userAnswers, trustee, index)
+
+                    populateUserAnswersAndRedirect(
+                      extractedAnswers,
+                      ltoRts.NeedToAnswerQuestionsController.onPageLoad()
+                    )
+                }
+            }
+          )
+      }
+      .recoverWith(recovery)
   }
 
+  // index trustees before filtering, as filtering first would renumber the options,
+  // meaning onSubmit would promote the wrong trustee
   private def generateRadioOptions(trustees: List[Trustee]): List[RadioOption] =
     trustees.zipWithIndex
-      .filter(_._1 match {
-        case trustee: TrusteeIndividual => trustee.mentalCapacityYesNo.contains(Yes)
-        case _: TrusteeOrganisation     => true
-      })
-      .map { x =>
-        val name = x._1 match {
-          case trustee: TrusteeIndividual   => trustee.name.displayName
-          case trustee: TrusteeOrganisation => trustee.name
+      .filter { case (trustee, _) => trustee.isEligibleToBeLeadTrustee }
+      .map { case (trustee, index) =>
+        val name = trustee match {
+          case ti: TrusteeIndividual   => ti.name.displayName
+          case to: TrusteeOrganisation => to.name
         }
-        RadioOption(s"$messageKeyPrefix.${x._2}", s"${x._2}", name)
+
+        RadioOption(s"$messageKeyPrefix.$index", s"$index", name)
       }
 
   private def getLeadTrusteeName(leadTrustee: Option[LeadTrustee])(implicit request: DataRequest[AnyContent]): String =

@@ -21,12 +21,11 @@ import models.{
   TrusteeOrganisation
 }
 import play.api.i18n.Messages
-import viewmodels.addAnother.{AddRow, AddToRows}
+import viewmodels.addAnother.{AddRow, TrusteeRows}
 
 class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) {
 
   private def render(trustee: (Trustee, Int)): AddRow =
-
     trustee match {
       case (trusteeInd: TrusteeIndividual, index)   =>
         AddRow(
@@ -48,39 +47,44 @@ class AddATrusteeViewHelper(trustees: AllTrustees)(implicit messages: Messages) 
         )
     }
 
-  private def renderLead(lead: Option[LeadTrustee]): List[AddRow] =
-
-    lead match {
-      case Some(leadInd: LeadTrusteeIndividual)    =>
-        List(
-          AddRow(
-            name = leadInd.name.displayName,
-            typeLabel = messages(s"entities.leadtrustee.individual"),
-            changeLabel = messages("site.change.details"),
-            changeUrl = controllers.leadtrustee.individual.routes.CheckDetailsController.onPageLoad().url,
-            removeLabel = Some(messages("site.cannotRemove")),
-            removeUrl = None
-          )
+  private def renderLead(lead: Option[LeadTrustee]): Option[AddRow] = lead match {
+    case Some(leadInd: LeadTrusteeIndividual)    =>
+      Some(
+        AddRow(
+          name = leadInd.name.displayName,
+          typeLabel = messages(s"entities.leadtrustee.individual"),
+          changeLabel = messages("site.change.details"),
+          changeUrl = controllers.leadtrustee.individual.routes.CheckDetailsController.onPageLoad().url,
+          removeLabel = Some(messages("site.cannotRemove")),
+          removeUrl = None
         )
-      case Some(leadIOrg: LeadTrusteeOrganisation) =>
-        List(
-          AddRow(
-            name = leadIOrg.name,
-            typeLabel = messages(s"entities.leadtrustee.organisation"),
-            changeLabel = messages("site.change.details"),
-            changeUrl = controllers.leadtrustee.organisation.routes.CheckDetailsController.onPageLoad().url,
-            removeLabel = Some(messages("site.cannotRemove")),
-            removeUrl = None
-          )
+      )
+    case Some(leadIOrg: LeadTrusteeOrganisation) =>
+      Some(
+        AddRow(
+          name = leadIOrg.name,
+          typeLabel = messages(s"entities.leadtrustee.organisation"),
+          changeLabel = messages("site.change.details"),
+          changeUrl = controllers.leadtrustee.organisation.routes.CheckDetailsController.onPageLoad().url,
+          removeLabel = Some(messages("site.cannotRemove")),
+          removeUrl = None
         )
-      case _                                       => Nil
-    }
+      )
+    case _                                       => None
+  }
 
-  def rows: AddToRows = {
+  // index trustees before partitioning as the change/remove URLs use the trustee's position in the list from the backend.
+  // partitioning first would renumber each group from 0, meaning the links would act on the wrong trustee.
+  def groupedRows: TrusteeRows = {
+    val (lackingMentalCapacity, others) =
+      trustees.trustees.zipWithIndex
+        .partition { case (trustee, _) => trustee.lacksMentalCapacity }
 
-    val complete = renderLead(trustees.lead) ++ trustees.trustees.zipWithIndex.map(render)
-
-    AddToRows(Nil, complete)
+    TrusteeRows(
+      lead = renderLead(trustees.lead),
+      otherTrustees = others.map(render),
+      lackingMentalCapacity = lackingMentalCapacity.map(render)
+    )
   }
 
 }

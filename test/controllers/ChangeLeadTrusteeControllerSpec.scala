@@ -32,8 +32,8 @@ import scala.concurrent.Future
 
 class ChangeLeadTrusteeControllerSpec extends SpecBase {
 
-  lazy val changeLeadTrusteeRoute       = routes.ChangeLeadTrusteeController.onPageLoad().url
-  lazy val changeLeadTrusteeSubmitRoute = routes.ChangeLeadTrusteeController.onSubmit().url
+  private lazy val changeLeadTrusteeRoute       = routes.ChangeLeadTrusteeController.onPageLoad().url
+  private lazy val changeLeadTrusteeSubmitRoute = routes.ChangeLeadTrusteeController.onSubmit().url
 
   val eligibleIndividual = TrusteeIndividual(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
@@ -197,6 +197,38 @@ class ChangeLeadTrusteeControllerSpec extends SpecBase {
           application.stop()
         }
       }
+
+      "one trustee lacks mental capacity and the others answered 'I don't know' or did not answer" must {
+
+        "redirect to ReplacingLeadTrusteeController to choose from the eligible trustees (don't know & not answered)" in {
+          val allTrustees = AllTrustees(
+            None,
+            List(
+              ineligibleIndividual,
+              eligibleIndividual.copy(mentalCapacityYesNo = Some(YesNoDontKnow.DontKnow)),
+              eligibleIndividual.copy(mentalCapacityYesNo = None)
+            )
+          )
+
+          val mockTrustService = Mockito.mock(classOf[TrustService])
+
+          when(mockTrustService.getAllTrustees(any())(any(), any()))
+            .thenReturn(Future.successful(allTrustees))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind[TrustService].toInstance(mockTrustService))
+            .build()
+
+          val request = FakeRequest(POST, changeLeadTrusteeSubmitRoute)
+          val result  = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url
+
+          application.stop()
+        }
+      }
+
     }
   }
 

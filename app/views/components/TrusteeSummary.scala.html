@@ -1,0 +1,55 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.addAnother.TrusteeRows
+
+@this(
+    addToList: AddToList
+)
+
+@(rows: TrusteeRows)(implicit messages: Messages)
+
+@if(rows.size > 1) {
+    <p class="govuk-body" id="p--allTrusteesSameResponsibilities">@messages("addATrustee.allTrustees.p")</p>
+}
+
+@rows.lead.map { lead =>
+    @addToList(Seq(lead), "leadTrustee", "trustee")
+    <p class="govuk-body" id="p--leadTrusteeContact">@messages("addATrustee.leadTrustee.p")</p>
+    <p class="govuk-body">
+        @messages("addATrustee.p1")
+        <a id="link--changeLeadTrustee" class="govuk-link" href="@controllers.routes.ChangeLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.
+    </p>
+}
+
+@if(rows.otherTrustees.nonEmpty || rows.lackingMentalCapacity.nonEmpty) {
+    <h2 class="govuk-heading-m" id="data-list-heading--otherTrustees">@messages("site.otherTrustees")</h2>
+
+    @addToList(rows.otherTrustees, "otherTrustees", "trustee", showHeading = false)
+
+    @if(rows.lackingMentalCapacity.nonEmpty) {
+        <h3 class="govuk-heading-s" id="heading--lackMentalCapacity">@messages("addATrustee.lackMentalCapacity.heading")</h3>
+        @addToList(rows.lackingMentalCapacity, "lackMentalCapacity", "trustee", showHeading = false)
+        <p class="govuk-body" id="p--lackMentalCapacity-1">@messages("addATrustee.lackMentalCapacity.p1")</p>
+        <p class="govuk-body" id="p--lackMentalCapacity-2">@messages("addATrustee.lackMentalCapacity.p2")</p>
+    }
+}
+
+@if(rows.lead.isEmpty) {
+    <div id="inset-text--addATrustee" class="govuk-inset-text">
+        @messages("addATrustee.lead-trustee.required")
+    </div>
+}

@@ -18,7 +18,7 @@ package models
 
 import base.SpecBase
 import models.Constants.GB
-import models.YesNoDontKnow.{No, Yes}
+import models.YesNoDontKnow.{DontKnow, No, Yes}
 import play.api.libs.json.{Json, __}
 
 import java.time.LocalDate
@@ -176,6 +176,118 @@ class TrusteeSpec extends SpecBase {
         )
 
         Json.toJson(result) mustBe json.transform((__ \ "trusteeOrg").json.pick).get
+      }
+    }
+  }
+
+  "Trustee mental capacity eligibility" when {
+
+    def individual(answer: Option[YesNoDontKnow]): TrusteeIndividual = TrusteeIndividual(
+      name = Name("First", None, "Last"),
+      dateOfBirth = None,
+      phoneNumber = None,
+      identification = None,
+      address = None,
+      mentalCapacityYesNo = answer,
+      entityStart = LocalDate.parse(startDate),
+      provisional = false
+    )
+
+    "individual" when {
+
+      "mental capacity answer is Yes" must {
+        val trusteeIndividual = individual(Some(Yes))
+
+        "not lack mental capacity, and be eligible to be lead trustee" in {
+          trusteeIndividual.lacksMentalCapacity       mustBe false
+          trusteeIndividual.isEligibleToBeLeadTrustee mustBe true
+        }
+      }
+
+      "mental capacity answer is I don't know" must {
+        val trusteeIndividual = individual(Some(DontKnow))
+
+        "not lack mental capacity, and be eligible to be lead trustee" in {
+          trusteeIndividual.lacksMentalCapacity       mustBe false
+          trusteeIndividual.isEligibleToBeLeadTrustee mustBe true
+        }
+      }
+
+      "mental capacity answer is No" must {
+        val trusteeIndividual = individual(Some(No))
+
+        "lack mental capacity, and not be eligible to be lead trustee" in {
+          trusteeIndividual.lacksMentalCapacity       mustBe true
+          trusteeIndividual.isEligibleToBeLeadTrustee mustBe false
+        }
+      }
+
+      "mental capacity question has not been answered" must {
+        val trusteeIndividual = individual(None)
+
+        "not lack mental capacity, and be eligible to be lead trustee" in {
+          trusteeIndividual.lacksMentalCapacity       mustBe false
+          trusteeIndividual.isEligibleToBeLeadTrustee mustBe true
+        }
+      }
+    }
+
+    "organisation" must {
+      "never lack mental capacity and always be eligible to be lead trustee" in {
+        val org = TrusteeOrganisation(
+          name = "Big Company",
+          identification = None,
+          entityStart = LocalDate.parse(startDate),
+          provisional = false
+        )
+
+        org.lacksMentalCapacity       mustBe false
+        org.isEligibleToBeLeadTrustee mustBe true
+      }
+    }
+
+    "read from the backend" when {
+
+      "legallyIncapable is absent" must {
+        "be treated as having mental capacity and be eligible" in {
+          val json = Json.parse(
+            s"""
+               |{
+               |  "trusteeInd": {
+               |    "name": { "firstName": "First", "lastName": "Last" },
+               |    "entityStart": "$startDate",
+               |    "provisional": false
+               |  }
+               |}""".stripMargin
+          )
+
+          val result = json.as[Trustee]
+
+          result.asInstanceOf[TrusteeIndividual].mentalCapacityYesNo mustBe Some(DontKnow)
+          result.lacksMentalCapacity                                 mustBe false
+          result.isEligibleToBeLeadTrustee                           mustBe true
+        }
+      }
+
+      "legallyIncapable is true" must {
+        "be treated as lacking mental capacity and not be eligible" in {
+          val json = Json.parse(
+            s"""
+               |{
+               |  "trusteeInd": {
+               |    "name": { "firstName": "First", "lastName": "Last" },
+               |    "legallyIncapable": true,
+               |    "entityStart": "$startDate",
+               |    "provisional": false
+               |  }
+               |}""".stripMargin
+          )
+
+          val result = json.as[Trustee]
+
+          result.lacksMentalCapacity       mustBe true
+          result.isEligibleToBeLeadTrustee mustBe false
+        }
       }
     }
   }

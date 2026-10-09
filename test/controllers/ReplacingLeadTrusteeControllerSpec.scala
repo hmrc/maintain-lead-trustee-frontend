@@ -17,10 +17,11 @@
 package controllers
 
 import java.time.LocalDate
+
 import base.SpecBase
 import forms.TrusteeTypeFormProvider
 import models.BpMatchStatus.FullyMatched
-import models.YesNoDontKnow.{No, Yes}
+import models.YesNoDontKnow.{DontKnow, No, Yes}
 import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -40,11 +41,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
   private val messageKeyPrefix: String = "replacingLeadTrustee"
-  private val form: Form[TrusteeType]  = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
+
+  private val form: Form[TrusteeType] = new TrusteeTypeFormProvider().withPrefix(messageKeyPrefix)
 
   private lazy val replacingLeadTrusteeRoute: String = routes.ReplacingLeadTrusteeController.onPageLoad().url
 
-  private val date: LocalDate      = LocalDate.parse("2019-02-28")
+  private val date: LocalDate = LocalDate.parse("2019-02-28")
+
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
 
   private val leadTrusteeIndividual = LeadTrusteeIndividual(
@@ -62,8 +65,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
 
     override def getLeadTrustee(
       identifier: String
-    )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] =
-      ???
+    )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LeadTrustee]] = ???
 
     override def getAllTrustees(
       identifier: String
@@ -76,26 +78,22 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
     override def getTrustee(identifier: String, index: Int)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[Trustee] =
-      ???
+    ): Future[Trustee] = ???
 
     override def removeTrustee(identifier: String, trustee: RemoveTrustee)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[HttpResponse] =
-      ???
+    ): Future[HttpResponse] = ???
 
     override def getBusinessUtrs(identifier: String, index: Option[Int], adding: Boolean)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[List[String]] =
-      ???
+    ): Future[List[String]] = ???
 
     override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[List[String]] =
-      ???
+    ): Future[List[String]] = ???
 
   }
 
@@ -153,7 +151,10 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+          view(form, "John Smith", expectedRadioOptions, hasTrusteesLackingMentalCapacity = false)(
+            request,
+            messages
+          ).toString
 
         application.stop()
       }
@@ -207,7 +208,10 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+          view(form, "John Smith", expectedRadioOptions, hasTrusteesLackingMentalCapacity = true)(
+            request,
+            messages
+          ).toString
 
         application.stop()
       }
@@ -259,7 +263,60 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, "John Smith", expectedRadioOptions)(request, messages).toString
+          view(form, "John Smith", expectedRadioOptions, hasTrusteesLackingMentalCapacity = false)(
+            request,
+            messages
+          ).toString
+
+        application.stop()
+      }
+
+      "one trustee lacks mental capacity and the others answered 'I don't know' or did not answer, so are eligible to be promoted" in {
+
+        val lackingTrustee = TrusteeIndividual(
+          name = Name(firstName = "Lacks", middleName = None, lastName = "Capacity"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          countryOfResidence = None,
+          nationality = None,
+          mentalCapacityYesNo = Some(No),
+          entityStart = date,
+          provisional = true
+        )
+
+        val dontKnowTrustee =
+          lackingTrustee.copy(name = Name("Dont", None, "Know"), mentalCapacityYesNo = Some(DontKnow))
+
+        val unansweredTrustee = lackingTrustee.copy(name = Name("Not", None, "Answered"), mentalCapacityYesNo = None)
+
+        val trustees = Trustees(List(lackingTrustee, dontKnowTrustee, unansweredTrustee))
+
+        val expectedRadioOptions = List(
+          RadioOption(s"$messageKeyPrefix.1", "1", "Dont Know"),
+          RadioOption(s"$messageKeyPrefix.2", "2", "Not Answered")
+        )
+
+        val fakeService = new FakeService(trustees)
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(GET, replacingLeadTrusteeRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, "John Smith", expectedRadioOptions, hasTrusteesLackingMentalCapacity = true)(
+            request,
+            messages
+          ).toString
 
         application.stop()
       }
@@ -400,7 +457,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "John Smith", Nil)(request, messages).toString
+          view(boundForm, "John Smith", Nil, hasTrusteesLackingMentalCapacity = false)(request, messages).toString
 
         application.stop()
       }
@@ -433,7 +490,7 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "Amazon", Nil)(request, messages).toString
+          view(boundForm, "Amazon", Nil, hasTrusteesLackingMentalCapacity = false)(request, messages).toString
 
         application.stop()
       }
@@ -459,7 +516,45 @@ class ReplacingLeadTrusteeControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, "the lead trustee", Nil)(request, messages).toString
+          view(boundForm, "the lead trustee", Nil, hasTrusteesLackingMentalCapacity = false)(request, messages).toString
+
+        application.stop()
+      }
+
+      "a trustee lacks mental capacity, so the mental capacity content is still shown alongside the error" in {
+
+        val lackingTrustee = TrusteeIndividual(
+          name = Name(firstName = "Lacks", middleName = None, lastName = "Capacity"),
+          dateOfBirth = None,
+          phoneNumber = None,
+          identification = None,
+          address = None,
+          countryOfResidence = None,
+          nationality = None,
+          mentalCapacityYesNo = Some(No),
+          entityStart = date,
+          provisional = true
+        )
+
+        val fakeService = new FakeService(Trustees(List(lackingTrustee)))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(POST, replacingLeadTrusteeRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[ReplacingLeadTrusteeView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm, "John Smith", Nil, hasTrusteesLackingMentalCapacity = true)(request, messages).toString
 
         application.stop()
       }

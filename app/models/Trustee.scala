@@ -28,6 +28,14 @@ sealed trait Trustee {
   val provisional: Boolean
   def isNewlyAdded: Boolean = provisional
   val `type`: String
+
+  // a trustee is treated as having mental capacity unless they explicitly answered "No".
+  def lacksMentalCapacity: Boolean = this match {
+    case trusteeIndividual: TrusteeIndividual => trusteeIndividual.mentalCapacityYesNo.contains(YesNoDontKnow.No)
+    case _: TrusteeOrganisation               => false
+  }
+
+  def isEligibleToBeLeadTrustee: Boolean = !lacksMentalCapacity
 }
 
 object Trustee {
