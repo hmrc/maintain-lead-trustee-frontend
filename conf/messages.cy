@@ -371,6 +371,7 @@ leadtrustee.individual.name.firstName=Enw cyntaf
 leadtrustee.individual.name.middleName=Enwau canol (dewisol)
 leadtrustee.individual.name.lastName=Enw olaf
 leadtrustee.individual.name.checkYourAnswersLabel=Beth yw enw’r prif ymddiriedolwr newydd?
+leadtrustee.individual.name.hint = Dechreuwch bob enw â phrif lythyren. Er enghraifft, John Smith
 
 leadtrustee.individual.name.error.firstName.required=Nodwch enw cyntaf y prif ymddiriedolwr.
 leadtrustee.individual.name.error.lastName.required=Nodwch enw olaf y prif ymddiriedolwr.
