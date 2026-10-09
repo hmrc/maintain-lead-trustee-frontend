@@ -15,15 +15,16 @@
  *@
 
 @import controllers.leadtrustee.individual.routes._
-@import views.html.components.{Heading, ErrorSummary, InputText, SubmitButton}
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
     errorSummary: ErrorSummary,
     inputText: InputText,
-    submitButton: SubmitButton
+    submitButton: SubmitButton,
+    govukFieldset: GovukFieldset,
+    govukHint: GovukHint
 )
 
 @(form: Form[_], readOnly: Boolean)(implicit request: RequestHeader, messages: Messages)
@@ -37,11 +38,25 @@
 
         @errorSummary(form.errors)
 
-        <fieldset class="govuk-fieldset">
+        @govukFieldset(Fieldset(
+            describedBy = Some("name-hint"),
+            legend = Some(Legend(
+                content = Text(messages("leadtrustee.individual.name.heading")),
+                classes = "govuk-fieldset__legend--l",
+                isPageHeading = true
+            )),
+            html = fields
+        ))
 
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @heading("leadtrustee.individual.name.heading")
-            </legend>
+        @submitButton()
+    }
+}
+
+@fields = {
+    @govukHint(Hint(
+        id = Some("name-hint"),
+        content = Text(messages("leadtrustee.individual.name.hint"))
+    ))
 
             @inputText(
                 field = form("firstName"),
@@ -66,8 +81,4 @@
                 autocomplete = Some("family-name"),
                 readOnly = readOnly
             )
-        </fieldset>
-
-        @submitButton()
-    }
 }
