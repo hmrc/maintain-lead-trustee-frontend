@@ -16,25 +16,20 @@
 
 @import controllers.trustee.routes._
 @import models.AddATrustee
-@import viewmodels.addAnother.AddRow
-@import views.html.components.{Heading, ErrorSummary, InputText, AddToList, InputRadio, SubmitButton}
+@import viewmodels.addAnother.TrusteeRows
+@import views.html.components.{Heading, ErrorSummary, TrusteeSummary, InputRadio, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     headingComp: Heading,
     errorSummary: ErrorSummary,
-    inputText: InputText,
-    addToList: AddToList,
+    trusteeSummary: TrusteeSummary,
     inputRadio: InputRadio,
     submitButton: SubmitButton
 )
 
-@(form: Form[_],
-    inProgressTrustees: Seq[AddRow],
-    completeTrustees: Seq[AddRow],
-    isLeadTrusteeDefined: Boolean,
-    heading: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], rows: TrusteeRows, heading: String)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}$heading",
@@ -47,26 +42,7 @@
 
         @headingComp(heading)
 
-        @if(isLeadTrusteeDefined && completeTrustees.nonEmpty) {
-
-            @addToList(Seq(completeTrustees.head), "leadTrustee", "trustee")
-
-            <p>@messages("addATrustee.p1") <a class="govuk-link" href="@controllers.routes.ChangeLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a></p>
-
-            @if(completeTrustees.size > 1) {
-                @addToList(completeTrustees.drop(1), "otherTrustees", "trustee")
-            }
-
-        } else {
-
-            @if(completeTrustees.nonEmpty) {
-                @addToList(completeTrustees, "other-trustees", "trustee")
-            }
-
-            <div id="inset-text--addATrustee" class="govuk-inset-text">
-                @messages("addATrustee.lead-trustee.required")
-            </div>
-        }
+        @trusteeSummary(rows)
 
         @inputRadio(
             field = form("value"),

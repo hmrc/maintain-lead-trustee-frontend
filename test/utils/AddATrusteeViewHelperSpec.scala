@@ -18,67 +18,128 @@ package utils
 
 import base.SpecBase
 import models.{
-  AllTrustees, Name, NationalInsuranceNumber, TrustIdentificationOrgType, TrusteeIndividual, TrusteeOrganisation
+  AllTrustees, LeadTrusteeIndividual, Name, NationalInsuranceNumber, TrusteeIndividual, TrusteeOrganisation, UkAddress,
+  YesNoDontKnow
 }
-import viewmodels.addAnother.AddRow
+import viewmodels.addAnother.{AddRow, TrusteeRows}
 
 import java.time.LocalDate
 
 class AddATrusteeViewHelperSpec extends SpecBase {
 
-  val trustees = List(
-    TrusteeIndividual(
-      name = Name(firstName = "First", middleName = None, lastName = "Last"),
-      dateOfBirth = Some(LocalDate.parse("1983-09-24")),
-      phoneNumber = None,
-      identification = Some(NationalInsuranceNumber("JS123456A")),
-      address = None,
-      entityStart = LocalDate.parse("2019-02-28"),
-      provisional = true
-    ),
-    TrusteeOrganisation(
-      name = "Trustee Org",
-      phoneNumber = None,
-      email = None,
-      identification = Some(TrustIdentificationOrgType(None, Some("1234567890"), None)),
-      entityStart = LocalDate.parse("2019-02-28"),
-      provisional = true
-    )
+  private val leadTrustee = LeadTrusteeIndividual(
+    bpMatchStatus = None,
+    name = Name("Lead", None, "Trustee"),
+    dateOfBirth = LocalDate.parse("1980-01-01"),
+    phoneNumber = "+446565657",
+    email = None,
+    identification = NationalInsuranceNumber("JP121212A"),
+    address = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
+  )
+
+  private val leadTrusteeRow = AddRow(
+    name = "Lead Trustee",
+    typeLabel = "Lead Trustee Individual",
+    changeLabel = "Change details",
+    changeUrl = "/maintain-a-trust/trustees/lead-trustee/individual/check-details",
+    removeLabel = Some("Cannot remove"),
+    removeUrl = None
+  )
+
+  private def individual(firstName: String, answer: Option[YesNoDontKnow]): TrusteeIndividual = TrusteeIndividual(
+    name = Name(firstName = firstName, middleName = None, lastName = "Last"),
+    dateOfBirth = None,
+    phoneNumber = None,
+    identification = None,
+    address = None,
+    mentalCapacityYesNo = answer,
+    entityStart = LocalDate.parse("2019-02-28"),
+    provisional = true
+  )
+
+  private def individualRow(firstName: String, index: Int): AddRow = AddRow(
+    name = s"$firstName Last",
+    typeLabel = "Trustee Individual",
+    changeLabel = "Change details",
+    changeUrl = s"/maintain-a-trust/trustees/trustee/individual/$index/check-details",
+    removeLabel = Some("Remove"),
+    removeUrl = Some(s"/maintain-a-trust/trustees/trustee/$index/remove")
+  )
+
+  private val organisation = TrusteeOrganisation(
+    name = "Trustee Org",
+    phoneNumber = None,
+    email = None,
+    identification = None,
+    entityStart = LocalDate.parse("2019-02-28"),
+    provisional = true
+  )
+
+  private def organisationRow(index: Int): AddRow = AddRow(
+    name = "Trustee Org",
+    typeLabel = "Trustee Company",
+    changeLabel = "Change details",
+    changeUrl = s"/maintain-a-trust/trustees/trustee/organisation/$index/check-details",
+    removeLabel = Some("Remove"),
+    removeUrl = Some(s"/maintain-a-trust/trustees/trustee/$index/remove")
   )
 
   "AddATrusteeViewHelper" when {
 
-    ".row" must {
+    ".groupedRows" must {
 
-      "generate Nil for no user answers" in {
-        val rows = new AddATrusteeViewHelper(AllTrustees(None, Nil)).rows
-        rows.inProgress mustBe Nil
-        rows.complete   mustBe Nil
+      "return no rows when there are no trustees" in {
+        val result = new AddATrusteeViewHelper(AllTrustees(None, Nil)).groupedRows
+
+        result      mustBe TrusteeRows(None, Nil, Nil)
+        result.size mustBe 0
       }
 
-      "generate rows from user answers for trustees" in {
-        val rows = new AddATrusteeViewHelper(AllTrustees(None, trustees)).rows
-        rows.complete   mustBe List(
-          AddRow(
-            name = "First Last",
-            typeLabel = "Trustee Individual",
-            changeLabel = "Change details",
-            changeUrl = "/maintain-a-trust/trustees/trustee/individual/0/check-details",
-            removeLabel = Some("Remove"),
-            removeUrl = Some("/maintain-a-trust/trustees/trustee/0/remove")
-          ),
-          AddRow(
-            name = "Trustee Org",
-            typeLabel = "Trustee Company",
-            changeLabel = "Change details",
-            changeUrl = "/maintain-a-trust/trustees/trustee/organisation/1/check-details",
-            removeLabel = Some("Remove"),
-            removeUrl = Some("/maintain-a-trust/trustees/trustee/1/remove")
-          )
+      "return only the lead trustee when there are no other trustees" in {
+        val result = new AddATrusteeViewHelper(AllTrustees(Some(leadTrustee), Nil)).groupedRows
+
+        result      mustBe TrusteeRows(Some(leadTrusteeRow), Nil, Nil)
+        result.size mustBe 1
+      }
+
+      "put individuals who answered 'Yes', 'I don't know' or did not answer, and organisations, in other trustees, as they are treated as having mental capacity" in {
+        val trustees = List(
+          individual("Yes", Some(YesNoDontKnow.Yes)),
+          individual("DontKnow", Some(YesNoDontKnow.DontKnow)),
+          individual("Unanswered", None),
+          organisation
         )
-        rows.inProgress mustBe Nil
+
+        val result = new AddATrusteeViewHelper(AllTrustees(Some(leadTrustee), trustees)).groupedRows
+
+        result.lead mustBe Some(leadTrusteeRow)
+
+        result.otherTrustees mustBe List(
+          individualRow("Yes", 0),
+          individualRow("DontKnow", 1),
+          individualRow("Unanswered", 2),
+          organisationRow(3)
+        )
+
+        result.lackingMentalCapacity mustBe Nil
+        result.size                  mustBe 5
       }
 
+      "put only individuals who answered 'No' in lacking mental capacity, keeping each trustee's original index in their change and remove links" in {
+        val trustees = List(
+          individual("Capable", Some(YesNoDontKnow.Yes)),
+          individual("LacksOne", Some(YesNoDontKnow.No)),
+          organisation,
+          individual("LacksTwo", Some(YesNoDontKnow.No))
+        )
+
+        val result = new AddATrusteeViewHelper(AllTrustees(Some(leadTrustee), trustees)).groupedRows
+
+        result.lead                  mustBe Some(leadTrusteeRow)
+        result.otherTrustees         mustBe List(individualRow("Capable", 0), organisationRow(2))
+        result.lackingMentalCapacity mustBe List(individualRow("LacksOne", 1), individualRow("LacksTwo", 3))
+        result.size                  mustBe 5
+      }
     }
   }
 

@@ -59,42 +59,30 @@ class AddATrusteeController @Inject() (
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addATrusteeYesNo")
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
-    trust.getAllTrustees(request.userAnswers.identifier) map {
-      case AllTrustees(None, Nil) =>
-        Ok(yesNoView(yesNoForm))
-      case all: AllTrustees       =>
+    trust
+      .getAllTrustees(request.userAnswers.identifier)
+      .map {
+        case AllTrustees(None, Nil) =>
+          Ok(yesNoView(yesNoForm))
+        case all: AllTrustees       =>
+          val trusteeRows = new AddATrusteeViewHelper(all).groupedRows
 
-        val trustees = new AddATrusteeViewHelper(all).rows
-        if (all.size < 26) {
-          Ok(
-            addAnotherView(
-              form = addAnotherForm,
-              inProgressTrustees = trustees.inProgress,
-              completeTrustees = trustees.complete,
-              isLeadTrusteeDefined = all.lead.isDefined,
-              heading = all.addToHeading
-            )
-          )
-        } else {
-          Ok(
-            completeView(
-              inProgressTrustees = trustees.inProgress,
-              completeTrustees = trustees.complete,
-              isLeadTrusteeDefined = all.lead.isDefined,
-              heading = all.addToHeading
-            )
-          )
-        }
-    } recoverWith { case e =>
-      logger.error(
-        s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" user cannot maintain trustees due to there being a problem getting trustees from trusts" +
-          s"with error message ${e.getMessage}",
-        e
-      )
+          if (all.size < 26) {
+            Ok(addAnotherView(form = addAnotherForm, rows = trusteeRows, heading = all.addToHeading))
+          } else {
+            Ok(completeView(rows = trusteeRows, heading = all.addToHeading))
+          }
+      }
+      .recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" user cannot maintain trustees due to there being a problem getting trustees from trusts" +
+            s"with error message ${e.getMessage}",
+          e
+        )
 
-      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+      }
   }
 
   def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData { implicit request =>
@@ -118,17 +106,11 @@ class AddATrusteeController @Inject() (
         .fold(
           (formWithErrors: Form[_]) => {
 
-            val rows = new AddATrusteeViewHelper(trustees).rows
+            val trusteeRows = new AddATrusteeViewHelper(trustees).groupedRows
 
             Future.successful(
               BadRequest(
-                addAnotherView(
-                  formWithErrors,
-                  rows.inProgress,
-                  rows.complete,
-                  isLeadTrusteeDefined = trustees.lead.isDefined,
-                  trustees.addToHeading
-                )
+                addAnotherView(formWithErrors, trusteeRows, trustees.addToHeading)
               )
             )
           },

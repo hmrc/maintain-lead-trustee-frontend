@@ -16,8 +16,10 @@
 
 package viewmodels.addAnother
 
-case class AddToRows(inProgress: List[AddRow], complete: List[AddRow]) {
-
-  def count: Int = inProgress.size + complete.size
-
+final case class TrusteeRows(
+  lead: Option[AddRow],
+  otherTrustees: Seq[AddRow],
+  lackingMentalCapacity: Seq[AddRow]
+) {
+  def size: Int = lead.size + otherTrustees.size + lackingMentalCapacity.size
 }

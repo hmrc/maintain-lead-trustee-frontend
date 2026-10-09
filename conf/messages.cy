@@ -269,14 +269,22 @@ entities.trustees=Ymddiriedolwyr
 addATrusteeYesNo.title=A ydych am ychwanegu ymddiriedolwr?
 addATrusteeYesNo.heading=A ydych am ychwanegu ymddiriedolwr?
 addATrusteeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu ymddiriedolwr
-replacingLeadTrustee.title=Pwy sy’n disodli’r prif ymddiriedolwr presennol fel y prif ymddiriedolwr newydd?
 
-replacingLeadTrustee.heading=Pwy fydd y prif ymddiriedolwr newydd?
+replacingLeadTrustee.title=Dewis prif ymddiriedolwr newydd
+replacingLeadTrustee.heading=Dewis prif ymddiriedolwr newydd
+
 replacingLeadTrustee.hint=Pan fyddwch yn newid y prif ymddiriedolwr, bydd {0} yn aros ar yr ymddiriedolaeth fel ymddiriedolwr.
 replacingLeadTrustee.add-new=Ychwanegwch brif ymddiriedolwr newydd
 replacingLeadTrustee.error.required=Dewiswch pwy sy’n disodli’r prif ymddiriedolwr presennol fel y prif ymddiriedolwr newydd
 replacingLeadTrustee.return.link=Dychwelwch i ychwanegu ymddiriedolwr
 replacingLeadTrustee.addNewLabel = Rwyf am ychwanegu prif ymddiriedolwr newydd
+
+replacingLeadTrustee.p1 = Os oes ymddiriedolwyr addas wedi’u hychwanegu at yr ymddiriedolaeth, gallwch ddewis gwneud ymddiriedolwr presennol yn brif ymddiriedolwr newydd.
+replacingLeadTrustee.legend = Pwy fydd y prif ymddiriedolwr newydd?
+replacingLeadTrustee.mentalCapacity.heading = Os nad oes gan ymddiriedolwr alluedd meddyliol
+replacingLeadTrustee.mentalCapacity.p1 = Os nad oes gan ymddiriedolwr y galluedd meddyliol i ddeall gwybodaeth am yr ymddiriedolaeth, ni fydd modd iddo ddod yn brif ymddiriedolwr.
+replacingLeadTrustee.mentalCapacity.p2 = Gallwch {0}.
+replacingLeadTrustee.mentalCapacity.p2.link = wirio pa ymddiriedolwyr nad oes ganddynt alluedd meddyliol
 
 answerNewQuestions.title=Mae angen i chi ateb cwestiynau newydd ar gyfer y prif ymddiriedolwr newydd
 answerNewQuestions.heading=Mae angen i chi ateb cwestiynau newydd ar gyfer {0}
@@ -294,6 +302,7 @@ trusteeType.trustee=Ymddiriedolwr
 addATrustee.title=Ychwanegu ymddiriedolwr
 addATrustee.heading=Ychwanegu ymddiriedolwr
 addATrustee.count.heading=Mae gan yr ymddiriedolaeth {0} ymddiriedolwr
+addATrustee.count.heading.single=Mae gan yr ymddiriedolaeth 1 ymddiriedolwr
 addATrustee.additional-content=A ydych am ychwanegu ymddiriedolwr newydd?
 addATrustee.add-them-now=Iawn, rwyf am ei ychwanegu nawr
 addATrustee.add-them-later=Na, ddim nawr
@@ -307,6 +316,12 @@ addATrustee.p1=Gallwch
 addATrustee.p1.a=newid y prif ymddiriedolwr
 addATrustee.maxedOut=Ni allwch ychwanegu ymddiriedolwr arall gan eich bod wedi nodi uchafswm o 26.
 addATrustee.maxedOut.paragraph=Gallwch ychwanegu ymddiriedolwr arall drwy dynnu un presennol, neu drwy ysgrifennu at CThEF gyda manylion unrhyw ymddiriedolwyr ychwanegol.
+
+addATrustee.allTrustees.p = Mae gan bob ymddiriedolwr yr un cyfrifoldebau cyfreithiol.
+addATrustee.leadTrustee.p = Dyma’r person neu’r busnes y bydd CThEF yn anfon y dogfennau swyddogol ato neu’n cysylltu ag ef i drafod yr ymddiriedolaeth. Y prif ymddiriedolwr sy’n gyfrifol am gadw manylion yr ymddiriedolaeth yn gyfredol.
+addATrustee.lackMentalCapacity.heading = Rydych o’r farn nad oes gan yr ymddiriedolwyr hyn alluedd meddyliol
+addATrustee.lackMentalCapacity.p1 = Os nad oes gan ymddiriedolwr alluedd meddyliol, mae’n golygu nad oes ganddo’r gallu i ddeall neu wneud penderfyniadau am yr ymddiriedolaeth. Os nad oes gan ymddiriedolwr alluedd meddyliol, mae’n golygu na fydd yn gallu dod yn brif ymddiriedolwr.
+addATrustee.lackMentalCapacity.p2 = Os ydych o’r farn bod galluedd meddyliol ymddiriedolwr wedi newid, gallwch roi gwybod i CThEF drwy newid ei fanylion a datgan yr ymddiriedolaeth.
 
 changeLeadTrustee.title = Newid y prif ymddiriedolwr
 changeLeadTrustee.heading = Newid y prif ymddiriedolwr

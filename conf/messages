@@ -142,13 +142,20 @@ addATrusteeYesNo.title = Do you want to add a trustee?
 addATrusteeYesNo.heading = Do you want to add a trustee?
 addATrusteeYesNo.error.required = Select yes if you want to add a trustee
 
-replacingLeadTrustee.title = Who is replacing the current lead trustee as the new lead trustee?
-replacingLeadTrustee.heading = Who will be the new lead trustee?
+replacingLeadTrustee.title = Choosing a new lead trustee
+replacingLeadTrustee.heading = Choosing a new lead trustee
 replacingLeadTrustee.hint = When you change the lead trustee, {0} will stay on the trust as a trustee.
 replacingLeadTrustee.add-new = Add a new lead trustee
 replacingLeadTrustee.error.required = Select who is replacing the current lead trustee as the new lead trustee
 replacingLeadTrustee.return.link = Return to add a trustee
 replacingLeadTrustee.addNewLabel = I want to add a new lead trustee
+
+replacingLeadTrustee.p1 = You can choose to make an existing trustee the new lead trustee if there are suitable trustees added to the trust.
+replacingLeadTrustee.legend = Who will be the new lead trustee?
+replacingLeadTrustee.mentalCapacity.heading = If a trustee does not have mental capacity
+replacingLeadTrustee.mentalCapacity.p1 = Trustees who do not have mental capacity to understand information about the trust will not be able to become lead trustee.
+replacingLeadTrustee.mentalCapacity.p2 = You can {0}.
+replacingLeadTrustee.mentalCapacity.p2.link = check which trustees lack mental capacity
 
 answerNewQuestions.title = You need to answer new questions for the new lead trustee
 answerNewQuestions.heading = You need to answer new questions for {0}
@@ -166,6 +173,7 @@ trusteeType.trustee = Trustee
 addATrustee.title = Add a trustee
 addATrustee.heading = Add a trustee
 addATrustee.count.heading = The trust has {0} trustees
+addATrustee.count.heading.single = The trust has 1 trustee
 addATrustee.additional-content = Do you want to add a new trustee?
 addATrustee.add-them-now = Yes, I want to add them now
 addATrustee.add-them-later = No, not now
@@ -179,6 +187,12 @@ addATrustee.p1 = You can
 addATrustee.p1.a = change the lead trustee
 addATrustee.maxedOut = You cannot add another trustee as you have entered a maximum of 26.
 addATrustee.maxedOut.paragraph = You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees.
+
+addATrustee.allTrustees.p = All trustees have the same legal responsibilities.
+addATrustee.leadTrustee.p = This is the person or business HMRC will contact to discuss the trust or send official documents to. The lead trustee is responsible for keeping the trust’s details up to date.
+addATrustee.lackMentalCapacity.heading = You believe that these trustees lack mental capacity
+addATrustee.lackMentalCapacity.p1 = If a trustee lacks mental capacity it means that they may not have the capacity to understand or make decisions about the trust. A trustee who lacks mental capacity will not be able to become a lead trustee.
+addATrustee.lackMentalCapacity.p2 = If you believe that the mental capacity of a trustee has changed you can inform HMRC by changing their details and declaring the trust.
 
 changeLeadTrustee.title = Change the lead trustee
 changeLeadTrustee.heading = Change the lead trustee

@@ -15,22 +15,18 @@
  *@
 
 @import controllers.trustee.routes._
-@import viewmodels.addAnother.AddRow
-@import views.html.components.{Heading, ErrorSummary, AddToList, SubmitButton}
+@import viewmodels.addAnother.TrusteeRows
+@import views.html.components.{Heading, TrusteeSummary, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     headingComp: Heading,
-    errorSummary: ErrorSummary,
-    addToList: AddToList,
+    trusteeSummary: TrusteeSummary,
     submitButton: SubmitButton
 )
 
-@(inProgressTrustees: Seq[AddRow],
-    completeTrustees: Seq[AddRow],
-    isLeadTrusteeDefined: Boolean,
-    heading: String)(implicit request: RequestHeader, messages: Messages)
+@(rows: TrusteeRows, heading: String)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = heading,
@@ -41,17 +37,7 @@
 
         @headingComp(heading)
 
-        @addToList(inProgressTrustees, "inprogress", "trustee")
-
-        @addToList(completeTrustees, "complete", "trustee")
-
-        @if(!isLeadTrusteeDefined) {
-            <div id="inset-text--addATrustee" class="govuk-inset-text">
-                @messages("addATrustee.lead-trustee.required")
-            </div>
-        }
-
-        <p>@messages("addATrustee.p1") <a class="govuk-link" href="@controllers.routes.ReplacingLeadTrusteeController.onPageLoad().url">@messages("addATrustee.p1.a")</a>.</p>
+        @trusteeSummary(rows)
 
         <div class="govuk-inset-text">
             <ul class="govuk-list">
@@ -59,6 +45,7 @@
                 <li><p>@messages("addATrustee.maxedOut.paragraph")</p></li>
             </ul>
         </div>
+
         @submitButton()
     }
 }

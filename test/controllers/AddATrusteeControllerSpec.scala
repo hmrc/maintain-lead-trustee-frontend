@@ -23,9 +23,9 @@ import forms.trustee.AddATrusteeFormProvider
 import models.IndividualOrBusiness.Individual
 import models.TaskStatus.Completed
 import models._
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import pages.trustee.IndividualOrBusinessPage
 import pages.trustee.individual.NamePage
@@ -38,7 +38,7 @@ import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.AddATrusteeViewHelper
-import viewmodels.addAnother.AddRow
+import viewmodels.addAnother.{AddRow, TrusteeRows}
 import views.html.trustee.{AddATrusteeView, AddATrusteeYesNoView, MaxedOutTrusteesView}
 
 import java.time.LocalDate
@@ -291,7 +291,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addTrusteeForm, Nil, trusteeRows, isLeadTrusteeDefined = false, heading = "The trust has 2 trustees")(
+          view(addTrusteeForm, TrusteeRows(None, trusteeRows, Nil), heading = "The trust has 2 trustees")(
             request,
             messages
           ).toString
@@ -390,9 +390,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         contentAsString(result) mustEqual
           view(
             boundForm,
-            Nil,
-            trusteeRows,
-            isLeadTrusteeDefined = false,
+            TrusteeRows(None, trusteeRows, Nil),
             heading = "The trust has 2 trustees"
           )(request, messages).toString
 
@@ -422,9 +420,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         contentAsString(result) mustEqual
           view(
             addTrusteeForm,
-            Nil,
-            leadAndTrusteeRows,
-            isLeadTrusteeDefined = true,
+            TrusteeRows(leadAndTrusteeRows.headOption, trusteeRows, Nil),
             heading = "The trust has 3 trustees"
           )(request, messages).toString
 
@@ -453,9 +449,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         contentAsString(result) mustEqual
           view(
             boundForm,
-            Nil,
-            leadAndTrusteeRows,
-            isLeadTrusteeDefined = true,
+            TrusteeRows(leadAndTrusteeRows.headOption, trusteeRows, Nil),
             heading = "The trust has 3 trustees"
           )(request, messages).toString
 
@@ -508,7 +502,7 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     val fakeService = new FakeService(trustees)
 
-    val trusteeRows = new AddATrusteeViewHelper(AllTrustees(leadTrusteeIndividual, trustees.trustees)).rows
+    val trusteeRows = new AddATrusteeViewHelper(AllTrustees(leadTrusteeIndividual, trustees.trustees)).groupedRows
 
     "return OK and the correct view for a GET" in {
 
@@ -526,18 +520,15 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val content = contentAsString(result)
 
-      content mustEqual
-        view(trusteeRows.inProgress, trusteeRows.complete, isLeadTrusteeDefined = true, "The trust has 26 trustees")(
-          request,
-          messages
-        ).toString
+      content mustEqual view(trusteeRows, "The trust has 26 trustees")(request, messages).toString
+
       content must include("You cannot add another trustee as you have entered a maximum of 26.")
+
       content must include(
         "You can add another trustee by removing an existing one, or write to HMRC with details of any additional trustees."
       )
 
       application.stop()
-
     }
 
     "redirect to add to page and set beneficiaries to complete when user clicks continue" in {
@@ -562,7 +553,6 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
       verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
       application.stop()
-
     }
 
   }

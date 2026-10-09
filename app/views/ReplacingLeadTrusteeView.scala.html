@@ -16,17 +16,20 @@
 
 @import controllers.routes._
 @import viewmodels.RadioOption
-@import views.html.components.{ErrorSummary, InputRadio, SubmitButton}
+@import views.html.components.{ErrorSummary, Heading, InputRadio, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     errorSummary: ErrorSummary,
+    headingComp: Heading,
     inputRadio: InputRadio,
     submitButton: SubmitButton
 )
 
-@(form: Form[_], leadTrustee: String, existingOptions: List[RadioOption])(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], leadTrustee: String, existingOptions: List[RadioOption], hasTrusteesLackingMentalCapacity: Boolean)(implicit request: RequestHeader, messages: Messages)
+
+@checkMentalCapacityLink = {<a id="link--checkMentalCapacity" class="govuk-link" href="@AddATrusteeController.onPageLoad().url">@messages("replacingLeadTrustee.mentalCapacity.p2.link")</a>}
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("replacingLeadTrustee.title")}",
@@ -37,18 +40,28 @@
 
         @errorSummary(form.errors, existingOptions)
 
+        @headingComp("replacingLeadTrustee.heading")
+
+        <p class="govuk-body" id="p--replacingLeadTrustee">@messages("replacingLeadTrustee.p1")</p>
+
+        @if(hasTrusteesLackingMentalCapacity) {
+            <h2 class="govuk-heading-m" id="heading--mentalCapacity">@messages("replacingLeadTrustee.mentalCapacity.heading")</h2>
+            <p class="govuk-body" id="p--mentalCapacity-1">@messages("replacingLeadTrustee.mentalCapacity.p1")</p>
+            <p class="govuk-body" id="p--mentalCapacity-2">@Html(messages("replacingLeadTrustee.mentalCapacity.p2", checkMentalCapacityLink))</p>
+        }
+
         @inputRadio(
-            field            = form("value"),
-            legend           = messages("replacingLeadTrustee.heading", leadTrustee),
-            inputs           = mapRadioOptionsToRadioItems(form("value"), existingOptions) ++
-                               Seq(RadioItem(divider = Some(messages("site.or")))) ++
-                               Seq(RadioItem(content = Text(messages("replacingLeadTrustee.addNewLabel")), value = Some("addNew"))),
-            legendAsHeading  = true,
-            hint             = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
-            inline           = false
+            field = form("value"),
+            legend = messages("replacingLeadTrustee.legend"),
+            legendClass = Some("govuk-fieldset__legend--m"),
+            inputs = mapRadioOptionsToRadioItems(form("value"), existingOptions) ++
+                    Seq(RadioItem(divider = Some(messages("site.or")))) ++
+                    Seq(RadioItem(content = Text(messages("replacingLeadTrustee.addNewLabel")), value = Some("addNew"))),
+            legendAsHeading = false,
+            hint = Some(messages("replacingLeadTrustee.hint", leadTrustee)),
+            inline = false
         )
 
         @submitButton()
-
     }
 }

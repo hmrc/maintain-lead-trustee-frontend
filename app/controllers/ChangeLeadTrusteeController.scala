@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.StandardActionSets
 import handlers.ErrorHandler
-import models.{AllTrustees, Trustee, TrusteeIndividual, TrusteeOrganisation, YesNoDontKnow}
+import models.{AllTrustees, Trustee}
 import pages.leadtrustee.IsReplacingLeadTrusteePage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -49,10 +49,7 @@ class ChangeLeadTrusteeController @Inject() (
     val logInfo = s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]"
 
     trustService.getAllTrustees(request.userAnswers.identifier).flatMap { case AllTrustees(_, trustees) =>
-      val eligibleToPromote: Seq[Trustee] = trustees.filter {
-        case ti: TrusteeIndividual  => ti.mentalCapacityYesNo.contains(YesNoDontKnow.Yes)
-        case _: TrusteeOrganisation => true
-      }
+      val eligibleToPromote: Seq[Trustee] = trustees.filter(_.isEligibleToBeLeadTrustee)
 
       logger.info(
         s"$logInfo Found ${trustees.length} total trustees, ${eligibleToPromote.length} eligible for promotion"
