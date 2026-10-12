@@ -535,6 +535,7 @@ trustee.individual.name.firstName=Enw cyntaf
 trustee.individual.name.middleName=Enwau canol (dewisol)
 trustee.individual.name.lastName=Enw olaf
 trustee.individual.name.checkYourAnswersLabel=Beth yw enw’r ymddiriedolwr?
+trustee.individual.name.hint = Dechreuwch bob enw â phrif lythyren. Er enghraifft, John Smith
 
 trustee.individual.name.error.firstName.capitalLetter = Mae’n rhaid i enw cyntaf yr ymddiriedolwr ddechrau â phrif lythyren.
 trustee.individual.name.error.middleName.capitalLetter = Mae’n rhaid i enw canol yr ymddiriedolwr ddechrau â phrif lythyren.
