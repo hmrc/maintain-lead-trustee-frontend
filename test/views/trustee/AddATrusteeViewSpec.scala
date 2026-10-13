@@ -105,10 +105,7 @@ class AddATrusteeViewSpec extends ViewBehaviours {
 
       doc.select("legend").text mustBe "Do you want to add a new trustee?"
 
-      doc.select(".govuk-radios__label").asScala.map(_.text).toSeq mustBe Seq(
-        "Yes, I want to add them now",
-        "No, all the trustees are up to date"
-      )
+      doc.select(".govuk-radios__label").asScala.map(_.text).toSeq mustBe Seq("Yes", "No")
 
       doc.select("input[type=radio][name=value]").asScala.map(_.attr("value")).toSeq mustBe Seq(
         "add-them-now",

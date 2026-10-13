@@ -120,8 +120,6 @@ class AddATrusteeController @Inject() (
                 updatedAnswers <- Future.fromTry(request.userAnswers.deleteAtPath(pages.trustee.basePath))
                 _              <- repository.set(updatedAnswers)
               } yield Redirect(controllers.trustee.routes.IndividualOrBusinessController.onPageLoad())
-            case AddATrustee.YesLater   =>
-              Future.successful(Redirect(appConfig.maintainATrustOverview))
             case AddATrustee.NoComplete =>
               submitComplete()(request)
           }

@@ -346,28 +346,6 @@ class AddATrusteeControllerSpec extends SpecBase with BeforeAndAfterEach {
         application.stop()
       }
 
-      "redirect to the maintain task list when the user says they want to add later" ignore {
-
-        val fakeService = new FakeService(trustees)
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-          .build()
-
-        val request = FakeRequest(POST, submitAnotherRoute)
-          .withFormUrlEncodedBody(("value", AddATrustee.YesLater.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/individual-declaration"
-
-        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
-
-        application.stop()
-      }
-
       "return a Bad Request and errors when invalid data is submitted" in {
 
         val fakeService = new FakeService(trustees, None)
