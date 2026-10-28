@@ -113,8 +113,6 @@ class CheckDetailsController @Inject() (
   ): Future[Result] =
     for {
       _                  <- trustConnector.amendTrustee(userAnswers.identifier, index, t)
-      updatedUserAnswers <- Future.fromTry(userAnswers.deleteAtPath(pages.trustee.basePath))
-      _                  <- sessionRepository.set(updatedUserAnswers)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
 
 }
