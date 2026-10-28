@@ -112,7 +112,7 @@ class CheckDetailsController @Inject() (
     hc: HeaderCarrier
   ): Future[Result] =
     for {
-      _                  <- trustConnector.amendTrustee(userAnswers.identifier, index, t)
+      _ <- trustConnector.amendTrustee(userAnswers.identifier, index, t)
     } yield Redirect(controllers.routes.AddATrusteeController.onPageLoad())
 
 }
