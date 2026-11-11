@@ -29,8 +29,8 @@ class FrontendAppConfigSpec extends SpecBase {
   "FrontendAppConfig" when {
 
     ".logoutUrl" must {
-      "append the useServiceNavigation parameter to the configured feedback URL" in {
-        config.logoutUrl mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+      "return the configured logout URL" in {
+        config.logoutUrl mustBe "/gg/sign-out"
       }
     }
 
@@ -153,6 +153,25 @@ class FrontendAppConfigSpec extends SpecBase {
         }
       }
     }
+
+    ".feedbackFrontendUrl" must {
+      "return the configured feedback frontend URL" in {
+        config.feedbackFrontendUrl mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+      }
+    }
+
+    ".logoutWithBasGatewayUrl" must {
+      "return the configured logout with BasGateway URL" in {
+        config.logoutWithBasGatewayUrl mustBe "http://localhost:9553/gg/sign-out"
+      }
+    }
+
+    ".timeOutUrl" must {
+      "return the configured timeOut URL" in {
+        config.timeOutUrl mustBe "http://localhost:9792/maintain-a-trust/trustees/this-service-has-been-reset"
+      }
+    }
+
   }
 
 }
